@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: #2c3e50;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes floatSlow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-14px, 18px); }
+}
+@keyframes floatSlow2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(16px, -14px); }
+}
+.blob1 { animation: floatSlow 12s ease-in-out infinite; }
+.blob2 { animation: floatSlow2 14s ease-in-out infinite; }
+
+.card-hover {
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(59, 126, 161, 0.14);
+}
