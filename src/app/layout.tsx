@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { AlbaProvider } from "@/components/AlbaContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import LayoutChrome from "@/components/LayoutChrome";
+import AlbaWidget from "@/components/AlbaWidget";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-space-grotesk" });
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
@@ -21,10 +22,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-white text-ink overflow-x-hidden`}>
         <LanguageProvider>
-          <Navbar />
-          {children}
-          <Footer />
-          <LayoutChrome />
+          <AlbaProvider>
+            <Navbar />
+            {children}
+            <Footer />
+            <AlbaWidget />
+          </AlbaProvider>
         </LanguageProvider>
       </body>
     </html>

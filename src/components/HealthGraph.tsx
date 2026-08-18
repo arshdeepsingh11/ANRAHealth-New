@@ -2,21 +2,18 @@
 
 import React, { useState } from "react";
 import * as Icons from "lucide-react";
-import { Send } from "lucide-react";
 import { graphNodes, GraphChild } from "@/data/graphNodes";
+import { useAlba } from "@/components/AlbaContext";
 
 type View =
   | { type: "home" }
   | { type: "category"; nodeId: string }
-  | { type: "preview"; title: string; description: string }
-  | { type: "alba" };
+  | { type: "preview"; title: string; description: string };
 
 function polar(angleDeg: number, radiusPct: number) {
   const rad = (angleDeg * Math.PI) / 180;
   return { x: 50 + radiusPct * Math.cos(rad), y: 50 + radiusPct * Math.sin(rad) };
 }
-
-const ALBA_ENTRIES = ["Record Q&A", "Care Coordination", "Symptom Triage", "Daily Check-ins"];
 
 function Breadcrumb({ onHome }: { onHome: () => void }) {
   return (
@@ -37,34 +34,6 @@ function BackTab({ onClick }: { onClick: () => void }) {
   );
 }
 
-function AlbaPanel() {
-  return (
-    <div className="max-w-xl mx-auto glass rounded-3xl overflow-hidden">
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-pearl-200">
-        <div className="w-11 h-11 rounded-full gold-gloss flex items-center justify-center font-display italic text-lg">A</div>
-        <div>
-          <p className="font-semibold text-graphite-900">ALBA</p>
-          <p className="text-xs text-graphite-500">Your AI Health Companion</p>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-2 px-6 py-4 border-b border-pearl-200">
-        {ALBA_ENTRIES.map((e) => (
-          <button key={e} className="glass card-hover rounded-full px-3 py-1.5 text-xs font-semibold text-gold-700">{e}</button>
-        ))}
-      </div>
-      <div className="px-6 py-6 min-h-[100px]">
-        <div className="ml-auto max-w-[85%] bg-pearl-100 rounded-2xl px-4 py-3 text-sm text-graphite-800 mb-3">What was my last cholesterol reading?</div>
-        <div className="max-w-[90%] bg-white rounded-2xl px-4 py-3 text-sm text-graphite-800 shadow-sm">Your most recent lipid panel (June 3) showed LDL 118 mg/dL and HDL 52 mg/dL. Would you like me to compare this with your prior visit?</div>
-      </div>
-      <div className="flex items-center gap-2 px-6 py-4 border-t border-pearl-200">
-        <div className="flex-1 rounded-full bg-white border border-pearl-300 px-4 py-2.5 text-sm text-graphite-400">Ask ALBA anything about your health record…</div>
-        <button className="w-9 h-9 rounded-full gold-gloss flex items-center justify-center shrink-0"><Send size={14} /></button>
-      </div>
-      <p className="text-center text-xs text-graphite-400 pb-4">Preview only — full conversational AI coming in the next phase.</p>
-    </div>
-  );
-}
-
 function NodeIcon({ name, size = 22 }: { name: string; size?: number }) {
   const Icon = (Icons as any)[name] || Icons.Circle;
   return <Icon size={size} className="text-gold-600" strokeWidth={1.75} />;
@@ -72,11 +41,12 @@ function NodeIcon({ name, size = 22 }: { name: string; size?: number }) {
 
 export default function HealthGraph() {
   const [view, setView] = useState<View>({ type: "home" });
+  const { openAlba } = useAlba();
   const goHome = () => setView({ type: "home" });
 
   const openNode = (nodeId: string) => {
     const node = graphNodes.find((n) => n.id === nodeId)!;
-    if (nodeId === "alba") return setView({ type: "alba" });
+    if (nodeId === "alba") return openAlba();
     if (node.standalone && node.children) {
       const c = node.children[0];
       return setView({ type: "preview", title: c.label, description: c.description });
@@ -95,7 +65,6 @@ export default function HealthGraph() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-semibold text-graphite-900">
             {view.type === "category" && graphNodes.find((n) => n.id === (view as any).nodeId)?.label}
             {view.type === "preview" && (view as any).title}
-            {view.type === "alba" && "ALBA"}
           </h1>
         </div>
       )}
@@ -105,7 +74,6 @@ export default function HealthGraph() {
       {/* ── HOME view ─────────────────────────────────────────────── */}
       {view.type === "home" && (
         <div className="relative mx-auto aspect-square w-full max-w-[600px]">
-          {/* Soft concentric depth rings behind everything */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="rounded-full border border-gold-500/10" style={{ width: "92%", height: "92%" }} />
             <div className="absolute rounded-full border border-gold-500/10" style={{ width: "75%", height: "75%" }} />
@@ -116,7 +84,6 @@ export default function HealthGraph() {
               const p = polar(n.angle, 37);
               return <line key={n.id} x1={50} y1={50} x2={p.x} y2={p.y} stroke="#C9A227" strokeOpacity={0.4} strokeWidth={0.4} />;
             })}
-            {/* Small gold connector dots at each node junction */}
             {graphNodes.map((n) => {
               const p = polar(n.angle, 27);
               return <circle key={`dot-${n.id}`} cx={p.x} cy={p.y} r={0.9} fill="#C9A227" />;
@@ -216,9 +183,6 @@ export default function HealthGraph() {
           </div>
         </div>
       )}
-
-      {/* ── ALBA view ─────────────────────────────────────────────── */}
-      {view.type === "alba" && <AlbaPanel />}
     </section>
   );
 }
