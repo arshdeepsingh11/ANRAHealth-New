@@ -11,6 +11,17 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background: #C9A227;
+  color: #201B11;
+}
+
+:focus-visible {
+  outline: 2px solid #C9A227;
+  outline-offset: 2px;
+}
+
+/* ── LEGACY (v1 hero blobs) — kept until Phase 2 homepage rebuild ── */
 @keyframes floatSlow {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(-14px, 18px); }
@@ -28,4 +39,94 @@ body {
 .card-hover:hover {
   transform: translateY(-6px);
   box-shadow: 0 20px 40px rgba(59, 126, 161, 0.14);
+}
+
+/* ── BRAND v3 — Glassmorphism (pearl white base) ─────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(201, 162, 39, 0.22);
+  box-shadow: 0 8px 32px rgba(30, 28, 24, 0.08);
+}
+
+.glass-nav {
+  background: rgba(247, 245, 240, 0.72);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+}
+
+.gold-gloss {
+  background: linear-gradient(135deg, #DEBD54 0%, #C9A227 45%, #9E801F 100%);
+  position: relative;
+  overflow: hidden;
+  color: #201B11;
+}
+.gold-gloss::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.45) 45%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: sheen 3.5s ease-in-out infinite;
+}
+
+.ecg-draw {
+  stroke: #C9A227;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: pulseWave 2.4s linear infinite;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Intro selector — rotating ring + entrance ───────────────────── */
+@keyframes orbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-orbit-spin {
+  animation: orbitSpin 14s linear infinite;
+}
+
+/* ── Homepage graph — slow hub ring rotation (new) ────────────────── */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spinSlow 90s linear infinite;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob1, .blob2, .ecg-draw, .gold-gloss::after, .animate-orbit-spin,
+  .animate-pulse-wave, .animate-pulse-glow, .animate-sheen, .animate-spin-slow {
+    animation: none !important;
+  }
+}
+/* ── Orbiting nodes — planets around the hub ─────────────────────── */
+@keyframes orbitSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes orbitSpinReverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
 }
