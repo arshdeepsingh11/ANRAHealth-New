@@ -47,7 +47,16 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const { lang, setLang, t } = useLanguage();
-  const isHome = pathname === "/";
+
+  // Pages that use the new ANRA design system render their own chrome
+  // (back arrow + tabs), so the legacy navbar must not appear on them.
+  const hideNavbar =
+    pathname === "/" ||
+    pathname.startsWith("/specialties") ||
+    pathname.startsWith("/referral-centre") ||
+    pathname === "/contact" ||
+    pathname === "/locations" ||
+    pathname === "/resources";
 
   const navItems = [
     { label: "About", to: "/about" },
@@ -62,7 +71,7 @@ export default function Navbar() {
 
   useEffect(() => setMenuOpen(false), [pathname]);
 
-  if (isHome) return null; // homepage graph handles its own chrome entirely
+  if (hideNavbar) return null;
 
   return (
     <header className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? "glass-nav shadow-glass" : "bg-pearl-50 border-b border-pearl-200"}`}>
@@ -93,4 +102,4 @@ export default function Navbar() {
       )}
     </header>
   );
-}
+} 
