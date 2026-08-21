@@ -54,7 +54,14 @@ export default function HealthGraph() {
     setView({ type: "category", nodeId });
   };
 
-  const openChild = (child: GraphChild) => setView({ type: "preview", title: child.label, description: child.description });
+  // Cardiology has a fully built page — navigate there instead of showing a preview card.
+  const openChild = (child: GraphChild) => {
+    if (child.label === "Cardiology") {
+      window.location.href = "/specialties/cardiology";
+      return;
+    }
+    setView({ type: "preview", title: child.label, description: child.description });
+  };
 
   return (
     <section className="relative w-full">
