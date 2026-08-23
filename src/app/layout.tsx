@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Manrope, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, Manrope, JetBrains_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AlbaProvider } from "@/components/AlbaContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AlbaWidget from "@/components/AlbaWidget";
+import AlbaFactPopup from "@/components/AlbaFactPopup";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-space-grotesk" });
 const manrope = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-manrope" });
@@ -19,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-white text-ink overflow-x-hidden`}>
         <LanguageProvider>
           <AlbaProvider>
@@ -27,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <Footer />
             <AlbaWidget />
+            <AlbaFactPopup />
           </AlbaProvider>
         </LanguageProvider>
       </body>
