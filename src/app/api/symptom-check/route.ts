@@ -60,7 +60,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing description" }, { status: 400 });
   }
 
-  // Server-side safety backstop, independent of the model's own judgment.
   const keywordEmergency = detectEmergencyKeywords(description);
 
   const apiKey = process.env.GEMINI_API_KEY;
@@ -69,9 +68,8 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Model updated from deprecated gemini-2.0-flash to gemini-2.5-flash-lite.
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,7 +117,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (err) {
     console.error("Symptom check handler error:", err);
-    // Fail safe: if the AI call breaks but keywords indicate emergency, still return that.
     if (keywordEmergency) {
       return NextResponse.json({
         emergency: true,

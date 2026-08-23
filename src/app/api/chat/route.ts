@@ -98,10 +98,8 @@ export async function POST(req: NextRequest) {
       { role: "user", parts: [{ text: message }] },
     ];
 
-    // Model updated from deprecated gemini-2.0-flash to gemini-2.5-flash-lite
-    // (pending task carried over from the previous stack).
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,7 +128,6 @@ export async function POST(req: NextRequest) {
     try {
       parsed = JSON.parse(raw);
     } catch {
-      // Fallback: if the model didn't return valid JSON, treat the raw text as the reply.
       parsed = { reply: raw || `Sorry, I couldn't generate a response. Please try again or call us at ${brand.phone}.`, suggestions: [] };
     }
 
