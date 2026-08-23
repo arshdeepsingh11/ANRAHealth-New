@@ -58,9 +58,10 @@ export default function HealthGraph() {
   };
 
   // Cardiology has a fully built page — navigate there instead of showing a preview card.
-    const openChild = (child: GraphChild) => {
+     const openChild = (child: GraphChild) => {
     if (child.label === "Cardiology") { window.location.href = "/specialties/cardiology"; return; }
     if (child.label === "Skin Health") { window.location.href = "/specialties/skin-health"; return; }
+    if (child.label === "Respiratory Medicine") { window.location.href = "/specialties/respiratory-medicine"; return; }
     setView({ type: "preview", title: child.label, description: child.description });
   };
 
