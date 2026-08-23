@@ -1,22 +1,57 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Send, X, Loader2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Send, X, Loader2, GripVertical } from "lucide-react";
 import { useAlba } from "@/components/AlbaContext";
 import AlbaMark from "@/components/AlbaMark";
+import AlbaIntroVeil from "@/components/AlbaIntroVeil";
 
-const WALKTHROUGH_KEY = "anra_alba_walkthrough_seen";
-const INTRO_TEXT = "Hey, I am Alba — click on me and I'll come with you.";
 const ALBA_ENTRIES = ["Record Q&A", "Care Coordination", "Symptom Triage", "Daily Check-ins"];
+const VIDEO_SEEN_KEY = "anra_video_seen";
 
 interface ChatMessage { role: "user" | "assistant"; text: string; }
 
+// Lightweight client-side router: if the AI's reply — or the user's own
+// message — clearly names a known destination, offer real navigation.
+// This sits on top of the real Gemini answer; it doesn't replace it.
+const ROUTES: { match: RegExp; href: string; label: string }[] = [
+  { match: /cardiology/i, href: "/specialties/cardiology", label: "Open Cardiology" },
+  { match: /referral/i, href: "/referral-centre", label: "Open Referral Centre" },
+  { match: /contact|book an appointment/i, href: "/contact", label: "Open Contact" },
+];
+
+function useDraggable(initial: { x: number; y: number }) {
+  const [pos, setPos] = useState(initial);
+  const dragging = useRef(false);
+  const offset = useRef({ x: 0, y: 0 });
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragging.current = true;
+    offset.current = { x: e.clientX - pos.x, y: e.clientY - pos.y };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current) return;
+    const w = typeof window !== "undefined" ? window.innerWidth : 1200;
+    const h = typeof window !== "undefined" ? window.innerHeight : 800;
+    const x = Math.min(Math.max(e.clientX - offset.current.x, 8), w - 80);
+    const y = Math.min(Math.max(e.clientY - offset.current.y, 8), h - 80);
+    setPos({ x, y });
+  };
+  const onPointerUp = () => { dragging.current = false; };
+
+  return { pos, setPos, onPointerDown, onPointerMove, onPointerUp };
+}
+
 function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React.RefObject<HTMLDivElement> }) {
+  const router = useRouter();
   const [messages, setMessages] = useState<ChatMessage[]>([
     { role: "assistant", text: "Hi, I'm ALBA — ANRA Health's AI companion. Ask me about our services, physicians, locations, or how to book." },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [suggestedRoute, setSuggestedRoute] = useState<{ href: string; label: string } | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
@@ -28,6 +63,8 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
     setMessages(next);
     setInput("");
     setLoading(true);
+    setSuggestedRoute(null);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -37,6 +74,10 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "failed");
       setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
+
+      const combined = `${text} ${data.reply}`;
+      const match = ROUTES.find((r) => r.match.test(combined));
+      if (match) setSuggestedRoute(match);
     } catch (err: any) {
       setMessages((m) => [...m, { role: "assistant", text: `Connection error: ${err.message}. Check GEMINI_API_KEY in .env.local and restart the server.` }]);
     } finally {
@@ -45,7 +86,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
   };
 
   return (
-    <div ref={panelRef} className="fixed bottom-28 right-6 z-[95] w-[92vw] sm:w-[400px] glass rounded-3xl overflow-hidden shadow-2xl flex flex-col" style={{ maxHeight: "70vh" }}>
+    <div ref={panelRef} className="w-[92vw] sm:w-[400px] glass rounded-3xl overflow-hidden shadow-2xl flex flex-col" style={{ maxHeight: "70vh" }}>
       <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-pearl-200 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full flex items-center justify-center bg-pearl-50"><AlbaMark size={20} /></div>
@@ -67,7 +108,19 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
             <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${m.role === "user" ? "bg-pearl-100 text-graphite-800" : "bg-white text-graphite-800 shadow-sm"}`}>{m.text}</div>
           </div>
         ))}
-        {loading && <div className="flex items-center gap-2 text-graphite-500 text-sm"><Loader2 size={14} className="animate-spin" /> Thinking…</div>}
+        {loading && (
+          <div className="flex items-center gap-2 text-graphite-500 text-sm">
+            <Loader2 size={14} className="animate-spin" /> ALBA is thinking…
+          </div>
+        )}
+        {suggestedRoute && !loading && (
+          <button
+            onClick={() => router.push(suggestedRoute.href)}
+            className="gold-gloss rounded-full px-4 py-2 text-xs font-semibold mt-1"
+          >
+            {suggestedRoute.label} →
+          </button>
+        )}
         <div ref={endRef} />
       </div>
       <div className="flex items-center gap-2 px-5 py-3 border-t border-pearl-200 shrink-0">
@@ -81,12 +134,40 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
 
 export default function AlbaWidget() {
   const { isOpen, openAlba, closeAlba } = useAlba();
-  const [showIntro, setShowIntro] = useState(false);
+  const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // On the homepage, the veil must wait until the intro video has actually
+  // finished — otherwise it renders on top of the still-playing video.
+  // Everywhere else there's no video to wait for, so skip straight through.
+  const [videoDone, setVideoDone] = useState(pathname !== "/");
+  const [introDone, setIntroDone] = useState(pathname !== "/");
+  const [popIn, setPopIn] = useState(pathname !== "/");
+
   useEffect(() => {
-    if (!sessionStorage.getItem(WALKTHROUGH_KEY)) setShowIntro(true);
-  }, []);
+    if (pathname !== "/") {
+      setVideoDone(true);
+      setIntroDone(true);
+      setPopIn(true);
+      return;
+    }
+    if (sessionStorage.getItem(VIDEO_SEEN_KEY)) {
+      setVideoDone(true);
+      return;
+    }
+    const check = setInterval(() => {
+      if (sessionStorage.getItem(VIDEO_SEEN_KEY)) {
+        setVideoDone(true);
+        clearInterval(check);
+      }
+    }, 200);
+    return () => clearInterval(check);
+  }, [pathname]);
+
+  const { pos, onPointerDown, onPointerMove, onPointerUp } = useDraggable({
+    x: typeof window !== "undefined" ? window.innerWidth - 96 : 1000,
+    y: typeof window !== "undefined" ? window.innerHeight - 120 : 700,
+  });
 
   useEffect(() => {
     if (!isOpen) return;
@@ -95,25 +176,48 @@ export default function AlbaWidget() {
     return () => document.removeEventListener("mousedown", h);
   }, [isOpen, closeAlba]);
 
-  const handleOpen = () => {
-    sessionStorage.setItem(WALKTHROUGH_KEY, "1");
-    setShowIntro(false);
-    openAlba();
+  const handleIntroComplete = () => {
+    setIntroDone(true);
+    // The dock was never visible before this point — pop it in now.
+    setTimeout(() => setPopIn(true), 80);
   };
 
   return (
     <>
-      {showIntro && !isOpen && (
-        <button onClick={handleOpen} className="fixed bottom-32 right-6 z-[85] max-w-[240px] glass rounded-2xl px-4 py-3 text-left transition-transform hover:-translate-y-0.5">
-          <p className="text-sm font-medium text-graphite-800 leading-relaxed">{INTRO_TEXT}</p>
-        </button>
-      )}
-      {!isOpen && (
-        <button onClick={handleOpen} className="fixed bottom-6 right-6 z-[80] w-16 h-16 rounded-full flex items-center justify-center shadow-glow transition-transform hover:scale-105 bg-pearl-50 border border-gold-500/30" aria-label="Open ALBA">
+      {videoDone && !introDone && <AlbaIntroVeil onComplete={handleIntroComplete} />}
+
+      {popIn && !isOpen && (
+        <button
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onClick={openAlba}
+          className="fixed z-[80] w-16 h-16 rounded-full flex items-center justify-center shadow-glow bg-pearl-50 border border-gold-500/30 group"
+          style={{
+            left: pos.x, top: pos.y, touchAction: "none",
+            animation: "albaPopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+          }}
+          aria-label="Open ALBA"
+        >
           <AlbaMark size={30} />
+          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <GripVertical size={10} className="text-graphite-400" />
+          </span>
         </button>
       )}
-      {isOpen && <AlbaPanel onClose={closeAlba} panelRef={panelRef} />}
+
+      {popIn && isOpen && (
+        <div className="fixed z-[95]" style={{ left: Math.min(pos.x, (typeof window !== "undefined" ? window.innerWidth : 1200) - 420), top: Math.max(pos.y - 420, 8) }}>
+          <AlbaPanel onClose={closeAlba} panelRef={panelRef} />
+        </div>
+      )}
+
+      <style jsx global>{`
+        @keyframes albaPopIn {
+          0% { transform: scale(0); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}</style>
     </>
   );
 }

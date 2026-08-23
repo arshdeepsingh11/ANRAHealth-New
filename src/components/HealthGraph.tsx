@@ -12,7 +12,10 @@ type View =
 
 function polar(angleDeg: number, radiusPct: number) {
   const rad = (angleDeg * Math.PI) / 180;
-  return { x: 50 + radiusPct * Math.cos(rad), y: 50 + radiusPct * Math.sin(rad) };
+  return {
+    x: Math.round((50 + radiusPct * Math.cos(rad)) * 1000) / 1000,
+    y: Math.round((50 + radiusPct * Math.sin(rad)) * 1000) / 1000,
+  };
 }
 
 function Breadcrumb({ onHome }: { onHome: () => void }) {
@@ -41,7 +44,7 @@ function NodeIcon({ name, size = 22 }: { name: string; size?: number }) {
 
 export default function HealthGraph() {
   const [view, setView] = useState<View>({ type: "home" });
-  const { openAlba } = useAlba();
+  const { openAlba, registerAlbaNode } = useAlba();
   const goHome = () => setView({ type: "home" });
 
   const openNode = (nodeId: string) => {
@@ -117,6 +120,7 @@ export default function HealthGraph() {
             return (
               <button
                 key={n.id}
+                ref={(el) => { if (n.id === "alba") registerAlbaNode(el); }}
                 onClick={() => openNode(n.id)}
                 className="absolute rounded-full glass card-hover flex flex-col items-center justify-center text-center px-3 gap-1.5"
                 style={{ left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%,-50%)", width: "20%", height: "20%" }}
