@@ -47,6 +47,30 @@ function toggle(arr: string[], val: string) {
   return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
 }
 
+// Loads /logo.png and returns a base64 PNG + its natural aspect ratio,
+// so the PDF logo scales correctly without distortion.
+function loadLogo(url: string): Promise<{ dataUrl: string; ratio: number } | null> {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return resolve(null);
+        ctx.drawImage(img, 0, 0);
+        resolve({ dataUrl: canvas.toDataURL("image/png"), ratio: img.naturalWidth / img.naturalHeight });
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
 export default function ReferralCentre() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [freeText, setFreeText] = useState("");
@@ -87,84 +111,206 @@ export default function ReferralCentre() {
       const { jsPDF } = await import("jspdf");
       const doc = new jsPDF({ unit: "pt", format: "a4" });
       const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 40;
 
-      doc.setFillColor(59, 126, 161);
-      doc.rect(0, 0, pageWidth, 60, "F");
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(20);
-      doc.text("Referral", pageWidth / 2, 38, { align: "center" });
+      // ANRA brand palette (from tailwind.config.ts)
+      const GOLD: [number, number, number] = [201, 162, 39];      // gold-500
+      const GOLD_DARK: [number, number, number] = [158, 128, 31]; // gold-600
+      const GOLD_LIGHT: [number, number, number] = [240, 225, 178]; // gold-200
+      const GRAPHITE_900: [number, number, number] = [30, 28, 24];
+      const GRAPHITE_700: [number, number, number] = [92, 86, 74];
+      const GRAPHITE_500: [number, number, number] = [150, 141, 123];
+      const PEARL_50: [number, number, number] = [247, 245, 240];
+      const PEARL_300: [number, number, number] = [215, 205, 180];
 
-      doc.setFontSize(9);
-      doc.setTextColor(60, 60, 60);
-      locations.forEach((l, i) => {
-        const x = i === 0 ? 40 : pageWidth - 40;
-        const align = i === 0 ? "left" : "right";
-        doc.text([l.address, `T ${l.phone}  F ${l.fax}`], x, 90, { align: align as any });
-      });
+      const drawCheckbox = (x: number, y: number, checked: boolean, size = 7) => {
+        doc.setDrawColor(...GRAPHITE_500);
+        doc.setLineWidth(0.75);
+        if (checked) {
+          doc.setFillColor(...GOLD);
+          doc.rect(x, y, size, size, "FD");
+        } else {
+          doc.setFillColor(255, 255, 255);
+          doc.rect(x, y, size, size, "FD");
+        }
+      };
 
-      let y = 130;
+      // ---------- Header bar ----------
+      doc.setFillColor(...GRAPHITE_900);
+      doc.rect(0, 0, pageWidth, 68, "F");
+      doc.setTextColor(...GOLD);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(22);
+      doc.text("Referral", pageWidth / 2, 43, { align: "center" });
+
+      // ---------- Locations + logo row (fixed column slots, no overlap) ----------
+      const addrColWidth = 160;
+      const logoSlotWidth = 120;
+      const rowY = 88;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(...GRAPHITE_700);
+      if (locations[0]) {
+        doc.text(
+          [locations[0].address, `T ${locations[0].phone}  F ${locations[0].fax}`],
+          margin,
+          rowY,
+          { maxWidth: addrColWidth }
+        );
+      }
+      if (locations[1]) {
+        doc.text(
+          [locations[1].address, `T ${locations[1].phone}  F ${locations[1].fax}`],
+          pageWidth - margin,
+          rowY,
+          { align: "right", maxWidth: addrColWidth }
+        );
+      }
+
+      const logo = await loadLogo("/logo.png");
+      if (logo) {
+        let logoH = 44;
+        let logoW = logoH * logo.ratio;
+        if (logoW > logoSlotWidth) {
+          logoW = logoSlotWidth;
+          logoH = logoW / logo.ratio;
+        }
+        doc.addImage(logo.dataUrl, "PNG", pageWidth / 2 - logoW / 2, 76, logoW, logoH);
+      }
+
+      // ---------- Patient / Referring boxes ----------
+      const boxY = 158;
+      const boxH = 100;
+      const boxW = (pageWidth - margin * 2 - 20) / 2;
+      const boxGap = 20;
+
+      const drawInfoBox = (x: number, title: string, lines: string[]) => {
+        doc.setFillColor(...PEARL_50);
+        doc.setDrawColor(...PEARL_300);
+        doc.setLineWidth(0.75);
+        doc.roundedRect(x, boxY, boxW, boxH, 4, 4, "FD");
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(...GOLD_DARK);
+        doc.text(title, x + 14, boxY + 22);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(9.5);
+        doc.setTextColor(...GRAPHITE_900);
+        let ly = boxY + 42;
+        lines.forEach((line) => {
+          doc.text(line, x + 14, ly);
+          ly += 16;
+        });
+      };
+
+      drawInfoBox(margin, "PATIENT INFORMATION", [
+        `Name: ${form.patientName || "—"}`,
+        `Phone: ${form.patientPhone || "—"}`,
+      ]);
+
+      drawInfoBox(margin + boxW + boxGap, "REFERRING PHYSICIAN", [
+        `Name: ${form.referringPhysician || "—"}`,
+        `Phone: ${form.referringPhone || "—"}`,
+        `Address: ${form.referringAddress || "—"}`,
+      ]);
+      doc.setFontSize(8.5);
+      doc.setTextColor(...GRAPHITE_500);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + boxW + boxGap + 14, boxY + 90);
+
+      // ---------- Urgency ----------
+      let y = boxY + boxH + 34;
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
-      doc.setTextColor(59, 126, 161);
-      doc.text("PATIENT INFORMATION", 40, y);
-      doc.text("REFERRING PHYSICIAN", pageWidth / 2 + 20, y);
-      y += 20;
-      doc.setFontSize(10);
-      doc.setTextColor(30, 30, 30);
-      doc.text(`Name: ${form.patientName || "—"}`, 40, y);
-      doc.text(`Name: ${form.referringPhysician || "—"}`, pageWidth / 2 + 20, y);
-      y += 16;
-      doc.text(`Phone: ${form.patientPhone || "—"}`, 40, y);
-      doc.text(`Phone: ${form.referringPhone || "—"}`, pageWidth / 2 + 20, y);
-      y += 16;
-      doc.text(`Address: ${form.referringAddress || "—"}`, pageWidth / 2 + 20, y);
-      y += 16;
-      doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth / 2 + 20, y);
-
-      y += 40;
-      doc.setFontSize(11);
-      doc.setTextColor(59, 126, 161);
+      doc.setTextColor(...GRAPHITE_900);
       doc.text("Urgency", pageWidth / 2, y, { align: "center" });
       y += 18;
-      doc.setFontSize(10);
-      doc.setTextColor(30, 30, 30);
-      const urgencyLine = URGENCY_OPTIONS.map((u) => `${form.urgency === u ? "[X]" : "[ ]"} ${u}`).join("    ");
-      doc.text(urgencyLine, pageWidth / 2, y, { align: "center" });
 
-      y += 30;
-      doc.setFontSize(11);
-      doc.setTextColor(59, 126, 161);
-      doc.text("CONSULTATION REQUESTED", 40, y);
-      y += 18;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9.5);
+      const urgencyGap = 100;
+      const urgencyStartX = pageWidth / 2 - (URGENCY_OPTIONS.length * urgencyGap) / 2;
+      URGENCY_OPTIONS.forEach((u, i) => {
+        const x = urgencyStartX + i * urgencyGap;
+        drawCheckbox(x, y - 6.5, form.urgency === u);
+        doc.setTextColor(...GRAPHITE_900);
+        doc.text(u, x + 13, y);
+      });
+
+      // ---------- Column headers ----------
+      y += 34;
+      const colGap = 20;
+      const colW = (pageWidth - margin * 2 - colGap) / 2;
+      const colLeftX = margin;
+      const colRightX = margin + colW + colGap;
+      const headerH = 22;
+
+      doc.setFillColor(...GOLD);
+      doc.rect(colLeftX, y, colW, headerH, "F");
+      doc.rect(colRightX, y, colW, headerH, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10);
+      doc.setTextColor(...GRAPHITE_900);
+      doc.text("CONSULT", colLeftX + colW / 2, y + 15, { align: "center" });
+      doc.text("CARDIAC DIAGNOSTIC EXAMINATION", colRightX + colW / 2, y + 15, { align: "center" });
+
+      const listStartY = y + headerH + 20;
+      const rowHeight = 13.5;
+
+      // ---------- Left column: specialties, physicians, notes ----------
+      let leftY = listStartY;
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
-      doc.setTextColor(30, 30, 30);
+      doc.setTextColor(...GRAPHITE_900);
+      doc.text("Consultation Requested:", colLeftX, leftY);
+      leftY += rowHeight;
+
+      doc.setFont("helvetica", "normal");
       SPECIALTIES.forEach((s) => {
-        doc.text(`${form.specialties.includes(s) ? "[X]" : "[ ]"} ${s}`, 40, y);
-        y += 14;
-      });
-      const selectedPhysicians = physicians.filter((p) => form.physicianSlugs.includes(p.slug));
-      selectedPhysicians.forEach((p) => {
-        doc.text(`[X] ${p.name}`, 40, y);
-        y += 14;
+        drawCheckbox(colLeftX, leftY - 6.5, form.specialties.includes(s));
+        doc.text(s, colLeftX + 13, leftY);
+        leftY += rowHeight;
       });
 
-      let colY = 130 + 20 + 16 + 16 + 16 + 16 + 40 + 18 + 18 + 20;
-      doc.setFontSize(11);
-      doc.setTextColor(59, 126, 161);
-      doc.text("DIAGNOSTIC EXAMINATION", pageWidth / 2 + 20, colY - 20);
+      leftY += 8;
+      physicians.forEach((p) => {
+        drawCheckbox(colLeftX, leftY - 6.5, form.physicianSlugs.includes(p.slug));
+        doc.text(p.name, colLeftX + 13, leftY);
+        leftY += rowHeight;
+      });
+
+      leftY += 12;
+      doc.setFont("helvetica", "bold");
+      doc.text("Clinical Notes:", colLeftX, leftY);
+      leftY += 14;
+      doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
-      doc.setTextColor(30, 30, 30);
-      form.exams.forEach((e) => {
-        doc.text(`[X] ${e}`, pageWidth / 2 + 20, colY);
-        colY += 14;
+      const notesLines = doc.splitTextToSize(form.clinicalNotes || "—", colW);
+      doc.text(notesLines, colLeftX, leftY);
+
+      // ---------- Right column: full diagnostic exam checklist ----------
+      let rightY = listStartY;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      const lineHeight = 10.5;
+      DIAGNOSTIC_EXAMS.forEach((examName) => {
+        const lines = doc.splitTextToSize(examName, colW - 16);
+        drawCheckbox(colRightX, rightY - 6.5, form.exams.includes(examName));
+        doc.setTextColor(...GRAPHITE_900);
+        doc.text(lines, colRightX + 13, rightY);
+        rightY += lineHeight * lines.length + 3;
       });
 
-      const notesY = Math.max(y, colY) + 30;
-      doc.setFontSize(11);
-      doc.setTextColor(59, 126, 161);
-      doc.text("Clinical Notes:", 40, notesY);
-      doc.setFontSize(10);
-      doc.setTextColor(30, 30, 30);
-      doc.text(form.clinicalNotes || "—", 40, notesY + 18, { maxWidth: pageWidth - 80 });
+      // ---------- Footer bar ----------
+      const footerH = 30;
+      doc.setFillColor(...GRAPHITE_900);
+      doc.rect(0, pageHeight - footerH, pageWidth, footerH, "F");
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(...GOLD_LIGHT);
+      doc.text("Please fax completed form - we will call the patient to book", margin, pageHeight - footerH / 2 + 3);
+      doc.text("www.anrahealth.ca", pageWidth - margin, pageHeight - footerH / 2 + 3, { align: "right" });
 
       doc.save(`ANRA-Referral-${form.patientName || "patient"}.pdf`);
     } finally {
