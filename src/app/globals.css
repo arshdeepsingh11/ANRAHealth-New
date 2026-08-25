@@ -8,17 +8,17 @@ html {
 }
 
 body {
-  color: #2c3e50;
+  color: #f1ecdc;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #C9A227;
-  color: #201B11;
+  background: #99a455;
+  color: #14160f;
 }
 
 :focus-visible {
-  outline: 2px solid #C9A227;
+  outline: 2px solid #99a455;
   outline-offset: 2px;
 }
 
@@ -39,30 +39,30 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(59, 126, 161, 0.14);
+  box-shadow: 0 20px 40px rgba(153, 164, 85, 0.22);
 }
 
-/* ── BRAND v3 — Glassmorphism (pearl white base) ─────────────────── */
+/* ── BRAND v4 — Olive / Cream glassmorphism (dark base) ──────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(31, 34, 24, 0.82);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(201, 162, 39, 0.22);
-  box-shadow: 0 8px 32px rgba(30, 28, 24, 0.08);
+  border: 1px solid rgba(153, 164, 85, 0.22);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 }
 
 .glass-nav {
-  background: rgba(247, 245, 240, 0.72);
+  background: rgba(20, 22, 15, 0.78);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+  border-bottom: 1px solid rgba(153, 164, 85, 0.18);
 }
 
 .gold-gloss {
-  background: linear-gradient(135deg, #DEBD54 0%, #C9A227 45%, #9E801F 100%);
+  background: linear-gradient(135deg, #dbe49b 0%, #99a455 45%, #5f6935 100%);
   position: relative;
   overflow: hidden;
-  color: #201B11;
+  color: #14160f;
 }
 .gold-gloss::after {
   content: "";
@@ -71,7 +71,7 @@ body {
   background: linear-gradient(
     120deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.45) 45%,
+    rgba(255, 255, 255, 0.35) 45%,
     transparent 70%
   );
   background-size: 200% 100%;
@@ -79,7 +79,7 @@ body {
 }
 
 .ecg-draw {
-  stroke: #C9A227;
+  stroke: #99a455;
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: pulseWave 2.4s linear infinite;

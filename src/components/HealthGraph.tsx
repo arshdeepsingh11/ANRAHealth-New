@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import * as Icons from "lucide-react";
 import { graphNodes, GraphChild } from "@/data/graphNodes";
 import { useAlba } from "@/components/AlbaContext";
+import GlowConnector from "@/components/GlowConnector";
 
 type View =
   | { type: "home" }
@@ -84,18 +85,39 @@ export default function HealthGraph() {
       {view.type === "home" && (
         <div className="relative mx-auto aspect-square w-full max-w-[600px]">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="rounded-full border border-gold-500/10" style={{ width: "92%", height: "92%" }} />
-            <div className="absolute rounded-full border border-gold-500/10" style={{ width: "75%", height: "75%" }} />
+            <div className="rounded-full border border-gold-500/15" style={{ width: "92%", height: "92%" }} />
+            <div className="absolute rounded-full border border-gold-500/15" style={{ width: "75%", height: "75%" }} />
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: "42%", height: "42%",
+                background: "radial-gradient(circle, rgba(153,164,85,0.35) 0%, rgba(153,164,85,0.12) 45%, transparent 70%)",
+                filter: "blur(20px)",
+              }}
+            />
           </div>
 
           <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-            {graphNodes.map((n) => {
+            {graphNodes.map((n, i) => {
               const p = polar(n.angle, 37);
-              return <line key={n.id} x1={50} y1={50} x2={p.x} y2={p.y} stroke="#C9A227" strokeOpacity={0.4} strokeWidth={0.4} />;
+              return (
+                <GlowConnector
+                  key={n.id}
+                  x1={50} y1={50} x2={p.x} y2={p.y}
+                  curve={4}
+                  color="#99a455"
+                  strokeWidth={0.6}
+                  baseOpacity={0.28}
+                  dashLength={1.2}
+                  gapLength={44}
+                  duration={3.4}
+                  delay={i * 0.35}
+                />
+              );
             })}
             {graphNodes.map((n) => {
               const p = polar(n.angle, 27);
-              return <circle key={`dot-${n.id}`} cx={p.x} cy={p.y} r={0.9} fill="#C9A227" />;
+              return <circle key={`dot-${n.id}`} cx={p.x} cy={p.y} r={0.9} fill="#99a455" />;
             })}
           </svg>
 
@@ -104,8 +126,8 @@ export default function HealthGraph() {
             style={{
               left: "50%", top: "50%", transform: "translate(-50%,-50%)",
               width: "30%", height: "30%",
-              background: "radial-gradient(circle at 40% 35%, #FDFBF6 0%, #F7F5F0 60%, #EFEDE9 100%)",
-              boxShadow: "0 0 0 1px rgba(201,162,39,0.25), 0 20px 50px rgba(30,28,24,0.10)",
+              background: "radial-gradient(circle at 40% 35%, #3a3d2c 0%, #23261a 60%, #14160f 100%)",
+              boxShadow: "0 0 0 1px rgba(153,164,85,0.35), 0 0 70px rgba(153,164,85,0.35), 0 20px 50px rgba(0,0,0,0.5)",
             }}
           >
             <span className="w-7 h-px bg-gold-500 mb-2.5" />
@@ -146,20 +168,33 @@ export default function HealthGraph() {
               {children.map((c, i) => {
                 const angle = (360 / children.length) * i - 90;
                 const p = polar(angle, 37);
-                return <line key={c.label} x1={50} y1={50} x2={p.x} y2={p.y} stroke="#C9A227" strokeOpacity={0.35} strokeWidth={0.35} />;
+                return (
+                  <GlowConnector
+                    key={c.label}
+                    x1={50} y1={50} x2={p.x} y2={p.y}
+                    curve={4}
+                    color="#99a455"
+                    strokeWidth={0.55}
+                    baseOpacity={0.24}
+                    dashLength={1.1}
+                    gapLength={40}
+                    duration={3.2}
+                    delay={i * 0.3}
+                  />
+                );
               })}
               {children.map((c, i) => {
                 const angle = (360 / children.length) * i - 90;
                 const p = polar(angle, 27);
-                return <circle key={`dot-${c.label}`} cx={p.x} cy={p.y} r={0.8} fill="#C9A227" />;
+                return <circle key={`dot-${c.label}`} cx={p.x} cy={p.y} r={0.8} fill="#99a455" />;
               })}
             </svg>
             <div
               className="absolute rounded-full flex flex-col items-center justify-center text-center"
               style={{
                 left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: "27%", height: "27%",
-                background: "radial-gradient(circle at 40% 35%, #FDFBF6 0%, #F7F5F0 60%, #EFEDE9 100%)",
-                boxShadow: "0 0 0 1px rgba(201,162,39,0.25), 0 20px 50px rgba(30,28,24,0.10)",
+                background: "radial-gradient(circle at 40% 35%, #3a3d2c 0%, #23261a 60%, #14160f 100%)",
+                boxShadow: "0 0 0 1px rgba(153,164,85,0.30), 0 0 50px rgba(153,164,85,0.15), 0 20px 50px rgba(0,0,0,0.35)",
               }}
             >
               <NodeIcon name={node.icon} size={20} />

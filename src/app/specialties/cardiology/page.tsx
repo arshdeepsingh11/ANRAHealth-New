@@ -127,7 +127,7 @@ export default function CardiologyPage() {
   const resetMatcher = () => { setConcernKey(""); setLoc("No preference"); setLanguage("No preference"); setResults(null); };
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #faf8f3 0%, #f2ede0 45%, #ece2cd 100%)", minHeight: "100vh" }}>
+    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
@@ -266,20 +266,20 @@ export default function CardiologyPage() {
               <div className="grid md:grid-cols-3 gap-5 mb-5">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Your concern</label>
-                  <select value={concernKey} onChange={(e) => setConcernKey(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500">
+                  <select value={concernKey} onChange={(e) => setConcernKey(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
                     <option value="">Select…</option>
                     {CONCERNS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Location</label>
-                  <select value={loc} onChange={(e) => setLoc(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500">
+                  <select value={loc} onChange={(e) => setLoc(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
                     {LOCATION_OPTS.map((l) => <option key={l}>{l}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Language</label>
-                  <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500">
+                  <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
                     {langOpts.map((l) => <option key={l}>{l}</option>)}
                   </select>
                 </div>

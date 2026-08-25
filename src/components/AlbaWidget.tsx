@@ -120,7 +120,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
       <div className="px-4 py-3 flex-1 overflow-y-auto min-h-0">
         {messages.map((m, i) => (
           <div key={i} className={m.role === "user" ? "flex justify-end mb-2.5" : "flex mb-2.5"}>
-            <div className={`max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug ${m.role === "user" ? "bg-pearl-100 text-graphite-800" : "bg-white text-graphite-800 shadow-sm"}`}>{m.text}</div>
+            <div className={`max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug ${m.role === "user" ? "bg-pearl-100 text-black" : "bg-white text-black shadow-sm"}`}>{m.text}</div>
           </div>
         ))}
         {loading && (
@@ -150,7 +150,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && send()}
           disabled={loading}
-          className="flex-1 rounded-full bg-white border border-pearl-300 px-3.5 py-2 text-[13px] outline-none focus:border-gold-500 disabled:opacity-60"
+          className="flex-1 rounded-full bg-white border border-pearl-300 px-3.5 py-2 text-[13px] text-black outline-none focus:border-gold-500 disabled:opacity-60"
           placeholder={listening ? "Listening…" : "Ask ALBA anything…"}
         />
         <button onClick={() => send()} disabled={loading} className="w-8 h-8 rounded-full gold-gloss flex items-center justify-center shrink-0 disabled:opacity-60"><Send size={13} /></button>
