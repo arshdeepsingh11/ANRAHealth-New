@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AlbaWidget from "@/components/AlbaWidget";
 import AlbaFactPopup from "@/components/AlbaFactPopup";
+import PersistentActions from "@/components/PersistentActions";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Navbar />
             {children}
             <Footer />
+            <PersistentActions />
             <AlbaWidget />
             <AlbaFactPopup />
           </AlbaProvider>
