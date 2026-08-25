@@ -7,7 +7,7 @@ import AlbaMark from "@/components/AlbaMark";
 import { HEALTH_FACTS } from "@/data/healthFacts";
 
 const INTERVAL_MS = 30000;
-const VISIBLE_MS = 9000;
+const VISIBLE_MS = 5000;
 
 function pickNextIndex(current: number) {
   if (HEALTH_FACTS.length <= 1) return 0;
