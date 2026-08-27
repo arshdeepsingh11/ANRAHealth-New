@@ -9,7 +9,7 @@ export default function ContactPage() {
   const [sent, setSent] = useState(false);
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #faf8f3 0%, #f2ede0 45%, #ece2cd 100%)", minHeight: "100vh" }}>
+    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
       <Link
         href="/"
         className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 transition-transform hover:-translate-x-0.5"
@@ -50,11 +50,11 @@ export default function ContactPage() {
           ) : (
             <div className="grid gap-4">
               <div className="grid sm:grid-cols-2 gap-4">
-                <input placeholder="Full name" className="px-4 py-3 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500" />
-                <input type="tel" placeholder="Phone number" className="px-4 py-3 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500" />
+                <input placeholder="Full name" className="px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500" />
+                <input type="tel" placeholder="Phone number" className="px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500" />
               </div>
-              <input type="email" placeholder="Email address" className="px-4 py-3 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500" />
-              <textarea rows={4} placeholder="How can we help?" className="px-4 py-3 rounded-xl border border-pearl-300 bg-white text-sm outline-none focus:border-gold-500 resize-none" />
+              <input type="email" placeholder="Email address" className="px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500" />
+              <textarea rows={4} placeholder="How can we help?" className="px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500 resize-none" />
               <button
                 onClick={() => setSent(true)}
                 className="gold-gloss inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:scale-105"

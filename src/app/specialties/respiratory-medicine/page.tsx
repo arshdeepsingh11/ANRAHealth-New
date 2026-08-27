@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Phone, X, ChevronRight, ExternalLink } from "lucide-react";
+import { ArrowLeft, Phone, X, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
 
 const TABS = ["Overview", "Respiratory Diagnostics", "Oxygen Services", "Sleep Apnea & Diagnostics", "What to Expect", "Contact"] as const;
 type Tab = (typeof TABS)[number];
@@ -39,12 +39,61 @@ function ItemModal({ item, onClose }: { item: { name: string; desc: string }; on
   );
 }
 
+function RespiratoryVideoHero() {
+  // Muted by default (required for autoplay in most browsers); user can unmute via the custom control.
+  const [muted, setMuted] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const toggleMute = () => {
+    const iframe = iframeRef.current;
+    if (!iframe || !iframe.contentWindow) return;
+    const command = muted ? "unMute" : "mute";
+    iframe.contentWindow.postMessage(JSON.stringify({ event: "command", func: command, args: [] }), "*");
+    setMuted((m) => !m);
+  };
+
+  return (
+    <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px" }}>
+      <iframe
+        ref={iframeRef}
+        src="https://www.youtube.com/embed/EGvIyhiNohk?autoplay=1&mute=1&loop=1&playlist=EGvIyhiNohk&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1"
+        title="Respiratory Medicine — ANRA Health"
+        allow="autoplay; encrypted-media"
+        className="absolute inset-0 w-full h-full"
+        style={{ border: 0, pointerEvents: "none" }}
+      />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(20,22,15,0.88) 0%, rgba(20,22,15,0.45) 55%, rgba(20,22,15,0.15) 100%)" }} />
+
+      <button
+        onClick={toggleMute}
+        className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full flex items-center justify-center glass"
+        aria-label={muted ? "Unmute video" : "Mute video"}
+      >
+        {muted ? <VolumeX size={16} className="text-graphite-900" /> : <Volume2 size={16} className="text-graphite-900" />}
+      </button>
+
+      <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-12">
+        <p className="text-xs font-semibold tracking-widest uppercase mb-3 text-gold-300">Respiratory • Sleep • Allergy • Cardiac</p>
+        <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight mb-3 max-w-2xl">Sleep Well. Breathe Easy. Live Better.</h2>
+        <p className="text-sm md:text-base text-white/85 max-w-xl leading-relaxed">
+          In partnership with Advanced Respiratory Care Network — comprehensive respiratory, sleep, and oxygen care across Alberta.
+        </p>
+      </div>
+
+      {/* Small, unobtrusive video source credit — bottom-left, per licensing agreement with the video owner */}
+      <p className="absolute bottom-2 left-3 z-20 text-[10px] text-white/50 tracking-wide">
+        Video courtesy of [CREATOR NAME HERE] — used with permission
+      </p>
+    </div>
+  );
+}
+
 export default function RespiratoryMedicinePage() {
   const [tab, setTab] = useState<Tab>("Overview");
   const [openItem, setOpenItem] = useState<{ name: string; desc: string } | null>(null);
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #23261a 0%, #181a11 45%, #0d0e0a 100%)", minHeight: "100vh" }}>
+    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
@@ -64,6 +113,8 @@ export default function RespiratoryMedicinePage() {
       <div className="max-w-5xl mx-auto px-6 pb-24">
         {tab === "Overview" && (
           <div className="space-y-6">
+            <RespiratoryVideoHero />
+
             <div className="glass rounded-3xl p-8 md:p-10">
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-4">In Partnership With Advanced Respiratory Care Network</p>
               <p className="text-base leading-relaxed text-graphite-700 mb-6">

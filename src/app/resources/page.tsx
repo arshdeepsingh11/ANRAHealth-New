@@ -46,7 +46,7 @@ function TabButton({ label, active, onClick }: { label: string; active: boolean;
 function IconPanel({ name }: { name: string }) {
   const Icon = (Icons as any)[name] || Icons.Heart;
   return (
-    <div className="h-36 w-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #F0E1B2 0%, #C9A227 100%)" }}>
+    <div className="h-36 w-full flex items-center justify-center" style={{ background: "linear-gradient(135deg, #7c8645 0%, #99a455 100%)" }}>
       <Icon size={44} className="text-white" strokeWidth={1.5} />
     </div>
   );
@@ -70,7 +70,7 @@ export default function PatientResourcesPage() {
   const [tab, setTab] = useState<Tab>("Overview");
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #faf8f3 0%, #f2ede0 45%, #ece2cd 100%)", minHeight: "100vh" }}>
+    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
@@ -87,7 +87,7 @@ export default function PatientResourcesPage() {
       <div className="max-w-5xl mx-auto px-6 pb-24">
         {tab === "Overview" && (
           <div className="space-y-6">
-            <div className="relative rounded-3xl overflow-hidden flex items-end" style={{ height: "320px", background: "linear-gradient(135deg, #3A362F 0%, #201B11 100%)" }}>
+            <div className="relative rounded-3xl overflow-hidden flex items-end" style={{ height: "320px", background: "linear-gradient(135deg, #23261a 0%, #14160f 100%)" }}>
               <div className="absolute inset-0 opacity-20 flex items-center justify-center">
                 <Icons.HeartPulse size={220} className="text-gold-400" strokeWidth={1} />
               </div>

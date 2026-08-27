@@ -1,35 +1,390 @@
+export interface FactSource {
+  name: string;
+  url: string;
+}
+
+export interface FactDetail {
+  source: FactSource;
+  symptoms?: string[];
+  prevention?: string[];
+  precautions?: string[];
+}
+
 export interface HealthFact {
   text: string;
   cta: string;
   href: string;
+  detail?: FactDetail;
 }
 
 export const HEALTH_FACTS: HealthFact[] = [
   // ─────────────────────────────────────────────────────────
-  // Cardiology — /specialties/cardiology
+  // Cardiology — /specialties/cardiology (all facts below have full detail)
   // ─────────────────────────────────────────────────────────
-  { text: "About 1 in 5 heart attacks is \"silent\" — the damage happens, but the person never realizes it occurred.", cta: "Know the signs", href: "/specialties/cardiology" },
-  { text: "Only about half of adults can name all five common heart attack warning signs.", cta: "Learn the 5 signs", href: "/specialties/cardiology" },
-  { text: "In the U.S., someone has a heart attack roughly every 40 seconds.", cta: "Check your risk", href: "/specialties/cardiology" },
-  { text: "Women's heart attack symptoms often differ from men's — shortness of breath, nausea, and back or jaw pain, not just chest pain.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "Nearly half of U.S. adults have high blood pressure, and most don't have it fully under control.", cta: "Get checked", href: "/specialties/cardiology" },
-  { text: "High blood pressure usually has no symptoms — it's often called the \"silent\" risk factor.", cta: "Know your numbers", href: "/specialties/cardiology" },
-  { text: "A blood pressure reading below 120/80 mm Hg is considered normal.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "Just 3–5% weight loss can measurably improve blood pressure readings.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "Atrial fibrillation significantly raises stroke risk — and it's often caught only through monitoring.", cta: "Learn about AFib", href: "/specialties/cardiology" },
-  { text: "Regular physical activity — even 30 minutes a day, 5 days a week — helps lower blood pressure naturally.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "About 20 million U.S. adults live with coronary artery disease, the most common form of heart disease.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "Angina pain often subsides within about 10 minutes — but any unexplained chest discomfort deserves prompt evaluation.", cta: "Know the signs", href: "/specialties/cardiology" },
-  { text: "Elevated cholesterol often has no symptoms and is found only through blood testing.", cta: "Check your risk", href: "/specialties/cardiology" },
-  { text: "Family history of heart disease is one of the strongest predictors of your own risk.", cta: "Know your risk", href: "/specialties/cardiology" },
-  { text: "Stress echocardiograms can reveal blockages that a resting ECG alone would miss.", cta: "Book a consult", href: "/referral-centre" },
-  { text: "A Holter monitor can catch irregular heartbeats that come and go — the kind a single office visit would never detect.", cta: "Ask about monitoring", href: "/specialties/cardiology" },
-  { text: "Palpitations are common and often harmless, but persistent or worsening episodes should always be checked.", cta: "Book a consult", href: "/specialties/cardiology" },
-  { text: "Shortness of breath with everyday activity — climbing stairs, carrying groceries — is never something to just \"get used to.\"", cta: "Talk to a cardiologist", href: "/specialties/cardiology" },
-  { text: "Swelling in the ankles or legs can be an early sign of heart strain, especially when paired with fatigue.", cta: "Learn more", href: "/specialties/cardiology" },
-  { text: "A carotid ultrasound can spot narrowing in neck arteries years before a stroke ever happens.", cta: "Ask about testing", href: "/specialties/cardiology" },
-  { text: "Heart Failure Clinic patients who get regular monitoring and medication optimization have significantly better outcomes.", cta: "Learn about our Heart Failure Clinic", href: "/specialties/cardiology" },
-  { text: "Recovering from a cardiac event is safer and faster with a structured follow-up plan, not guesswork.", cta: "Book a follow-up", href: "/referral-centre" },
+  {
+    text: "About 1 in 5 heart attacks is \"silent\" — the damage happens, but the person never realizes it occurred.",
+    cta: "Know the signs",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Cleveland Clinic", url: "https://my.clevelandclinic.org/health/diseases/21630-silent-heart-attack" },
+      symptoms: [
+        "Unusual fatigue that doesn't have an obvious cause",
+        "Mild chest pressure or discomfort that fades quickly and is easy to dismiss",
+        "Soreness in the back, jaw, or either arm, often mistaken for a pulled muscle",
+        "Indigestion-like discomfort or mild nausea",
+        "Unexplained shortness of breath",
+      ],
+      prevention: [
+        "Keep routine checkups and blood pressure/cholesterol screening up to date",
+        "Avoid smoking and manage diabetes and blood pressure closely",
+        "Stay physically active most days of the week",
+      ],
+      precautions: [
+        "Don't dismiss new, persistent discomfort just because it's mild",
+        "Silent heart attacks are often only found later on an echocardiogram or ECG — mention any unexplained fatigue or soreness to your doctor, especially if you have other risk factors",
+      ],
+    },
+  },
+  {
+    text: "Only about half of adults can name all five common heart attack warning signs.",
+    cta: "Learn the 5 signs",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/heart-attack/warning-signs-of-a-heart-attack" },
+      symptoms: [
+        "Chest discomfort — pressure, squeezing, fullness, or pain lasting more than a few minutes, or that comes and goes",
+        "Discomfort spreading to one or both arms, the back, neck, jaw, or stomach",
+        "Shortness of breath, with or without chest discomfort",
+        "Cold sweat",
+        "Nausea or lightheadedness",
+      ],
+      prevention: [
+        "Learn the signs so you can act quickly for yourself or someone nearby",
+        "Keep emergency contact numbers easily accessible",
+      ],
+      precautions: [
+        "Call 911 immediately if symptoms last more than a few minutes or ease and return",
+        "Don't drive yourself to the hospital — emergency responders can begin treatment on the way",
+      ],
+    },
+  },
+  {
+    text: "In the U.S., someone has a heart attack roughly every 40 seconds.",
+    cta: "Check your risk",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Centers for Disease Control and Prevention (CDC)", url: "https://www.cdc.gov/heart-disease/about/index.html" },
+      symptoms: [
+        "Chest discomfort, pain spreading to the arms/jaw/back, shortness of breath, cold sweat, and nausea are the core warning signs to watch for",
+      ],
+      prevention: [
+        "Manage blood pressure, cholesterol, and blood sugar",
+        "Avoid smoking and stay physically active",
+        "Maintain a healthy weight",
+      ],
+      precautions: [
+        "Minutes matter — delaying care increases the amount of heart muscle damage",
+        "Call emergency services right away rather than waiting to see if symptoms pass",
+      ],
+    },
+  },
+  {
+    text: "Women's heart attack symptoms often differ from men's — shortness of breath, nausea, and back or jaw pain, not just chest pain.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/heart-disease/about/women-and-heart-disease.html" },
+      symptoms: [
+        "Shortness of breath",
+        "Nausea or vomiting",
+        "Extreme fatigue",
+        "Pain in the back, neck, or jaw",
+        "Lightheadedness — sometimes without the classic chest pain men typically report",
+      ],
+      prevention: [
+        "Know your personal risk factors, especially as they can shift after menopause",
+        "Keep regular screening for blood pressure, cholesterol, and diabetes",
+      ],
+      precautions: [
+        "Don't dismiss these symptoms as anxiety or indigestion",
+        "Women tend to wait longer than men to seek care — if something feels wrong, get it checked promptly",
+      ],
+    },
+  },
+  {
+    text: "Nearly half of U.S. adults have high blood pressure, and most don't have it fully under control.",
+    cta: "Get checked",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/high-blood-pressure/data-research/facts-stats/index.html" },
+      symptoms: ["Usually none — high blood pressure typically has no warning signs, which is why regular checks matter"],
+      prevention: [
+        "Reduce sodium and eat more fruits, vegetables, and potassium-rich foods",
+        "Stay physically active and limit alcohol",
+        "Avoid smoking and manage stress",
+      ],
+      precautions: [
+        "The only way to know your blood pressure is to measure it — get checked regularly even if you feel completely fine",
+      ],
+    },
+  },
+  {
+    text: "High blood pressure usually has no symptoms — it's often called the \"silent\" risk factor.",
+    cta: "Know your numbers",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/high-blood-pressure/about/index.html" },
+      symptoms: ["Typically none, even at levels that raise your risk for heart disease and stroke"],
+      prevention: [
+        "Follow the same lifestyle steps used to prevent it: healthy diet, activity, limited alcohol, no smoking",
+      ],
+      precautions: [
+        "Home monitoring between doctor visits can help catch changes early",
+      ],
+    },
+  },
+  {
+    text: "A blood pressure reading below 120/80 mm Hg is considered normal.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/high-blood-pressure/about/index.html" },
+      prevention: [
+        "Maintaining a healthy weight, staying active, and eating a lower-sodium diet all help keep readings in the normal range",
+      ],
+      precautions: [
+        "Readings above 130/80 on more than one occasion are worth discussing with a doctor",
+        "Don't rely on a single reading — blood pressure naturally varies through the day",
+      ],
+    },
+  },
+  {
+    text: "Just 3–5% weight loss can measurably improve blood pressure readings.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/high-blood-pressure" },
+      prevention: [
+        "Combine modest, sustainable weight loss with reduced sodium intake and regular activity",
+      ],
+      precautions: [
+        "Work with your care team before starting a weight-loss plan, especially if you're on blood pressure medication — readings can change relatively quickly",
+      ],
+    },
+  },
+  {
+    text: "Atrial fibrillation significantly raises stroke risk — and it's often caught only through monitoring.",
+    cta: "Learn about AFib",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/atrial-fibrillation/what-is-atrial-fibrillation-afib-or-af" },
+      symptoms: [
+        "Fast or irregular heartbeat",
+        "A fluttering or quivering feeling in the chest",
+        "Fatigue and shortness of breath",
+        "Chest discomfort — though some people have no noticeable symptoms at all",
+      ],
+      prevention: [
+        "Manage blood pressure and treat sleep apnea if present",
+        "Limit excess alcohol intake and stay physically active",
+      ],
+      precautions: [
+        "AFib is linked to roughly a fivefold increase in stroke risk — don't ignore a racing or irregular pulse, especially alongside other risk factors",
+      ],
+    },
+  },
+  {
+    text: "Regular physical activity — even 30 minutes a day, 5 days a week — helps lower blood pressure naturally.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/high-blood-pressure/prevention/index.html" },
+      prevention: [
+        "Aim for about 150 minutes of moderate activity per week, split into manageable sessions",
+        "Even brisk walking most days supports healthier blood pressure and heart function",
+      ],
+      precautions: [
+        "Check with your doctor before starting a new exercise routine if you already have heart disease",
+      ],
+    },
+  },
+  {
+    text: "About 20 million U.S. adults live with coronary artery disease, the most common form of heart disease.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Mayo Clinic", url: "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-minute-signs-of-coronary-artery-disease-how-to-reduce-your-risk/" },
+      symptoms: [
+        "Chest discomfort or pressure (angina), often during exertion",
+        "Shortness of breath",
+        "Sometimes no symptoms at all until a heart attack occurs",
+      ],
+      prevention: [
+        "Avoid smoking and manage cholesterol, blood pressure, and diabetes",
+        "Stay active and follow a heart-healthy diet",
+      ],
+      precautions: [
+        "Coronary artery disease can develop silently over decades — routine risk screening matters even without symptoms",
+      ],
+    },
+  },
+  {
+    text: "Angina pain often subsides within about 10 minutes — but any unexplained chest discomfort deserves prompt evaluation.",
+    cta: "Know the signs",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Mayo Clinic", url: "https://www.mayoclinic.org/diseases-conditions/angina/symptoms-causes/syc-20369373" },
+      symptoms: [
+        "Pressure, squeezing, fullness, or pain in the chest",
+        "Discomfort that can spread to the shoulder, arm, back, or jaw",
+      ],
+      prevention: [
+        "The same heart-healthy habits used to prevent coronary artery disease help prevent angina too",
+      ],
+      precautions: [
+        "Get emergency help if chest pain doesn't ease with rest, lasts more than a few minutes, or is a new pattern for you",
+      ],
+    },
+  },
+  {
+    text: "Elevated cholesterol often has no symptoms and is found only through blood testing.",
+    cta: "Check your risk",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "CDC", url: "https://www.cdc.gov/cholesterol/data-research/facts-stats/index.html" },
+      symptoms: ["None — this is why it's often missed without testing"],
+      prevention: [
+        "Eat more fiber and unsaturated fats; limit saturated and trans fats",
+        "Stay active and maintain a healthy weight",
+      ],
+      precautions: [
+        "A blood test (lipid panel) is the only way to know your levels — feeling fine doesn't mean your cholesterol is fine",
+      ],
+    },
+  },
+  {
+    text: "Family history of heart disease is one of the strongest predictors of your own risk.",
+    cta: "Know your risk",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Mayo Clinic", url: "https://www.mayoclinic.org/diseases-conditions/coronary-artery-disease/symptoms-causes/syc-20350613" },
+      prevention: [
+        "Share your family's heart health history with your doctor so screening can start earlier if needed",
+      ],
+      precautions: [
+        "Family history doesn't guarantee disease, but it does mean more attentive monitoring is worthwhile",
+      ],
+    },
+  },
+  {
+    text: "Stress echocardiograms can reveal blockages that a resting ECG alone would miss.",
+    cta: "Book a consult",
+    href: "/referral-centre",
+    detail: {
+      source: { name: "Mayo Clinic", url: "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-minute-signs-of-coronary-artery-disease-how-to-reduce-your-risk/" },
+      precautions: [
+        "Discuss with your doctor whether stress testing fits your symptoms and risk profile",
+        "This is a diagnostic test, not a preventive measure — pair it with regular checkups",
+      ],
+    },
+  },
+  {
+    text: "A Holter monitor can catch irregular heartbeats that come and go — the kind a single office visit would never detect.",
+    cta: "Ask about monitoring",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/atrial-fibrillation" },
+      precautions: [
+        "Wear the monitor exactly as instructed for the full recording period",
+        "Keep a log of any symptoms you notice while wearing it",
+        "Avoid water and strong magnets unless your provider says the device is water-safe",
+      ],
+    },
+  },
+  {
+    text: "Palpitations are common and often harmless, but persistent or worsening episodes should always be checked.",
+    cta: "Book a consult",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Cleveland Clinic", url: "https://my.clevelandclinic.org/health/diseases/21489-angina" },
+      symptoms: ["Fluttering, pounding, or a skipped-beat sensation in the chest"],
+      prevention: [
+        "Limiting caffeine, alcohol, and stress can reduce episodes for some people",
+      ],
+      precautions: [
+        "Get evaluated if palpitations are frequent, prolonged, or occur with dizziness, chest pain, or fainting",
+      ],
+    },
+  },
+  {
+    text: "Shortness of breath with everyday activity — climbing stairs, carrying groceries — is never something to just \"get used to.\"",
+    cta: "Talk to a cardiologist",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/heart-failure/warning-signs-of-heart-failure" },
+      symptoms: ["Breathlessness during activities that didn't previously cause it"],
+      prevention: [
+        "Managing blood pressure and weight over time helps protect heart function",
+      ],
+      precautions: [
+        "Don't chalk up increasing breathlessness to \"being out of shape\" without checking with a doctor, especially with other heart risk factors",
+      ],
+    },
+  },
+  {
+    text: "Swelling in the ankles or legs can be an early sign of heart strain, especially when paired with fatigue.",
+    cta: "Learn more",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/heart-failure/warning-signs-of-heart-failure" },
+      symptoms: ["Swelling in the feet, ankles, or legs, sometimes alongside fatigue"],
+      prevention: [
+        "Managing blood pressure and sodium intake supports healthy fluid balance",
+      ],
+      precautions: [
+        "Sudden or rapid swelling with weight gain should be reported to a doctor promptly — it can signal worsening heart function",
+      ],
+    },
+  },
+  {
+    text: "A carotid ultrasound can spot narrowing in neck arteries years before a stroke ever happens.",
+    cta: "Ask about testing",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "Cleveland Clinic", url: "https://my.clevelandclinic.org/health/diagnostics/22916-carotid-ultrasound" },
+      precautions: [
+        "Ask your doctor about carotid screening if you have high blood pressure, high cholesterol, an unusual sound (bruit) heard through a stethoscope, or a prior TIA or stroke",
+      ],
+    },
+  },
+  {
+    text: "Heart Failure Clinic patients who get regular monitoring and medication optimization have significantly better outcomes.",
+    cta: "Learn about our Heart Failure Clinic",
+    href: "/specialties/cardiology",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/heart-failure/warning-signs-of-heart-failure/managing-heart-failure-symptoms" },
+      prevention: [
+        "Regular tracking of weight, breathlessness, and swelling helps catch changes early",
+      ],
+      precautions: [
+        "Report sudden weight gain or worsening breathlessness to your care team right away rather than waiting for your next scheduled visit",
+      ],
+    },
+  },
+  {
+    text: "Recovering from a cardiac event is safer and faster with a structured follow-up plan, not guesswork.",
+    cta: "Book a follow-up",
+    href: "/referral-centre",
+    detail: {
+      source: { name: "American Heart Association", url: "https://www.heart.org/en/health-topics/heart-attack" },
+      prevention: [
+        "Structured follow-up and cardiac rehabilitation programs support safer recovery and help lower the risk of future cardiac events",
+      ],
+      precautions: [
+        "Don't skip follow-up appointments after a cardiac event, even once you start feeling better",
+      ],
+    },
+  },
 
   // ─────────────────────────────────────────────────────────
   // Endocrinology — no live page yet, route to referral

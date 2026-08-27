@@ -319,7 +319,7 @@ export default function ReferralCentre() {
   };
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #faf8f3 0%, #f2ede0 45%, #ece2cd 100%)", minHeight: "100vh" }}>
+    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
       <div className="px-6 pt-6">
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2">
           <ArrowLeft size={14} /> Back to Main Page
@@ -343,7 +343,7 @@ export default function ReferralCentre() {
             onChange={(e) => setFreeText(e.target.value)}
             rows={3}
             placeholder="Describe the patient and reason for referral in plain text — e.g. 'Chuks, chest pain for two weeks, needs urgent cardiology consult and an ECG.'"
-            className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-white outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3"
+            className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-[#e8e4d5] text-black outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3"
           />
           <button
             onClick={runAutofill}
@@ -361,11 +361,11 @@ export default function ReferralCentre() {
           <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">Manual Referral</p>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <input placeholder="Patient Name" value={form.patientName} onChange={(e) => setForm({ ...form, patientName: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Patient Phone" value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Name" value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Phone" value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Address" value={form.referringAddress} onChange={(e) => setForm({ ...form, referringAddress: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500 sm:col-span-2" />
+            <input placeholder="Patient Name" value={form.patientName} onChange={(e) => setForm({ ...form, patientName: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
+            <input placeholder="Patient Phone" value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
+            <input placeholder="Referring Physician Name" value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
+            <input placeholder="Referring Physician Phone" value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
+            <input placeholder="Referring Physician Address" value={form.referringAddress} onChange={(e) => setForm({ ...form, referringAddress: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 sm:col-span-2" />
           </div>
 
           <div>
@@ -417,7 +417,7 @@ export default function ReferralCentre() {
             value={form.clinicalNotes}
             onChange={(e) => setForm({ ...form, clinicalNotes: e.target.value })}
             rows={3}
-            className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
+            className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
           />
 
           <button
