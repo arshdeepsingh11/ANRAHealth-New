@@ -1,0 +1,265 @@
+openapi: 3.0.3
+
+info:
+  title: Xevyo AI API — Integration Spec for ANRA Health
+  version: "1.0"
+  description: |
+    ANRA Health is migrating its AI layer from Google Gemini to Xevyo.
+    This spec is modeled on the Gemini `generateContent` request/response
+    shape (our current integration) as a reference starting point.
+
+    XEVYO TEAM: please fill in / correct every field marked with
+    `# FILL:` or `# CONFIRM:` below. Where the shape genuinely differs
+    from Gemini's, just replace it with the real Xevyo shape — this
+    document is a starting scaffold, not a fixed requirement.
+
+    Once complete, we'll use this to update three AI-powered features
+    on anrahealth.com: the ALBA chat assistant, the cardiac symptom
+    triage tool, and the AI-assisted referral form auto-fill.
+  contact:
+    name: Arsh (ANRA Health — Developer)
+
+servers:
+  - url: "REPLACE_WITH_BASE_URL"
+    description: >-
+      # FILL: production base URL
+  - url: "REPLACE_WITH_SANDBOX_URL"
+    description: >-
+      # FILL: sandbox / test environment base URL, if one exists.
+      # CONFIRM: is sandbox access available separate from production?
+
+security:
+  - apiKeyAuth: []
+  # CONFIRM: which of the schemes below actually applies — delete the
+  # other two. If it's something else entirely (mTLS, signed requests,
+  # internal network only), describe it in the schema section below
+  # instead.
+
+paths:
+  /generateContent:
+    # FILL: replace this path with the real Xevyo endpoint path
+    post:
+      summary: Generate an AI response (chat, extraction, or classification)
+      description: >-
+        # CONFIRM: is one endpoint used for all three of our use cases
+        # (open-ended chat, structured data extraction, symptom
+        # classification), or are there separate endpoints per task type?
+        # If separate, please duplicate this path block per endpoint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GenerateRequest"
+            example:
+              # FILL: replace with a real, working example request body
+              system_instruction:
+                parts:
+                  - text: "You are the website assistant for ANRA Health..."
+              contents:
+                - role: user
+                  parts:
+                    - text: "What are your clinic hours?"
+              generationConfig:
+                temperature: 0.3
+                maxOutputTokens: 500
+                responseMimeType: "application/json"
+      responses:
+        "200":
+          description: Successful generation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GenerateResponse"
+              example:
+                # FILL: replace with a real, working example response body
+                candidates:
+                  - content:
+                      parts:
+                        - text: '{"reply": "...", "suggestions": []}'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server / upstream error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: "REPLACE_WITH_HEADER_NAME"
+      description: >-
+        # FILL: exact header name (e.g. "x-api-key", "Authorization")
+        # and confirm the value format (raw key? "Bearer <key>"?)
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        # FILL if applicable: token format, how it's obtained/refreshed
+    oauth2Auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: "REPLACE_WITH_TOKEN_URL"
+          scopes: {}
+      description: >-
+        # FILL if applicable: client ID/secret provisioning process
+
+  schemas:
+    GenerateRequest:
+      type: object
+      description: >-
+        # CONFIRM: does this match Xevyo's real request shape? If Xevyo
+        # uses a different structure entirely (e.g. a single "prompt"
+        # string, or a RAG-style query object), please replace this
+        # whole schema.
+      properties:
+        system_instruction:
+          type: object
+          description: >-
+            System-level instructions the model should follow for the
+            whole conversation (persona, rules, knowledge base).
+            # CONFIRM: supported? field name in real API?
+          properties:
+            parts:
+              type: array
+              items:
+                type: object
+                properties:
+                  text:
+                    type: string
+        contents:
+          type: array
+          description: >-
+            Multi-turn conversation history, oldest first.
+            # CONFIRM: supported? Max number of turns / tokens?
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                enum: [user, model]
+                description: "# CONFIRM: exact role labels expected"
+              parts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+        generationConfig:
+          type: object
+          properties:
+            temperature:
+              type: number
+              description: "# CONFIRM: supported range, e.g. 0.0–1.0 or 0.0–2.0"
+            maxOutputTokens:
+              type: integer
+              description: "# CONFIRM: field name + max allowed value"
+            responseMimeType:
+              type: string
+              description: >-
+                We currently force "application/json" so the model
+                returns strict, parseable JSON matching a schema we
+                specify in the prompt.
+                # CONFIRM: does Xevyo support forcing structured JSON
+                # output? This is important — three of our features
+                # (chat suggestion cards, symptom triage classification,
+                # referral form auto-fill) depend on getting back a
+                # fixed JSON shape every time, not free-form text.
+            model:
+              type: string
+              description: >-
+                # FILL: available model/mode names and what each is
+                # best suited for (e.g. fast conversational vs. more
+                # accurate structured extraction)
+            stream:
+              type: boolean
+              description: >-
+                # CONFIRM: is token-by-token streaming supported? If
+                # yes, describe the response format when streaming is on
+                # (e.g. server-sent events, chunked JSON lines).
+
+    GenerateResponse:
+      type: object
+      description: >-
+        # FILL: replace with the real response shape. Below mirrors
+        # Gemini's "candidates[0].content.parts[0].text" pattern as a
+        # starting point only.
+      properties:
+        candidates:
+          type: array
+          items:
+            type: object
+            properties:
+              content:
+                type: object
+                properties:
+                  parts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+
+    ErrorResponse:
+      type: object
+      description: "# FILL: real error object shape"
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+
+# ─────────────────────────────────────────────────────────────────
+# ADDITIONAL QUESTIONS NOT CAPTURABLE IN THE SCHEMA ABOVE
+# (please answer inline as comments or in a follow-up doc)
+# ─────────────────────────────────────────────────────────────────
+#
+# RATE LIMITS & PERFORMANCE
+#   - Requests-per-minute or per-day limits we should design around?
+#   - Typical response latency, so we can set sane client timeouts?
+#   - Any SLA / uptime expectations for this environment?
+#
+# DATA HANDLING & COMPLIANCE
+#   - Confirm patient-adjacent data we send (symptom descriptions,
+#     referral clinical notes, chat messages) stays entirely within
+#     our own infrastructure and is not used for external training
+#     or third-party logging.
+#   - Data retention policy for request/response logs on Xevyo's side?
+#   - Any compliance documentation we should reference for our own
+#     privacy/PIA documentation (relevant under Alberta's Health
+#     Information Act)?
+#
+# TESTING & SUPPORT
+#   - Who do we contact if we hit integration issues during dev?
+#   - Does an SDK or Postman collection already exist that we should
+#     use instead of raw HTTP calls?
+#
+# KEY MANAGEMENT
+#   - Guidance on how keys/tokens should be stored and rotated on our
+#     end. Separate keys needed for development vs. production?
