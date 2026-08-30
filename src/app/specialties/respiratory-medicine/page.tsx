@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, Phone, X, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import SymptomChecker from "@/components/SymptomChecker";
 
 const TABS = ["Overview", "Respiratory Diagnostics", "Oxygen Services", "Sleep Apnea & Diagnostics", "What to Expect", "Contact"] as const;
 type Tab = (typeof TABS)[number];
@@ -135,14 +136,18 @@ export default function RespiratoryMedicinePage() {
         )}
 
         {tab === "Respiratory Diagnostics" && (
-          <div className="grid sm:grid-cols-2 gap-5">
-            {RESPIRATORY_ITEMS.map((t) => (
-              <button key={t.name} onClick={() => setOpenItem(t)} className="glass rounded-2xl p-6 card-hover text-left">
-                <h3 className="text-base font-semibold mb-2 text-graphite-900">{t.name}</h3>
-                <p className="text-sm text-graphite-600 leading-relaxed line-clamp-2">{t.desc}</p>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold-700 mt-3">Read more <ChevronRight size={13} /></span>
-              </button>
-            ))}
+          <div className="space-y-8">
+            <div className="grid sm:grid-cols-2 gap-5">
+              {RESPIRATORY_ITEMS.map((t) => (
+                <button key={t.name} onClick={() => setOpenItem(t)} className="glass rounded-2xl p-6 card-hover text-left">
+                  <h3 className="text-base font-semibold mb-2 text-graphite-900">{t.name}</h3>
+                  <p className="text-sm text-graphite-600 leading-relaxed line-clamp-2">{t.desc}</p>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold-700 mt-3">Read more <ChevronRight size={13} /></span>
+                </button>
+              ))}
+            </div>
+
+            <SymptomChecker specialty="respiratory" />
           </div>
         )}
 

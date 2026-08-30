@@ -6,7 +6,8 @@ import { AlertTriangle, Sparkles, PhoneCall } from "lucide-react";
 
 // Client-side emergency keyword check — instant, no API delay. First-line
 // safety net; server independently checks again before returning any result.
-// NON-NEGOTIABLE — carried over unchanged from the original symptom checker.
+// NON-NEGOTIABLE — carried over unchanged from the original symptom checker,
+// and applies identically regardless of which specialty page this renders on.
 const EMERGENCY_PATTERNS = [
   /crushing.{0,15}(chest|pain)/i,
   /can'?t breathe/i,
@@ -30,12 +31,35 @@ const URGENCY_LABELS: Record<string, { label: string; color: string; bg: string 
   emergency: { label: "Emergency", color: "#FFFFFF", bg: "#D65A5A" },
 };
 
-export default function SymptomChecker() {
+type Specialty = "cardiology" | "respiratory";
+
+const SPECIALTY_CONFIG: Record<Specialty, { placeholder: string; linkHref: string; linkLabel: string; emergencyDiscipline: string }> = {
+  cardiology: {
+    placeholder: "e.g. I've had a tight feeling in my chest when climbing stairs for the past week...",
+    linkHref: "/specialties/cardiology",
+    linkLabel: "Find a matching physician",
+    emergencyDiscipline: "Cardiology",
+  },
+  respiratory: {
+    placeholder: "e.g. I've been waking up gasping for air, or snoring loudly and feeling exhausted during the day...",
+    linkHref: "/specialties/respiratory-medicine",
+    linkLabel: "Learn about our respiratory & sleep services",
+    emergencyDiscipline: "Respiratory Medicine",
+  },
+};
+
+interface SymptomCheckerProps {
+  specialty?: Specialty;
+}
+
+export default function SymptomChecker({ specialty = "cardiology" }: SymptomCheckerProps) {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [instantEmergency, setInstantEmergency] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const config = SPECIALTY_CONFIG[specialty];
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
@@ -51,7 +75,7 @@ export default function SymptomChecker() {
       setResult({
         emergency: true,
         urgency: "emergency",
-        recommendedDiscipline: "Cardiology",
+        recommendedDiscipline: config.emergencyDiscipline,
         summary: "This may describe a medical emergency. Please call 911 or go to the nearest emergency room immediately.",
       });
       return;
@@ -62,7 +86,7 @@ export default function SymptomChecker() {
       const res = await fetch("/api/symptom-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description }),
+        body: JSON.stringify({ description, specialty }),
       });
       if (!res.ok) throw new Error("Request failed");
       const data = await res.json();
@@ -97,9 +121,9 @@ export default function SymptomChecker() {
       <textarea
         value={description}
         onChange={handleChange}
-        placeholder="e.g. I've had a tight feeling in my chest when climbing stairs for the past week..."
+        placeholder={config.placeholder}
         rows={4}
-        className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3 text-graphite-800"
+        className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-[#e8e4d5] focus:outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3 text-black"
       />
 
       {instantEmergency && !result && (
@@ -148,8 +172,8 @@ export default function SymptomChecker() {
               </div>
               <p className="text-sm leading-relaxed text-graphite-800 mb-4">{result.summary}</p>
               <p className="text-xs text-graphite-400 mb-4">This is general guidance, not a diagnosis.</p>
-              <Link href="/specialties/cardiology" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700">
-                Find a matching physician →
+              <Link href={config.linkHref} className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700">
+                {config.linkLabel} →
               </Link>
             </div>
           )}
