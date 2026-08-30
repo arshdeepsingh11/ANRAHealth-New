@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import * as Icons from "lucide-react";
-import { ArrowLeft, ChevronDown, Download, FileText, Clock, CheckCircle2, ExternalLink } from "lucide-react";
+import { ArrowLeft, ChevronDown, Download, FileText, Clock, CheckCircle2, ExternalLink, FlaskConical } from "lucide-react";
 
 const TABS = ["Overview", "Test Preparation", "Condition Library", "New Patient Info", "Forms & Referrals"] as const;
 type Tab = (typeof TABS)[number];
@@ -176,6 +176,18 @@ export default function PatientResourcesPage() {
                 </div>
               </div>
               <button onClick={() => setTab("Test Preparation")} className="gold-gloss rounded-full px-5 py-2.5 text-sm font-semibold shrink-0">View</button>
+            </div>
+            <div className="glass rounded-2xl p-7 flex items-center justify-between gap-4 flex-wrap card-hover">
+              <div className="flex items-center gap-4">
+                <div className="w-11 h-11 rounded-full flex items-center justify-center bg-gold-50 shrink-0"><FlaskConical size={20} className="text-gold-600" /></div>
+                <div>
+                  <h3 className="text-base font-semibold text-graphite-900">Lab Result Explainer</h3>
+                  <p className="text-sm text-graphite-600">Paste your lab values or scan a report photo for a plain-language explanation.</p>
+                </div>
+              </div>
+              <Link href="/lab-results" className="gold-gloss rounded-full px-5 py-2.5 text-sm font-semibold inline-flex items-center gap-2 shrink-0">
+                Open <ExternalLink size={14} />
+              </Link>
             </div>
           </div>
         )}
