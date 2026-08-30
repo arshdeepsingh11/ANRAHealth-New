@@ -56,7 +56,8 @@ export default function Navbar() {
     pathname.startsWith("/referral-centre") ||
     pathname === "/contact" ||
     pathname === "/locations" ||
-    pathname === "/resources";
+    pathname === "/resources" ||
+    pathname === "/longevity";
 
   const navItems = [
     { label: "About", to: "/about" },
@@ -102,4 +103,4 @@ export default function Navbar() {
       )}
     </header>
   );
-} 
+}
