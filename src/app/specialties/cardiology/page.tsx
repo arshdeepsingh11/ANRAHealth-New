@@ -5,7 +5,7 @@ import * as Icons from "lucide-react";
 import Link from "next/link";
 import {
   ArrowLeft, AlertCircle, AlertTriangle, ChevronDown, ChevronRight, Phone, MapPin, Clock,
-  Globe2, GraduationCap, Sparkles, RotateCcw, X,
+  Globe2, GraduationCap, Sparkles, RotateCcw, X, Loader2,
 } from "lucide-react";
 import SymptomChecker from "@/components/SymptomChecker";
 import { physicians, Physician } from "@/data/physicians";
@@ -105,26 +105,60 @@ export default function CardiologyPage() {
   const [selected, setSelected] = useState<Physician | null>(null);
   const [openService, setOpenService] = useState<any>(null);
 
-  const [concernKey, setConcernKey] = useState("");
-  const [loc, setLoc] = useState("No preference");
-  const [language, setLanguage] = useState("No preference");
   const [results, setResults] = useState<Physician[] | null>(null);
   const langOpts = useMemo(allLanguages, []);
+
+  // Free-text matcher state
+  const [freeTextConcern, setFreeTextConcern] = useState("");
+  const [matchingFreeText, setMatchingFreeText] = useState(false);
+  const [freeTextError, setFreeTextError] = useState<string | null>(null);
+  const [lastMatchedLabel, setLastMatchedLabel] = useState<string | null>(null);
 
   const cardiacServices = services.filter((s) =>
     ["cardiology-consultation", "exercise-stress-echo", "ecg", "holter-monitoring", "echocardiography", "carotid-ultrasound", "myocardial-perfusion-imaging", "ambulatory-bp-monitoring"].includes(s.slug)
   );
 
-  const findMatches = () => {
-    const concern = CONCERNS.find((c) => c.key === concernKey) || null;
+  const computeMatches = (concern: any, locationVal: string, languageVal: string) => {
     const ranked = [...physicians]
-      .map((p) => ({ p, score: scorePhysician(p, concern, loc, language) }))
+      .map((p) => ({ p, score: scorePhysician(p, concern, locationVal, languageVal) }))
       .filter((r) => r.score > 0)
       .sort((a, b) => b.score - a.score);
     setResults(ranked.slice(0, 3).map((r) => r.p));
   };
 
-  const resetMatcher = () => { setConcernKey(""); setLoc("No preference"); setLanguage("No preference"); setResults(null); };
+  const runFreeTextMatch = async () => {
+    if (freeTextConcern.trim().length < 5) return;
+    setMatchingFreeText(true);
+    setFreeTextError(null);
+    setLastMatchedLabel(null);
+    try {
+      const res = await fetch("/api/physician-match", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description: freeTextConcern }),
+      });
+      if (!res.ok) throw new Error("failed");
+      const data = await res.json();
+      if (!data.concernLabel) {
+        setFreeTextError("Couldn't quite match that to a category — try rephrasing with a bit more detail.");
+        return;
+      }
+      const matchedConcern = CONCERNS.find((c) => c.label === data.concernLabel) || null;
+      const matchedLocation = data.location && LOCATION_OPTS.includes(data.location) ? data.location : "No preference";
+      const matchedLanguage = data.language && langOpts.includes(data.language) ? data.language : "No preference";
+
+      setLastMatchedLabel(data.concernLabel);
+      computeMatches(matchedConcern, matchedLocation, matchedLanguage);
+    } catch {
+      setFreeTextError("Something went wrong matching that — please try again.");
+    } finally {
+      setMatchingFreeText(false);
+    }
+  };
+
+  const resetMatcher = () => {
+    setFreeTextConcern(""); setLastMatchedLabel(null); setFreeTextError(null); setResults(null);
+  };
 
   return (
     <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
@@ -257,37 +291,40 @@ export default function CardiologyPage() {
 
         {tab === "Physicians" && (
           <div className="space-y-8">
+            {/* Free-text matcher — describe your concern in your own words */}
             <div className="glass rounded-3xl p-6 md:p-8">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={18} className="text-gold-600" />
                 <p className="text-sm font-semibold tracking-wide uppercase text-gold-600">Find Your Physician</p>
               </div>
-              <h2 className="text-xl font-bold mb-6 text-graphite-900">Answer three quick questions</h2>
-              <div className="grid md:grid-cols-3 gap-5 mb-5">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Your concern</label>
-                  <select value={concernKey} onChange={(e) => setConcernKey(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
-                    <option value="">Select…</option>
-                    {CONCERNS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Location</label>
-                  <select value={loc} onChange={(e) => setLoc(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
-                    {LOCATION_OPTS.map((l) => <option key={l}>{l}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wide text-graphite-500 mb-2">Language</label>
-                  <select value={language} onChange={(e) => setLanguage(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:border-gold-500">
-                    {langOpts.map((l) => <option key={l}>{l}</option>)}
-                  </select>
-                </div>
+              <h2 className="text-xl font-bold mb-5 text-graphite-900">Tell us what's going on, in your own words</h2>
+              <textarea
+                value={freeTextConcern}
+                onChange={(e) => setFreeTextConcern(e.target.value)}
+                rows={3}
+                placeholder="e.g. I get dizzy after meals and my heart races sometimes."
+                className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-4"
+              />
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={runFreeTextMatch}
+                  disabled={freeTextConcern.trim().length < 5 || matchingFreeText}
+                  className="gold-gloss px-6 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
+                >
+                  {matchingFreeText ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+                  {matchingFreeText ? "Matching…" : "Find my physician"}
+                </button>
+                {results && (
+                  <button onClick={resetMatcher} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold border border-pearl-300 text-graphite-600">
+                    <RotateCcw size={14} /> Reset
+                  </button>
+                )}
               </div>
-              <div className="flex gap-3">
-                <button onClick={findMatches} disabled={!concernKey} className="gold-gloss px-6 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40">Find my physician</button>
-                {results && <button onClick={resetMatcher} className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold border border-pearl-300 text-graphite-600"><RotateCcw size={14} /> Reset</button>}
-              </div>
+              {freeTextError && <p className="text-sm text-red-600 mt-3">{freeTextError}</p>}
+              {lastMatchedLabel && !freeTextError && (
+                <p className="text-xs text-graphite-500 mt-3">Matched to: <span className="font-semibold text-gold-700">{lastMatchedLabel}</span></p>
+              )}
+
               {results && (
                 <div className="mt-6 pt-6 border-t border-pearl-200">
                   <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-4">Best matches</p>
