@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, Sparkles, Loader2, Camera } from "lucide-react";
 import { physicians } from "@/data/physicians";
 import { locations } from "@/data/content";
 
@@ -47,6 +47,19 @@ function toggle(arr: string[], val: string) {
   return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
 }
 
+function fileToBase64(file: File): Promise<{ base64: string; mimeType: string }> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(",")[1] || "";
+      resolve({ base64, mimeType: file.type || "image/jpeg" });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 // Loads /logo.png and returns a base64 PNG + its natural aspect ratio,
 // so the PDF logo scales correctly without distortion.
 function loadLogo(url: string): Promise<{ dataUrl: string; ratio: number } | null> {
@@ -75,8 +88,26 @@ export default function ReferralCentre() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [freeText, setFreeText] = useState("");
   const [autofilling, setAutofilling] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scannedFileName, setScannedFileName] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const applyAutofillResult = (data: any) => {
+    setForm((f) => ({
+      ...f,
+      patientName: data.patientName || f.patientName,
+      patientPhone: data.patientPhone || f.patientPhone,
+      referringPhysician: data.referringPhysician || f.referringPhysician,
+      referringPhone: data.referringPhone || f.referringPhone,
+      referringAddress: data.referringAddress || f.referringAddress,
+      urgency: data.urgency || f.urgency,
+      specialties: Array.isArray(data.specialties) ? data.specialties.filter((s: string) => SPECIALTIES.includes(s)) : f.specialties,
+      exams: Array.isArray(data.exams) ? data.exams.filter((e: string) => DIAGNOSTIC_EXAMS.includes(e)) : f.exams,
+      clinicalNotes: data.clinicalNotes || f.clinicalNotes,
+    }));
+  };
 
   const runAutofill = async () => {
     if (freeText.trim().length < 10) return;
@@ -90,18 +121,39 @@ export default function ReferralCentre() {
       });
       if (!res.ok) throw new Error("failed");
       const data = await res.json();
-      setForm((f) => ({
-        ...f,
-        patientName: data.patientName || f.patientName,
-        urgency: data.urgency || f.urgency,
-        specialties: Array.isArray(data.specialties) ? data.specialties.filter((s: string) => SPECIALTIES.includes(s)) : f.specialties,
-        exams: Array.isArray(data.exams) ? data.exams.filter((e: string) => DIAGNOSTIC_EXAMS.includes(e)) : f.exams,
-        clinicalNotes: data.clinicalNotes || f.clinicalNotes,
-      }));
+      applyAutofillResult(data);
     } catch {
       setError("Auto-fill failed. Please fill the form manually below.");
     } finally {
       setAutofilling(false);
+    }
+  };
+
+  const handleScanFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      setError("That photo is a bit large — try again with a smaller image or better lighting to reduce file size.");
+      return;
+    }
+    setScanning(true);
+    setError(null);
+    setScannedFileName(file.name);
+    try {
+      const { base64, mimeType } = await fileToBase64(file);
+      const res = await fetch("/api/referral-autofill", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: base64, mimeType }),
+      });
+      if (!res.ok) throw new Error("failed");
+      const data = await res.json();
+      applyAutofillResult(data);
+    } catch {
+      setError("Couldn't read that photo. Try a clearer, well-lit shot of the referral document.");
+    } finally {
+      setScanning(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
@@ -114,10 +166,9 @@ export default function ReferralCentre() {
       const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 40;
 
-      // ANRA brand palette (from tailwind.config.ts)
-      const GOLD: [number, number, number] = [201, 162, 39];      // gold-500
-      const GOLD_DARK: [number, number, number] = [158, 128, 31]; // gold-600
-      const GOLD_LIGHT: [number, number, number] = [240, 225, 178]; // gold-200
+      const GOLD: [number, number, number] = [201, 162, 39];
+      const GOLD_DARK: [number, number, number] = [158, 128, 31];
+      const GOLD_LIGHT: [number, number, number] = [240, 225, 178];
       const GRAPHITE_900: [number, number, number] = [30, 28, 24];
       const GRAPHITE_700: [number, number, number] = [92, 86, 74];
       const GRAPHITE_500: [number, number, number] = [150, 141, 123];
@@ -136,7 +187,6 @@ export default function ReferralCentre() {
         }
       };
 
-      // ---------- Header bar ----------
       doc.setFillColor(...GRAPHITE_900);
       doc.rect(0, 0, pageWidth, 68, "F");
       doc.setTextColor(...GOLD);
@@ -144,7 +194,6 @@ export default function ReferralCentre() {
       doc.setFontSize(22);
       doc.text("Referral", pageWidth / 2, 43, { align: "center" });
 
-      // ---------- Locations + logo row (fixed column slots, no overlap) ----------
       const addrColWidth = 160;
       const logoSlotWidth = 120;
       const rowY = 88;
@@ -153,34 +202,20 @@ export default function ReferralCentre() {
       doc.setFontSize(8.5);
       doc.setTextColor(...GRAPHITE_700);
       if (locations[0]) {
-        doc.text(
-          [locations[0].address, `T ${locations[0].phone}  F ${locations[0].fax}`],
-          margin,
-          rowY,
-          { maxWidth: addrColWidth }
-        );
+        doc.text([locations[0].address, `T ${locations[0].phone}  F ${locations[0].fax}`], margin, rowY, { maxWidth: addrColWidth });
       }
       if (locations[1]) {
-        doc.text(
-          [locations[1].address, `T ${locations[1].phone}  F ${locations[1].fax}`],
-          pageWidth - margin,
-          rowY,
-          { align: "right", maxWidth: addrColWidth }
-        );
+        doc.text([locations[1].address, `T ${locations[1].phone}  F ${locations[1].fax}`], pageWidth - margin, rowY, { align: "right", maxWidth: addrColWidth });
       }
 
       const logo = await loadLogo("/logo.png");
       if (logo) {
         let logoH = 44;
         let logoW = logoH * logo.ratio;
-        if (logoW > logoSlotWidth) {
-          logoW = logoSlotWidth;
-          logoH = logoW / logo.ratio;
-        }
+        if (logoW > logoSlotWidth) { logoW = logoSlotWidth; logoH = logoW / logo.ratio; }
         doc.addImage(logo.dataUrl, "PNG", pageWidth / 2 - logoW / 2, 76, logoW, logoH);
       }
 
-      // ---------- Patient / Referring boxes ----------
       const boxY = 158;
       const boxH = 100;
       const boxW = (pageWidth - margin * 2 - 20) / 2;
@@ -199,10 +234,7 @@ export default function ReferralCentre() {
         doc.setFontSize(9.5);
         doc.setTextColor(...GRAPHITE_900);
         let ly = boxY + 42;
-        lines.forEach((line) => {
-          doc.text(line, x + 14, ly);
-          ly += 16;
-        });
+        lines.forEach((line) => { doc.text(line, x + 14, ly); ly += 16; });
       };
 
       drawInfoBox(margin, "PATIENT INFORMATION", [
@@ -219,7 +251,6 @@ export default function ReferralCentre() {
       doc.setTextColor(...GRAPHITE_500);
       doc.text(`Date: ${new Date().toLocaleDateString()}`, margin + boxW + boxGap + 14, boxY + 90);
 
-      // ---------- Urgency ----------
       let y = boxY + boxH + 34;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
@@ -238,7 +269,6 @@ export default function ReferralCentre() {
         doc.text(u, x + 13, y);
       });
 
-      // ---------- Column headers ----------
       y += 34;
       const colGap = 20;
       const colW = (pageWidth - margin * 2 - colGap) / 2;
@@ -258,7 +288,6 @@ export default function ReferralCentre() {
       const listStartY = y + headerH + 20;
       const rowHeight = 13.5;
 
-      // ---------- Left column: specialties, physicians, notes ----------
       let leftY = listStartY;
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9);
@@ -289,7 +318,6 @@ export default function ReferralCentre() {
       const notesLines = doc.splitTextToSize(form.clinicalNotes || "—", colW);
       doc.text(notesLines, colLeftX, leftY);
 
-      // ---------- Right column: full diagnostic exam checklist ----------
       let rightY = listStartY;
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
@@ -302,7 +330,6 @@ export default function ReferralCentre() {
         rightY += lineHeight * lines.length + 3;
       });
 
-      // ---------- Footer bar ----------
       const footerH = 30;
       doc.setFillColor(...GRAPHITE_900);
       doc.rect(0, pageHeight - footerH, pageWidth, footerH, "F");
@@ -332,7 +359,7 @@ export default function ReferralCentre() {
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pb-16 space-y-6">
-        {/* Automatic referral — AI pre-fill from free text */}
+        {/* Automatic referral — AI pre-fill from free text OR scanned photo */}
         <div className="glass rounded-3xl p-6">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles size={16} className="text-gold-600" />
@@ -343,16 +370,40 @@ export default function ReferralCentre() {
             onChange={(e) => setFreeText(e.target.value)}
             rows={3}
             placeholder="Describe the patient and reason for referral in plain text — e.g. 'Chuks, chest pain for two weeks, needs urgent cardiology consult and an ECG.'"
-            className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-[#e8e4d5] text-black outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3"
+            className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3"
           />
-          <button
-            onClick={runAutofill}
-            disabled={freeText.trim().length < 10 || autofilling}
-            className="gold-gloss px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
-          >
-            {autofilling ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-            {autofilling ? "Filling form…" : "Auto-fill form below"}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={runAutofill}
+              disabled={freeText.trim().length < 10 || autofilling}
+              className="gold-gloss px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
+            >
+              {autofilling ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+              {autofilling ? "Filling form…" : "Auto-fill from text"}
+            </button>
+
+            <span className="text-xs text-graphite-400">or</span>
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={scanning}
+              className="border border-pearl-300 text-graphite-600 px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
+            >
+              {scanning ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} className="text-gold-600" />}
+              {scanning ? "Reading photo…" : "Scan a referral photo"}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleScanFile}
+              className="hidden"
+            />
+          </div>
+          {scannedFileName && !scanning && !error && (
+            <p className="text-xs text-graphite-400 mt-2">Scanned: {scannedFileName} — form updated below.</p>
+          )}
           {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
         </div>
 
