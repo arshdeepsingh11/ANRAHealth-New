@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import Link from "next/link";
-import { ArrowLeft, Download, Sparkles, Loader2, Camera } from "lucide-react";
+import { ArrowLeft, Download, Sparkles, Loader2, Camera, ClipboardCheck, CheckCircle2 } from "lucide-react";
 import { physicians } from "@/data/physicians";
 import { locations } from "@/data/content";
 
@@ -44,6 +44,13 @@ const EMPTY_FORM: FormState = {
 };
 
 type FillMethod = "manual" | "automatic" | "scan";
+
+interface VisitPrepResult {
+  whatToBring: string[];
+  whatToExpect: string;
+  prepTips: string[];
+  estimatedDuration: string;
+}
 
 function toggle(arr: string[], val: string) {
   return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
@@ -99,6 +106,11 @@ export default function ReferralCentre() {
   // Tracks how the form was last filled, so we can log which flow the
   // patient/staff actually used when the PDF is generated.
   const [fillMethod, setFillMethod] = useState<FillMethod>("manual");
+
+  // AI Visit-Prep Summary state
+  const [visitPrep, setVisitPrep] = useState<VisitPrepResult | null>(null);
+  const [visitPrepLoading, setVisitPrepLoading] = useState(false);
+  const [visitPrepError, setVisitPrepError] = useState<string | null>(null);
 
   const applyAutofillResult = (data: any) => {
     setForm((f) => ({
@@ -185,6 +197,30 @@ export default function ReferralCentre() {
         sourceText: fillMethod === "automatic" ? freeText : fillMethod === "scan" ? scannedFileName : undefined,
       }),
     }).catch(() => {});
+  };
+
+  const runVisitPrep = async () => {
+    setVisitPrepLoading(true);
+    setVisitPrepError(null);
+    try {
+      const res = await fetch("/api/visit-prep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          specialties: form.specialties,
+          exams: form.exams,
+          urgency: form.urgency,
+          clinicalNotes: form.clinicalNotes,
+        }),
+      });
+      if (!res.ok) throw new Error("failed");
+      const data = await res.json();
+      setVisitPrep(data);
+    } catch {
+      setVisitPrepError("Couldn't generate a visit prep guide right now. Please try again.");
+    } finally {
+      setVisitPrepLoading(false);
+    }
   };
 
   const generatePdf = async () => {
@@ -503,16 +539,73 @@ export default function ReferralCentre() {
             className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
           />
 
-          <button
-            onClick={generatePdf}
-            disabled={generating || !form.patientName}
-            className="gold-gloss px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
-          >
-            {generating ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-            {generating ? "Generating…" : "Download Referral PDF"}
-          </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={generatePdf}
+              disabled={generating || !form.patientName}
+              className="gold-gloss px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
+            >
+              {generating ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+              {generating ? "Generating…" : "Download Referral PDF"}
+            </button>
+
+            <button
+              onClick={runVisitPrep}
+              disabled={visitPrepLoading || form.specialties.length === 0}
+              className="border border-pearl-300 text-graphite-600 px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
+            >
+              {visitPrepLoading ? <Loader2 size={14} className="animate-spin" /> : <ClipboardCheck size={14} className="text-gold-600" />}
+              {visitPrepLoading ? "Preparing…" : "Get My Visit Prep Guide"}
+            </button>
+          </div>
           <p className="text-xs text-graphite-400">Email/fax sending isn't configured yet — download and send the PDF manually for now.</p>
+          {form.specialties.length === 0 && (
+            <p className="text-xs text-graphite-400">Select at least one specialty above to get a visit prep guide.</p>
+          )}
+          {visitPrepError && <p className="text-sm text-red-600">{visitPrepError}</p>}
         </div>
+
+        {/* AI Visit-Prep Summary result */}
+        {visitPrep && (
+          <div className="glass rounded-3xl p-6 space-y-5">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck size={16} className="text-gold-600" />
+              <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">What to Expect at Your Appointment</p>
+            </div>
+
+            <p className="text-sm leading-relaxed text-graphite-800">{visitPrep.whatToExpect}</p>
+
+            {visitPrep.estimatedDuration && (
+              <p className="text-xs text-graphite-500">Estimated visit length: <span className="font-semibold text-graphite-700">{visitPrep.estimatedDuration}</span></p>
+            )}
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-2">What to Bring</p>
+              <ul className="space-y-1.5">
+                {visitPrep.whatToBring.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-graphite-700">
+                    <CheckCircle2 size={14} className="text-gold-500 mt-0.5 shrink-0" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {visitPrep.prepTips.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-2">Preparation Tips</p>
+                <ul className="space-y-1.5">
+                  {visitPrep.prepTips.map((tip) => (
+                    <li key={tip} className="flex items-start gap-2 text-sm text-graphite-700">
+                      <CheckCircle2 size={14} className="text-gold-500 mt-0.5 shrink-0" /> {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p className="text-xs text-graphite-400 pt-2 border-t border-pearl-200">This is general guidance to help you prepare — your care team will give any specific instructions when you book.</p>
+          </div>
+        )}
       </div>
     </div>
   );
