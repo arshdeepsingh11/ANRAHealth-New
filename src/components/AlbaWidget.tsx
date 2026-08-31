@@ -18,10 +18,38 @@ const ROUTES: { match: RegExp; href: string; label: string }[] = [
   { match: /contact|book an appointment/i, href: "/contact", label: "Open Contact" },
 ];
 
+// Tailors ALBA's opening line based on the page the person is currently on,
+// so the greeting feels relevant instead of generic everywhere.
+function greetingForPath(pathname: string): string {
+  if (pathname.startsWith("/specialties/cardiology")) {
+    return "Hi, I'm ALBA. I see you're looking at Cardiology — ask me about heart symptoms, our cardiologists, or how to book a consult.";
+  }
+  if (pathname.startsWith("/specialties/respiratory-medicine")) {
+    return "Hi, I'm ALBA. I see you're looking at Respiratory Medicine — ask me about sleep studies, CPAP, or breathing concerns.";
+  }
+  if (pathname.startsWith("/specialties/skin-health")) {
+    return "Hi, I'm ALBA. I see you're looking at Skin Health — ask me about treatments, concerns, or how to book with Nea Precision Skin.";
+  }
+  if (pathname.startsWith("/referral-centre")) {
+    return "Hi, I'm ALBA. Need help with a referral? Ask me about the auto-fill options, urgency levels, or what to bring.";
+  }
+  if (pathname.startsWith("/longevity")) {
+    return "Hi, I'm ALBA. Curious about longevity and preventive health? Ask me anything, or try the Health Risk Assessment above.";
+  }
+  if (pathname.startsWith("/lab-results")) {
+    return "Hi, I'm ALBA. Just looked at a lab result explanation? I can help clarify anything or point you toward booking a consult.";
+  }
+  if (pathname.startsWith("/resources")) {
+    return "Hi, I'm ALBA. Looking for test prep, condition info, or forms? Ask me and I'll point you in the right direction.";
+  }
+  return "Hi, I'm ALBA — ANRA Health's AI companion. Ask me about our services, physicians, locations, or how to book.";
+}
+
 function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React.RefObject<HTMLDivElement> }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", text: "Hi, I'm ALBA — ANRA Health's AI companion. Ask me about our services, physicians, locations, or how to book." },
+    { role: "assistant", text: greetingForPath(pathname || "/") },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -72,7 +100,11 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: next.map((m) => ({ role: m.role, text: m.text })) }),
+        body: JSON.stringify({
+          message: text,
+          history: next.map((m) => ({ role: m.role, text: m.text })),
+          pageContext: pathname || "/",
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "failed");

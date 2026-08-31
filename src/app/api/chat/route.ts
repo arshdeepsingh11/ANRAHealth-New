@@ -1,6 +1,7 @@
-// Next.js Route Handler — replaces the old Vercel serverless function at
-// /api/chat.js. Runs the same way whether deployed on your own server or
-// anywhere else Next.js runs; no Vercel-specific config needed.
+// Next.js Route Handler — /api/chat, powers the ALBA widget.
+// Now context-aware: accepts an optional "pageContext" label so ALBA's
+// tone and suggestions can lean toward whatever section of the site
+// the person is currently viewing.
 // Set GEMINI_API_KEY in your server's environment (.env.local for local dev,
 // your process manager / Docker env for production). Never expose it client-side.
 
@@ -43,7 +44,30 @@ ${faqsText}
 `.trim();
 }
 
-const SYSTEM_PROMPT = `You are the website assistant for ${brand.name}, a cardiology and internal medicine clinic in Calgary, Alberta. You also act as a booking guide: when it's helpful, you suggest a relevant service, physician, or next step as a clickable card in addition to your normal reply.
+// Maps a pathname to a short, human-readable label describing what section
+// of the site the person is currently viewing. Falls back to a generic
+// label for anything not explicitly listed.
+function pageContextLabel(pathname: string | undefined): string {
+  if (!pathname) return "the ANRA Health website";
+  if (pathname === "/") return "the ANRA Health homepage";
+  if (pathname.startsWith("/specialties/cardiology")) return "the Cardiology specialty page";
+  if (pathname.startsWith("/specialties/respiratory-medicine")) return "the Respiratory Medicine specialty page (partner: Advanced Respiratory Care Network — sleep, oxygen, respiratory diagnostics)";
+  if (pathname.startsWith("/specialties/skin-health")) return "the Skin Health specialty page (partner: Nea Precision Skin)";
+  if (pathname.startsWith("/specialties")) return "the Medical Specialties overview page";
+  if (pathname.startsWith("/referral-centre")) return "the Referral Centre page";
+  if (pathname.startsWith("/longevity")) return "the Longevity & Health Risk Assessment page";
+  if (pathname.startsWith("/lab-results")) return "the Lab Result Explainer page";
+  if (pathname.startsWith("/resources")) return "the Patient Resources page";
+  if (pathname.startsWith("/contact")) return "the Contact page";
+  return "the ANRA Health website";
+}
+
+function buildSystemPrompt(pathname: string | undefined) {
+  const context = pageContextLabel(pathname);
+
+  return `You are the website assistant for ${brand.name}, a cardiology and internal medicine clinic in Calgary, Alberta. You also act as a booking guide: when it's helpful, you suggest a relevant service, physician, or next step as a clickable card in addition to your normal reply.
+
+CURRENT PAGE CONTEXT: The person is currently viewing ${context}. When natural, lean your answers and suggestions toward what's most relevant to this section of the site — but still answer any question they actually ask, even if it's about a different part of the clinic.
 
 STRICT RULES — follow these exactly:
 1. Only answer questions about ${brand.name}: its services, physicians, locations, hours, appointments, cardiac symptoms, and FAQs, using ONLY the information provided below.
@@ -70,6 +94,7 @@ If no suggestions are appropriate for this message, use an empty array.
 
 CLINIC INFORMATION:
 ${buildKnowledgeBase()}`;
+}
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -79,7 +104,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { message, history = [] } = body || {};
+  const { message, history = [], pageContext } = body || {};
   if (!message || typeof message !== "string") {
     return NextResponse.json({ error: "Missing message" }, { status: 400 });
   }
@@ -104,7 +129,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          system_instruction: { parts: [{ text: buildSystemPrompt(pageContext) }] },
           contents,
           generationConfig: {
             temperature: 0.3,
