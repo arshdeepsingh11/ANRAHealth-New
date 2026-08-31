@@ -50,6 +50,8 @@ export default function Navbar() {
 
   // Pages that use the new ANRA design system render their own chrome
   // (back arrow + tabs), so the legacy navbar must not appear on them.
+  // /admin is also excluded — it's an internal, password-gated tool and
+  // should never show the public site's navbar or branding chrome.
   const hideNavbar =
     pathname === "/" ||
     pathname.startsWith("/specialties") ||
@@ -57,7 +59,9 @@ export default function Navbar() {
     pathname === "/contact" ||
     pathname === "/locations" ||
     pathname === "/resources" ||
-    pathname === "/longevity";
+    pathname === "/longevity" ||
+    pathname === "/lab-results" ||
+    pathname.startsWith("/admin");
 
   const navItems = [
     { label: "About", to: "/about" },

@@ -51,6 +51,7 @@ export default function HealthGraph() {
   const openNode = (nodeId: string) => {
     const node = graphNodes.find((n) => n.id === nodeId)!;
     if (nodeId === "alba") return openAlba();
+    if (nodeId === "longevity") { window.location.href = "/longevity"; return; }
     if (node.standalone && node.children) {
       const c = node.children[0];
       return setView({ type: "preview", title: c.label, description: c.description });
