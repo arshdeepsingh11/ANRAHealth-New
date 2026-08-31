@@ -1,13 +1,15 @@
 // Next.js Route Handler — /api/chat, powers the ALBA widget.
-// Now context-aware: accepts an optional "pageContext" label so ALBA's
-// tone and suggestions can lean toward whatever section of the site
-// the person is currently viewing.
+// Context-aware (pageContext) and now logs every conversation + message
+// to the database. A conversationId is created on the first message and
+// reused for the rest of that chat session.
 // Set GEMINI_API_KEY in your server's environment (.env.local for local dev,
 // your process manager / Docker env for production). Never expose it client-side.
 
 import { NextRequest, NextResponse } from "next/server";
 import { brand, locations, services, faqs, cardiacSymptoms, languages } from "@/data/content";
 import { physicians } from "@/data/physicians";
+import { getOrCreateSessionId } from "@backend/session";
+import { startAlbaConversation, logAlbaMessage } from "@backend/logging";
 
 function buildKnowledgeBase() {
   const servicesText = services.map((s) => `- ${s.name}: ${s.long}`).join("\n");
@@ -44,9 +46,6 @@ ${faqsText}
 `.trim();
 }
 
-// Maps a pathname to a short, human-readable label describing what section
-// of the site the person is currently viewing. Falls back to a generic
-// label for anything not explicitly listed.
 function pageContextLabel(pathname: string | undefined): string {
   if (!pathname) return "the ANRA Health website";
   if (pathname === "/") return "the ANRA Health homepage";
@@ -104,7 +103,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { message, history = [], pageContext } = body || {};
+  const { message, history = [], pageContext, conversationId: incomingConversationId } = body || {};
   if (!message || typeof message !== "string") {
     return NextResponse.json({ error: "Missing message" }, { status: 400 });
   }
@@ -112,6 +111,19 @@ export async function POST(req: NextRequest) {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "Server not configured" }, { status: 500 });
+  }
+
+  // Set up (or reuse) the conversation record. Never let a logging failure
+  // block the actual chat — ALBA must keep working even if the DB is down.
+  let conversationId: string | undefined = incomingConversationId;
+  try {
+    const sessionId = await getOrCreateSessionId();
+    if (!conversationId) {
+      conversationId = await startAlbaConversation({ sessionId, pageContext });
+    }
+    await logAlbaMessage({ conversationId, role: "user", text: message });
+  } catch (logErr) {
+    console.error("Failed to log ALBA user message:", logErr);
   }
 
   try {
@@ -173,7 +185,15 @@ export async function POST(req: NextRequest) {
       ? parsed.reply.trim()
       : `Sorry, I couldn't generate a response. Please try again or call us at ${brand.phone}.`;
 
-    return NextResponse.json({ reply, suggestions });
+    try {
+      if (conversationId) {
+        await logAlbaMessage({ conversationId, role: "assistant", text: reply });
+      }
+    } catch (logErr) {
+      console.error("Failed to log ALBA assistant message:", logErr);
+    }
+
+    return NextResponse.json({ reply, suggestions, conversationId });
   } catch (err) {
     console.error("Chat handler error:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

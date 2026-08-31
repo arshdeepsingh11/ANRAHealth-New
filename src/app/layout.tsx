@@ -9,6 +9,7 @@ import AlbaWidget from "@/components/AlbaWidget";
 import AlbaFactPopup from "@/components/AlbaFactPopup";
 import PersistentActions from "@/components/PersistentActions";
 import ParticleField from "@/components/ParticleField";
+import PageVisitTracker from "@/components/PageVisitTracker";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -26,9 +27,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
-      <body className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-pearl-600 text-graphite-900 overflow-x-hidden`}>
+      <body className={`${spaceGrotesk.variable} ${manrope.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-pearl-300 text-graphite-900 overflow-x-hidden`}>
         <LanguageProvider>
           <AlbaProvider>
+            <PageVisitTracker />
             <ParticleField color="153, 164, 85" />
             <Navbar />
             {children}

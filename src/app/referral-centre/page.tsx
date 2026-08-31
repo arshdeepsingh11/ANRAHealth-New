@@ -43,6 +43,8 @@ const EMPTY_FORM: FormState = {
   exams: [], clinicalNotes: "",
 };
 
+type FillMethod = "manual" | "automatic" | "scan";
+
 function toggle(arr: string[], val: string) {
   return arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val];
 }
@@ -94,6 +96,10 @@ export default function ReferralCentre() {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Tracks how the form was last filled, so we can log which flow the
+  // patient/staff actually used when the PDF is generated.
+  const [fillMethod, setFillMethod] = useState<FillMethod>("manual");
+
   const applyAutofillResult = (data: any) => {
     setForm((f) => ({
       ...f,
@@ -122,6 +128,7 @@ export default function ReferralCentre() {
       if (!res.ok) throw new Error("failed");
       const data = await res.json();
       applyAutofillResult(data);
+      setFillMethod("automatic");
     } catch {
       setError("Auto-fill failed. Please fill the form manually below.");
     } finally {
@@ -149,12 +156,35 @@ export default function ReferralCentre() {
       if (!res.ok) throw new Error("failed");
       const data = await res.json();
       applyAutofillResult(data);
+      setFillMethod("scan");
     } catch {
       setError("Couldn't read that photo. Try a clearer, well-lit shot of the referral document.");
     } finally {
       setScanning(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  };
+
+  const logSubmission = () => {
+    // Fire-and-forget — never block or delay the PDF download for this.
+    fetch("/api/log-referral", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: fillMethod,
+        patientName: form.patientName,
+        patientPhone: form.patientPhone,
+        referringPhysician: form.referringPhysician,
+        referringPhone: form.referringPhone,
+        referringAddress: form.referringAddress,
+        urgency: form.urgency,
+        specialties: form.specialties,
+        physicianSlugs: form.physicianSlugs,
+        exams: form.exams,
+        clinicalNotes: form.clinicalNotes,
+        sourceText: fillMethod === "automatic" ? freeText : fillMethod === "scan" ? scannedFileName : undefined,
+      }),
+    }).catch(() => {});
   };
 
   const generatePdf = async () => {
@@ -339,6 +369,8 @@ export default function ReferralCentre() {
       doc.text("Please fax completed form - we will call the patient to book", margin, pageHeight - footerH / 2 + 3);
       doc.text("www.anrahealth.ca", pageWidth - margin, pageHeight - footerH / 2 + 3, { align: "right" });
 
+      logSubmission();
+
       doc.save(`ANRA-Referral-${form.patientName || "patient"}.pdf`);
     } finally {
       setGenerating(false);
@@ -412,7 +444,7 @@ export default function ReferralCentre() {
           <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">Manual Referral</p>
 
           <div className="grid sm:grid-cols-2 gap-4">
-            <input placeholder="Patient Name" value={form.patientName} onChange={(e) => setForm({ ...form, patientName: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
+            <input placeholder="Patient Name" value={form.patientName} onChange={(e) => { setForm({ ...form, patientName: e.target.value }); setFillMethod("manual"); }} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
             <input placeholder="Patient Phone" value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
             <input placeholder="Referring Physician Name" value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />
             <input placeholder="Referring Physician Phone" value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500" />

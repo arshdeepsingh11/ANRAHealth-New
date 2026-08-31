@@ -59,6 +59,10 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
   const [speakReplies, setSpeakReplies] = useState(true);
   const endRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  // Tracks the current logged conversation on the server. Set on the first
+  // reply and reused for every subsequent message in this widget session,
+  // so the whole chat is grouped together in the database.
+  const conversationIdRef = useRef<string | null>(null);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
 
@@ -104,10 +108,12 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
           message: text,
           history: next.map((m) => ({ role: m.role, text: m.text })),
           pageContext: pathname || "/",
+          conversationId: conversationIdRef.current,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "failed");
+      if (data.conversationId) conversationIdRef.current = data.conversationId;
       setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
       speak(data.reply);
       const combined = `${text} ${data.reply}`;
