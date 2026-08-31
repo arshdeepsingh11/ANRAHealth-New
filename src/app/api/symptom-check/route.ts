@@ -1,10 +1,13 @@
 // Companion to /api/chat. Handles free-text symptom descriptions and returns
-// a structured, non-diagnostic triage suggestion. Now supports multiple
+// a structured, non-diagnostic triage suggestion. Supports multiple
 // specialty contexts (cardiology, respiratory) via a "specialty" field.
+// Every check is now logged to the database via backend/logging.ts.
 // Set GEMINI_API_KEY in your server environment (same key /api/chat uses).
 
 import { NextRequest, NextResponse } from "next/server";
 import { brand } from "@/data/content";
+import { getOrCreateSessionId } from "@backend/session";
+import { logSymptomCheck } from "@backend/logging";
 
 type Specialty = "cardiology" | "respiratory";
 
@@ -126,6 +129,22 @@ export async function POST(req: NextRequest) {
             ? parsed.summary.trim()
             : "Based on what you shared, we'd recommend booking a consultation so our team can take a closer look."),
     };
+
+    // Log this check to the database — failures here never block the response.
+    try {
+      const sessionId = await getOrCreateSessionId();
+      await logSymptomCheck({
+        specialty,
+        description,
+        emergency: result.emergency,
+        urgency: result.urgency,
+        recommendedDiscipline: result.recommendedDiscipline,
+        summary: result.summary,
+        sessionId,
+      });
+    } catch (logErr) {
+      console.error("Failed to log symptom check:", logErr);
+    }
 
     return NextResponse.json(result);
   } catch (err) {

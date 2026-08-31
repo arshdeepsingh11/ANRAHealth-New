@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model PageVisit {
+  id        String   @id @default(cuid())
+  path      String
+  sessionId String
+  userAgent String?
+  referrer  String?
+  createdAt DateTime @default(now())
+
+  @@index([path])
+  @@index([sessionId])
+}
+
+model ReferralSubmission {
+  id                 String   @id @default(cuid())
+  type               String
+  patientName        String?
+  patientPhone       String?
+  referringPhysician String?
+  referringPhone     String?
+  referringAddress   String?
+  urgency            String?
+  specialties        String?
+  physicianSlugs     String?
+  exams              String?
+  clinicalNotes      String?
+  sourceText         String?
+  sessionId          String
+  createdAt          DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model SymptomCheckLog {
+  id                    String   @id @default(cuid())
+  specialty             String
+  description           String
+  emergency             Boolean
+  urgency               String
+  recommendedDiscipline String
+  summary               String
+  sessionId             String
+  createdAt             DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model AlbaConversation {
+  id          String        @id @default(cuid())
+  sessionId   String
+  pageContext String?
+  createdAt   DateTime      @default(now())
+  messages    AlbaMessage[]
+
+  @@index([sessionId])
+}
+
+model AlbaMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   AlbaConversation @relation(fields: [conversationId], references: [id])
+  role           String
+  text           String
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
+}
+
+model LongevityAssessment {
+  id                String   @id @default(cuid())
+  answers           String
+  summary           String
+  focusAreas        String
+  suggestedNextStep String
+  sessionId         String
+  createdAt         DateTime @default(now())
+
+  @@index([sessionId])
+}
+
+model LabResultCheck {
+  id             String   @id @default(cuid())
+  inputType      String
+  overallSummary String
+  results        String
+  sessionId      String
+  createdAt      DateTime @default(now())
+
+  @@index([sessionId])
+}
