@@ -5,20 +5,21 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 17px; /* slightly larger base — bumps all rem-based text site-wide */
 }
 
 body {
-  color: #f1ecdc;
+  color: #546055;
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #99a455;
-  color: #14160f;
+  background: #6ea8b6;
+  color: #ffffff;
 }
 
 :focus-visible {
-  outline: 2px solid #99a455;
+  outline: 2px solid #6ea8b6;
   outline-offset: 2px;
 }
 
@@ -39,30 +40,30 @@ body {
 }
 .card-hover:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 40px rgba(153, 164, 85, 0.22);
+  box-shadow: 0 20px 40px rgba(101, 113, 102, 0.18);
 }
 
-/* ── BRAND v4 — Olive / Cream glassmorphism (dark base) ──────────── */
+/* ── BRAND v5 — "Glacier": light, cool, premium glassmorphism ────── */
 .glass {
-  background: rgba(31, 34, 24, 0.82);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(153, 164, 85, 0.22);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(110, 168, 182, 0.3);
+  box-shadow: 0 8px 32px rgba(101, 113, 102, 0.12);
 }
 
 .glass-nav {
-  background: rgba(20, 22, 15, 0.78);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(153, 164, 85, 0.18);
+  border-bottom: 1px solid rgba(110, 168, 182, 0.25);
 }
 
 .gold-gloss {
-  background: linear-gradient(135deg, #dbe49b 0%, #99a455 45%, #5f6935 100%);
+  background: linear-gradient(135deg, #8fc4d0 0%, #6ea8b6 45%, #3f6f7c 100%);
   position: relative;
   overflow: hidden;
-  color: #14160f;
+  color: #ffffff;
 }
 .gold-gloss::after {
   content: "";
@@ -71,7 +72,7 @@ body {
   background: linear-gradient(
     120deg,
     transparent 20%,
-    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.45) 45%,
     transparent 70%
   );
   background-size: 200% 100%;
@@ -79,7 +80,7 @@ body {
 }
 
 .ecg-draw {
-  stroke: #99a455;
+  stroke: #3f6f7c;
   stroke-dasharray: 1000;
   stroke-dashoffset: 1000;
   animation: pulseWave 2.4s linear infinite;

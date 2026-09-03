@@ -20,10 +20,10 @@ interface GlowConnectorProps {
 export default function GlowConnector({
   x1, y1, x2, y2,
   curve = 40,
-  color = "#99a455",
+  color = "#5E93B8",
   delay = 0,
   strokeWidth = 2,
-  baseOpacity = 0.18,
+  baseOpacity = 0.42, // base connector opacity per Glacier spec — pass 0.75 for an "open branch"
   dashLength = 6,
   gapLength = 220,
   duration = 3.2,
@@ -55,6 +55,7 @@ export default function GlowConnector({
         style={{
           animation: `glowDash-${id} ${duration}s linear infinite`,
           animationDelay: `${delay}s`,
+          filter: "drop-shadow(0 0 6px rgba(140,111,184,0.75))",
         }}
       />
       <style jsx>{`

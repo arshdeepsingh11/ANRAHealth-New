@@ -13,7 +13,7 @@ interface Particle {
   baseAlpha: number;
 }
 
-export default function ParticleField({ color = "153, 164, 85" }: { color?: string }) {
+export default function ParticleField({ color = "120, 96, 164" }: { color?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function ParticleField({ color = "153, 164, 85" }: { color?: stri
         wobble: (Math.random() - 0.5) * 0.16,
         wobblePhase: Math.random() * Math.PI * 2,
         twinklePhase: Math.random() * Math.PI * 2,
-        baseAlpha: 0.12 + Math.random() * 0.5,
+        baseAlpha: 0.16 + Math.random() * 0.55, // 0.16–0.71, per Glacier spec
       };
     }
 
@@ -52,7 +52,8 @@ export default function ParticleField({ color = "153, 164, 85" }: { color?: stri
       ctx!.setTransform(1, 0, 0, 1, 0, 0);
       ctx!.scale(dpr, dpr);
 
-      const count = Math.min(220, Math.floor((width * height) / 5200));
+      // Higher density than before — "more particles" per Glacier direction
+      const count = Math.min(320, Math.floor((width * height) / 3800));
       particles = Array.from({ length: count }, makeParticle);
     }
 
@@ -72,6 +73,9 @@ export default function ParticleField({ color = "153, 164, 85" }: { color?: stri
         ctx!.beginPath();
         ctx!.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx!.fillStyle = `rgba(${color}, ${alpha.toFixed(3)})`;
+        // Soft glow around each dot — "good glowing" per Glacier direction
+        ctx!.shadowBlur = 5;
+        ctx!.shadowColor = `rgba(${color}, ${(alpha * 0.8).toFixed(3)})`;
         ctx!.fill();
       }
       animationId = requestAnimationFrame(frame);
