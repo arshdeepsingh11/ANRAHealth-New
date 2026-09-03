@@ -3,20 +3,25 @@ import { brand } from "@/data/content";
 
 const SYSTEM_PROMPT = `You are a plain-language medical term explainer for ${brand.name}, a clinic in Calgary, Alberta.
 
-You are given a diagnosis name, medical term, or a snippet of doctor's notes that a patient found confusing — either typed as text, or shown in a photo of a document. Your job is to explain what it generally means in plain, everyday language — purely educational, based on general medical knowledge.
+You are given a diagnosis name, medical term, doctor's note, or a full health report/document — either as text, or as a photo/PDF. Your job is to find the actual diagnoses, conditions, or medical terms mentioned, and explain THOSE in plain language.
+
+CRITICAL RULE — DO NOT describe the document itself. Never say things like "this document is a summary of..." or "this report contains...". The person already knows what kind of document it is — they want to know what the actual medical terms inside it MEAN. Go straight to explaining the real diagnoses/conditions/terms you find.
 
 STRICT RULES:
-1. NEVER confirm, deny, or comment on whether this diagnosis applies correctly to the specific patient — you have no way to know that. You are only explaining what the term/diagnosis generally means.
+1. NEVER confirm, deny, or comment on whether a diagnosis correctly applies to this specific patient — you have no way to know that. You are only explaining what each term generally means.
 2. NEVER suggest medications, dosages, or specific treatment plans.
-3. You must respond with ONLY valid JSON, no markdown, no extra text, matching exactly this shape:
+3. If the input is a longer document or report, identify the 1-4 most significant diagnoses, conditions, or medical terms actually present, and explain each one individually. Ignore administrative details (names, dates, clinic info) — focus only on medical content.
+4. You must respond with ONLY valid JSON, no markdown, no extra text, matching exactly this shape:
 {
-  "plainExplanation": "two to three plain-language sentences explaining what this generally means",
-  "commonAspects": ["short bullet on what this typically involves day-to-day", "short bullet"],
+  "plainExplanation": "one or two sentences giving an overall plain-language summary of the main finding(s)",
+  "keyFindings": [
+    { "term": "the specific diagnosis/condition/term found", "explanation": "two to three plain-language sentences on what this term generally means" }
+  ],
   "commonQuestions": ["a common question patients ask about this, phrased as a question", "another common question"]
 }
-4. If the input is unclear, unreadable, not a real medical term, or too vague to explain, say so honestly in "plainExplanation" and leave the other arrays empty.
-5. Keep tone calm, warm, and reassuring — never alarming, never definitive about the patient's personal situation.
-6. Always write as if this is general information about the term, never as if you are reviewing this specific patient's case.`;
+5. If truly nothing identifiable as a medical term/diagnosis is found, say so honestly in "plainExplanation" and leave "keyFindings" and "commonQuestions" empty.
+6. Keep tone calm, warm, and reassuring — never alarming, never definitive about the patient's personal situation.
+7. Always write as general information about each term, never as if you are personally reviewing or confirming this patient's case.`;
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -43,7 +48,7 @@ export async function POST(req: NextRequest) {
     const parts: any[] = [];
     if (hasImage) {
       parts.push({ inline_data: { mime_type: mimeType || "image/jpeg", data: imageBase64 } });
-      parts.push({ text: "Explain the diagnosis or medical term shown in this photo." });
+      parts.push({ text: "Find the actual diagnoses, conditions, or medical terms in this document/photo and explain each one in plain language. Do not describe the document itself." });
     } else {
       parts.push({ text });
     }
@@ -56,7 +61,7 @@ export async function POST(req: NextRequest) {
         body: JSON.stringify({
           system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: "user", parts }],
-          generationConfig: { temperature: 0.3, maxOutputTokens: 500, responseMimeType: "application/json" },
+          generationConfig: { temperature: 0.3, maxOutputTokens: 800, responseMimeType: "application/json" },
         }),
       }
     );
@@ -77,11 +82,18 @@ export async function POST(req: NextRequest) {
       parsed = {};
     }
 
+    const keyFindings = Array.isArray(parsed.keyFindings)
+      ? parsed.keyFindings
+          .filter((f: any) => f && typeof f.term === "string" && typeof f.explanation === "string")
+          .slice(0, 4)
+          .map((f: any) => ({ term: f.term.trim(), explanation: f.explanation.trim() }))
+      : [];
+
     return NextResponse.json({
       plainExplanation: typeof parsed.plainExplanation === "string" && parsed.plainExplanation.trim()
         ? parsed.plainExplanation.trim()
-        : "We couldn't generate a clear explanation for that. Try rephrasing, or ask your doctor directly.",
-      commonAspects: Array.isArray(parsed.commonAspects) ? parsed.commonAspects.slice(0, 6) : [],
+        : "We couldn't identify a clear medical term to explain. Try pasting just the diagnosis name, or a clearer photo.",
+      keyFindings,
       commonQuestions: Array.isArray(parsed.commonQuestions) ? parsed.commonQuestions.slice(0, 5) : [],
     });
   } catch (err) {
