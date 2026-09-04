@@ -167,7 +167,7 @@ export default function LongevityPage() {
   };
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
@@ -225,7 +225,7 @@ export default function LongevityPage() {
                     value={sleepHours}
                     onChange={(e) => setSleepHours(e.target.value)}
                     placeholder="e.g. 7"
-                    className="w-32 px-4 py-2.5 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500"
+                    className="w-32 px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500"
                   />
                   <span className="text-xs text-graphite-500 ml-2">hours</span>
                 </div>
@@ -262,7 +262,7 @@ export default function LongevityPage() {
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
                     placeholder="e.g. I've been feeling more tired than usual lately."
-                    className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
                   />
                 </div>
 
@@ -354,7 +354,7 @@ export default function LongevityPage() {
                     onChange={(e) => setNutritionNotes(e.target.value)}
                     rows={3}
                     placeholder="e.g. I usually skip breakfast and eat most of my food later in the day."
-                    className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
                   />
                 </div>
 

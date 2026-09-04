@@ -40,7 +40,7 @@ const FACIAL_BODY = [
 
 function TreatmentModal({ item, onClose }: { item: { name: string; desc: string }; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(30,28,24,0.55)" }} onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(58,70,63,0.55)" }} onClick={onClose}>
       <div className="glass rounded-3xl w-full max-w-md p-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-xl font-bold text-graphite-900">{item.name}</h3>
@@ -57,7 +57,7 @@ export default function SkinHealthPage() {
   const [openItem, setOpenItem] = useState<{ name: string; desc: string } | null>(null);
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>

@@ -74,7 +74,7 @@ function PhysicianCard({ p, onOpen }: { p: Physician; onOpen: () => void }) {
 
 function PhysicianModal({ p, onClose }: { p: Physician; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(30,28,24,0.55)" }} onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(58,70,63,0.55)" }} onClick={onClose}>
       <div className="glass rounded-3xl w-full max-w-lg p-8 max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -161,7 +161,7 @@ export default function CardiologyPage() {
   };
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
       <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
@@ -180,7 +180,7 @@ export default function CardiologyPage() {
       <div className="max-w-5xl mx-auto px-6 pb-24">
         {tab === "Overview" && (
           <div className="space-y-8">
-            {/* Video hero with Dr. Kapoor's tagline */}
+            {/* Video hero with Dr. Kapoor's tagline — scrim kept dark intentionally, for text readability over the video */}
             <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px" }}>
               <video
                 src="/videos/cardiology-hero.mp4"
@@ -303,7 +303,7 @@ export default function CardiologyPage() {
                 onChange={(e) => setFreeTextConcern(e.target.value)}
                 rows={3}
                 placeholder="e.g. I get dizzy after meals and my heart races sometimes."
-                className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-4"
+                className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-4"
               />
               <div className="flex items-center gap-3">
                 <button
@@ -407,7 +407,7 @@ export default function CardiologyPage() {
       {selected && <PhysicianModal p={selected} onClose={() => setSelected(null)} />}
 
       {openService && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(30,28,24,0.55)" }} onClick={() => setOpenService(null)}>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: "rgba(58,70,63,0.55)" }} onClick={() => setOpenService(null)}>
           <div className="glass rounded-3xl w-full max-w-lg p-8 max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-xl font-bold text-graphite-900">{openService.name}</h3>
