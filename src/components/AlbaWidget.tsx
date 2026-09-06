@@ -129,7 +129,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
   return (
     <div
       ref={panelRef}
-      className="fixed bottom-6 right-6 z-[95] glass rounded-2xl overflow-hidden shadow-2xl flex flex-col w-[380px] h-[520px]"
+      className="fixed inset-x-0 bottom-0 md:inset-x-auto md:bottom-6 md:right-6 z-[95] glass overflow-hidden shadow-2xl flex flex-col w-full md:w-[380px] h-[85dvh] md:h-[520px] rounded-t-3xl md:rounded-2xl"
     >
       <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-pearl-200 shrink-0 gold-gloss">
         <div className="flex items-center gap-2.5">
@@ -174,7 +174,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
         <div ref={endRef} />
       </div>
 
-      <div className="flex items-center gap-1.5 px-3.5 py-2.5 border-t border-pearl-200 shrink-0">
+      <div className="flex items-center gap-1.5 px-3.5 py-2.5 border-t border-pearl-200 shrink-0" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
         <button
           onClick={toggleListening}
           disabled={!speechSupported}
@@ -234,7 +234,7 @@ export default function AlbaWidget() {
       {popIn && !isOpen && (
         <button
           onClick={openAlba}
-          className="fixed bottom-6 right-6 z-[80] w-16 h-16 rounded-full flex items-center justify-center shadow-glow bg-pearl-50 border border-gold-500/30"
+          className="fixed right-4 bottom-24 md:right-6 md:bottom-6 z-[80] w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-glow bg-pearl-50 border border-gold-500/30"
           style={{ animation: "albaPopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)" }}
           aria-label="Open ALBA"
         >

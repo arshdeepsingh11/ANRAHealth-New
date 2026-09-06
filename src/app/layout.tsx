@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", dmSans.variable)}>
       <body
-        className={`${dmSans.variable} ${jetbrainsMono.variable} font-sans min-h-screen text-graphite-900 overflow-x-hidden`}
+        className={`${dmSans.variable} ${jetbrainsMono.variable} font-sans min-h-screen text-graphite-900 overflow-x-hidden pb-24 md:pb-0`}
         style={{ background: "radial-gradient(125% 105% at 18% 0%, #F4E7FB 0%, #EFF1F6 45%, #DAEBE3 100%)" }}
       >
         <LanguageProvider>
