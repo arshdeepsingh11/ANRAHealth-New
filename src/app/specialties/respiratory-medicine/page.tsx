@@ -54,7 +54,7 @@ function RespiratoryVideoHero() {
   };
 
   return (
-    <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px" }}>
+    <div className="relative rounded-3xl overflow-hidden h-[220px] md:h-[460px]">
       <iframe
         ref={iframeRef}
         src="https://www.youtube.com/embed/EGvIyhiNohk?autoplay=1&mute=1&loop=1&playlist=EGvIyhiNohk&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1"
@@ -74,16 +74,16 @@ function RespiratoryVideoHero() {
         {muted ? <VolumeX size={16} className="text-graphite-900" /> : <Volume2 size={16} className="text-graphite-900" />}
       </button>
 
-      <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-12">
-        <p className="text-xs font-semibold tracking-widest uppercase mb-3 text-gold-300">Respiratory • Sleep • Allergy • Cardiac</p>
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight mb-3 max-w-2xl">Sleep Well. Breathe Easy. Live Better.</h2>
-        <p className="text-sm md:text-base text-white/85 max-w-xl leading-relaxed">
+      <div className="relative z-10 h-full flex flex-col justify-end p-5 md:p-12">
+        <p className="text-[10px] md:text-xs font-semibold tracking-widest uppercase mb-2 md:mb-3 text-gold-300">Respiratory • Sleep • Allergy • Cardiac</p>
+        <h2 className="text-xl md:text-5xl font-display font-bold text-white leading-tight mb-1 md:mb-3 max-w-2xl">Sleep Well. Breathe Easy. Live Better.</h2>
+        <p className="hidden md:block text-sm md:text-base text-white/85 max-w-xl leading-relaxed">
           In partnership with Advanced Respiratory Care Network — comprehensive respiratory, sleep, and oxygen care across Alberta.
         </p>
       </div>
 
       {/* Small, unobtrusive video source credit — bottom-left, per licensing agreement with the video owner */}
-      <p className="absolute bottom-2 left-3 z-20 text-[10px] text-white/50 tracking-wide">
+      <p className="hidden md:block absolute bottom-2 left-3 z-20 text-[10px] text-white/50 tracking-wide">
         Video courtesy of [CREATOR NAME HERE] — used with permission
       </p>
     </div>
@@ -96,19 +96,24 @@ export default function RespiratoryMedicinePage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
+      <div className="px-5 pt-5 md:hidden">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
+          <ArrowLeft size={15} /> Back to Main Page
+        </Link>
+      </div>
+      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
 
-      <div className="text-center pt-24 pb-6 px-6">
+      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Medical Specialties · Partner: Advanced Respiratory Care Network</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900">Respiratory Medicine</h1>
         <p className="text-sm text-graphite-500 mt-3 italic">"Sleep Well. Breathe Easy. Live Better." — Respiratory | Sleep | Allergy | Cardiac</p>
       </div>
 
-      <div className="flex justify-center flex-wrap gap-2 px-6 pb-10">
+      <div className="flex md:justify-center gap-2 px-6 pb-10 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
         ))}
       </div>
 

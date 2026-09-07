@@ -18,6 +18,14 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
       onComplete();
       return;
     }
+    // Mobile: ALBA is a full-width list row, not a small circle — the spotlight
+    // halo + "click on me" line was designed for the desktop graph and doesn't
+    // translate. Skip straight through on mobile.
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      sessionStorage.setItem(INTRO_KEY, "1");
+      onComplete();
+      return;
+    }
     setVisible(true);
     const t1 = setTimeout(() => setShowText(true), 500);
     const t2 = setTimeout(() => finish(), 500 + LINE.length * 26 + 1400);

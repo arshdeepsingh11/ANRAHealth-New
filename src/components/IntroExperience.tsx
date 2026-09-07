@@ -20,6 +20,8 @@ export default function IntroExperience() {
 
   const finish = () => {
     sessionStorage.setItem(SESSION_KEY, "1");
+    const video = videoRef.current;
+    if (video) { video.pause(); video.muted = true; }
     setFading(true);
     setTimeout(() => setVisible(false), 600);
   };
@@ -45,6 +47,7 @@ export default function IntroExperience() {
     return () => {
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("ended", finish);
+      video.pause();
     };
   }, [visible]);
 

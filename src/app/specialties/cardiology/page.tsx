@@ -162,18 +162,23 @@ export default function CardiologyPage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
+      <div className="px-5 pt-5 md:hidden">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
+          <ArrowLeft size={15} /> Back to Main Page
+        </Link>
+      </div>
+      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
 
-      <div className="text-center pt-24 pb-6 px-6">
+      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Medical Specialties</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900">Cardiology</h1>
       </div>
 
-      <div className="flex justify-center flex-wrap gap-2 px-6 pb-10">
+      <div className="flex md:justify-center gap-2 px-6 pb-10 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
         ))}
       </div>
 
@@ -181,20 +186,20 @@ export default function CardiologyPage() {
         {tab === "Overview" && (
           <div className="space-y-8">
             {/* Video hero with Dr. Kapoor's tagline — scrim kept dark intentionally, for text readability over the video */}
-            <div className="relative rounded-3xl overflow-hidden" style={{ height: "460px" }}>
+            <div className="relative rounded-3xl overflow-hidden h-[220px] md:h-[460px]">
               <video
                 src="/videos/cardiology-hero.mp4"
                 autoPlay muted loop playsInline
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0" style={{ background: "linear-gradient(0deg, rgba(30,28,24,0.88) 0%, rgba(30,28,24,0.5) 50%, rgba(30,28,24,0.25) 100%)" }} />
-              <div className="relative z-10 h-full flex flex-col justify-end p-8 md:p-12">
-                <p className="text-xs font-semibold tracking-widest uppercase mb-3 text-gold-300">Precision Medicine • AI-Assisted Care • Prevention • Longevity</p>
-                <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight mb-4 max-w-2xl">Healthcare Designed Around You</h2>
-                <p className="text-sm md:text-base text-white/85 max-w-xl leading-relaxed mb-6">
+              <div className="relative z-10 h-full flex flex-col justify-end p-5 md:p-12">
+                <p className="text-[10px] md:text-xs font-semibold tracking-widest uppercase mb-2 md:mb-3 text-gold-300">Precision Medicine • AI-Assisted Care • Prevention • Longevity</p>
+                <h2 className="text-xl md:text-5xl font-display font-bold text-white leading-tight mb-1 md:mb-4 max-w-2xl">Healthcare Designed Around You</h2>
+                <p className="hidden md:block text-sm md:text-base text-white/85 max-w-xl leading-relaxed mb-6">
                   AnraHealth combines specialist physicians, advanced diagnostics, genomics, artificial intelligence and preventive medicine to deliver personalized healthcare for every stage of life.
                 </p>
-                <div className="grid grid-cols-3 gap-6 max-w-md">
+                <div className="hidden md:grid grid-cols-3 gap-6 max-w-md">
                   <div><p className="text-2xl md:text-3xl font-bold text-white">2</p><p className="text-xs text-white/70 mt-1">Calgary Locations</p></div>
                   <div><p className="text-2xl md:text-3xl font-bold text-white">10+</p><p className="text-xs text-white/70 mt-1">Languages Spoken</p></div>
                   <div><p className="text-2xl md:text-3xl font-bold text-white">1</p><p className="text-xs text-white/70 mt-1">Regional First</p></div>

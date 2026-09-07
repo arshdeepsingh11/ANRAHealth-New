@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <>
       <IntroExperience />
-      <section className="pt-16 pb-16 md:pt-20 md:pb-20 px-6" style={{ minHeight: "100vh" }}>
+      <section className="pt-16 pb-16 md:pt-20 md:pb-20 px-6 md:min-h-screen">
         <div className="text-center mb-8 md:mb-10">
           <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">
             ANRA Health

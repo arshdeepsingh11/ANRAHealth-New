@@ -129,7 +129,7 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
   return (
     <div
       ref={panelRef}
-      className="fixed inset-x-0 bottom-0 md:inset-x-auto md:bottom-6 md:right-6 z-[95] glass overflow-hidden shadow-2xl flex flex-col w-full md:w-[380px] h-[85dvh] md:h-[520px] rounded-t-3xl md:rounded-2xl"
+      className="fixed inset-x-0 bottom-0 md:inset-x-auto md:bottom-6 md:right-6 z-[95] glass overflow-hidden shadow-2xl flex flex-col w-full md:w-[380px] h-[68dvh] md:h-[520px] rounded-t-3xl md:rounded-2xl"
     >
       <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-pearl-200 shrink-0 gold-gloss">
         <div className="flex items-center gap-2.5">
@@ -149,9 +149,9 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 px-4 py-2.5 border-b border-pearl-200 shrink-0 bg-pearl-50/60">
+      <div className="flex gap-1.5 px-4 py-2.5 border-b border-pearl-200 shrink-0 bg-pearl-50/60 overflow-x-auto md:flex-wrap no-scrollbar">
         {ALBA_ENTRIES.map((e) => (
-          <button key={e} onClick={() => send(e)} className="glass rounded-full px-2.5 py-1 text-[11px] font-semibold text-gold-700">{e}</button>
+          <button key={e} onClick={() => send(e)} className="shrink-0 glass rounded-full px-2.5 py-1 text-[11px] font-semibold text-gold-700">{e}</button>
         ))}
       </div>
 

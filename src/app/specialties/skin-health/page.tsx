@@ -58,18 +58,23 @@ export default function SkinHealthPage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <Link href="/" className="fixed top-5 left-5 z-40 inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
+      <div className="px-5 pt-5 md:hidden">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
+          <ArrowLeft size={15} /> Back to Main Page
+        </Link>
+      </div>
+      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
         <ArrowLeft size={15} /> Back to Main Page
       </Link>
 
-      <div className="text-center pt-24 pb-6 px-6">
+      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Medical Specialties · Partner: Nea Precision Skin</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900">Skin Health</h1>
       </div>
 
-      <div className="flex justify-center flex-wrap gap-2 px-6 pb-10">
+      <div className="flex md:justify-center gap-2 px-6 pb-10 overflow-x-auto md:overflow-visible md:flex-wrap no-scrollbar">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${tab === t ? "gold-gloss shadow-glow" : "glass text-graphite-600 hover:-translate-y-0.5"}`}>{t}</button>
         ))}
       </div>
 
