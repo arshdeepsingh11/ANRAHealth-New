@@ -93,6 +93,11 @@ export default function HealthGraph() {
     if (child.label === "Genomics") { window.location.href = "/genomics"; return; }
     if (child.label === "Heart Failure Clinic") { window.location.href = "/specialties/heart-failure-clinic"; return; }
     if (child.label === "Internal Medicine") { window.location.href = "/specialties/internal-medicine"; return; }
+    if (child.label === "Endocrinology") { window.location.href = "/specialties/endocrinology"; return; }
+    if (child.label === "Geriatric Medicine") { window.location.href = "/specialties/geriatric-medicine"; return; }
+    if (child.label === "Pediatric Rheumatology") { window.location.href = "/specialties/pediatric-rheumatology"; return; }
+    if (child.label === "Nutrition") { window.location.href = "/specialties/nutrition"; return; }
+    if (child.label === "Precision Medicine") { window.location.href = "/specialties/precision-medicine"; return; }
     setView({ type: "preview", title: child.label, description: child.description });
   };
 
