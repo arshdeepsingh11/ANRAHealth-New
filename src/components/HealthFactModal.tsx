@@ -16,7 +16,7 @@ export default function HealthFactModal({ fact, onClose }: HealthFactModalProps)
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      style={{ background: "rgba(8,9,4,0.65)", backdropFilter: "blur(4px)" }}
+      style={{ background: "rgba(58,70,63,0.55)", backdropFilter: "blur(4px)" }}
       onClick={onClose}
     >
       <div
@@ -25,12 +25,7 @@ export default function HealthFactModal({ fact, onClose }: HealthFactModalProps)
       >
         <div className="flex justify-between items-start mb-1">
           {detail?.source && (
-            <a
-              href={detail.source.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold-600 hover:text-gold-700"
-            >
+            <a href={detail.source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-gold-600 hover:text-gold-700">
               Source: {detail.source.name} <ExternalLink size={11} />
             </a>
           )}
@@ -95,11 +90,7 @@ export default function HealthFactModal({ fact, onClose }: HealthFactModalProps)
           <p className="text-sm font-bold text-graphite-900 leading-relaxed mb-4">
             If you're still unsure, you can book a consultation with us — we'll take care of this.
           </p>
-          <Link
-            href="/referral-centre"
-            onClick={onClose}
-            className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
-          >
+          <Link href="/referral-centre" onClick={onClose} className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
             Book a Consultation <ArrowRight size={14} />
           </Link>
         </div>
