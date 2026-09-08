@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { brand } from "@/data/content";
+import { BIOARO_TESTS } from "@/data/bioaroTests";
 
 const SYSTEM_PROMPT = `You draft a starter nutrition outline for patients of ${brand.name}, a clinic in Calgary, Alberta, in partnership with Nea Precision Nutrition.
 
-You are given a patient's goal, dietary restrictions, relevant health conditions, activity level, and optional notes. Draft a friendly, general starter plan — this is explicitly a DRAFT for a registered dietitian to review and personalize, never a finished prescription or medical nutrition therapy.
+You are given a patient's goal, dietary restrictions, relevant health conditions, activity level, eating pattern, typical water intake, and optional notes. Draft a friendly, general starter plan — this is explicitly a DRAFT for a registered dietitian to review and personalize, never a finished prescription or medical nutrition therapy.
+
+Available BioAro Labs tests you may optionally suggest (choose ONLY from this exact list, using the exact "name" field):
+${BIOARO_TESTS.map((t) => `- ${t.name} (${t.categoryLabel}): ${t.desc}`).join("\n")}
 
 STRICT RULES:
 1. NEVER diagnose. NEVER give specific calorie targets, macro numbers, or supplement dosing — those require individualized assessment by a dietitian.
@@ -18,11 +22,16 @@ STRICT RULES:
     "snacks": "one simple example idea, one sentence"
   },
   "generalTips": ["short practical tip", "short practical tip", "short practical tip"],
-  "disclaimer": "a short reminder that this is a draft starting point only, and a registered dietitian will personalize it"
+  "disclaimer": "a short reminder that this is a draft starting point only, and a registered dietitian will personalize it",
+  "suggestedTests": [
+    { "testName": "exact name from the BioAro Labs list above", "reason": "one short sentence on why this might be relevant, in plain language" }
+  ]
 }
 4. Keep every meal idea genuinely simple and general — not a rigid meal plan, just illustrative examples.
 5. If a stated health condition is diet-relevant (e.g. diabetes, high cholesterol, high blood pressure), let the general tips reflect that sensibly (e.g. lower sodium for high blood pressure) without giving clinical nutrition therapy instructions.
-6. Tone should be encouraging and non-judgmental, never restrictive-sounding or diet-culture language.`;
+6. Tone should be encouraging and non-judgmental, never restrictive-sounding or diet-culture language.
+7. suggestedTests is optional — include 0 to 2 tests only when genuinely relevant (e.g. a "gut health" or digestive-related goal could relate to the BioGut Test; a weight-management or metabolic goal could relate to a hormone or inflammation panel). Never force a suggestion, and never recommend a "Prescription Required" test here. If nothing fits well, return an empty array.
+8. Only use exact test names from the list provided. Never invent a test name.`;
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -32,7 +41,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { goal, restrictions = [], conditions = [], activity, notes } = body || {};
+  const { goal, restrictions = [], conditions = [], activity, eatingPattern, waterIntake, notes } = body || {};
   if (!goal) {
     return NextResponse.json({ error: "Missing goal" }, { status: 400 });
   }
@@ -47,6 +56,8 @@ export async function POST(req: NextRequest) {
 Dietary restrictions: ${Array.isArray(restrictions) && restrictions.length ? restrictions.join(", ") : "None specified"}
 Relevant health conditions: ${Array.isArray(conditions) && conditions.length ? conditions.join(", ") : "None specified"}
 Activity level: ${activity || "Not specified"}
+Eating pattern: ${eatingPattern || "Not specified"}
+Typical water intake: ${waterIntake || "Not specified"}
 Additional notes: ${notes || "None provided"}`;
 
     const response = await fetch(
@@ -78,6 +89,14 @@ Additional notes: ${notes || "None provided"}`;
       parsed = {};
     }
 
+    const validTestNames = BIOARO_TESTS.map((t) => t.name);
+    const suggestedTests = Array.isArray(parsed.suggestedTests)
+      ? parsed.suggestedTests
+          .filter((t: any) => t && validTestNames.includes(t.testName))
+          .slice(0, 2)
+          .map((t: any) => ({ testName: t.testName, reason: typeof t.reason === "string" ? t.reason.trim() : "" }))
+      : [];
+
     return NextResponse.json({
       overview: typeof parsed.overview === "string" && parsed.overview.trim()
         ? parsed.overview.trim()
@@ -92,6 +111,7 @@ Additional notes: ${notes || "None provided"}`;
       disclaimer: typeof parsed.disclaimer === "string" && parsed.disclaimer.trim()
         ? parsed.disclaimer.trim()
         : "This is a general starting draft only. A registered dietitian at Nea Precision Nutrition will review and personalize your plan.",
+      suggestedTests,
     });
   } catch (err) {
     console.error("Nutrition plan handler error:", err);
