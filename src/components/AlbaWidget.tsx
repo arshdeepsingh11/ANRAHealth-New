@@ -85,10 +85,28 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
     else { recognitionRef.current.start(); setListening(true); }
   };
 
-  const speak = (text: string) => {
-    if (!speakReplies || !("speechSynthesis" in window)) return;
+  const speakNow = (text: string) => {
+    if (!("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Chrome (and some other browsers) silently do nothing if speak() is
+    // called before voices have finished loading — no error, just no
+    // audio. If that's the case, wait for the one-time voiceschanged
+    // event and then speak.
+    if (window.speechSynthesis.getVoices().length === 0) {
+      const onVoicesReady = () => {
+        window.speechSynthesis.removeEventListener("voiceschanged", onVoicesReady);
+        window.speechSynthesis.speak(utterance);
+      };
+      window.speechSynthesis.addEventListener("voiceschanged", onVoicesReady);
+    } else {
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  const speak = (text: string) => {
+    if (!speakReplies) return;
+    speakNow(text);
   };
 
   const send = async (overrideText?: string) => {
@@ -111,12 +129,57 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
           conversationId: conversationIdRef.current,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "failed");
-      if (data.conversationId) conversationIdRef.current = data.conversationId;
-      setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
-      speak(data.reply);
-      const combined = `${text} ${data.reply}`;
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error || "failed");
+      }
+
+      const incomingConversationId = res.headers.get("X-Conversation-Id");
+      if (incomingConversationId) conversationIdRef.current = incomingConversationId;
+
+      const contentType = res.headers.get("Content-Type") || "";
+
+      // Emergency/crisis responses come back as a single JSON object, not
+      // streamed — they're a fixed message returned instantly, no AI call.
+      if (contentType.includes("application/json")) {
+        const data = await res.json();
+        if (data.conversationId) conversationIdRef.current = data.conversationId;
+        setLoading(false);
+        setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
+        speak(data.reply);
+        return;
+      }
+
+      // Everything else streams in as plain text — update the message
+      // bubble live as each chunk arrives instead of waiting for it all.
+      if (!res.body) throw new Error("No response body");
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+      let started = false;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        if (!chunk) continue;
+        fullText += chunk;
+        if (!started) {
+          started = true;
+          setLoading(false);
+          setMessages((m) => [...m, { role: "assistant", text: fullText }]);
+        } else {
+          setMessages((m) => {
+            const copy = [...m];
+            copy[copy.length - 1] = { role: "assistant", text: fullText };
+            return copy;
+          });
+        }
+      }
+
+      speak(fullText);
+      const combined = `${text} ${fullText}`;
       const match = ROUTES.find((r) => r.match.test(combined));
       if (match) setSuggestedRoute(match);
     } catch (err: any) {
@@ -142,7 +205,20 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <button onClick={() => setSpeakReplies((s) => !s)} className="text-graphite-800/70 hover:text-graphite-900 p-1" aria-label="Toggle voice replies">
+          <button
+            onClick={() => {
+              const next = !speakReplies;
+              setSpeakReplies(next);
+              if (next) {
+                speakNow("Voice replies on");
+              } else if ("speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+              }
+            }}
+            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${speakReplies ? "bg-white/90 text-gold-700" : "bg-white/20 text-white"}`}
+            aria-label={speakReplies ? "Mute ALBA voice replies" : "Unmute ALBA voice replies"}
+            title={speakReplies ? "Voice replies on — tap to mute" : "Voice replies off — tap to unmute"}
+          >
             {speakReplies ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
           <button onClick={onClose} className="text-graphite-800/70 hover:text-graphite-900 p-1"><X size={18} /></button>
