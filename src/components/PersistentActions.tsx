@@ -25,11 +25,7 @@ export default function PersistentActions() {
         {persistentActions.map((a) => {
           const Icon = (Icons as any)[a.icon] || Icons.Circle;
           return (
-            <Link
-              key={a.href}
-              href={a.href}
-              className="glass card-hover flex items-center gap-3 rounded-full px-6 py-3.5 text-base font-semibold text-graphite-800"
-            >
+            <Link key={a.href} href={a.href} className="glass card-hover flex items-center gap-3 rounded-full px-6 py-3.5 text-base font-semibold text-graphite-800">
               <Icon size={19} className="text-gold-600" />
               <span>{a.label}</span>
             </Link>
@@ -46,11 +42,7 @@ export default function PersistentActions() {
           const Icon = (Icons as any)[a.icon] || Icons.Circle;
           const active = pathname === a.href;
           return (
-            <Link
-              key={a.href}
-              href={a.href}
-              className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl min-w-[64px]"
-            >
+            <Link key={a.href} href={a.href} className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl min-w-[64px]">
               <span
                 className={`w-9 h-9 rounded-full flex items-center justify-center ${
                   active ? "gold-gloss" : "bg-pearl-100"
