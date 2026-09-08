@@ -91,6 +91,8 @@ export default function HealthGraph() {
     if (child.label === "Skin Health") { window.location.href = "/specialties/skin-health"; return; }
     if (child.label === "Respiratory Medicine") { window.location.href = "/specialties/respiratory-medicine"; return; }
     if (child.label === "Genomics") { window.location.href = "/genomics"; return; }
+    if (child.label === "Heart Failure Clinic") { window.location.href = "/specialties/heart-failure-clinic"; return; }
+    if (child.label === "Internal Medicine") { window.location.href = "/specialties/internal-medicine"; return; }
     setView({ type: "preview", title: child.label, description: child.description });
   };
 
