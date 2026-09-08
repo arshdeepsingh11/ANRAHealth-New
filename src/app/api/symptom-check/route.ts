@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { brand } from "@/data/content";
 import { getOrCreateSessionId } from "@backend/session";
 import { logSymptomCheck } from "@backend/logging";
+import { detectEmergencyKeywords } from "@/lib/emergencyDetection";
 
 type Specialty = "cardiology" | "respiratory";
 
@@ -43,21 +44,7 @@ STRICT RULES:
 // Server-side keyword backstop — mirrors the client-side check. Belt-and-suspenders:
 // if either the client OR this catches a red flag, the response is forced to emergency.
 // Applies identically regardless of specialty — never removed, never modified.
-const EMERGENCY_PATTERNS = [
-  /crushing.{0,15}(chest|pain)/i,
-  /can'?t breathe/i,
-  /difficulty breathing/i,
-  /shortness of breath.{0,20}(severe|sudden|can'?t)/i,
-  /fainted|passed out|loss of consciousness/i,
-  /slurred speech/i,
-  /one[- ]?sided weakness|sudden weakness|sudden numbness/i,
-  /severe bleeding/i,
-  /chest pain.{0,20}(radiating|arm|jaw)/i,
-];
-
-function detectEmergencyKeywords(text: string) {
-  return EMERGENCY_PATTERNS.some((re) => re.test(text));
-}
+// Shared with /api/chat so both surfaces use the exact same pattern list.
 
 export async function POST(req: NextRequest) {
   let body: any;
