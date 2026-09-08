@@ -10,6 +10,7 @@ import { brand, locations, services, faqs, cardiacSymptoms, languages } from "@/
 import { physicians } from "@/data/physicians";
 import { getOrCreateSessionId } from "@backend/session";
 import { startAlbaConversation, logAlbaMessage } from "@backend/logging";
+import { detectEmergencyKeywords, detectCrisisKeywords, EMERGENCY_MESSAGE, CRISIS_MESSAGE } from "@/lib/emergencyDetection";
 
 function buildKnowledgeBase() {
   const servicesText = services.map((s) => `- ${s.name}: ${s.long}`).join("\n");
@@ -64,32 +65,16 @@ function pageContextLabel(pathname: string | undefined): string {
 function buildSystemPrompt(pathname: string | undefined) {
   const context = pageContextLabel(pathname);
 
-  return `You are the website assistant for ${brand.name}, a cardiology and internal medicine clinic in Calgary, Alberta. You also act as a booking guide: when it's helpful, you suggest a relevant service, physician, or next step as a clickable card in addition to your normal reply.
+  return `You are the website assistant for ${brand.name}, a cardiology and internal medicine clinic in Calgary, Alberta.
 
-CURRENT PAGE CONTEXT: The person is currently viewing ${context}. When natural, lean your answers and suggestions toward what's most relevant to this section of the site — but still answer any question they actually ask, even if it's about a different part of the clinic.
+CURRENT PAGE CONTEXT: The person is currently viewing ${context}. When natural, lean your answers toward what's most relevant to this section of the site — but still answer any question they actually ask, even if it's about a different part of the clinic.
 
 STRICT RULES — follow these exactly:
 1. Only answer questions about ${brand.name}: its services, physicians, locations, hours, appointments, cardiac symptoms, and FAQs, using ONLY the information provided below.
 2. If asked anything unrelated to ${brand.name}, politely decline and redirect: say you can only help with questions about ${brand.name}, and ask if there's something about our services, physicians, or appointments you can help with.
 3. Never invent facts, prices, wait times, physicians, or services not contained in the information below.
-4. Do not give medical diagnoses or treatment advice — for symptom concerns, encourage the person to book a consultation with our team, and you may suggest the relevant physician/service/booking as a card.
-5. Keep the "reply" text concise and friendly.
-6. Only include a physician in a suggestion card if their name appears exactly in the PHYSICIANS list below. Only include a service if it appears in the SERVICES list below.
-7. Include suggestion cards only when they genuinely help the person move forward (e.g. after discussing symptoms, asking about a service, or asking how to book) — not on every message. Usually 0-2 cards, never more than 3.
-
-You must respond with ONLY valid JSON, no markdown, no extra text, matching exactly this shape:
-{
-  "reply": "your conversational response as plain text",
-  "suggestions": [
-    {
-      "type": "physician" | "service" | "booking",
-      "title": "short title, e.g. a physician's full name or a service name, or 'Book an Appointment'",
-      "subtitle": "short supporting detail, e.g. physician's discipline + location, or a one-line service description",
-      "link": "/physicians" for type physician, "/services" for type service, "/contact" for type booking
-    }
-  ]
-}
-If no suggestions are appropriate for this message, use an empty array.
+4. Do not give medical diagnoses or treatment advice — for symptom concerns, encourage the person to book a consultation with our team.
+5. Respond in plain conversational text only — no markdown, no JSON, no special formatting. Keep replies concise and friendly.
 
 CLINIC INFORMATION:
 ${buildKnowledgeBase()}`;
@@ -126,6 +111,28 @@ export async function POST(req: NextRequest) {
     console.error("Failed to log ALBA user message:", logErr);
   }
 
+  // Emergency/crisis safety net — checked BEFORE calling the AI model at all.
+  // Never let the model's own judgment override a detected emergency or
+  // crisis pattern. This mirrors the same check used by the Symptom Checker.
+  // Crisis (self-harm/suicidal ideation) is checked first since it needs a
+  // gentler, support-resource-focused message rather than "call 911 / go to the ER."
+  if (detectCrisisKeywords(message)) {
+    try {
+      if (conversationId) await logAlbaMessage({ conversationId, role: "assistant", text: CRISIS_MESSAGE });
+    } catch (logErr) {
+      console.error("Failed to log ALBA crisis response:", logErr);
+    }
+    return NextResponse.json({ reply: CRISIS_MESSAGE, conversationId, emergency: true });
+  }
+  if (detectEmergencyKeywords(message)) {
+    try {
+      if (conversationId) await logAlbaMessage({ conversationId, role: "assistant", text: EMERGENCY_MESSAGE });
+    } catch (logErr) {
+      console.error("Failed to log ALBA emergency response:", logErr);
+    }
+    return NextResponse.json({ reply: EMERGENCY_MESSAGE, conversationId, emergency: true });
+  }
+
   try {
     const contents = [
       ...history.slice(-6).map((h: any) => ({
@@ -135,8 +142,8 @@ export async function POST(req: NextRequest) {
       { role: "user", parts: [{ text: message }] },
     ];
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
+    const geminiResponse = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -146,54 +153,84 @@ export async function POST(req: NextRequest) {
           generationConfig: {
             temperature: 0.3,
             maxOutputTokens: 500,
-            responseMimeType: "application/json",
           },
         }),
       }
     );
 
-    if (!response.ok) {
-      const errText = await response.text();
+    if (!geminiResponse.ok || !geminiResponse.body) {
+      const errText = await geminiResponse.text().catch(() => "");
       console.error("Gemini API error:", errText);
       return NextResponse.json({ error: "Upstream AI error" }, { status: 502 });
     }
 
-    const data = await response.json();
-    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    // Proxy Gemini's SSE stream through to the client as plain text: parse
+    // each "data: {...}" line, pull out the text delta, and enqueue just
+    // that text. We also accumulate the full reply so it can be logged once
+    // the stream finishes, and fall back to a friendly message if nothing
+    // came through at all.
+    const finalConversationId = conversationId;
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = geminiResponse.body!.getReader();
+        const decoder = new TextDecoder();
+        const encoder = new TextEncoder();
+        let buffer = "";
+        let fullReply = "";
 
-    let parsed: any;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      parsed = { reply: raw || `Sorry, I couldn't generate a response. Please try again or call us at ${brand.phone}.`, suggestions: [] };
-    }
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
 
-    const validTypes = ["physician", "service", "booking"];
-    const suggestions = Array.isArray(parsed.suggestions)
-      ? parsed.suggestions
-          .filter((s: any) => s && validTypes.includes(s.type) && typeof s.title === "string" && s.title.trim())
-          .slice(0, 3)
-          .map((s: any) => ({
-            type: s.type,
-            title: s.title.trim(),
-            subtitle: typeof s.subtitle === "string" ? s.subtitle.trim() : "",
-            link: ["/physicians", "/services", "/contact"].includes(s.link) ? s.link : "/contact",
-          }))
-      : [];
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed.startsWith("data:")) continue;
+              const jsonStr = trimmed.slice(5).trim();
+              if (!jsonStr) continue;
+              try {
+                const chunk = JSON.parse(jsonStr);
+                const text = chunk?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (typeof text === "string" && text) {
+                  fullReply += text;
+                  controller.enqueue(encoder.encode(text));
+                }
+              } catch {
+                // Ignore malformed/partial SSE fragments — next chunk will complete it.
+              }
+            }
+          }
+        } catch (streamErr) {
+          console.error("Gemini stream read error:", streamErr);
+        }
 
-    const reply = typeof parsed.reply === "string" && parsed.reply.trim()
-      ? parsed.reply.trim()
-      : `Sorry, I couldn't generate a response. Please try again or call us at ${brand.phone}.`;
+        if (!fullReply.trim()) {
+          const fallback = `Sorry, I couldn't generate a response. Please try again or call us at ${brand.phone}.`;
+          controller.enqueue(encoder.encode(fallback));
+          fullReply = fallback;
+        }
 
-    try {
-      if (conversationId) {
-        await logAlbaMessage({ conversationId, role: "assistant", text: reply });
-      }
-    } catch (logErr) {
-      console.error("Failed to log ALBA assistant message:", logErr);
-    }
+        try {
+          if (finalConversationId) {
+            await logAlbaMessage({ conversationId: finalConversationId, role: "assistant", text: fullReply });
+          }
+        } catch (logErr) {
+          console.error("Failed to log ALBA assistant message:", logErr);
+        }
 
-    return NextResponse.json({ reply, suggestions, conversationId });
+        controller.close();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "X-Conversation-Id": conversationId || "",
+      },
+    });
   } catch (err) {
     console.error("Chat handler error:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
