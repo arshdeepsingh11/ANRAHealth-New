@@ -3,57 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Sparkles, Loader2, Dna, ExternalLink, ArrowRight, X, ChevronRight, Microscope, Users, ShieldCheck } from "lucide-react";
+import { BIOARO_TESTS, bioaroBookingUrl, type BioAroTest } from "@/data/bioaroTests";
 
 const TABS = ["Overview", "Available Tests", "Find My Test", "Contact"] as const;
 type Tab = (typeof TABS)[number];
-
-interface BioAroTest {
-  name: string;
-  desc: string;
-  price: string;
-  categorySlug: string;
-  categoryLabel: string;
-}
-
-// Real BioAro Labs catalog, pulled directly from bioarolabs.com's live shop.
-// Each test links to its confirmed real category page — individual product
-// slugs aren't all confirmed yet, so we route to the category page rather
-// than risk a broken direct link.
-const BIOARO_TESTS: BioAroTest[] = [
-  { name: "Telomere Length Testing", desc: "Measures telomere length as a marker associated with cellular aging and biological age.", price: "$299.00", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Hormone Health", desc: "A core hormone panel evaluating key hormones related to balance, energy, and reproductive health.", price: "$499.00", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Ultra Hormone Health", desc: "A comprehensive hormone panel assessing hormone balance, adrenal function, and key reproductive hormones.", price: "$499.00", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Essential Vitamin Health", desc: "A combined assessment of vitamins D, E, A, and K for a broader view of fat-soluble vitamin status.", price: "$349.99", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Brain Health", desc: "Combines amyloid- and tau-related biomarkers to provide insight into Alzheimer's-related brain changes.", price: "$749.99", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Core Inflammation Aging", desc: "A focused panel assessing low-grade inflammation and immune regulation.", price: "$489.99", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Advanced Inflammation Aging", desc: "A deeper panel assessing inflammatory signaling, cellular stress, metabolic strain, and vascular-related patterns.", price: "$699.00", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-  { name: "Ultra Inflammation Aging", desc: "A broad panel assessing inflammation, cellular stress, vascular strain, tissue remodeling, kidney filtration, and immune health.", price: "$899.00", categorySlug: "biological-aging-healthspan-panels", categoryLabel: "Biological Aging & Healthspan" },
-
-  { name: "Whole Genome Sequencing 100x", desc: "Deep 100x sequencing across the complete genome for a highly detailed view of inherited genetic variation.", price: "$1,499.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-  { name: "Whole Genome Sequencing 30x", desc: "Complete genome sequencing at 30x depth for broad insight into inherited genetic variation.", price: "$699.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-  { name: "Whole Exome Sequencing 100x", desc: "Best suited for rare disease and inherited-variant assessment.", price: "$499.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-  { name: "Disease-Based DNA Test", desc: "Targeted genetic analysis focused on variants associated with a specific disease, syndrome, or symptom. Prescription required.", price: "$499.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-  { name: "Pharmacogenomics Test", desc: "Genetic analysis focused on variations that can influence medication response, metabolism, and dosing. Prescription required.", price: "$499.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-  { name: "Comprehensive Cell-free DNA Analysis", desc: "Analysis of circulating tumor DNA and inherited variants to support cancer-related treatment decisions and monitoring. Prescription required.", price: "$1,700.00", categorySlug: "genome-sequencing", categoryLabel: "Genome Sequencing" },
-
-  { name: "The BioGut Test", desc: "A stool-based microbiome test providing insight into digestive microbiome balance.", price: "$279.00", categorySlug: "microbiome", categoryLabel: "Microbiome" },
-  { name: "The BioSkin Test", desc: "A skin microbiome test providing insight into microbial balance related to persistent skin concerns.", price: "$279.00", categorySlug: "microbiome", categoryLabel: "Microbiome" },
-  { name: "The BioDental Test", desc: "An oral microbiome test providing insight into microbial balance related to gum and oral health.", price: "$279.00", categorySlug: "microbiome", categoryLabel: "Microbiome" },
-  { name: "The BioFemme Test", desc: "A vaginal microbiome test assessing bacterial and fungal balance, including yeast-related changes.", price: "$279.00", categorySlug: "microbiome", categoryLabel: "Microbiome" },
-
-  { name: "Resveratrol", desc: "Circulating free resveratrol primarily reflects recent dietary or supplement exposure.", price: "$120.00", categorySlug: "vitamin-nutritional-status", categoryLabel: "Vitamin & Nutritional Status" },
-  { name: "Vitamin D, 25-Hydroxy (D2+D3)", desc: "The primary circulating marker used to evaluate vitamin D status.", price: "$115.00", categorySlug: "vitamin-nutritional-status", categoryLabel: "Vitamin & Nutritional Status" },
-  { name: "Vitamin E (Alpha & Gamma Tocopherol)", desc: "Alpha- and gamma-tocopherol levels provide insight into vitamin E and antioxidant status.", price: "$115.00", categorySlug: "vitamin-nutritional-status", categoryLabel: "Vitamin & Nutritional Status" },
-  { name: "Vitamin K1 (Phylloquinone)", desc: "Vitamin K1 status provides insight into a nutrient important for normal clotting and bone-related protein activity.", price: "$115.00", categorySlug: "vitamin-nutritional-status", categoryLabel: "Vitamin & Nutritional Status" },
-  { name: "Vitamin A (Retinol)", desc: "Retinol provides insight into circulating vitamin A status.", price: "$115.00", categorySlug: "vitamin-nutritional-status", categoryLabel: "Vitamin & Nutritional Status" },
-
-  { name: "PAI-1 Total (Plasminogen Activator Inhibitor-1)", desc: "Provides insight into fibrinolytic balance and metabolic-vascular health.", price: "$105.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-  { name: "Cystatin C", desc: "A sensitive indicator of kidney filtration that supports kidney health assessment.", price: "$99.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-  { name: "β2-Microglobulin (B2M)", desc: "Provides insight into immune activity, cellular turnover, and kidney health.", price: "$89.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-  { name: "TIMP-1 (Tissue Inhibitor of Metalloproteinases-1)", desc: "Provides insight into tissue remodeling and extracellular matrix health.", price: "$105.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-  { name: "GDF-15 (Growth Differentiation Factor 15)", desc: "Provides insight into cellular stress associated with mitochondrial, metabolic, and inflammatory strain.", price: "$130.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-  { name: "hs-CRP (High-Sensitivity C-Reactive Protein)", desc: "A widely used marker of low-grade systemic inflammation linked to cardiovascular and metabolic health.", price: "$60.00", categorySlug: "vascular-organ-stress", categoryLabel: "Vascular & Organ Stress" },
-];
 
 const CATEGORY_ORDER = [
   "Biological Aging & Healthspan",
@@ -62,10 +15,6 @@ const CATEGORY_ORDER = [
   "Vitamin & Nutritional Status",
   "Vascular & Organ Stress",
 ];
-
-function bookingUrl(test: BioAroTest) {
-  return `https://bioarolabs.com/shop?category=${test.categorySlug}`;
-}
 
 const GOAL_OPTS = [
   "Understand my genetic health risks",
@@ -86,6 +35,8 @@ const CONCERN_OPTS = [
 ];
 
 const FAMILY_HISTORY_OPTS = ["Heart disease", "Cancer", "Diabetes", "Autoimmune conditions", "None of these"];
+const AGE_RANGE_OPTS = ["Under 30", "30–45", "46–60", "60+"];
+const PRIOR_TESTING_OPTS = ["Never had genetic testing", "Had DNA ancestry testing (e.g. 23andMe)", "Had clinical genetic testing before", "Not sure"];
 
 function toggleMulti(arr: string[], val: string) {
   if (val.startsWith("None")) return [val];
@@ -127,7 +78,7 @@ function TestModal({ test, onClose }: { test: BioAroTest; onClose: () => void })
         </div>
         <p className="text-sm text-graphite-600 leading-relaxed mb-2">{test.desc}</p>
         <p className="text-sm font-bold text-gold-700 mb-6">From {test.price}</p>
-        <a href={bookingUrl(test)} target="_blank" rel="noopener noreferrer" className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
+        <a href={bioaroBookingUrl(test)} target="_blank" rel="noopener noreferrer" className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
           Book with BioAro Labs <ExternalLink size={14} />
         </a>
       </div>
@@ -144,6 +95,8 @@ export default function GenomicsPage() {
   const [concerns, setConcerns] = useState<string[]>([]);
   const [familyHistory, setFamilyHistory] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
+  const [ageRange, setAgeRange] = useState("");
+  const [priorTesting, setPriorTesting] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<QuizResult | null>(null);
@@ -158,7 +111,7 @@ export default function GenomicsPage() {
       const res = await fetch("/api/genomics-quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ goals, concerns, familyHistory, notes: notes || undefined }),
+        body: JSON.stringify({ goals, concerns, familyHistory, ageRange: ageRange || undefined, priorTesting: priorTesting || undefined, notes: notes || undefined }),
       });
       if (!res.ok) throw new Error("failed");
       const data = await res.json();
@@ -171,7 +124,7 @@ export default function GenomicsPage() {
   };
 
   const restartQuiz = () => {
-    setGoals([]); setConcerns([]); setFamilyHistory([]); setNotes("");
+    setGoals([]); setConcerns([]); setFamilyHistory([]); setAgeRange(""); setPriorTesting(""); setNotes("");
     setResult(null); setError(null);
   };
 
@@ -288,6 +241,16 @@ export default function GenomicsPage() {
                 </div>
 
                 <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Age range</p>
+                  <ChipGroup options={AGE_RANGE_OPTS} selected={ageRange ? [ageRange] : []} onSelect={(v) => setAgeRange(v)} />
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Have you had genetic testing before?</p>
+                  <ChipGroup options={PRIOR_TESTING_OPTS} selected={priorTesting ? [priorTesting] : []} onSelect={(v) => setPriorTesting(v)} />
+                </div>
+
+                <div>
                   <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Anything else you'd like to mention? (optional)</p>
                   <textarea
                     value={notes}
@@ -332,7 +295,7 @@ export default function GenomicsPage() {
                         </div>
                         <p className="text-sm text-graphite-600 leading-relaxed mb-3">{r.reason}</p>
                         {test && (
-                          <a href={bookingUrl(test)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700">
+                          <a href={bioaroBookingUrl(test)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700">
                             Book with BioAro Labs <ExternalLink size={12} />
                           </a>
                         )}
