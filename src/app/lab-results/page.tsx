@@ -98,7 +98,7 @@ export default function LabResultsPage() {
   };
 
   return (
-    <div style={{ background: "linear-gradient(160deg, #313425 0%, #23261a 45%, #14160f 100%)", minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
       <div className="px-5 pt-5 md:hidden">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
           <ArrowLeft size={15} /> Back to Main Page
@@ -129,7 +129,7 @@ export default function LabResultsPage() {
                 onChange={(e) => setText(e.target.value)}
                 rows={5}
                 placeholder={`e.g.\nTotal Cholesterol: 5.8 mmol/L\nLDL: 3.4 mmol/L\nHDL: 1.1 mmol/L\nTSH: 2.1 mIU/L`}
-                className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-[#e8e4d5] text-black text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none font-mono"
+                className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none font-mono"
               />
             </div>
 
