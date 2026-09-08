@@ -98,6 +98,11 @@ export default function HealthGraph() {
     if (child.label === "Pediatric Rheumatology") { window.location.href = "/specialties/pediatric-rheumatology"; return; }
     if (child.label === "Nutrition") { window.location.href = "/specialties/nutrition"; return; }
     if (child.label === "Precision Medicine") { window.location.href = "/specialties/precision-medicine"; return; }
+    if (child.label === "Cardiac Imaging") { window.location.href = "/diagnostics/cardiac-imaging"; return; }
+    if (child.label === "Stress Testing") { window.location.href = "/diagnostics/stress-testing"; return; }
+    if (child.label === "Vascular") { window.location.href = "/diagnostics/vascular"; return; }
+    if (child.label === "Monitoring") { window.location.href = "/diagnostics/monitoring"; return; }
+    if (child.label === "Pulmonary") { window.location.href = "/diagnostics/pulmonary"; return; }
     setView({ type: "preview", title: child.label, description: child.description });
   };
 
