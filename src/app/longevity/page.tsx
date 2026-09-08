@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Loader2, HeartPulse, ArrowRight, Salad, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, HeartPulse, ArrowRight, Salad, CheckCircle2, ExternalLink } from "lucide-react";
+import { BIOARO_TESTS, bioaroBookingUrl } from "@/data/bioaroTests";
 
 const TABS = ["Health Risk Assessment", "Nutrition Starter Plan"] as const;
 type Tab = (typeof TABS)[number];
@@ -17,12 +18,15 @@ const ALCOHOL_OPTS = ["None", "Occasional (1–2/week)", "Moderate (3–7/week)"
 const STRESS_OPTS = ["Low", "Moderate", "High", "Very high"];
 const FAMILY_HISTORY_OPTS = ["Heart disease", "Diabetes", "Cancer", "None of these"];
 const CONDITIONS_OPTS = ["High blood pressure", "High cholesterol", "Diabetes", "None of these"];
+const SYMPTOMS_OPTS = ["Fatigue", "Shortness of breath", "Chest discomfort", "Joint pain", "Trouble sleeping", "None currently"];
 
 // ── Nutrition Starter Plan options ──────────────────────────────────
 const GOAL_OPTS = ["Weight management", "More energy", "Heart health", "Diabetes-friendly eating", "General healthy eating"];
 const RESTRICTION_OPTS = ["Vegetarian", "Vegan", "Gluten-free", "Dairy-free", "No restrictions"];
 const NUTRITION_CONDITIONS_OPTS = ["Diabetes", "High cholesterol", "High blood pressure", "None of these"];
 const NUTRITION_ACTIVITY_OPTS = ACTIVITY_OPTS;
+const EATING_PATTERN_OPTS = ["1–2 meals a day", "3 meals a day", "3 meals + snacks", "Frequent small meals", "Irregular / varies a lot"];
+const WATER_INTAKE_OPTS = ["Less than 4 cups", "4–6 cups", "7–9 cups", "10+ cups"];
 
 function toggleMulti(arr: string[], val: string, noneLabel: string) {
   if (val.startsWith(noneLabel) || val === "No restrictions" || val.startsWith("None")) return [val];
@@ -31,13 +35,15 @@ function toggleMulti(arr: string[], val: string, noneLabel: string) {
 }
 
 interface FocusArea { title: string; note: string; }
-interface RiskResult { summary: string; focusAreas: FocusArea[]; suggestedNextStep: string; }
+interface SuggestedTest { testName: string; reason: string; }
+interface RiskResult { summary: string; focusAreas: FocusArea[]; suggestedNextStep: string; suggestedTests?: SuggestedTest[]; }
 
 interface NutritionResult {
   overview: string;
   sampleDay: { breakfast: string; lunch: string; dinner: string; snacks: string };
   generalTips: string[];
   disclaimer: string;
+  suggestedTests?: SuggestedTest[];
 }
 
 function ChipGroup({
@@ -75,6 +81,8 @@ export default function LongevityPage() {
   const [stress, setStress] = useState("");
   const [familyHistory, setFamilyHistory] = useState<string[]>([]);
   const [conditions, setConditions] = useState<string[]>([]);
+  const [symptoms, setSymptoms] = useState<string[]>([]);
+  const [knownNumbers, setKnownNumbers] = useState("");
   const [notes, setNotes] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -100,6 +108,8 @@ export default function LongevityPage() {
             sleepQuality, sleepHoursPerNight: sleepHours,
             dietQuality: diet, alcoholConsumption: alcohol, stressLevel: stress,
             familyHistory, conditions,
+            currentSymptoms: symptoms.length ? symptoms : ["none reported"],
+            knownNumbers: knownNumbers || "not provided",
             additionalNotes: notes || "none",
           },
         }),
@@ -118,7 +128,7 @@ export default function LongevityPage() {
     setAge(""); setSmoking(""); setActivity("");
     setSleepQuality(""); setSleepHours("");
     setDiet(""); setAlcohol(""); setStress("");
-    setFamilyHistory([]); setConditions([]); setNotes("");
+    setFamilyHistory([]); setConditions([]); setSymptoms([]); setKnownNumbers(""); setNotes("");
     setResult(null); setError(null);
   };
 
@@ -127,13 +137,15 @@ export default function LongevityPage() {
   const [restrictions, setRestrictions] = useState<string[]>([]);
   const [nutritionConditions, setNutritionConditions] = useState<string[]>([]);
   const [nutritionActivity, setNutritionActivity] = useState("");
+  const [eatingPattern, setEatingPattern] = useState("");
+  const [waterIntake, setWaterIntake] = useState("");
   const [nutritionNotes, setNutritionNotes] = useState("");
 
   const [nutritionLoading, setNutritionLoading] = useState(false);
   const [nutritionError, setNutritionError] = useState<string | null>(null);
   const [nutritionResult, setNutritionResult] = useState<NutritionResult | null>(null);
 
-  const canSubmitNutrition = goal && restrictions.length > 0 && nutritionConditions.length > 0 && nutritionActivity;
+  const canSubmitNutrition = goal && restrictions.length > 0 && nutritionConditions.length > 0 && nutritionActivity && eatingPattern && waterIntake;
 
   const runNutritionPlan = async () => {
     if (!canSubmitNutrition) return;
@@ -148,6 +160,8 @@ export default function LongevityPage() {
           restrictions,
           conditions: nutritionConditions,
           activity: nutritionActivity,
+          eatingPattern,
+          waterIntake,
           notes: nutritionNotes || undefined,
         }),
       });
@@ -162,7 +176,7 @@ export default function LongevityPage() {
   };
 
   const restartNutrition = () => {
-    setGoal(""); setRestrictions([]); setNutritionConditions([]); setNutritionActivity(""); setNutritionNotes("");
+    setGoal(""); setRestrictions([]); setNutritionConditions([]); setNutritionActivity(""); setEatingPattern(""); setWaterIntake(""); setNutritionNotes("");
     setNutritionResult(null); setNutritionError(null);
   };
 
@@ -261,6 +275,22 @@ export default function LongevityPage() {
                 </div>
 
                 <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Any current symptoms? (select all that apply, optional)</p>
+                  <ChipGroup options={SYMPTOMS_OPTS} selected={symptoms} onSelect={(v) => setSymptoms(toggleMulti(symptoms, v, "None currently"))} multi />
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Know your blood pressure or cholesterol numbers? (optional)</p>
+                  <input
+                    type="text"
+                    value={knownNumbers}
+                    onChange={(e) => setKnownNumbers(e.target.value)}
+                    placeholder="e.g. BP 128/82, cholesterol 5.2 mmol/L"
+                    className="w-full px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500"
+                  />
+                </div>
+
+                <div>
                   <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Anything else you'd like to mention? (optional)</p>
                   <textarea
                     value={notes}
@@ -302,6 +332,32 @@ export default function LongevityPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {result.suggestedTests && result.suggestedTests.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-3">Tests That Might Be Worth Exploring</p>
+                    <div className="space-y-3">
+                      {result.suggestedTests.map((t) => {
+                        const test = BIOARO_TESTS.find((bt) => bt.name === t.testName);
+                        return (
+                          <div key={t.testName} className="rounded-2xl p-4 bg-pearl-50">
+                            <div className="flex items-center justify-between gap-3 mb-1">
+                              <p className="text-sm font-bold text-graphite-900">{t.testName}</p>
+                              {test && <span className="text-xs font-bold text-gold-700 shrink-0">{test.price}</span>}
+                            </div>
+                            <p className="text-sm text-graphite-600 leading-relaxed mb-2">{t.reason}</p>
+                            {test && (
+                              <a href={bioaroBookingUrl(test)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700">
+                                Book with BioAro Labs <ExternalLink size={12} />
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs text-graphite-400 mt-3">Provided through our lab partner, BioAro Labs — optional, and not required to move forward with a consultation.</p>
                   </div>
                 )}
 
@@ -350,6 +406,16 @@ export default function LongevityPage() {
                 <div>
                   <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Activity level</p>
                   <ChipGroup options={NUTRITION_ACTIVITY_OPTS} selected={nutritionActivity} onSelect={setNutritionActivity} />
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Typical eating pattern</p>
+                  <ChipGroup options={EATING_PATTERN_OPTS} selected={eatingPattern} onSelect={setEatingPattern} />
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold text-graphite-500 mb-2 uppercase tracking-wide">Typical daily water intake</p>
+                  <ChipGroup options={WATER_INTAKE_OPTS} selected={waterIntake} onSelect={setWaterIntake} />
                 </div>
 
                 <div>
@@ -410,6 +476,32 @@ export default function LongevityPage() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {nutritionResult.suggestedTests && nutritionResult.suggestedTests.length > 0 && (
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-3">Tests That Might Be Worth Exploring</p>
+                    <div className="space-y-3">
+                      {nutritionResult.suggestedTests.map((t) => {
+                        const test = BIOARO_TESTS.find((bt) => bt.name === t.testName);
+                        return (
+                          <div key={t.testName} className="rounded-2xl p-4 bg-pearl-50">
+                            <div className="flex items-center justify-between gap-3 mb-1">
+                              <p className="text-sm font-bold text-graphite-900">{t.testName}</p>
+                              {test && <span className="text-xs font-bold text-gold-700 shrink-0">{test.price}</span>}
+                            </div>
+                            <p className="text-sm text-graphite-600 leading-relaxed mb-2">{t.reason}</p>
+                            {test && (
+                              <a href={bioaroBookingUrl(test)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700">
+                                Book with BioAro Labs <ExternalLink size={12} />
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <p className="text-xs text-graphite-400 mt-3">Provided through our lab partner, BioAro Labs — optional, and not required to move forward.</p>
                   </div>
                 )}
 
