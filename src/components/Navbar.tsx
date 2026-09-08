@@ -53,6 +53,7 @@ export default function Navbar() {
   const hideNavbar =
     pathname === "/" ||
     pathname.startsWith("/specialties") ||
+    pathname.startsWith("/diagnostics") ||
     pathname.startsWith("/referral-centre") ||
     pathname === "/contact" ||
     pathname === "/locations" ||
