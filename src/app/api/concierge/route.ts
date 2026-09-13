@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { brand } from "@/data/content";
+import { detectEmergencyKeywords, detectCrisisKeywords, EMERGENCY_MESSAGE, CRISIS_MESSAGE } from "@/lib/emergencyDetection";
 
 // Every real destination the concierge is allowed to route to — all tools
 // that already exist on the site. Never invent a destination outside this list.
@@ -30,7 +31,7 @@ STRICT RULES:
 }
 3. If genuinely nothing matches well, use "contact" as a safe default.
 4. Keep the reply conversational and brief — this is a quick router, not a long conversation.
-5. If the description sounds like it could be a medical emergency (severe chest pain, can't breathe, fainting, stroke symptoms), your reply must tell them to call 911 immediately, and destinationKey should still be "cardiology" or "respiratory" as appropriate for follow-up context, but the 911 instruction comes first in the reply.`;
+5. Mentioning a test or service by name (e.g. "stress test", "echo", "Holter monitor") is a normal routing request, NOT an emergency — route it normally to the relevant page.`;
 
 export async function POST(req: NextRequest) {
   let body: any;
@@ -43,6 +44,17 @@ export async function POST(req: NextRequest) {
   const { message } = body || {};
   if (!message || typeof message !== "string" || message.trim().length < 3) {
     return NextResponse.json({ error: "Missing message" }, { status: 400 });
+  }
+
+  // Emergency/crisis safety net — deterministic, checked BEFORE calling the
+  // AI at all. This is the same shared check used by ALBA chat and the
+  // Symptom Checker, so a real emergency always gets the same reliable
+  // response here too, instead of being left to the AI's own judgment.
+  if (detectCrisisKeywords(message)) {
+    return NextResponse.json({ reply: CRISIS_MESSAGE, destination: { href: "/contact", label: "Contact" }, emergency: true });
+  }
+  if (detectEmergencyKeywords(message)) {
+    return NextResponse.json({ reply: EMERGENCY_MESSAGE, destination: { href: "/contact", label: "Contact" }, emergency: true });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
