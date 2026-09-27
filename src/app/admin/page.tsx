@@ -13,9 +13,9 @@ function formatDate(d: Date) {
   });
 }
 
-function SectionCard({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
+function SectionCard({ id, title, count, children }: { id?: string; title: string; count: number; children: React.ReactNode }) {
   return (
-    <div className="glass rounded-2xl p-6">
+    <div id={id} className="glass rounded-2xl p-6 scroll-mt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-base font-bold text-graphite-900">{title}</h2>
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gold-50 text-gold-700">{count} total</span>
@@ -74,22 +74,22 @@ export default async function AdminDashboardPage() {
         {/* Overview counts */}
         <div className="grid sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
-            ["Page Visits", pageVisitCount],
-            ["Referrals", referralCount],
-            ["Symptom Checks", symptomCheckCount],
-            ["ALBA Chats", conversationCount],
-            ["Longevity", longevityCount],
-            ["Lab Checks", labCheckCount],
-          ].map(([label, count]) => (
-            <div key={label as string} className="glass rounded-2xl p-4 text-center">
+            ["Page Visits", pageVisitCount, "page-visits"],
+            ["Referrals", referralCount, "referrals"],
+            ["Symptom Checks", symptomCheckCount, "symptom-checks"],
+            ["ALBA Chats", conversationCount, "alba-chats"],
+            ["Longevity", longevityCount, "longevity"],
+            ["Lab Checks", labCheckCount, "lab-checks"],
+          ].map(([label, count, anchor]) => (
+            <a key={label as string} href={`#${anchor}`} className="glass rounded-2xl p-4 text-center card-hover cursor-pointer block">
               <p className="text-2xl font-bold text-graphite-900">{count as number}</p>
               <p className="text-xs text-graphite-500 mt-1">{label}</p>
-            </div>
+            </a>
           ))}
         </div>
 
         <div className="space-y-6">
-          <SectionCard title="Recent Referral Submissions" count={referralCount}>
+          <SectionCard id="referrals" title="Recent Referral Submissions" count={referralCount}>
             <div className="space-y-3">
               {recentReferrals.length === 0 && <p className="text-sm text-graphite-400">No referrals yet.</p>}
               {recentReferrals.map((r) => (
@@ -105,7 +105,7 @@ export default async function AdminDashboardPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Recent Symptom Checks" count={symptomCheckCount}>
+          <SectionCard id="symptom-checks" title="Recent Symptom Checks" count={symptomCheckCount}>
             <div className="space-y-3">
               {recentSymptomChecks.length === 0 && <p className="text-sm text-graphite-400">No symptom checks yet.</p>}
               {recentSymptomChecks.map((s) => (
@@ -121,7 +121,7 @@ export default async function AdminDashboardPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Recent ALBA Conversations" count={conversationCount}>
+          <SectionCard id="alba-chats" title="Recent ALBA Conversations" count={conversationCount}>
             <div className="space-y-3">
               {recentConversations.length === 0 && <p className="text-sm text-graphite-400">No conversations yet.</p>}
               {recentConversations.map((c) => (
@@ -144,7 +144,7 @@ export default async function AdminDashboardPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Recent Longevity Assessments" count={longevityCount}>
+          <SectionCard id="longevity" title="Recent Longevity Assessments" count={longevityCount}>
             <div className="space-y-3">
               {recentLongevity.length === 0 && <p className="text-sm text-graphite-400">No assessments yet.</p>}
               {recentLongevity.map((l) => (
@@ -156,7 +156,7 @@ export default async function AdminDashboardPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Recent Lab Result Checks" count={labCheckCount}>
+          <SectionCard id="lab-checks" title="Recent Lab Result Checks" count={labCheckCount}>
             <div className="space-y-3">
               {recentLabChecks.length === 0 && <p className="text-sm text-graphite-400">No lab checks yet.</p>}
               {recentLabChecks.map((l) => (
@@ -171,7 +171,7 @@ export default async function AdminDashboardPage() {
             </div>
           </SectionCard>
 
-          <SectionCard title="Recent Page Visits" count={pageVisitCount}>
+          <SectionCard id="page-visits" title="Recent Page Visits" count={pageVisitCount}>
             <div className="space-y-1.5">
               {recentVisits.length === 0 && <p className="text-sm text-graphite-400">No visits yet.</p>}
               {recentVisits.map((v) => (

@@ -5,6 +5,7 @@ import * as Icons from "lucide-react";
 import { graphNodes, GraphChild } from "@/data/graphNodes";
 import { useAlba } from "@/components/AlbaContext";
 import GlowConnector from "@/components/GlowConnector";
+import TypingLabel from "@/components/TypingLabel";
 
 type View =
   | { type: "home" }
@@ -20,6 +21,18 @@ const NODE_BLURB: Record<string, string> = {
   longevity: "Proactive care to extend your healthspan.",
   alba: "Your AI health companion — available anytime.",
 };
+
+// First "count" chip label per category, in the scrollable chip row.
+const CHIP_COUNT_LABEL: Record<string, string> = {
+  specialties: "Specialties",
+  diagnostics: "Diagnostics",
+};
+
+// Longevity and ALBA don't have a multi-item children list (tapping the card
+// redirects/opens chat directly), so they get their own static quick-action
+// chips instead, to stay visually consistent with the other category cards.
+const LONGEVITY_CHIPS = ["Health Risk Assessment", "Nutrition Plan", "Longevity Score"];
+const ALBA_CHIPS = ["Symptom Check", "Ask ALBA", "Book a Visit"];
 
 function polar(angleDeg: number, radiusPct: number) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -210,64 +223,92 @@ export default function HealthGraph() {
           })}
         </div>
 
-        {/* Mobile vertical list — matches design reference */}
-        <div className="md:hidden px-4 pb-8">
+        {/* Mobile — claymorphism cards, centered, no side line, scrollable chips on every card */}
+        <div className="md:hidden px-5 pb-8">
           <div className="text-center mb-2">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase text-gold-600">
               <span className="w-1.5 h-1.5 rounded-full bg-gold-500" />
-              Your Health, One Record
+              <TypingLabel text="Your Health, One Record" />
             </p>
           </div>
           <p className="text-center text-sm text-graphite-600 mb-6 px-4">
             Everything about your health, connected in one record.
           </p>
-          <div>
-            {graphNodes.map((n, i) => {
-              const isLast = i === graphNodes.length - 1;
-              const rowHeight = 84; // fixed row height so every card matches, regardless of blurb length
-              return (
+          <div className="space-y-4">
+            {graphNodes.map((n) => (
+              <div key={n.id} className="clay w-full px-5 py-4">
                 <button
-                  key={n.id}
                   ref={(el) => { if (n.id === "alba" && el && el.offsetParent !== null) registerAlbaNode(el as any); }}
                   onClick={() => openNode(n.id)}
-                  className="w-full text-left flex items-start gap-3 relative"
+                  className="w-full flex items-center justify-between gap-3 text-left"
                 >
-                  <div className="flex flex-col items-center pt-1 w-4">
-                    <span className="w-4 h-4 rounded-full bg-gold-500 shrink-0 z-10 shadow-[0_0_8px_rgba(201,162,39,0.6)]" />
-                    {!isLast && (
-                      <svg width="8" height={rowHeight - 6} className="mt-1 overflow-visible">
-                        <GlowConnector
-                          x1={4} y1={0} x2={4} y2={rowHeight - 6}
-                          curve={0}
-                          color="#5E93B8"
-                          strokeWidth={6}
-                          baseOpacity={0.22}
-                          dashLength={9}
-                          gapLength={26}
-                          duration={2.4}
-                          delay={i * 0.25}
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <div
-                    className="flex-1 glass rounded-2xl px-4 mb-4 flex items-center justify-between gap-3 border-white/60"
-                    style={{ height: `${rowHeight}px`, boxShadow: "0 12px 28px rgba(63,111,124,0.14), 0 2px 8px rgba(63,111,124,0.08)" }}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-11 h-11 rounded-xl bg-pearl-100 flex items-center justify-center shrink-0">
-                        <NodeIcon name={n.icon} size={20} />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="font-bold text-graphite-900 text-[15px] leading-tight truncate">{n.label}</p>
-                        <p className="text-xs text-graphite-500 mt-0.5 leading-snug line-clamp-2">{NODE_BLURB[n.id]}</p>
-                      </div>
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <span className="w-12 h-12 rounded-2xl bg-white/70 flex items-center justify-center shrink-0">
+                      <NodeIcon name={n.icon} size={21} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="font-bold text-graphite-900 text-[15px] leading-tight truncate">{n.label}</p>
+                      <p className="text-xs text-graphite-500 mt-0.5 leading-snug line-clamp-2">{NODE_BLURB[n.id]}</p>
                     </div>
-                    <Icons.ChevronRight size={18} className="text-graphite-400 shrink-0" />
                   </div>
+                  <Icons.ChevronRight size={18} className="text-graphite-400 shrink-0" />
                 </button>
-              );
-            })}
+
+                {n.children && n.children.length > 1 && (
+                  <div className="mt-3 pt-3 border-t border-pearl-200 -mx-1 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-2 px-1 w-max">
+                      <button
+                        onClick={() => setView({ type: "category", nodeId: n.id })}
+                        className="shrink-0 gold-gloss px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                      >
+                        {n.children.length} {CHIP_COUNT_LABEL[n.id] || "Options"}
+                      </button>
+                      {n.children.map((c) => (
+                        <button
+                          key={c.label}
+                          onClick={() => openChild(c)}
+                          className="shrink-0 bg-pearl-100 text-graphite-700 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                        >
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {n.id === "longevity" && (
+                  <div className="mt-3 pt-3 border-t border-pearl-200 -mx-1 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-2 px-1 w-max">
+                      {LONGEVITY_CHIPS.map((label) => (
+                        <button
+                          key={label}
+                          onClick={() => { window.location.href = "/longevity"; }}
+                          className="shrink-0 bg-pearl-100 text-graphite-700 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {n.id === "alba" && (
+                  <div className="mt-3 pt-3 border-t border-pearl-200 -mx-1 overflow-x-auto no-scrollbar">
+                    <div className="flex items-center gap-2 px-1 w-max">
+                      {ALBA_CHIPS.map((label) => (
+                        <button
+                          key={label}
+                          onClick={() => openAlba()}
+                          className="shrink-0 bg-pearl-100 text-graphite-700 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap"
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
         </>
@@ -335,41 +376,18 @@ export default function HealthGraph() {
             })}
           </div>
 
-          {/* Mobile vertical list — matches design reference */}
-          <div className="md:hidden px-4 pb-8">
-            {children.map((c, i) => {
-              const isLast = i === children.length - 1;
-              return (
-                <button
-                  key={c.label}
-                  onClick={() => openChild(c)}
-                  className="w-full text-left flex items-start gap-3 relative"
-                >
-                  <div className="flex flex-col items-center pt-1 w-4">
-                    <span className="w-4 h-4 rounded-full bg-gold-500 shrink-0 z-10 shadow-[0_0_8px_rgba(201,162,39,0.6)]" />
-                    {!isLast && (
-                      <svg width="8" height="52" className="mt-1 overflow-visible">
-                        <GlowConnector
-                          x1={4} y1={0} x2={4} y2={52}
-                          curve={0}
-                          color="#5E93B8"
-                          strokeWidth={6}
-                          baseOpacity={0.22}
-                          dashLength={9}
-                          gapLength={26}
-                          duration={2.4}
-                          delay={i * 0.25}
-                        />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="flex-1 glass rounded-2xl px-4 py-4 mb-4 flex items-center justify-between gap-3">
-                    <p className="font-bold text-graphite-900 text-[15px] leading-tight">{c.label}</p>
-                    <Icons.ChevronRight size={18} className="text-graphite-400 shrink-0" />
-                  </div>
-                </button>
-              );
-            })}
+          {/* Mobile — claymorphism cards, centered, no side line */}
+          <div className="md:hidden px-5 pb-8 space-y-4">
+            {children.map((c) => (
+              <button
+                key={c.label}
+                onClick={() => openChild(c)}
+                className="clay w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
+              >
+                <p className="font-bold text-graphite-900 text-[15px] leading-tight">{c.label}</p>
+                <Icons.ChevronRight size={18} className="text-graphite-400 shrink-0" />
+              </button>
+            ))}
           </div>
           </>
         );

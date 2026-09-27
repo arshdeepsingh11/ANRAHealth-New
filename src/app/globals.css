@@ -5,7 +5,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 17px; /* slightly larger base — bumps all rem-based text site-wide */
+  font-size: 17px;
 }
 
 body {
@@ -23,7 +23,6 @@ body {
   outline-offset: 2px;
 }
 
-/* ── LEGACY (v1 hero blobs) — kept until Phase 2 homepage rebuild ── */
 @keyframes floatSlow {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(-14px, 18px); }
@@ -43,7 +42,6 @@ body {
   box-shadow: 0 20px 40px rgba(101, 113, 102, 0.18);
 }
 
-/* ── BRAND v5 — "Glacier": light, cool, premium glassmorphism ────── */
 .glass {
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(14px) saturate(160%);
@@ -94,7 +92,6 @@ body {
   display: none;
 }
 
-/* ── Intro selector — rotating ring + entrance ───────────────────── */
 @keyframes orbitSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -103,7 +100,6 @@ body {
   animation: orbitSpin 14s linear infinite;
 }
 
-/* ── Homepage graph — slow hub ring rotation (new) ────────────────── */
 @keyframes spinSlow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -117,15 +113,82 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .blob1, .blob2, .ecg-draw, .gold-gloss::after, .animate-orbit-spin,
-  .animate-pulse-wave, .animate-pulse-glow, .animate-sheen, .animate-spin-slow {
-    animation: none !important;
-  }
-}
-
-/* ── Orbiting nodes — planets around the hub ─────────────────────── */
 @keyframes orbitSpinReverse {
   from { transform: rotate(0deg); }
   to { transform: rotate(-360deg); }
+}
+
+/* ── Claymorphism + Glassmorphism combined — frosted, puffy, embossed ── */
+.clay {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    12px 12px 26px rgba(63, 90, 82, 0.20),
+    -10px -10px 22px rgba(255, 255, 255, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.clay:active {
+  box-shadow:
+    inset 6px 6px 12px rgba(63, 90, 82, 0.16),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.75);
+  transform: scale(0.98);
+}
+
+/* ── Floating transparent pill tab bar (mobile bottom nav) ───────── */
+.clay-tab {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 14px 36px rgba(63, 90, 82, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* ── Morphing futuristic headline — blur-to-sharp entrance + shifting gradient ── */
+.morph-word {
+  display: inline-block;
+  background: linear-gradient(90deg, #3F6F7C, #6EA8B6, #8C6FB8, #6EA8B6, #3F6F7C);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: morphIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both, gradientShift 6s ease-in-out infinite;
+}
+@keyframes morphIn {
+  from { opacity: 0; filter: blur(6px); transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Typing animation — reveals text like it's being typed, then blinking cursor ── */
+.typing-text {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  border-right: 2px solid #C9A227;
+  animation: typing 1.8s steps(30, end) both, blinkCursor 0.75s step-end infinite;
+}
+@keyframes typing {
+  from { width: 0; }
+  to { width: var(--w); }
+}
+@keyframes blinkCursor {
+  50% { border-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob1, .blob2, .ecg-draw, .gold-gloss::after, .animate-orbit-spin,
+  .animate-pulse-wave, .animate-pulse-glow, .animate-sheen, .animate-spin-slow,
+  .morph-word, .typing-text {
+    animation: none !important;
+  }
 }

@@ -18,6 +18,8 @@ const MOBILE_LABELS: Record<string, string> = {
 export default function PersistentActions() {
   const pathname = usePathname();
 
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <>
       {/* Desktop / tablet — unchanged floating pills, top-right */}
@@ -33,19 +35,19 @@ export default function PersistentActions() {
         })}
       </div>
 
-      {/* Mobile — fixed bottom tab bar, matches design reference */}
+      {/* Mobile — floating transparent pill tab bar, inset from edges */}
       <nav
-        className="md:hidden fixed bottom-0 inset-x-0 z-30 glass border-t border-pearl-200 flex items-stretch justify-around px-2 pt-2"
-        style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
+        className="md:hidden fixed inset-x-4 z-30 clay-tab rounded-full flex items-stretch justify-around px-2 py-2"
+        style={{ bottom: "calc(0.85rem + env(safe-area-inset-bottom))" }}
       >
         {persistentActions.map((a) => {
           const Icon = (Icons as any)[a.icon] || Icons.Circle;
           const active = pathname === a.href;
           return (
-            <Link key={a.href} href={a.href} className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl min-w-[64px]">
+            <Link key={a.href} href={a.href} className="flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-full min-w-[64px]">
               <span
                 className={`w-9 h-9 rounded-full flex items-center justify-center ${
-                  active ? "gold-gloss" : "bg-pearl-100"
+                  active ? "gold-gloss" : "bg-white/50"
                 }`}
               >
                 <Icon size={17} className={active ? "text-graphite-900" : "text-gold-600"} />
