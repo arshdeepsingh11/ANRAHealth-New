@@ -8,6 +8,7 @@ import {
   Globe2, GraduationCap, Sparkles, RotateCcw, X, Loader2,
 } from "lucide-react";
 import SymptomChecker from "@/components/SymptomChecker";
+import PhysicianIdCard from "@/components/PhysicianIdCard";
 import { physicians, Physician } from "@/data/physicians";
 import { cardiacSymptoms, faqs, aboutStory, locations, brand, services, whyChoose, languages } from "@/data/content";
 
@@ -333,8 +334,8 @@ export default function CardiologyPage() {
               {results && (
                 <div className="mt-6 pt-6 border-t border-pearl-200">
                   <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-4">Best matches</p>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {results.map((p) => <PhysicianCard key={p.slug} p={p} onOpen={() => setSelected(p)} />)}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+                    {results.map((p, i) => <PhysicianIdCard key={p.slug} p={p} index={i} onOpen={() => setSelected(p)} />)}
                   </div>
                 </div>
               )}
@@ -342,8 +343,9 @@ export default function CardiologyPage() {
 
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-4">Our Physicians</p>
-              <div className="grid sm:grid-cols-2 gap-5">
-                {physicians.map((p) => <PhysicianCard key={p.slug} p={p} onOpen={() => setSelected(p)} />)}
+              <p className="text-xs text-graphite-500 mb-6">Drag or tap a card to view the physician&apos;s profile.</p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                {physicians.map((p, i) => <PhysicianIdCard key={p.slug} p={p} index={i} onOpen={() => setSelected(p)} />)}
               </div>
             </div>
           </div>
