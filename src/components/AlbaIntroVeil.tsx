@@ -46,6 +46,11 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
   const cx = albaNodeRect ? albaNodeRect.left + albaNodeRect.width / 2 : window.innerWidth / 2;
   const cy = albaNodeRect ? albaNodeRect.top + albaNodeRect.height / 2 : window.innerHeight / 2;
   const haloR = albaNodeRect ? Math.max(albaNodeRect.width, albaNodeRect.height) / 2 + 14 : 90;
+  // Caption sits to the right of the spotlight, or to the left when ALBA is
+  // near the right edge (the desktop nav rail).
+  const TEXT_W = 280;
+  const roomRight = cx + haloR + 20 + TEXT_W <= window.innerWidth;
+  const textLeft = roomRight ? cx + haloR + 20 : Math.max(16, cx - haloR - 20 - TEXT_W);
 
   return (
     <div
@@ -68,8 +73,8 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
         className="absolute rounded-full pointer-events-none animate-pulse-glow"
         style={{
           left: cx - haloR, top: cy - haloR, width: haloR * 2, height: haloR * 2,
-          boxShadow: "0 0 40px 10px rgba(201,162,39,0.45)",
-          border: "1px solid rgba(201,162,39,0.6)",
+          boxShadow: "0 0 40px 10px rgba(140,111,184,0.45)",
+          border: "1px solid rgba(201,184,230,0.7)",
         }}
       />
 
@@ -78,13 +83,15 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
         <div
           className="absolute max-w-[280px]"
           style={{
-            left: Math.min(cx + haloR + 20, window.innerWidth - 300),
+            left: textLeft,
+            width: TEXT_W,
             top: cy - 30,
+            textAlign: roomRight ? "left" : "right",
           }}
         >
           <p
             className="font-display italic text-lg leading-snug"
-            style={{ color: "#F0E1B2", textShadow: "0 0 12px rgba(201,162,39,0.7), 0 0 2px rgba(255,255,255,0.4)" }}
+            style={{ color: "#F3EFF9", textShadow: "0 0 12px rgba(140,111,184,0.8), 0 0 2px rgba(255,255,255,0.4)" }}
           >
             <BottomUpLetters text={LINE} staggerDelay={0.026} />
           </p>
