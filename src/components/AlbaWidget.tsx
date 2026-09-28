@@ -2,74 +2,48 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Send, X, Loader2, Mic, MicOff, Volume2, VolumeX } from "lucide-react";
 import { useAlba } from "@/components/AlbaContext";
-import AlbaMark from "@/components/AlbaMark";
+import AlbaOrb from "@/components/AlbaOrb";
 import AlbaIntroVeil from "@/components/AlbaIntroVeil";
+import { albaSuggestionsFor } from "@/data/homeContent";
+import { useIsMobile } from "@/lib/useViewport";
 
-const ALBA_ENTRIES = ["Record Q&A", "Care Coordination", "Symptom Triage", "Daily Check-ins"];
 const VIDEO_SEEN_KEY = "anra_video_seen";
 
-interface ChatMessage { role: "user" | "assistant"; text: string; }
-
-const ROUTES: { match: RegExp; href: string; label: string }[] = [
-  { match: /cardiology/i, href: "/specialties/cardiology", label: "Open Cardiology" },
-  { match: /referral/i, href: "/referral-centre", label: "Open Referral Centre" },
-  { match: /contact|book an appointment/i, href: "/contact", label: "Open Contact" },
-];
-
-// Tailors ALBA's opening line based on the page the person is currently on,
-// so the greeting feels relevant instead of generic everywhere.
+// Page-aware opening line, so ALBA's greeting fits where the visitor is.
 function greetingForPath(pathname: string): string {
-  if (pathname.startsWith("/specialties/cardiology")) {
-    return "Hi, I'm ALBA. I see you're looking at Cardiology — ask me about heart symptoms, our cardiologists, or how to book a consult.";
-  }
-  if (pathname.startsWith("/specialties/respiratory-medicine")) {
-    return "Hi, I'm ALBA. I see you're looking at Respiratory Medicine — ask me about sleep studies, CPAP, or breathing concerns.";
-  }
-  if (pathname.startsWith("/specialties/skin-health")) {
-    return "Hi, I'm ALBA. I see you're looking at Skin Health — ask me about treatments, concerns, or how to book with Nea Precision Skin.";
-  }
-  if (pathname.startsWith("/referral-centre")) {
-    return "Hi, I'm ALBA. Need help with a referral? Ask me about the auto-fill options, urgency levels, or what to bring.";
-  }
-  if (pathname.startsWith("/longevity")) {
-    return "Hi, I'm ALBA. Curious about longevity and preventive health? Ask me anything, or try the Health Risk Assessment above.";
-  }
-  if (pathname.startsWith("/lab-results")) {
-    return "Hi, I'm ALBA. Just looked at a lab result explanation? I can help clarify anything or point you toward booking a consult.";
-  }
-  if (pathname.startsWith("/resources")) {
-    return "Hi, I'm ALBA. Looking for test prep, condition info, or forms? Ask me and I'll point you in the right direction.";
-  }
+  if (pathname === "/") return "Tell me what’s on your mind and I’ll help you find the right place to start.";
+  if (pathname.startsWith("/specialties/cardiology")) return "Hi, I'm ALBA. I see you're looking at Cardiology — ask me about heart symptoms, our cardiologists, or how to book a consult.";
+  if (pathname.startsWith("/specialties/respiratory-medicine")) return "Hi, I'm ALBA. I see you're looking at Respiratory Medicine — ask me about sleep studies, CPAP, or breathing concerns.";
+  if (pathname.startsWith("/specialties/skin-health")) return "Hi, I'm ALBA. I see you're looking at Skin Health — ask me about treatments, concerns, or how to book with Nea Precision Skin.";
+  if (pathname.startsWith("/referral-centre")) return "Hi, I'm ALBA. Need help with a referral? Ask me about the auto-fill options, urgency levels, or what to bring.";
+  if (pathname.startsWith("/longevity")) return "Hi, I'm ALBA. Curious about longevity and preventive health? Ask me anything, or try the Health Risk Assessment above.";
+  if (pathname.startsWith("/lab-results")) return "Hi, I'm ALBA. Would you like me to explain this result? I can clarify anything or point you toward booking a consult.";
+  if (pathname.startsWith("/genomics")) return "Hi, I'm ALBA. Want help understanding these testing options?";
+  if (pathname.startsWith("/explain-diagnosis")) return "Hi, I'm ALBA. Share a term from your report and I’ll explain it in plain language.";
+  if (pathname.startsWith("/resources")) return "Hi, I'm ALBA. Looking for test prep, condition info, or forms? Ask me and I'll point you in the right direction.";
   return "Hi, I'm ALBA — ANRA Health's AI companion. Ask me about our services, physicians, locations, or how to book.";
 }
 
-function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React.RefObject<HTMLDivElement> }) {
+const iconBtn: React.CSSProperties = { width: 40, height: 40, border: 0, background: "none", borderRadius: 10, fontSize: 18, display: "grid", placeItems: "center", flex: "none" };
+
+function AlbaPanel({ mobile }: { mobile: boolean }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: "assistant", text: greetingForPath(pathname || "/") },
-  ]);
+  const pathname = usePathname() || "/";
+  const { messages, loading, send, clear, closeAlba, suggestedRoute, speakReplies, setSpeakReplies, speakNow } = useAlba();
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [suggestedRoute, setSuggestedRoute] = useState<{ href: string; label: string } | null>(null);
   const [listening, setListening] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(true);
-  const [speakReplies, setSpeakReplies] = useState(true);
-  const endRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
-  // Tracks the current logged conversation on the server. Set on the first
-  // reply and reused for every subsequent message in this widget session,
-  // so the whole chat is grouped together in the database.
-  const conversationIdRef = useRef<string | null>(null);
+  const endRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, loading]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" }); }, [messages, loading]);
 
+  // Voice input (Speech Recognition).
   useEffect(() => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) { setSpeechSupported(false); return; }
-    const rec = new SpeechRecognition();
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { setSpeechSupported(false); return; }
+    const rec = new SR();
     rec.continuous = false;
     rec.interimResults = false;
     rec.lang = "en-US";
@@ -85,199 +59,108 @@ function AlbaPanel({ onClose, panelRef }: { onClose: () => void; panelRef: React
     else { recognitionRef.current.start(); setListening(true); }
   };
 
-  const speakNow = (text: string) => {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    // Chrome (and some other browsers) silently do nothing if speak() is
-    // called before voices have finished loading — no error, just no
-    // audio. If that's the case, wait for the one-time voiceschanged
-    // event and then speak.
-    if (window.speechSynthesis.getVoices().length === 0) {
-      const onVoicesReady = () => {
-        window.speechSynthesis.removeEventListener("voiceschanged", onVoicesReady);
-        window.speechSynthesis.speak(utterance);
-      };
-      window.speechSynthesis.addEventListener("voiceschanged", onVoicesReady);
-    } else {
-      window.speechSynthesis.speak(utterance);
-    }
+  const toggleVoice = () => {
+    const next = !speakReplies;
+    setSpeakReplies(next);
+    if (next) speakNow("Voice replies on");
+    else if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   };
 
-  const speak = (text: string) => {
-    if (!speakReplies) return;
-    speakNow(text);
-  };
-
-  const send = async (overrideText?: string) => {
-    const text = (overrideText ?? input).trim();
-    if (!text || loading) return;
-    const next: ChatMessage[] = [...messages, { role: "user", text }];
-    setMessages(next);
+  const submit = (t?: string) => {
+    const text = (t ?? input).trim();
+    if (!text) return;
     setInput("");
-    setLoading(true);
-    setSuggestedRoute(null);
-
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: text,
-          history: next.map((m) => ({ role: m.role, text: m.text })),
-          pageContext: pathname || "/",
-          conversationId: conversationIdRef.current,
-        }),
-      });
-
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}));
-        throw new Error(errData?.error || "failed");
-      }
-
-      const incomingConversationId = res.headers.get("X-Conversation-Id");
-      if (incomingConversationId) conversationIdRef.current = incomingConversationId;
-
-      const contentType = res.headers.get("Content-Type") || "";
-
-      // Emergency/crisis responses come back as a single JSON object, not
-      // streamed — they're a fixed message returned instantly, no AI call.
-      if (contentType.includes("application/json")) {
-        const data = await res.json();
-        if (data.conversationId) conversationIdRef.current = data.conversationId;
-        setLoading(false);
-        setMessages((m) => [...m, { role: "assistant", text: data.reply }]);
-        speak(data.reply);
-        return;
-      }
-
-      // Everything else streams in as plain text — update the message
-      // bubble live as each chunk arrives instead of waiting for it all.
-      if (!res.body) throw new Error("No response body");
-      const reader = res.body.getReader();
-      const decoder = new TextDecoder();
-      let fullText = "";
-      let started = false;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        if (!chunk) continue;
-        fullText += chunk;
-        if (!started) {
-          started = true;
-          setLoading(false);
-          setMessages((m) => [...m, { role: "assistant", text: fullText }]);
-        } else {
-          setMessages((m) => {
-            const copy = [...m];
-            copy[copy.length - 1] = { role: "assistant", text: fullText };
-            return copy;
-          });
-        }
-      }
-
-      speak(fullText);
-      const combined = `${text} ${fullText}`;
-      const match = ROUTES.find((r) => r.match.test(combined));
-      if (match) setSuggestedRoute(match);
-    } catch (err: any) {
-      setMessages((m) => [...m, { role: "assistant", text: `Connection error: ${err.message}. Check GEMINI_API_KEY in .env.local and restart the server.` }]);
-    } finally {
-      setLoading(false);
-    }
+    send(text);
   };
+
+  const suggestions = albaSuggestionsFor(pathname);
 
   return (
-    <div
-      ref={panelRef}
-      className="fixed inset-x-0 bottom-0 md:inset-x-auto md:bottom-6 md:right-6 z-[95] glass overflow-hidden shadow-2xl flex flex-col w-full md:w-[380px] h-[68dvh] md:h-[520px] rounded-t-3xl md:rounded-2xl"
-    >
-      <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-pearl-200 shrink-0 gold-gloss">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center bg-white/90"><AlbaMark size={18} /></div>
-          <div>
-            <p className="font-semibold text-graphite-900 text-sm leading-tight">ALBA</p>
-            <p className="text-[11px] text-graphite-800/70 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-600 inline-block" /> Online
-            </p>
+    <>
+      <div onClick={closeAlba} style={{ position: "fixed", inset: 0, zIndex: 70, background: "rgba(20,24,27,.18)" }} />
+      <aside
+        role="dialog"
+        aria-label="ALBA"
+        className="anra-chrome"
+        style={{ position: "fixed", inset: mobile ? 0 : "12px 12px 12px auto", width: mobile ? "100%" : 440, zIndex: 71, background: "#FBFAF7", borderRadius: mobile ? 0 : 20, boxShadow: "0 40px 80px -30px rgba(20,24,27,.4)", display: "flex", flexDirection: "column", overflow: "hidden", animation: "fadeUp .3s ease", border: "1px solid #E4DCF1" }}
+      >
+        <div style={{ padding: "18px 18px 16px 20px", display: "flex", alignItems: "center", gap: 14, borderBottom: "1px solid #EFEAF6", background: "linear-gradient(180deg,#F3EFF9,#FBFAF7)" }}>
+          <AlbaOrb size={40} glow />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 20, letterSpacing: ".1em", fontWeight: 600 }}>ALBA</div>
+            <div style={{ fontSize: 14, color: "#5A626A" }}>Your health companion.</div>
           </div>
-        </div>
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => {
-              const next = !speakReplies;
-              setSpeakReplies(next);
-              if (next) {
-                speakNow("Voice replies on");
-              } else if ("speechSynthesis" in window) {
-                window.speechSynthesis.cancel();
-              }
-            }}
-            className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${speakReplies ? "bg-white/90 text-gold-700" : "bg-white/20 text-white"}`}
-            aria-label={speakReplies ? "Mute ALBA voice replies" : "Unmute ALBA voice replies"}
-            title={speakReplies ? "Voice replies on — tap to mute" : "Voice replies off — tap to unmute"}
-          >
-            {speakReplies ? <Volume2 size={16} /> : <VolumeX size={16} />}
+          <button onClick={toggleVoice} aria-label={speakReplies ? "Mute ALBA voice replies" : "Unmute ALBA voice replies"} title={speakReplies ? "Voice replies on — tap to mute" : "Voice replies off — tap to unmute"} className="hv-lav" style={iconBtn}>
+            <i className={speakReplies ? "ph ph-speaker-high" : "ph ph-speaker-slash"} />
           </button>
-          <button onClick={onClose} className="text-graphite-800/70 hover:text-graphite-900 p-1"><X size={18} /></button>
+          <button onClick={clear} aria-label="New conversation" className="hv-lav" style={iconBtn}><i className="ph ph-note-pencil" /></button>
+          <button onClick={closeAlba} aria-label="Close ALBA" className="hv-lav" style={iconBtn}><i className="ph ph-x" /></button>
         </div>
-      </div>
 
-      <div className="flex gap-1.5 px-4 py-2.5 border-b border-pearl-200 shrink-0 bg-pearl-50/60 overflow-x-auto md:flex-wrap no-scrollbar">
-        {ALBA_ENTRIES.map((e) => (
-          <button key={e} onClick={() => send(e)} className="shrink-0 glass rounded-full px-2.5 py-1 text-[11px] font-semibold text-gold-700">{e}</button>
-        ))}
-      </div>
+        <div aria-live="polite" style={{ flex: 1, overflow: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ maxWidth: "92%", fontSize: 17, lineHeight: 1.5, color: "#2A2F33" }}>{greetingForPath(pathname)}</div>
+          {messages.length === 0 && (
+            <div style={{ display: "grid", gap: 8, marginTop: 4 }}>
+              {suggestions.map((s) => (
+                <button key={s} onClick={() => submit(s)} className="hv-bdViolet" style={{ textAlign: "left", border: "1px solid #E4DCF1", background: "#FDFCFA", borderRadius: 12, padding: "12px 14px", fontSize: 15, minHeight: 44 }}>{s}</button>
+              ))}
+            </div>
+          )}
+          {messages.map((m, i) => {
+            if (m.kind === "safety") return (
+              <div key={i} role="alert" style={{ padding: 16, borderRadius: 14, background: "#9B2317", color: "#FFF7F5", display: "grid", gap: 10 }}>
+                <div style={{ fontWeight: 600, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-warning" style={{ fontSize: 20 }} />Please seek urgent medical care.</div>
+                <div style={{ fontSize: 15 }}>What you’ve described may need immediate attention. Call 911 or go to the nearest emergency department. Please don’t wait for an online answer.</div>
+                <a href="tel:911" style={{ justifySelf: "start", background: "#FFF7F5", color: "#9B2317", textDecoration: "none", fontWeight: 700, padding: "10px 16px", borderRadius: 10, letterSpacing: ".06em" }}>CALL 911</a>
+              </div>
+            );
+            if (m.kind === "error") return (
+              <div key={i} style={{ maxWidth: "92%", fontSize: 15, color: "#3A4147", padding: "12px 14px", borderRadius: 12, background: "#F6F2FB", display: "flex", gap: 10 }}><i className="ph ph-cloud-slash" style={{ color: "#6A5096", marginTop: 3 }} />{m.text}</div>
+            );
+            if (m.role === "user") return (
+              <div key={i} style={{ alignSelf: "flex-end", maxWidth: "84%", background: "#14181B", color: "#F7F5F1", padding: "11px 15px", borderRadius: "16px 16px 4px 16px", fontSize: 15, whiteSpace: "pre-wrap" }}>{m.text}</div>
+            );
+            return <div key={i} style={{ maxWidth: "92%", fontSize: 15.5, lineHeight: 1.55, color: "#2A2F33", whiteSpace: "pre-wrap", paddingLeft: 12, borderLeft: "2px solid #C9B8E6" }}>{m.text}</div>;
+          })}
+          {loading && <div style={{ display: "flex", gap: 10, alignItems: "center", color: "#5A626A", fontSize: 15 }}><AlbaOrb size={22} />ALBA is reviewing what you’ve shared…</div>}
+          {suggestedRoute && !loading && (
+            <button onClick={() => { closeAlba(); router.push(suggestedRoute.href); }} style={{ alignSelf: "flex-start", border: 0, background: "none", padding: "4px 0", color: "#6A5096", fontWeight: 600, fontSize: 15 }}>{suggestedRoute.label} →</button>
+          )}
+          <div ref={endRef} />
+        </div>
 
-      <div className="px-4 py-3 flex-1 overflow-y-auto min-h-0">
-        {messages.map((m, i) => (
-          <div key={i} className={m.role === "user" ? "flex justify-end mb-2.5" : "flex mb-2.5"}>
-            <div className={`max-w-[82%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug ${m.role === "user" ? "bg-pearl-100 text-black" : "bg-white text-black shadow-sm"}`}>{m.text}</div>
+        <div style={{ padding: "12px 14px 14px", borderTop: "1px solid #EFEAF6", paddingBottom: mobile ? "max(14px, env(safe-area-inset-bottom))" : 14 }}>
+          <div style={{ display: "flex", gap: 8, alignItems: "flex-end", background: "#FDFCFA", border: "1px solid #D9CCEE", borderRadius: 14, padding: "6px 6px 6px 14px" }}>
+            <textarea
+              aria-label="Message ALBA"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
+              rows={1}
+              placeholder={listening ? "Listening…" : "Ask ALBA anything about your health…"}
+              style={{ flex: 1, minWidth: 0, border: 0, outline: "none", background: "transparent", resize: "none", fontSize: 16, lineHeight: 1.4, padding: "10px 0", maxHeight: 120 }}
+            />
+            {speechSupported && (
+              <button onClick={toggleListening} aria-label={listening ? "Stop listening" : "Speak to ALBA"} title="Speak to ALBA" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: listening ? "#9B2317" : "#EFEAF6", color: listening ? "#FFF7F5" : "#6A5096", display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}>
+                <i className={listening ? "ph ph-microphone-slash" : "ph ph-microphone"} />
+              </button>
+            )}
+            <button onClick={() => submit()} aria-label="Send" className="hv-purple" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: "#8C6FB8", color: "#FDFCFA", display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}><i className="ph ph-arrow-up" /></button>
           </div>
-        ))}
-        {loading && (
-          <div className="flex items-center gap-2 text-graphite-500 text-xs">
-            <Loader2 size={13} className="animate-spin" /> ALBA is thinking…
-          </div>
-        )}
-        {suggestedRoute && !loading && (
-          <button onClick={() => router.push(suggestedRoute.href)} className="gold-gloss rounded-full px-3.5 py-1.5 text-[11px] font-semibold mt-1">
-            {suggestedRoute.label} →
-          </button>
-        )}
-        <div ref={endRef} />
-      </div>
-
-      <div className="flex items-center gap-1.5 px-3.5 py-2.5 border-t border-pearl-200 shrink-0" style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
-        <button
-          onClick={toggleListening}
-          disabled={!speechSupported}
-          title={speechSupported ? "Speak to ALBA" : "Voice input not supported in this browser"}
-          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${listening ? "bg-red-500 text-white" : "bg-pearl-100 text-gold-700"} disabled:opacity-30`}
-        >
-          {listening ? <MicOff size={14} /> : <Mic size={14} />}
-        </button>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && send()}
-          disabled={loading}
-          className="flex-1 rounded-full bg-white border border-pearl-300 px-3.5 py-2 text-[13px] text-black outline-none focus:border-gold-500 disabled:opacity-60"
-          placeholder={listening ? "Listening…" : "Ask ALBA anything…"}
-        />
-        <button onClick={() => send()} disabled={loading} className="w-8 h-8 rounded-full gold-gloss flex items-center justify-center shrink-0 disabled:opacity-60"><Send size={13} /></button>
-      </div>
-    </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#5A626A", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-info" />ALBA explains; it doesn’t diagnose. In an emergency call 911.</div>
+        </div>
+      </aside>
+    </>
   );
 }
 
 export default function AlbaWidget() {
-  const { isOpen, openAlba, closeAlba } = useAlba();
+  const { isOpen, openAlba, closeAlba, emergency } = useAlba();
   const pathname = usePathname();
-  const panelRef = useRef<HTMLDivElement>(null);
+  const mobile = useIsMobile();
 
+  // On the homepage, ALBA's button appears after the intro video + the
+  // spotlight veil; everywhere else it is there straight away.
   const [videoDone, setVideoDone] = useState(pathname !== "/");
   const [introDone, setIntroDone] = useState(pathname !== "/");
   const [popIn, setPopIn] = useState(pathname !== "/");
@@ -293,10 +176,12 @@ export default function AlbaWidget() {
 
   useEffect(() => {
     if (!isOpen) return;
-    const h = (e: MouseEvent) => { if (panelRef.current && !panelRef.current.contains(e.target as Node)) closeAlba(); };
-    document.addEventListener("mousedown", h);
-    return () => document.removeEventListener("mousedown", h);
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeAlba(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, closeAlba]);
+
+  if (pathname?.startsWith("/admin")) return null;
 
   const handleIntroComplete = () => {
     setIntroDone(true);
@@ -307,22 +192,18 @@ export default function AlbaWidget() {
     <>
       {videoDone && !introDone && <AlbaIntroVeil onComplete={handleIntroComplete} />}
 
-      {popIn && !isOpen && (
+      {popIn && !isOpen && !emergency && !mobile && (
         <button
-          onClick={openAlba}
-          className="fixed right-4 bottom-24 md:right-6 md:bottom-6 z-[80] w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-glow bg-pearl-50 border border-gold-500/30"
-          style={{ animation: "albaPopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)" }}
+          onClick={() => openAlba()}
           aria-label="Open ALBA"
+          className="anra-chrome hv-bdViolet"
+          style={{ position: "fixed", left: 20, bottom: 20, zIndex: 40, height: 56, padding: "0 20px 0 13px", border: "1px solid #E4DCF1", borderRadius: 999, background: "rgba(253,252,250,.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: "0 18px 40px -18px rgba(106,80,150,.5)", display: "flex", alignItems: "center", gap: 10, fontSize: 13, letterSpacing: ".12em", fontWeight: 600, color: "#4E3A73", animation: "fadeUp .4s ease" }}
         >
-          <AlbaMark size={30} />
+          <AlbaOrb size={30} />ALBA
         </button>
       )}
 
-      {popIn && isOpen && <AlbaPanel onClose={closeAlba} panelRef={panelRef} />}
-
-      <style jsx global>{`
-        @keyframes albaPopIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-      `}</style>
+      {isOpen && <AlbaPanel mobile={mobile} />}
     </>
   );
 }
