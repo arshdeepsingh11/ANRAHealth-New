@@ -1,0 +1,74 @@
+/* ANRA design system — keyframes + hover states ported from the Claude
+   Design "ANRA Health" artifact. Components use inline styles (like the
+   design), so hover rules here use !important to win over them. */
+
+@keyframes albaBreath { 0%,100% { transform: scale(1); filter: saturate(1) } 50% { transform: scale(1.045); filter: saturate(1.15) } }
+@keyframes albaGlow { 0%,100% { opacity: .55 } 50% { opacity: .9 } }
+@keyframes scanLine { 0% { top: 6% } 50% { top: 90% } 100% { top: 6% } }
+@keyframes pulseSoft { 0%,100% { opacity: .45 } 50% { opacity: 1 } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+@keyframes hubIn { from { left: 50%; top: 50%; opacity: 0; transform: scale(.3) } to { left: var(--x); top: var(--y); opacity: 1; transform: scale(1) } }
+@keyframes hubFloat { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+@keyframes hubPulse { 0% { transform: translate(0,0); opacity: 0 } 15% { opacity: 1 } 85% { opacity: 1 } 100% { transform: translate(var(--tx),var(--ty)); opacity: 0 } }
+@keyframes spin { to { transform: rotate(360deg) } }
+@keyframes spinRev { to { transform: rotate(-360deg) } }
+@keyframes coreBreath { 0%,100% { box-shadow: 0 0 0 0 rgba(140,111,184,.25), 0 30px 60px -20px rgba(140,111,184,.45) } 50% { box-shadow: 0 0 0 18px rgba(140,111,184,0), 0 30px 70px -18px rgba(140,111,184,.6) } }
+@keyframes shimmerText { 0% { background-position: 0% 50% } 100% { background-position: 200% 50% } }
+@keyframes caret { 50% { opacity: 0 } }
+@keyframes albaBeat { 0% { transform: scale(1) } 12% { transform: scale(1.13) } 24% { transform: scale(.97) } 36% { transform: scale(1.08) } 52%,100% { transform: scale(1) } }
+@keyframes albaRipple { 0% { transform: scale(1); opacity: .7 } 100% { transform: scale(2.1); opacity: 0 } }
+@keyframes sparkle { 0%,100% { transform: scale(0) rotate(0deg); opacity: 0 } 50% { transform: scale(1) rotate(90deg); opacity: 1 } }
+
+@media (prefers-reduced-motion: reduce) {
+  .anra-root *, .anra-root *::before, .anra-root *::after,
+  .anra-chrome *, .anra-chrome *::before, .anra-chrome *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+  }
+}
+
+/* Base type + resets for design-system surfaces (undo Tailwind preflight
+   where the design relies on browser defaults). */
+.anra-root, .anra-chrome {
+  font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  color: #14181B;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.anra-root { background: #F7F5F1; font-size: 16px; line-height: 1.55; }
+.anra-chrome { font-size: 16px; line-height: 1.55; }
+.anra-root button, .anra-chrome button { cursor: pointer; font-family: inherit; color: inherit; }
+/* Browser-default control metrics (Tailwind preflight sets line-height:
+   inherit, which makes buttons/inputs taller than the design). */
+.anra-root button, .anra-root input, .anra-root textarea, .anra-root select,
+.anra-chrome button, .anra-chrome input, .anra-chrome textarea, .anra-chrome select { line-height: normal; font-size: inherit; }
+.anra-root a, .anra-chrome a { color: #3F6F7C; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.anra-root a:hover, .anra-chrome a:hover { color: #2F5561; }
+.anra-root input::placeholder, .anra-root textarea::placeholder,
+.anra-chrome input::placeholder, .anra-chrome textarea::placeholder { color: #8A9197; }
+.anra-root ::selection, .anra-chrome ::selection { background: #D6E7EB; color: inherit; }
+.anra-root :focus-visible, .anra-chrome :focus-visible { outline: 2px solid #3F6F7C; outline-offset: 2px; }
+.anra-root img, .anra-chrome img { display: inline; max-width: none; vertical-align: baseline; }
+
+/* Hover states (design `style-hover`) */
+.hv-sand:hover { background: #EFECE6 !important; }
+.hv-railLink:hover { background: #F1EEF7 !important; color: #3F6F7C !important; }
+.hv-purple:hover { background: #7A5EA8 !important; }
+.hv-chip:hover { border-color: #8C6FB8 !important; color: #6A5096 !important; }
+.hv-tealText:hover { color: #3F6F7C !important; }
+.hv-bdTeal:hover { border-color: #3F6F7C !important; }
+.hv-fillTeal:hover { background: #3F6F7C !important; color: #FDFCFA !important; }
+.hv-mist:hover { background: #E7F0F2 !important; }
+.hv-bdSky:hover { border-color: #A9C9D1 !important; }
+.hv-bdViolet:hover { border-color: #8C6FB8 !important; }
+.hv-deep:hover { background: #2F5561 !important; }
+.hv-lav:hover { background: #EFEAF6 !important; }
+.hv-ink:hover { background: #2A3035 !important; }
+.hv-bdGlacier:hover { border-color: #6EA8B6 !important; }
+.hv-footLink:hover { color: #3F6F7C !important; }
+
+/* Skip link */
+.anra-skip:focus { left: 12px !important; }
+
+/* Hide scrollbars on horizontal chip rows */
+.anra-noscroll::-webkit-scrollbar { display: none; }
+.anra-noscroll { scrollbar-width: none; }
