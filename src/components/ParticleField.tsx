@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 interface Particle {
   x: number;
@@ -13,7 +14,15 @@ interface Particle {
   baseAlpha: number;
 }
 
+// The homepage draws its own design particles (<anra-particles>), so the
+// global field is skipped there.
 export default function ParticleField({ color = "120, 96, 164" }: { color?: string }) {
+  const pathname = usePathname();
+  if (pathname === "/") return null;
+  return <ParticleCanvas color={color} />;
+}
+
+function ParticleCanvas({ color }: { color: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
