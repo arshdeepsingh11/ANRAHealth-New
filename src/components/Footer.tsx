@@ -1,50 +1,64 @@
 "use client";
 
-import Link from "next/link";
-import { Phone, Mail } from "lucide-react";
-import { brand, locations } from "@/data/content";
-import { useLanguage } from "@/i18n/LanguageContext";
-import { tc } from "@/i18n/contentTranslations";
+import React from "react";
+import { PAGE_HREF, CLINIC_PHONE, CLINIC_EMAIL, type NavLink } from "@/data/homeContent";
+import { useAnraNav } from "@/lib/useAnraNav";
 
+const head: React.CSSProperties = { fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#5A626A" };
+const col: React.CSSProperties = { marginTop: 12, display: "grid", gap: 8, justifyItems: "start" };
+const linkBtn: React.CSSProperties = { border: 0, background: "none", padding: "2px 0", fontSize: 16, color: "#14181B" };
+
+// Universal footer (design "Footer" screen).
 export default function Footer() {
-  const { t, lang } = useLanguage();
+  const go = useAnraNav();
+  const L = (label: string, l: NavLink) => <button key={label} onClick={() => go(l)} className="hv-footLink" style={linkBtn}>{label}</button>;
 
   return (
-    <footer className="pt-16 pb-10 px-6 lg:px-10 bg-pearl-50 border-t border-pearl-200">
-      <div className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-4 gap-10 text-sm text-graphite-600">
-        <div>
-          <img src="/logo.png" alt="ANRA Health" className="h-12 w-auto mb-4" />
-          <p>{t("footer.tagline")}</p>
-        </div>
-        <div>
-          <p className="font-semibold mb-3 text-graphite-900">{t("footer.contact")}</p>
-          <p className="flex items-center gap-2 mb-2">
-            <Phone size={13} className="text-gold-600" /> {brand.phone}
-          </p>
-          <p className="flex items-center gap-2">
-            <Mail size={13} className="text-gold-600" /> {brand.email}
-          </p>
-        </div>
-        <div>
-          <p className="font-semibold mb-3 text-graphite-900">{t("footer.locations")}</p>
-          {locations.map((l) => (
-            <p key={l.tag} className="mb-2">
-              {tc(lang, "locations", l.tag, "tag", l.tag)} — {l.address.split(",")[0]}
-            </p>
-          ))}
-        </div>
-        <div>
-          <p className="font-semibold mb-3 text-graphite-900">{t("footer.quickLinks")}</p>
-          <div className="flex flex-col gap-2">
-            <Link href="/about" className="hover:text-gold-700 transition-colors">{t("footer.aboutUs")}</Link>
-            <Link href="/referral-centre" className="hover:text-gold-700 transition-colors">Referral Centre</Link>
-            <Link href="/resources" className="hover:text-gold-700 transition-colors">Patient Resources</Link>
-            <Link href="/contact" className="hover:text-gold-700 transition-colors">{t("nav.contact")}</Link>
+    <footer className="anra-chrome" style={{ borderTop: "1px solid #E3DED5", background: "#EFECE6" }}>
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "clamp(48px,7vw,88px) clamp(20px,4vw,40px) 32px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 32 }}>
+          <div style={{ gridColumn: "span 2", minWidth: 0 }}>
+            <div style={{ letterSpacing: ".16em", fontSize: 14, fontWeight: 600 }}>ANRA <span style={{ fontWeight: 400, color: "#5A626A" }}>HEALTH</span></div>
+            <p style={{ margin: "10px 0 0", color: "#3A4147", maxWidth: 320 }}>Advanced cardiac &amp; internal medicine care. Calgary, Alberta.</p>
+            <p style={{ margin: "16px 0 0", fontSize: 15, color: "#3A4147" }}><a href={`tel:${CLINIC_PHONE}`}>{CLINIC_PHONE}</a> · <a href={`mailto:${CLINIC_EMAIL}`}>{CLINIC_EMAIL}</a></p>
+          </div>
+          <div>
+            <div style={head}>Explore</div>
+            <div style={col}>
+              {L("Care", { label: "Care", href: PAGE_HREF.hub })}
+              {L("Precision Health", { label: "Precision Health", href: PAGE_HREF.genomics })}
+              {L("Packages", { label: "Packages", href: PAGE_HREF.packages })}
+              {L("Longevity", { label: "Longevity", href: PAGE_HREF.risk })}
+              {L("ALBA", { label: "ALBA", alba: true })}
+              {L("About", { label: "About", href: "/about" })}
+            </div>
+          </div>
+          <div>
+            <div style={head}>Patients</div>
+            <div style={col}>
+              {L("Referral Centre", { label: "Referral Centre", href: PAGE_HREF.referral })}
+              {L("Patient Resources", { label: "Patient Resources", href: PAGE_HREF.resources })}
+              {L("Find a physician", { label: "Find a physician", href: PAGE_HREF.matcher })}
+              {L("Contact", { label: "Contact", href: PAGE_HREF.contact })}
+            </div>
+          </div>
+          <div>
+            <div style={head}>Locations</div>
+            <p style={{ margin: "12px 0 0", fontSize: 15, color: "#3A4147" }}>North East<br />201 – 3151 27 St NE</p>
+            <p style={{ margin: "10px 0 0", fontSize: 15, color: "#3A4147" }}>Meadow Miles<br />250 – 8500 Blackfoot Trail SE</p>
           </div>
         </div>
-      </div>
-      <div className="max-w-7xl mx-auto mt-12 pt-6 text-xs border-t border-pearl-200 text-graphite-500">
-        © {new Date().getFullYear()} {brand.name}. {t("footer.rights")}
+        <div style={{ marginTop: 40, padding: "16px 18px", borderRadius: 12, background: "#FDFCFA", display: "flex", gap: 10, alignItems: "flex-start", fontSize: 15 }}>
+          <i className="ph ph-first-aid" style={{ fontSize: 20, color: "#9B2317" }} />
+          <span><strong style={{ fontWeight: 600 }}>Emergency information.</strong> ANRA isn’t an emergency service. If you think you’re having a medical emergency, call <a href="tel:911" style={{ color: "#9B2317", fontWeight: 600 }}>911</a>. For nurse advice in Alberta, call Health Link <a href="tel:811">811</a>.</span>
+        </div>
+        <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: "8px 20px", fontSize: 13, color: "#5A626A" }}>
+          <span>© {new Date().getFullYear()} ANRA Health</span>
+          <a href="#" style={{ color: "#5A626A" }}>Privacy</a>
+          <a href="#" style={{ color: "#5A626A" }}>Terms</a>
+          <a href="#" style={{ color: "#5A626A" }}>Accessibility</a>
+          <span>Testing fulfilled by BioAro Labs and BioAro Drugs.</span>
+        </div>
       </div>
     </footer>
   );
