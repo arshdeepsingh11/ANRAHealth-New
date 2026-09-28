@@ -1,18 +1,27 @@
 import { test, expect } from "@playwright/test";
 
-test("homepage loads and graph renders", async ({ page }) => {
+// Skip the first-visit intro video + ALBA spotlight so tests reach the page itself.
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem("anra_video_seen", "1");
+    sessionStorage.setItem("anra_alba_intro_seen", "1");
+  });
+});
+
+test("homepage loads with hero and health map", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Healthcare Designed Around You")).toBeVisible();
-  await expect(page.getByText("Your Health,")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Healthcare designed around");
+  await expect(page.getByText("Your Health, One Record").first()).toBeVisible();
   await expect(page.locator("text=Application error")).toHaveCount(0);
 });
 
-test("persistent action buttons are visible", async ({ page }) => {
+test("navigation rail is visible with all sections", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByText("Referral Centre")).toBeVisible();
-  await expect(page.getByText("Contact")).toBeVisible();
-  await expect(page.getByText("Locations")).toBeVisible();
-  await expect(page.getByText("Patient Resources")).toBeVisible();
+  const nav = page.getByRole("navigation", { name: "Primary" });
+  await expect(nav).toBeVisible();
+  for (const label of ["Care", "Diagnostics", "Precision Health", "Longevity", "AI Health", "Referral Centre", "More", "Search"]) {
+    await expect(nav.getByRole("button", { name: label, exact: true })).toBeVisible();
+  }
 });
 
 test("Cardiology page loads with all tabs", async ({ page }) => {
@@ -48,7 +57,29 @@ test("Referral Centre form loads and PDF button exists", async ({ page }) => {
 test("ALBA opens and shows greeting", async ({ page }) => {
   await page.goto("/");
   await page.getByLabel("Open ALBA").click();
-  await expect(page.getByText("Hi, I'm ALBA")).toBeVisible();
+  const panel = page.getByRole("dialog", { name: "ALBA" });
+  await expect(panel).toBeVisible();
+  await expect(panel.getByText("Your health companion.")).toBeVisible();
+});
+
+test("emergency keywords open the safety screen before any AI call", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#concierge").fill("I have crushing chest pain");
+  await page.getByRole("button", { name: "Ask", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Please seek urgent medical care." })).toBeVisible();
+  await expect(page.getByRole("link", { name: /CALL 911/ })).toHaveAttribute("href", "tel:911");
+});
+
+test("test gallery hands off to the exact BioAro Labs product page", async ({ page }) => {
+  await page.goto("/");
+  const gallery = page.locator("#gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  // Hovering the carousel pauses its auto-advance (design behaviour).
+  await gallery.locator("article").first().hover({ force: true });
+  await page.waitForTimeout(800);
+  await gallery.locator("article:has(anra-electro)").click({ force: true });
+  await page.getByRole("button", { name: /Get this test/i }).click();
+  await expect(page.getByRole("link", { name: /Continue to BioAro Labs/i })).toHaveAttribute("href", /^https:\/\/bioarolabs\.com\/product\//);
 });
 
 test("no console errors on homepage", async ({ page }) => {
@@ -136,7 +167,7 @@ test("Genomics Available Tests tab shows real BioAro Labs tests", async ({ page 
 
 test("Homepage shows concierge search bar", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByPlaceholder(/Tell us what's going on/i)).toBeVisible();
+  await expect(page.getByPlaceholder(/Tell us what.s going on/i)).toBeVisible();
 });
 
 // ─────────────────────────────────────────────────────────────────
