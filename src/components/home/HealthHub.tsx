@@ -84,13 +84,9 @@ export default function HealthHub({ mobile }: { mobile: boolean }) {
 
   return (
     <div id="hub" style={{ position: "relative", maxWidth: 1240, margin: "0 auto", padding: "16px clamp(16px,4vw,40px) clamp(56px,8vw,96px)" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", minHeight: 42 }}>
-        <span style={{ whiteSpace: "nowrap", flex: "none", height: 36, padding: "0 14px", borderRadius: 999, background: "rgba(253,252,250,.85)", border: "1px solid #E3DED5", display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500 }}>
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#6EA8B6" }} />Your Health, One Record
-        </span>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", minHeight: layer ? 42 : 0 }}>
         {layer && (
           <>
-            <i className="ph ph-caret-right" style={{ color: "#8A9197" }} />
             <span style={{ fontSize: 13, fontWeight: 500 }}>{HUB_INFO[layer].title}</span>
             <button onClick={() => openLayer(null)} className="hv-bdTeal" style={{ marginLeft: 6, height: 36, padding: "0 14px", borderRadius: 999, border: "1px solid #D6D0C5", background: "#FDFCFA", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><i className="ph ph-arrow-left" />Back to full map</button>
           </>
