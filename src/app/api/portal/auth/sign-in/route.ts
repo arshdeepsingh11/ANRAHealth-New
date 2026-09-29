@@ -8,6 +8,7 @@ import { prisma } from "@backend/db";
 import { verifyPassword, burnPasswordCheck, createSession, normalizeEmail, clientMeta, assertSameOrigin, isLocked, recordFailedLogin } from "@backend/patientAuth";
 import { rateLimit } from "@backend/rateLimit";
 import { audit } from "@backend/audit";
+import { linkVisitorToPatient, currentSessionId } from "@backend/visitors";
 import { readJson, toResponse, str, HttpError } from "@backend/apiHelpers";
 
 const WRONG = "Email or password is incorrect.";
@@ -24,16 +25,18 @@ export async function POST(req: Request) {
       throw new HttpError(429, "Too many attempts. Please wait a few minutes and try again.");
     }
 
-    const p = await prisma.patient.findUnique({ where: { email }, select: { id: true, passwordHash: true, failedLogins: true, lockedUntil: true, emailVerifiedAt: true, email: true, firstName: true } });
+    const p = await prisma.patient.findUnique({ where: { email }, select: { id: true, passwordHash: true, failedLogins: true, lockedUntil: true, emailVerifiedAt: true, email: true, firstName: true, accountStatus: true } });
     if (!p) { await burnPasswordCheck(password); throw new HttpError(401, WRONG); }
     if (isLocked(p)) throw new HttpError(423, "This account is temporarily locked after several attempts. Please try again in 15 minutes.");
     if (!(await verifyPassword(password, p.passwordHash))) {
       await recordFailedLogin(p.id, p.failedLogins);
       throw new HttpError(401, WRONG);
     }
+    if (p.accountStatus !== "active") throw new HttpError(403, "This account isn't active. Please contact the clinic.");
     await prisma.patient.update({ where: { id: p.id }, data: { failedLogins: 0, lockedUntil: null, lastLoginAt: new Date() } });
     await createSession(p.id);
     audit(p.id, "patient", "login", "session", ip);
+    await linkVisitorToPatient(await currentSessionId(), p.id);
     if (!p.emailVerifiedAt) {
       // Unverified: send a fresh code unless one is still valid (errors ignored — the verify page can resend).
       if (!(await hasActiveCode(p.id))) await sendVerificationCode(p).catch(() => {});
