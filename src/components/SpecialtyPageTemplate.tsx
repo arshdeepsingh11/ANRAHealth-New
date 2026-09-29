@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import * as Icons from "lucide-react";
-import { ArrowLeft, ChevronRight, MapPin, Phone, Clock, CheckCircle2 } from "lucide-react";
+import { ChevronRight, MapPin, Phone, Clock, CheckCircle2 } from "lucide-react";
 import { physicians, Physician } from "@/data/physicians";
 import { locations, brand } from "@/data/content";
 import type { SpecialtyContent } from "@/data/specialtyContent";
@@ -46,16 +46,7 @@ export default function SpecialtyPageTemplate({ content }: { content: SpecialtyC
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <div className="px-5 pt-5 md:hidden">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
-          <ArrowLeft size={15} /> Back to Main Page
-        </Link>
-      </div>
-      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
-        <ArrowLeft size={15} /> Back to Main Page
-      </Link>
-
-      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
+      <div className="text-center pt-16 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">
           ANRA Health — Medical Specialties{content.partnerLine ? ` · ${content.partnerLine}` : ""}
         </p>
