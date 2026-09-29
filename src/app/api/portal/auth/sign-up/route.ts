@@ -4,6 +4,7 @@
 
 import { NextResponse } from "next/server";
 import { prisma } from "@backend/db";
+import { sendVerificationCode } from "@backend/emailVerification";
 import { hashPassword, passwordProblem, createSession, normalizeEmail, isValidEmail, clientMeta, assertSameOrigin } from "@backend/patientAuth";
 import { rateLimit } from "@backend/rateLimit";
 import { audit } from "@backend/audit";
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
     const password = typeof b.password === "string" ? b.password : "";
     if (!firstName || !lastName) throw new HttpError(400, "Please enter your first and last name.");
     if (!isValidEmail(email)) throw new HttpError(400, "Please enter a valid email address.");
-    const pwErr = passwordProblem(password);
+    const pwErr = passwordProblem(password, email);
     if (pwErr) throw new HttpError(400, pwErr);
     if (b.consent !== true) throw new HttpError(400, "Please agree to the privacy terms to continue.");
 
@@ -45,7 +46,10 @@ export async function POST(req: Request) {
     });
     await createSession(patient.id);
     audit(patient.id, "patient", "create", "account", ip);
-    return NextResponse.json({ ok: true }, { status: 201 });
+    // Email ownership must be confirmed before any health data is shown.
+    let emailSent = true;
+    try { await sendVerificationCode({ id: patient.id, email, firstName }); } catch { emailSent = false; }
+    return NextResponse.json({ ok: true, verify: true, emailSent }, { status: 201 });
   } catch (e: any) {
     if (e?.code === "P2002") return NextResponse.json({ error: "An account with this email already exists. Try signing in." }, { status: 409 });
     return toResponse(e);
