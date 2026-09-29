@@ -1,0 +1,41 @@
+/* ANRA Health — Admin Console. Motion + hover states from the approved
+   Claude Design prototype. Inline styles hold the base look, so hover rules
+   use !important to win over them. */
+.anra-admin { position: fixed; inset: 0; z-index: 100; overflow-y: auto; overflow-x: hidden; background: #F6F4F1; color: #1D2327; font-family: var(--font-dm-sans, "DM Sans"), "DM Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.anra-admin *, .anra-admin *::before, .anra-admin *::after { box-sizing: border-box; }
+.anra-admin button, .anra-admin input, .anra-admin select, .anra-admin textarea { font-family: inherit; }
+.anra-admin a { color: #2F5A66; text-decoration: none; }
+.anra-admin :focus-visible { outline: 2px solid #3F6F7C; outline-offset: 2px; }
+.anra-admin ::selection { background: #E1EDF0; }
+.anra-admin h1, .anra-admin h2, .anra-admin h3 { font-family: inherit; color: inherit; }
+
+@keyframes anraShimmer { 0% { background-position: -400px 0 } 100% { background-position: 400px 0 } }
+@keyframes anraSheet { from { transform: translateX(32px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes anraFade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anraPop { from { transform: translateY(8px) scale(.985); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes anraOrb { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+@media (prefers-reduced-motion: reduce) { .anra-admin *, .anra-admin *::before, .anra-admin *::after { animation-duration: .01ms !important; transition-duration: .01ms !important } }
+
+.anra-admin .h-card:hover { background: #FFFDFB !important; }
+.anra-admin .h-sand:hover { background: #F3F0EC !important; }
+.anra-admin .h-page:hover { background: #F6F4F1 !important; }
+.anra-admin .h-stone:hover { background: #EEEAE5 !important; }
+.anra-admin .h-row:hover { background: #FBF9F6 !important; }
+.anra-admin .h-primary:hover { background: #2F5A66 !important; }
+.anra-admin .h-danger:hover { background: #FBEEE8 !important; }
+.anra-admin .h-danger:hover i { color: #8B4B37; }
+.anra-admin .h-urgent:hover { background: rgba(139, 75, 55, .06) !important; }
+.anra-admin .h-lift:hover { box-shadow: 0 12px 24px -18px rgba(20, 24, 27, .35) !important; }
+.anra-admin .h-lift2:hover { box-shadow: 0 12px 24px -18px rgba(20, 24, 27, .4) !important; }
+.anra-admin .h-up:hover { transform: translateY(-1px); }
+.anra-admin .h-line:hover { text-decoration: underline !important; }
+.anra-admin .h-fade:hover { opacity: .88; }
+.anra-admin .h-dim:hover { opacity: .9; }
+.anra-admin .h-border:hover { border-color: rgba(29, 35, 39, .16) !important; }
+.anra-admin .h-x:hover { background: #F3F0EC !important; color: #8B4B37 !important; }
+.anra-admin .h-toast:hover { background: rgba(255, 253, 251, .2) !important; }
+.anra-admin .f-teal:focus { border-color: #3F6F7C !important; box-shadow: 0 0 0 3px #E1EDF0 !important; }
+.anra-admin .f-peach:focus { border-color: #8B4B37 !important; box-shadow: 0 0 0 3px #FBEEE8 !important; }
+.anra-admin .no-scrollbar { scrollbar-width: none; }
+.anra-admin .no-scrollbar::-webkit-scrollbar { display: none; }
+.anra-admin .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
