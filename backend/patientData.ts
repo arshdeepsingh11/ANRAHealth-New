@@ -5,7 +5,7 @@
 
 import { prisma } from "@backend/db";
 import { METRIC_DEFS, TREND_CATS, avg, fmt, fmtU, dayKey, addDays, daysBetween, fmtDay, type MetricKey } from "@/lib/portal/metrics";
-import { DEVICE_CATALOG, PROVIDER_NAMES } from "@/lib/portal/devices";
+import { DEVICE_CATALOG, PROVIDER_NAMES, WEARABLE_SOURCES, sharedLabels } from "@/lib/portal/devices";
 import { physicians } from "@/data/physicians";
 import type {
   ProfileDTO, TodayDTO, TrendsDTO, Series, ResultsDTO, ResultDTO, ProtocolDTO, HistoryItemDTO, HistoryDetailDTO,
@@ -15,7 +15,7 @@ import type {
 type Tz = string;
 export const parseJSON = <T,>(s: string | null | undefined, fallback: T): T => { try { return s ? (JSON.parse(s) as T) : fallback; } catch { return fallback; } };
 
-const SOURCE_PRIORITY = ["apple", "oura", "whoop", "garmin", "gfit", "clinic", "manual"];
+const SOURCE_PRIORITY = ["apple", "oura", "whoop", "withings", "garmin", "fitbit", "android", "iphone", "gfit", "clinic", "manual", "import"];
 // "Dr. Anmol Singh Kapoor" → "AK", "Maya Chen, NP" → "MC" (first + last name).
 const initials = (name: string) => {
   const w = name.replace(/^Dr\.?\s*/i, "").split(",")[0].split(/\s+/).filter(Boolean);
@@ -50,15 +50,15 @@ export async function getConsent(patientId: string): Promise<Consent> {
 }
 /** Reading sources allowed by consent (clinic-entered values are clinical records). */
 export const readingSourceFilter = (c: Consent) => {
-  const allowed = [...(c.wearables ? ["apple", "oura", "whoop", "garmin", "gfit"] : []), "manual", ...(c.records ? ["clinic"] : [])];
+  const allowed = [...(c.wearables ? WEARABLE_SOURCES : []), "manual", "import", ...(c.records ? ["clinic"] : [])];
   return { source: { in: allowed } };
 };
 
 // ── Settings & profile ──────────────────────────────────────────────────
 export async function getSettings(patientId: string): Promise<SettingsDTO> {
   const s = await prisma.patientSettings.upsert({ where: { patientId }, update: {}, create: { patientId } });
-  const { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt } = s;
-  return { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt };
+  const { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName } = s;
+  return { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName };
 }
 
 export async function getProfile(patientId: string): Promise<ProfileDTO> {
@@ -455,12 +455,16 @@ export async function getReferrals(patient: { id: string; timezone: string }): P
 
 // ── Devices ─────────────────────────────────────────────────────────────
 export async function getDevices(patientId: string): Promise<DeviceDTO[]> {
-  const rows = await prisma.deviceConnection.findMany({ where: { patientId }, select: { provider: true, status: true, lastSyncAt: true, dataTypes: true, tokenHint: true } });
+  const rows = await prisma.deviceConnection.findMany({ where: { patientId }, select: { provider: true, status: true, lastSyncAt: true, dataTypes: true, tokenHint: true, lastError: true } });
+  const { oauthConfigured } = await import("@backend/oauth");
   return DEVICE_CATALOG.map((d) => {
     const r = rows.find((x) => x.provider === d.id);
-    const status: DeviceDTO["status"] = !r || r.status === "disconnected" ? "off" : r.status === "connected" ? "on" : "pending";
-    return { id: d.id, name: d.name, icon: d.icon, signals: d.signals.map((s) => s.label), available: d.available, status, lastSyncAt: r?.lastSyncAt?.toISOString() ?? null,
-      dataTypes: r ? parseJSON<string[]>(r.dataTypes, []) : d.signals.map((s) => s.label), tokenHint: r?.tokenHint ?? null };
+    const available = d.mode === "shortcut" || (d.mode === "oauth" && oauthConfigured(d.id));
+    const status: DeviceDTO["status"] = !r || r.status === "disconnected" ? "off" : r.status === "waitlist" ? "waitlist" : r.status === "connected" ? "on" : "pending";
+    const stale = status === "on" && !!r?.lastSyncAt && Date.now() - r.lastSyncAt.getTime() > 3 * 86400000;
+    return { id: d.id, name: d.name, icon: d.icon, signals: d.signals.map((s) => s.label), available, status, lastSyncAt: r?.lastSyncAt?.toISOString() ?? null,
+      dataTypes: r && r.status !== "waitlist" ? sharedLabels(d.id, parseJSON<string[]>(r.dataTypes, [])) : d.signals.map((s) => s.label), tokenHint: r?.tokenHint ?? null,
+      mode: d.mode, blurb: d.blurb, beta: !!d.beta, stale, lastError: r?.lastError ?? null, guide: d.guide };
   });
 }
 
