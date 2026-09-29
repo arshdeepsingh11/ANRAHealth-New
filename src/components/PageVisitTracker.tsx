@@ -5,12 +5,12 @@ import { usePathname } from "next/navigation";
 
 // Renders nothing. Logs a page view on every route change, and a click
 // whenever a visitor follows a link to another site (e.g. BioAro Labs).
-// Staff pages (/admin) are never logged. Mounted once in layout.tsx.
+// Staff pages (/admin) and share links (/share/…) are never logged. Mounted once in layout.tsx.
 export default function PageVisitTracker() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!pathname || pathname.startsWith("/admin")) return;
+    if (!pathname || pathname.startsWith("/admin") || pathname.startsWith("/share/")) return;
     fetch("/api/log-visit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -25,7 +25,7 @@ export default function PageVisitTracker() {
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (window.location.pathname.startsWith("/admin")) return;
+      if (window.location.pathname.startsWith("/admin") || window.location.pathname.startsWith("/share/")) return;
       const a = (e.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
       if (!a) return;
       let url: URL;
