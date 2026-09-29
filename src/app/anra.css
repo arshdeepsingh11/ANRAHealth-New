@@ -104,3 +104,19 @@
 .anra-seg-btn .live { width: 7px; height: 7px; border-radius: 50%; background: #3F6F7C; box-shadow: 0 0 0 0 rgba(63,111,124,.5); animation: segLive 1.8s ease-out infinite; }
 @keyframes segLive { 0% { box-shadow: 0 0 0 0 rgba(63,111,124,.5); } 100% { box-shadow: 0 0 0 8px rgba(63,111,124,0); } }
 @media (max-width: 859px) { .anra-seg { display: grid; grid-template-columns: 1fr 1fr; } .anra-seg-btn { justify-content: center; } }
+
+/* Home 08 "Health, in motion" — 3D scroll-trigger marquee. */
+.anra-motion-stage { perspective: 1400px; perspective-origin: 50% 40%; overflow: hidden; padding: 30px 0; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 9%, #000 91%, transparent 100%); }
+.anra-motion-tilt { display: grid; gap: 22px; width: 118%; margin-left: -9%; transform: rotateX(16deg) rotateZ(-3.5deg); transform-style: preserve-3d; }
+.anra-motion-row { overflow: visible; }
+.anra-motion-ai, .anra-motion-test { transition: transform .25s, box-shadow .25s, border-color .25s; }
+.anra-motion-ai:hover, .anra-motion-test:hover { transform: translateY(-6px); box-shadow: 0 40px 70px -34px rgba(78,58,115,.55) !important; }
+.anra-motion-test:hover { border-color: #6EA8B6 !important; }
+.anra-ai-text { background: linear-gradient(90deg, #8C6FB8, #6EA8B6, #3F6F7C, #8C6FB8); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: aiText 6s linear infinite; }
+@keyframes aiText { to { background-position: 300% 0; } }
+@media (max-width: 859px) { .anra-motion-tilt { transform: rotateX(10deg) rotateZ(-2deg); gap: 16px; } }
+@media (prefers-reduced-motion: reduce) {
+  .anra-motion-tilt { transform: none; width: 100%; margin-left: 0; }
+  .anra-motion-row { overflow-x: auto; }
+  .anra-ai-text { animation: none; }
+}
