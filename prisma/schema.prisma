@@ -175,6 +175,15 @@ model Patient {
   assessments     LongevityAssessment[]
   labChecks       LabResultCheck[]
   visitors        Visitor[]
+  bpReadings      BpReading[]
+  lifestyleLogs   LifestyleLog[]
+  careGiven       CareLink[]       @relation("CareOwner")
+  careReceived    CareLink[]       @relation("CareGiver")
+  shareLinks      ShareLink[]
+  challengesMade  Challenge[]
+  challengeJoins  ChallengeMember[]
+  rewardEvents    RewardEvent[]
+  notes           GeneratedNote[]
 }
 
 // Only a SHA-256 hash of the session token is stored — a leaked database
@@ -231,6 +240,13 @@ model PatientSettings {
   notifWorth     Boolean  @default(true)
   notifProtocol  Boolean  @default(true)
   notifAppt      Boolean  @default(true)
+  // Health Universe
+  city           String? // "Calgary" — for the daily brief (weather + air quality)
+  province       String? // "AB"
+  lat            Float?
+  lon            Float?
+  briefEmail     Boolean  @default(false) // email the ANRA Today brief each morning
+  leaderboardName String? // shown in challenges ("Arsh S."); null = first name + initial
   updatedAt      DateTime @updatedAt
 }
 
@@ -270,6 +286,12 @@ model DeviceConnection {
   tokenHash   String?   @unique // SHA-256 of the device ingest token
   tokenHint   String? // last 4 chars, for display only
   dataTypes   String    @default("[]") // JSON array of shared metric keys
+  // OAuth sources (Oura, Withings, WHOOP…): tokens are AES-256-GCM encrypted
+  accessTokenEnc  String?
+  refreshTokenEnc String?
+  tokenExpiresAt  DateTime?
+  externalUserId  String?
+  lastError       String?
   connectedAt DateTime?
   lastSyncAt  DateTime?
   createdAt   DateTime  @default(now())
@@ -479,4 +501,139 @@ model AdminAuditEvent {
   @@index([createdAt])
   @@index([subjectId, createdAt])
   @@index([kind, createdAt])
+}
+
+
+// ─────────────────────────────────────────────────────────────────────────
+// Health Universe (My Health Space): home blood pressure, lifestyle
+// check-ins, family care, share-with-my-doctor links, challenges, rewards,
+// and cached AI text (daily brief, monthly story).
+// ─────────────────────────────────────────────────────────────────────────
+
+// Every home BP reading (several a day). The daily average also goes to
+// HealthReading (metric "bp") so Trends and ALBA see it.
+model BpReading {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  sys       Int
+  dia       Int
+  pulse     Int?
+  takenAt   DateTime
+  day       String // YYYY-MM-DD, patient timezone
+  source    String   @default("manual") // manual | withings | import
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([patientId, takenAt, source])
+  @@index([patientId, day])
+}
+
+// Water, caffeine, alcohol (counts), mood and stress (1–5), meals (text).
+model LifestyleLog {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  kind      String // water | caffeine | alcohol | mood | stress | meal
+  value     Float
+  note      String?
+  day       String
+  at        DateTime @default(now())
+
+  @@index([patientId, day])
+  @@index([patientId, kind, day])
+}
+
+// A caregiver (family member) who can view a patient's summary.
+// Created by the patient (owner); accepted by the caregiver's own account.
+model CareLink {
+  id            String    @id @default(cuid())
+  ownerId       String
+  owner         Patient   @relation("CareOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  caregiverId   String?
+  caregiver     Patient?  @relation("CareGiver", fields: [caregiverId], references: [id], onDelete: Cascade)
+  email         String // invited email (lower-case)
+  relation      String    @default("Family")
+  status        String    @default("pending") // pending | active | revoked
+  inviteHash    String?   @unique
+  createdAt     DateTime  @default(now())
+  acceptedAt    DateTime?
+
+  @@index([ownerId])
+  @@index([caregiverId])
+}
+
+// Read-only link for a clinician. Only the SHA-256 of the token is stored.
+model ShareLink {
+  id           String    @id @default(cuid())
+  patientId    String
+  patient      Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  tokenHash    String    @unique
+  label        String
+  scope        String    @default("[]") // JSON: trends | bp | labs | lifestyle
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  views        Int       @default(0)
+  lastViewedAt DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([patientId])
+}
+
+model Challenge {
+  id          String            @id @default(cuid())
+  code        String            @unique // join code, e.g. "K7Q2MX"
+  name        String
+  metric      String // steps | active | water | protocol
+  goal        Float // daily goal
+  startDay    String
+  endDay      String
+  org         String? // company / team name
+  createdById String
+  createdBy   Patient           @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdAt   DateTime          @default(now())
+  members     ChallengeMember[]
+}
+
+model ChallengeMember {
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  joinedAt    DateTime  @default(now())
+
+  @@id([challengeId, patientId])
+  @@index([patientId])
+}
+
+// Points ledger. Earned rows are unique per kind per day (idempotent);
+// redemptions are negative and carry the BioAro discount code.
+model RewardEvent {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  kind      String // checkin | protocol | steps | bp | streak7 | redeem
+  day       String
+  points    Int
+  code      String?  @unique
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([patientId, kind, day])
+  @@index([patientId, createdAt])
+}
+
+// Cached generated text: the daily brief (period = day) and the monthly
+// health story (period = YYYY-MM). Regenerated when missing.
+model GeneratedNote {
+  id        String    @id @default(cuid())
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  kind      String // brief | story
+  period    String
+  body      String // JSON
+  emailedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([patientId, kind, period])
 }
