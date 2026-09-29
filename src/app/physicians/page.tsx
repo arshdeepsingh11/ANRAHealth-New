@@ -4,6 +4,7 @@ import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { X, MapPin, Phone, Globe2, GraduationCap, ChevronRight, Sparkles, RotateCcw } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import PhysicianIdCard from "@/components/PhysicianIdCard";
 import { physicians, Physician } from "@/data/physicians";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { tc } from "@/i18n/contentTranslations";
@@ -284,27 +285,11 @@ export default function Physicians() {
       </section>
 
       <section className="py-16 md:py-20 px-6 lg:px-10">
-        <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {physicians.map((p, i) => (
-            <Reveal key={p.slug} delay={(i % 3) * 0.07}>
-              <button
-                onClick={() => setSelected(p)}
-                className="card-hover text-left bg-white rounded-2xl overflow-hidden w-full"
-                style={{ boxShadow: "0 6px 20px rgba(44,62,80,0.06)" }}
-              >
-                <div className="aspect-square overflow-hidden">
-                  <Avatar physician={p} />
-                </div>
-                <div className="p-5">
-                  <h3 className="text-base font-bold mb-1">{p.name}</h3>
-                  <p className="text-sm text-blue font-medium mb-2">{tc(lang, "physicians", p.slug, "title", p.title)}</p>
-                  <p className="text-xs text-inksoft flex items-center gap-1.5">
-                    <MapPin size={13} /> {tc(lang, "locations", p.location, "tag", p.location)}
-                  </p>
-                </div>
-              </button>
-            </Reveal>
-          ))}
+        <div className="max-w-6xl mx-auto">
+          <p className="text-sm text-inksoft text-center mb-10">Drag a card to swing it, or tap to view the physician&apos;s profile.</p>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+            {physicians.map((p, i) => <PhysicianIdCard key={p.slug} p={p} index={i} onOpen={() => setSelected(p)} />)}
+          </div>
         </div>
       </section>
 
