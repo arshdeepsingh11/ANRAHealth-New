@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Sparkles, Loader2, HeartPulse, ArrowRight, Salad, CheckCircle2, ExternalLink } from "lucide-react";
+import { Sparkles, Loader2, HeartPulse, ArrowRight, Salad, CheckCircle2, ExternalLink } from "lucide-react";
 import { BIOARO_TESTS, bioaroBookingUrl } from "@/data/bioaroTests";
 
 const TABS = ["Health Risk Assessment", "Nutrition Starter Plan"] as const;
@@ -182,16 +182,7 @@ export default function LongevityPage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <div className="px-5 pt-5 md:hidden">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
-          <ArrowLeft size={15} /> Back to Main Page
-        </Link>
-      </div>
-      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
-        <ArrowLeft size={15} /> Back to Main Page
-      </Link>
-
-      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
+      <div className="text-center pt-16 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Longevity</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900 flex items-center justify-center gap-3">
           <HeartPulse className="text-gold-500" size={36} />
