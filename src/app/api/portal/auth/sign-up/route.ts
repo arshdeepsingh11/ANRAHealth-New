@@ -8,6 +8,7 @@ import { sendVerificationCode } from "@backend/emailVerification";
 import { hashPassword, passwordProblem, createSession, normalizeEmail, isValidEmail, clientMeta, assertSameOrigin } from "@backend/patientAuth";
 import { rateLimit } from "@backend/rateLimit";
 import { audit } from "@backend/audit";
+import { linkVisitorToPatient, currentSessionId } from "@backend/visitors";
 import { readJson, toResponse, str, HttpError } from "@backend/apiHelpers";
 
 export async function POST(req: Request) {
@@ -46,6 +47,8 @@ export async function POST(req: Request) {
     });
     await createSession(patient.id);
     audit(patient.id, "patient", "create", "account", ip);
+    // Anything this browser did anonymously (ALBA, symptom checks…) joins the new record.
+    await linkVisitorToPatient(await currentSessionId(), patient.id);
     // Email ownership must be confirmed before any health data is shown.
     let emailSent = true;
     try { await sendVerificationCode({ id: patient.id, email, firstName }); } catch { emailSent = false; }
