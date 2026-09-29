@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing path" }, { status: 400 });
   }
   // Staff pages are not visitor activity.
-  if (!isOutbound && path.startsWith("/admin")) return NextResponse.json({ ok: true });
+  if (!isOutbound && (path.startsWith("/admin") || path.startsWith("/share/"))) return NextResponse.json({ ok: true });
 
   try {
     const sessionId = await getOrCreateSessionId();
