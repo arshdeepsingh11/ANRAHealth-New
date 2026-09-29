@@ -48,8 +48,10 @@ model ReferralSubmission {
   reviewedAt         DateTime?
   reviewedBy         String?
   scheduledAt        DateTime?
+  staffNote          String?
 
   @@index([sessionId])
+  @@index([status, createdAt])
   @@index([patientId, createdAt])
 }
 
@@ -65,9 +67,12 @@ model SymptomCheckLog {
   createdAt             DateTime @default(now())
   patientId             String?
   patient               Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  reviewedAt            DateTime? // admin console: emergency queue
+  reviewedBy            String?
 
   @@index([sessionId])
   @@index([patientId, createdAt])
+  @@index([emergency, reviewedAt])
 }
 
 model AlbaConversation {
@@ -146,6 +151,7 @@ model Patient {
   lastLoginAt     DateTime?
   failedLogins    Int       @default(0)
   lockedUntil     DateTime?
+  accountStatus   String    @default("active") // active | deactivated | deletion_requested (set by the clinic)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
@@ -168,6 +174,7 @@ model Patient {
   conversations   AlbaConversation[]
   assessments     LongevityAssessment[]
   labChecks       LabResultCheck[]
+  visitors        Visitor[]
 }
 
 // Only a SHA-256 hash of the session token is stored — a leaked database
@@ -246,6 +253,7 @@ model CareTeamMember {
   name          String
   role          String
   physicianSlug String?
+  location      String?
   createdAt     DateTime @default(now())
 
   @@index([patientId])
@@ -312,6 +320,7 @@ model LabResult {
   panel       String?
   about       String? // "What is this?"
   guidance    String? // "What should I know?"
+  staffNote   String? // clinic-only note, never shown to the patient
   createdAt   DateTime  @default(now())
 
   @@index([patientId, code, collectedAt])
@@ -332,6 +341,7 @@ model ProtocolItem {
   sortOrder Int           @default(0)
   active    Boolean       @default(true)
   startedAt DateTime      @default(now())
+  pausedAt  DateTime? // paused by the clinic (active = false while paused)
   endedAt   DateTime?
   createdAt DateTime      @default(now())
   logs      ProtocolLog[]
@@ -369,6 +379,8 @@ model Appointment {
   prepShareResults      Boolean         @default(true)
   prepShareSymptoms     Boolean         @default(true)
   prepSavedAt           DateTime?
+  prepReviewedAt        DateTime? // admin console: visit-prep queue
+  staffNotes            String?
   createdAt             DateTime        @default(now())
   questions             VisitQuestion[]
 
@@ -402,4 +414,69 @@ model AccessLog {
   createdAt DateTime @default(now())
 
   @@index([patientId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Admin console
+// ─────────────────────────────────────────────────────────────────────────
+
+// Every browser gets an anonymous visitor record (keyed by the
+// anra_session_id cookie) with a short public ID shown to staff, e.g.
+// "v_7Q2K9X". The cookie value itself is never shown. When the visitor
+// signs up or signs in to My Health Space, patientId is set and their
+// anonymous activity is merged into the patient record.
+model Visitor {
+  id          String    @id // public ID: v_XXXXXX
+  sessionId   String    @unique
+  firstSeenAt DateTime  @default(now())
+  lastSeenAt  DateTime  @default(now())
+  pageCount   Int       @default(0)
+  landingPath String?
+  referrer    String?
+  userAgent   String?
+  patientId   String?
+  patient     Patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  convertedAt DateTime?
+
+  @@index([patientId])
+  @@index([lastSeenAt])
+}
+
+// Links from anrahealth.ca / My Health Space to other sites (clicks only).
+model OutboundClick {
+  id        String   @id @default(cuid())
+  sessionId String
+  host      String
+  url       String
+  fromPath  String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([host, createdAt])
+}
+
+// Append-only staff audit trail (Alberta HIA). Covers events with and
+// without a patient (sign-ins, visitor views, exports). Patient-related
+// events are also mirrored into that patient's AccessLog.
+// kind: View | Reveal | Change | Export | Account
+model AdminAuditEvent {
+  id          String   @id @default(cuid())
+  actor       String // staff identifier typed at sign-in (shared password in Phase 1)
+  role        String   @default("Admin (shared)")
+  kind        String
+  action      String
+  resource    String
+  subjectType String? // patient | visitor | referral
+  subjectId   String?
+  subject     String? // display label at the time of the event
+  reason      String?
+  before      String?
+  after       String?
+  ip          String?
+  result      String   @default("Success") // Success | Denied
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([subjectId, createdAt])
+  @@index([kind, createdAt])
 }
