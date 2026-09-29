@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import Link from "next/link";
-import { ArrowLeft, Phone, X, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
+import { Phone, X, ChevronRight, ExternalLink, Volume2, VolumeX } from "lucide-react";
 import SymptomChecker from "@/components/SymptomChecker";
 
 const TABS = ["Overview", "Respiratory Diagnostics", "Oxygen Services", "Sleep Apnea & Diagnostics", "What to Expect", "Contact"] as const;
@@ -96,16 +95,7 @@ export default function RespiratoryMedicinePage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <div className="px-5 pt-5 md:hidden">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5">
-          <ArrowLeft size={15} /> Back to Main Page
-        </Link>
-      </div>
-      <Link href="/" className="hidden md:inline-flex fixed top-5 left-5 z-40 items-center gap-2 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2.5 hover:-translate-x-0.5 transition-transform">
-        <ArrowLeft size={15} /> Back to Main Page
-      </Link>
-
-      <div className="text-center pt-6 md:pt-24 pb-6 px-6">
+      <div className="text-center pt-16 md:pt-24 pb-6 px-6">
         <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Medical Specialties · Partner: Advanced Respiratory Care Network</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900">Respiratory Medicine</h1>
         <p className="text-sm text-graphite-500 mt-3 italic">"Sleep Well. Breathe Easy. Live Better." — Respiratory | Sleep | Allergy | Cardiac</p>
