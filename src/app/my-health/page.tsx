@@ -13,6 +13,7 @@ export const dynamic = "force-dynamic";
 export default async function MyHealthPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const patient = await getCurrentPatient();
   if (!patient) redirect("/my-health/sign-in");
+  if (!patient.emailVerified) redirect("/my-health/verify");
   const [profile, today, settings] = await Promise.all([getProfile(patient.id), getToday(patient), getSettings(patient.id)]);
   audit(patient.id, "patient", "read", "portal", (await clientMeta()).ip);
   return <PortalApp boot={{ profile, today, settings }} initialRoute={parseRoute(await searchParams)} />;
