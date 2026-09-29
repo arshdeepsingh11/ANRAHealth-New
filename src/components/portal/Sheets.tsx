@@ -10,8 +10,11 @@ import { EP, api, prime, invalidate, load, useResource, peek } from "./api";
 import { C, Switch, Loading, longDateTz } from "./ui";
 import { toggleProtocol } from "./screens/Protocol";
 import { relTime } from "./screens/Devices";
+import { ConnectSheet, ImportSheet, ReadingSheet, BpSheet, LocationSheet, ShareSheet, InviteSheet, ChallengeSheet } from "./UniverseSheets";
 
-const TITLES: Record<string, [string, string]> = { alba: ["ALBA · AI companion", "Ask ALBA"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"] };
+const TITLES: Record<string, [string, string]> = { alba: ["ALBA · AI companion", "Ask ALBA"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"],
+  connect: ["Connect", "How to connect"], import: ["Add data", "Import a file"], reading: ["Add data", "Enter a reading"], bp: ["Heart", "Add a blood pressure reading"], location: ["ANRA Today", "Your city"],
+  share: ["Share with my doctor", "Create a share link"], invite: ["Family care", "Invite a family member"], challenge: ["Challenges", "Challenge"] };
 
 export default function Sheets() {
   const { sheet, openSheet } = usePortal();
@@ -34,6 +37,14 @@ export default function Sheets() {
           {sheet.t === "prepare" && <PrepareSheet />}
           {sheet.t === "manage" && <ManageSheet id={sheet.id} token={sheet.token} />}
           {sheet.t === "conversation" && <ConversationSheet type={sheet.type} id={sheet.id} />}
+          {sheet.t === "connect" && <ConnectSheet id={sheet.id} />}
+          {sheet.t === "import" && <ImportSheet />}
+          {sheet.t === "reading" && <ReadingSheet />}
+          {sheet.t === "bp" && <BpSheet />}
+          {sheet.t === "location" && <LocationSheet />}
+          {sheet.t === "share" && <ShareSheet />}
+          {sheet.t === "invite" && <InviteSheet />}
+          {sheet.t === "challenge" && <ChallengeSheet mode={sheet.mode} />}
         </div>
       </div>
     </div>
@@ -223,14 +234,19 @@ function Copy({ value, label }: { value: string; label: string }) {
   );
 }
 
+const SHORTCUT_KEYS: Record<string, string> = {
+  apple: "restingHeartRate, heartRateVariability, sleepHours, steps, activeMinutes, oxygenSaturation",
+  iphone: "steps, walkingDistance (km), activeMinutes, sleepHours, weight (kg), bloodPressure (\"120/80\"), bloodGlucose (mmol/L)",
+};
 function ManageSheet({ id, token: initialToken }: { id: string; token?: string }) {
   const { toast, openSheet } = usePortal();
   const { data, reload } = useResource<DeviceDTO[]>(EP.devices);
   const [token, setToken] = useState(initialToken);
   const [showSetup, setShowSetup] = useState(!!initialToken);
+  const [syncing, setSyncing] = useState(false);
   const d = data?.find((x) => x.id === id);
   if (!d) return <Loading />;
-  const on = d.status === "on";
+  const on = d.status === "on", shortcut = d.mode === "shortcut";
   const endpoint = typeof window !== "undefined" ? `${window.location.origin}/api/wearables/ingest` : "/api/wearables/ingest";
 
   const setTypes = async (label: string) => {
@@ -243,12 +259,18 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
     catch (e: any) { toast(e.message); }
   };
   const sync = async () => {
+    if (!shortcut) {
+      setSyncing(true);
+      try { const r = await api<{ stored: number; devices: DeviceDTO[] }>("/api/portal/devices/sync", { body: { provider: id } }); prime(EP.devices, r.devices); await Promise.all([load(EP.today, true), load(EP.brief, true)].map((p) => p.catch(() => {}))); invalidate(EP.trends, EP.heart); toast(r.stored ? `Updated · ${r.stored} readings` : "Up to date"); }
+      catch (e: any) { toast(e.message); } finally { setSyncing(false); }
+      return;
+    }
     openSheet(null);
     await Promise.all([reload(), load(EP.today, true), load(EP.trends, true)].map((p) => p?.catch(() => {})));
     toast(on ? "Updated just now" : "Run your ANRA Sync shortcut on your iPhone to send data");
   };
   const disconnect = async () => {
-    try { prime(EP.devices, await api<DeviceDTO[]>(`${EP.devices}?provider=${id}`, { method: "DELETE" })); invalidate(EP.today, EP.trends); openSheet(null); toast(`${d.name} disconnected`); }
+    try { prime(EP.devices, await api<DeviceDTO[]>(`${EP.devices}?provider=${id}`, { method: "DELETE" })); invalidate(EP.today, EP.trends, EP.brief); openSheet(null); toast(`${d.name} disconnected`); }
     catch (e: any) { toast(e.message); }
   };
 
@@ -258,11 +280,12 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
       <p style={{ margin: "0 0 20px", fontSize: 14, color: on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 6 }}>
         <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last synced ${relTime(d.lastSyncAt)}` : "Waiting for your first sync"}
       </p>
+      {d.lastError && <p role="alert" style={{ margin: "-8px 0 18px", padding: "10px 12px", borderRadius: 10, background: C.peach, color: C.peachInk, fontSize: 14 }}>{d.lastError}</p>}
 
-      {id === "apple" && (showSetup || !on) && (
+      {shortcut && (showSetup || !on) && (
         <section style={{ marginBottom: 24, padding: 16, borderRadius: 16, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 14 }}>
-          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 500 }}>Set up Apple Watch sync</h3>
-          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>Your watch saves to Apple Health on your iPhone. A private Shortcut sends a daily summary from Apple Health to My Health Space.</p>
+          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 500 }}>Set up {d.name} sync</h3>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>{id === "apple" ? "Your watch saves to Apple Health on your iPhone." : "Your iPhone keeps your steps, walking and sleep in Apple Health."} A private Shortcut sends a daily summary from Apple Health to My Health Space.</p>
           {token ? (
             <>
               <Copy label="Your private sync token — shown once. Keep it secret." value={token} />
@@ -276,8 +299,8 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
           )}
           <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>
             <li>On your iPhone, open <b>Shortcuts</b> → <b>Automation</b> → <b>New Automation</b> → <b>Time of Day</b> (for example 8:00 AM, daily, Run Immediately).</li>
-            <li>Add <b>Find Health Samples</b> actions for Resting Heart Rate, Heart Rate Variability, Sleep, Steps, Exercise Minutes and Blood Oxygen (latest, or total for today).</li>
-            <li>Add <b>Get Contents of URL</b>: the address above, Method <b>POST</b>, Header <code>Authorization</code> = <code>Bearer</code> + your token, Request Body <b>JSON</b> with keys <code>restingHeartRate</code>, <code>heartRateVariability</code>, <code>sleepHours</code>, <code>steps</code>, <code>activeMinutes</code>, <code>oxygenSaturation</code>.</li>
+            <li>Add <b>Find Health Samples</b> actions for the data you want (latest value, or total for today).</li>
+            <li>Add <b>Get Contents of URL</b>: the address above, Method <b>POST</b>, Header <code>Authorization</code> = <code>Bearer</code> + your token, Request Body <b>JSON</b> with keys: <code>{SHORTCUT_KEYS[id] || SHORTCUT_KEYS.apple}</code>.</li>
             <li>Tap run once. This page shows <b>Connected</b> after the first successful sync.</li>
           </ol>
         </section>
@@ -292,8 +315,9 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
           </div>
         ))}
       </div>
-      {id === "apple" && on && !showSetup && <button onClick={() => setShowSetup(true)} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: "none", fontSize: 15, color: C.teal, cursor: "pointer", marginBottom: 6 }}>Sync setup</button>}
-      <button onClick={sync} style={{ width: "100%", height: 46, border: `1px solid ${C.line12}`, borderRadius: 12, background: "none", fontSize: 15, cursor: "pointer", marginBottom: 10 }}>Sync now</button>
+      {shortcut && on && !showSetup && <button onClick={() => setShowSetup(true)} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: "none", fontSize: 15, color: C.teal, cursor: "pointer", marginBottom: 6 }}>Sync setup</button>}
+      {d.lastError && !shortcut && <button onClick={() => { window.location.href = `/api/portal/oauth/${id}/start`; }} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 15, cursor: "pointer", marginBottom: 10 }}>Reconnect {d.name}</button>}
+      <button onClick={sync} disabled={syncing} style={{ width: "100%", height: 46, border: `1px solid ${C.line12}`, borderRadius: 12, background: "none", fontSize: 15, cursor: "pointer", marginBottom: 10 }}>{syncing ? "Syncing…" : "Sync now"}</button>
       <button onClick={disconnect} style={{ width: "100%", height: 46, border: "1px solid rgba(139,75,55,.25)", borderRadius: 12, background: "none", color: C.peachInk, fontSize: 15, cursor: "pointer" }}>Disconnect {d.name}</button>
       <p style={{ margin: "12px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted }}>Disconnecting stops new data. Data already in My Health Space stays until you delete it in Privacy &amp; Data.</p>
     </>
