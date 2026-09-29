@@ -106,7 +106,7 @@ export async function getCurrentPatient(): Promise<CurrentPatient | null> {
     where: { tokenHash: sha256(token) },
     select: {
       id: true, expiresAt: true, lastSeenAt: true,
-      patient: { select: { id: true, email: true, firstName: true, lastName: true, timezone: true, photoVersion: true, emailVerifiedAt: true } },
+      patient: { select: { id: true, email: true, firstName: true, lastName: true, timezone: true, photoVersion: true, emailVerifiedAt: true, accountStatus: true } },
     },
   });
   if (!session) return null;
@@ -123,7 +123,9 @@ export async function getCurrentPatient(): Promise<CurrentPatient | null> {
       data: { lastSeenAt: new Date(now), expiresAt: new Date(now + SESSION_DAYS * 86400000) },
     }).catch(() => {});
   }
-  const { emailVerifiedAt, ...p } = session.patient;
+  const { emailVerifiedAt, accountStatus, ...p } = session.patient;
+  // Deactivated / deletion-requested accounts are signed out everywhere.
+  if (accountStatus !== "active") return null;
   return { ...p, emailVerified: !!emailVerifiedAt };
 }
 
