@@ -37,3 +37,8 @@ node_modules/
 /src/generated/prisma
 
 /src/generated/prisma
+
+# Local database + helper files (never commit)
+prisma/*.db
+prisma/*.db-journal
+COMMANDS.txt
