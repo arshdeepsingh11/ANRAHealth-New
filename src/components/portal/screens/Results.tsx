@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import type { RetestDTO } from "@/lib/portal/types";
 import type { ResultsDTO, ResultDTO, AppointmentsDTO } from "@/lib/portal/types";
 import { usePortal } from "../context";
 import { EP, useResource } from "../api";
@@ -30,6 +31,7 @@ export function Results() {
     <div style={screenAnim}>
       <h1 style={{ margin: "0 0 6px", fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>My Results</h1>
       <p style={{ margin: "0 0 22px", fontSize: 15, color: C.muted }}>Your laboratory results, organized over time.</p>
+      <RetestBanner />
       {isNew ? (
         <EmptyCard icon="ph ph-flask" title="Your results will appear here" text="When ANRA receives your next laboratory result, we'll organize it here and help explain what it means." />
       ) : (
@@ -122,12 +124,53 @@ export function ResultDetail({ id }: { id: string }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
         {r.about && <div><h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 500 }}>What is this?</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.65, color: C.ink2 }}>{r.about}</p></div>}
         {r.guidance && <div><h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 500 }}>What should I know?</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.65, color: C.ink2 }}>{r.guidance}</p></div>}
+        {!r.pending && <LabInsight code={r.code} />}
         <div style={{ padding: "18px 20px", borderRadius: 18, background: C.tealWash, display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ fontSize: 15, lineHeight: 1.5, flex: 1, minWidth: 220 }}>Discuss this result with your ANRA care team at your {next ? longDateTz(next.startsAt, tz, { month: "long", day: "numeric" }) + " " : "next "}visit.</span>
           <button onClick={addToVisit} style={{ height: 42, padding: "0 16px", border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Add to visit questions</button>
         </div>
         <p style={{ margin: 0, fontSize: 13, color: C.muted }}>Educational information from ANRA. It doesn't diagnose or replace advice from your clinician.</p>
       </div>
+    </div>
+  );
+}
+
+// ── Retest reminders + a lab result alongside wearable data ─────────────
+type Insight = { retest: { due: string; overdue: boolean; months: number } | null; metrics: string[]; rows: { date: string; value: string; cells: string[] }[] };
+function RetestBanner() {
+  const { data } = useResource<{ retests: RetestDTO[] }>(EP.retests);
+  const list = data?.retests || [];
+  if (!list.length) return null;
+  return (
+    <section style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", borderRadius: 18, background: C.lav, marginBottom: 22 }}>
+      <i className="ph ph-calendar-plus" style={{ fontSize: 22, color: C.lavMid, marginTop: 1 }} />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ fontSize: 15, fontWeight: 500 }}>{list.length === 1 ? "A retest is due" : `${list.length} retests are due`}</span>
+        {list.slice(0, 4).map((r) => <span key={r.code} style={{ fontSize: 14, color: C.ink2 }}>{r.name} — {r.overdue ? "overdue since" : "due"} {r.due} (last {r.last})</span>)}
+        <span style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>Book with BioAro — new results appear here automatically. Redeem reward points for a discount.</span>
+      </div>
+    </section>
+  );
+}
+function LabInsight({ code }: { code: string }) {
+  const { data } = useResource<Insight>(`${EP.retests}?code=${encodeURIComponent(code)}`);
+  if (!data || (!data.retest && !data.rows.length)) return null;
+  const hasWear = data.rows.some((r) => r.cells.some((c) => c !== "—"));
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {data.retest && <div style={{ display: "flex", gap: 10, alignItems: "center", padding: "12px 14px", borderRadius: 14, background: data.retest.overdue ? C.peach : "#EFECE8", fontSize: 14.5 }}><i className="ph ph-calendar-check" style={{ fontSize: 18, color: data.retest.overdue ? C.peachInk : C.teal }} />Suggested retest: {data.retest.overdue ? "overdue since " : ""}{data.retest.due} (about every {data.retest.months} months)</div>}
+      {hasWear && (
+        <div>
+          <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 500 }}>Alongside your wearable data</h3>
+          <p style={{ margin: "0 0 10px", fontSize: 13.5, color: C.muted }}>Your average in the 30 days before each test.</p>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 420 }}>
+              <thead><tr>{["Test date", "Result", ...data.metrics].map((h) => <th key={h} style={{ textAlign: "left", padding: "8px 8px 8px 0", fontSize: 12.5, fontWeight: 500, color: C.muted, borderBottom: `1px solid ${C.line2}` }}>{h}</th>)}</tr></thead>
+              <tbody>{data.rows.map((r) => <tr key={r.date}><td style={{ padding: "9px 8px 9px 0", borderBottom: `1px solid ${C.line}` }}>{r.date}</td><td style={{ padding: "9px 8px 9px 0", borderBottom: `1px solid ${C.line}`, fontWeight: 500 }}>{r.value}</td>{r.cells.map((c, i) => <td key={i} style={{ padding: "9px 8px 9px 0", borderBottom: `1px solid ${C.line}`, color: C.ink2 }}>{c}</td>)}</tr>)}</tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
