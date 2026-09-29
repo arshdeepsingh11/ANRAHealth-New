@@ -197,7 +197,7 @@ export default function AlbaWidget() {
           onClick={() => openAlba()}
           aria-label="Open ALBA"
           className="anra-chrome hv-bdViolet"
-          style={{ position: "fixed", left: 20, bottom: 20, zIndex: 40, height: 56, padding: "0 20px 0 13px", border: "1px solid #E4DCF1", borderRadius: 999, background: "rgba(253,252,250,.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: "0 18px 40px -18px rgba(106,80,150,.5)", display: "flex", alignItems: "center", gap: 10, fontSize: 13, letterSpacing: ".12em", fontWeight: 600, color: "#4E3A73", animation: "fadeUp .4s ease" }}
+          style={{ position: "fixed", right: 20, bottom: 20, zIndex: 40, height: 56, padding: "0 20px 0 13px", border: "1px solid #E4DCF1", borderRadius: 999, background: "rgba(253,252,250,.92)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", boxShadow: "0 18px 40px -18px rgba(106,80,150,.5)", display: "flex", alignItems: "center", gap: 10, fontSize: 13, letterSpacing: ".12em", fontWeight: 600, color: "#4E3A73", animation: "fadeUp .4s ease" }}
         >
           <AlbaOrb size={30} />ALBA
         </button>
