@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, JetBrains_Mono } from "next/font/google";
 import "@phosphor-icons/web/regular";
+import "@phosphor-icons/web/fill";
 import "./globals.css";
 import "./anra.css";
 import { LanguageProvider } from "@/i18n/LanguageContext";
