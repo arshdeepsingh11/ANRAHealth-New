@@ -22,7 +22,7 @@ const H = 3600000, D = 86400000;
 const isTestVisitor = (id: string | null | undefined) => !!id && id.startsWith("v_TEST");
 const fullName = (p: { firstName: string; lastName: string }) => `${p.firstName} ${p.lastName}`.trim();
 
-const PROVIDERS: Record<string, string> = { apple: "Apple Watch", oura: "Oura Ring", whoop: "WHOOP", garmin: "Garmin", gfit: "Google Fit" };
+const PROVIDERS: Record<string, string> = { apple: "Apple Watch", iphone: "iPhone (Apple Health)", withings: "Withings", oura: "Oura Ring", whoop: "WHOOP", garmin: "Garmin", fitbit: "Fitbit", android: "Android (Health Connect)", gfit: "Google Fit", manual: "Entered by patient", import: "Imported file" };
 const providerName = (p: string) => PROVIDERS[p] || cap(p);
 
 function consentOf(s: { shareWearables: boolean; shareLabs: boolean; shareRecords: boolean; albaAccess: boolean } | null): Consent {
