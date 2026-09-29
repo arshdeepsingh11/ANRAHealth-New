@@ -4,7 +4,7 @@
 
 import { prisma } from "@backend/db";
 
-export type AuditActor = "patient" | "admin" | "device";
+export type AuditActor = "patient" | "admin" | "device" | "caregiver" | "share";
 export type AuditAction = "read" | "create" | "update" | "delete" | "login" | "logout" | "export";
 
 export function audit(patientId: string, actor: AuditActor, action: AuditAction, resource: string, ip?: string) {
