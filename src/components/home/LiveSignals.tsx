@@ -10,6 +10,9 @@ const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", tex
 const h2: React.CSSProperties = { margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 };
 
 // Home 02: "See the signal. Understand it." — tabs + sliders + live chart.
+
+const SIGNAL_ICON: Record<string, string> = { ecg: "ph-heartbeat", bp: "ph-drop", ldl: "ph-flask", activity: "ph-person-simple-run" };
+
 export default function LiveSignals() {
   const { openAlba } = useAlba();
   const [tab, setTab] = useState("ecg");
@@ -25,12 +28,21 @@ export default function LiveSignals() {
           <div style={eyebrow}>Health intelligence · live</div>
           <h2 style={h2}>See the signal.<br />Understand it.</h2>
           <p style={{ margin: "18px 0 0", fontSize: 18, color: "#3A4147", maxWidth: 440 }}>Move the sliders and watch how ALBA reads a value in context. Every number means more next to the others.</p>
-          <div role="tablist" aria-label="Signals" style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {/* Segmented control — the selected signal is raised, with a live dot. */}
+          <div role="tablist" aria-label="Signals" className="anra-seg" style={{ marginTop: 24 }}>
             {SIGNAL_TABS.map(([k, l]) => {
               const on = tab === k;
-              return <button key={k} role="tab" aria-selected={on} onClick={() => setTab(k)} style={{ whiteSpace: "nowrap", minHeight: 42, padding: "0 16px", borderRadius: 999, border: "1px solid " + (on ? "#14181B" : "#D6D0C5"), background: on ? "#14181B" : "transparent", color: on ? "#F7F5F1" : "#14181B", fontSize: 14 }}>{l}</button>;
+              return (
+                <button key={k} role="tab" aria-selected={on} onClick={() => setTab(k)} className="anra-seg-btn">
+                  <i className={(on ? "ph-fill " : "ph ") + (SIGNAL_ICON[k] || "ph-wave-sine")} style={{ fontSize: 17 }} />{l}
+                  {on && <span className="live" aria-hidden="true" />}
+                </button>
+              );
             })}
           </div>
+          <p style={{ margin: "10px 0 0", fontSize: 13, color: "#5A626A", display: "flex", alignItems: "center", gap: 6 }}>
+            <i className="ph ph-hand-pointing" style={{ fontSize: 15, color: "#3F6F7C" }} />Tap a signal{tab === "ldl" || tab === "activity" ? ", then drag the slider" : ""} — the chart and ALBA’s reading update live.
+          </p>
           {tab === "ldl" && (
             <label style={{ marginTop: 22, display: "grid", gap: 8, maxWidth: 420 }}>
               <span style={{ display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: 500 }}>LDL cholesterol<span style={{ fontVariantNumeric: "tabular-nums" }}>{ldl.toFixed(1)} mmol/L</span></span>
