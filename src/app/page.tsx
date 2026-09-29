@@ -11,6 +11,7 @@ import Ecosystem from "@/components/home/Ecosystem";
 import TestGallery from "@/components/home/TestGallery";
 import Locations from "@/components/home/Locations";
 import FinalConcierge from "@/components/home/FinalConcierge";
+import HealthInMotion from "@/components/home/HealthInMotion";
 import { useIsMobile } from "@/lib/useViewport";
 
 // Homepage — ANRA design system (Claude Design "ANRA Health", Home 01–07).
@@ -38,6 +39,7 @@ export default function Home() {
           <TestGallery mobile={mobile} />
           <Locations />
           <FinalConcierge />
+          <HealthInMotion />
         </main>
       </div>
     </>
