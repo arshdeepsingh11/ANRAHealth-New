@@ -8,7 +8,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
-type Session = { signedIn: false } | { signedIn: true; firstName: string; initials: string; photoUrl: string | null };
+type Session = { signedIn: false } | { signedIn: true; verified: boolean; firstName: string; initials: string; photoUrl: string | null };
 
 export default function AccountButton({ mobile }: { mobile: boolean }) {
   const [s, setS] = useState<Session | null>(null);
@@ -25,7 +25,7 @@ export default function AccountButton({ mobile }: { mobile: boolean }) {
   }, []);
 
   const signedIn = s?.signedIn === true;
-  const href = signedIn ? "/my-health" : "/my-health/sign-in";
+  const href = s?.signedIn ? (s.verified ? "/my-health" : "/my-health/verify") : "/my-health/sign-in";
   const size = mobile ? 40 : 44;
 
   return (
