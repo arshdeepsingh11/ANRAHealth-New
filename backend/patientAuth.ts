@@ -48,12 +48,8 @@ export async function burnPasswordCheck(password: string) {
   await verifyPassword(password, await dummyHash);
 }
 
-export function passwordProblem(pw: string): string | null {
-  if (typeof pw !== "string" || pw.length < 10) return "Use at least 10 characters.";
-  if (pw.length > 200) return "Password is too long.";
-  if (!/[A-Za-z]/.test(pw) || !/[0-9]/.test(pw)) return "Use letters and at least one number.";
-  return null;
-}
+// Rules shared with the browser's strength meter.
+export { passwordProblem } from "@/lib/portal/password";
 
 // ── Sessions ─────────────────────────────────────────────────────────────
 export const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
@@ -99,6 +95,7 @@ export interface CurrentPatient {
   lastName: string;
   timezone: string;
   photoVersion: number;
+  emailVerified: boolean;
 }
 
 /** Resolve the signed-in patient from the cookie (null if signed out / expired). */
@@ -109,7 +106,7 @@ export async function getCurrentPatient(): Promise<CurrentPatient | null> {
     where: { tokenHash: sha256(token) },
     select: {
       id: true, expiresAt: true, lastSeenAt: true,
-      patient: { select: { id: true, email: true, firstName: true, lastName: true, timezone: true, photoVersion: true } },
+      patient: { select: { id: true, email: true, firstName: true, lastName: true, timezone: true, photoVersion: true, emailVerifiedAt: true } },
     },
   });
   if (!session) return null;
@@ -126,7 +123,8 @@ export async function getCurrentPatient(): Promise<CurrentPatient | null> {
       data: { lastSeenAt: new Date(now), expiresAt: new Date(now + SESSION_DAYS * 86400000) },
     }).catch(() => {});
   }
-  return session.patient;
+  const { emailVerifiedAt, ...p } = session.patient;
+  return { ...p, emailVerified: !!emailVerifiedAt };
 }
 
 /** Cheap patient id lookup for activity logging (never throws). */
@@ -173,9 +171,11 @@ export async function assertSameOrigin() {
   }
 }
 
-export async function requirePatient(): Promise<CurrentPatient> {
+/** Signed-in patient. Health data needs a verified email (428 = verify first). */
+export async function requirePatient(opts: { allowUnverified?: boolean } = {}): Promise<CurrentPatient> {
   const p = await getCurrentPatient();
   if (!p) throw new HttpError(401, "Please sign in.");
+  if (!p.emailVerified && !opts.allowUnverified) throw new HttpError(428, "Please verify your email address first.");
   return p;
 }
 
