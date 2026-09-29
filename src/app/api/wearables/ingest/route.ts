@@ -12,6 +12,7 @@ import { sha256, clientMeta } from "@backend/patientAuth";
 import { rateLimit } from "@backend/rateLimit";
 import { audit } from "@backend/audit";
 import { parseIngest } from "@backend/wearables";
+import { storeReadings, storeBp } from "@backend/health";
 import { allowedMetrics } from "@/lib/portal/devices";
 import { readJson, toResponse, HttpError } from "@backend/apiHelpers";
 import type { ProviderId } from "@/lib/portal/types";
@@ -38,13 +39,10 @@ export async function POST(req: Request) {
     readings.filter((r) => !allowed.has(r.metric)).forEach((r) => rejected.push({ field: r.metric, reason: "not shared for this device (Devices → Manage)" }));
 
     const patientId = conn.patient.id, source = conn.provider;
-    for (let i = 0; i < accepted.length; i += 200) {
-      await prisma.$transaction(accepted.slice(i, i + 200).map((r) => prisma.healthReading.upsert({
-        where: { patientId_metric_day_source: { patientId, metric: r.metric, day: r.day, source } },
-        create: { patientId, metric: r.metric, day: r.day, source, value: r.value, valueText: r.valueText, recordedAt: r.recordedAt },
-        update: { value: r.value, valueText: r.valueText, recordedAt: r.recordedAt },
-      })));
-    }
+    // Blood pressure also goes to the home-BP log (Heart screen).
+    const bp = accepted.filter((r) => r.metric === "bp" && r.valueText).map((r) => { const [sys, dia] = r.valueText!.split("/").map(Number); return { sys, dia, takenAt: new Date(Math.floor(r.recordedAt.getTime() / 1000) * 1000) }; });
+    await storeReadings(patientId, source, accepted.filter((r) => r.metric !== "bp"));
+    if (bp.length) await storeBp({ id: patientId, timezone: conn.patient.timezone }, source, bp);
     const now = new Date();
     await prisma.deviceConnection.update({ where: { id: conn.id }, data: { status: "connected", lastSyncAt: now, ...(conn.status === "pending" ? { connectedAt: now } : {}) } });
     audit(patientId, "device", "create", `readings:${source}:${accepted.length}`, ip);
