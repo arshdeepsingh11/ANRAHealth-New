@@ -85,7 +85,7 @@ const saveBtn: React.CSSProperties = { height: 44, padding: "0 18px", border: "n
 
 // ── Profile ─────────────────────────────────────────────────────────────
 export function Profile() {
-  const { go, profile, setProfile, initials, toast } = usePortal();
+  const { go, profile, setProfile, initials, toast, openSheet, settings } = usePortal();
   const { connected } = useCounts();
   const fileRef = useRef<HTMLInputElement>(null);
   const [photoBusy, setPhotoBusy] = useState(false);
@@ -133,6 +133,8 @@ export function Profile() {
   const rows = [
     { label: "Connected devices", meta: `${connected} connected`, go: () => go("devices") },
     { label: "Data permissions", meta: "You control every source", go: () => go("privacy") },
+    { label: "Daily brief", meta: settings.city ? `${settings.city}${settings.briefEmail ? " · emailed each morning" : ""}` : "Add your city", go: () => openSheet({ t: "location" }) },
+    { label: "Family & sharing", meta: "Family care and doctor links", go: () => go("family") },
     { label: "Preferences", meta: "Notifications", go: () => go("settings") },
   ];
 
