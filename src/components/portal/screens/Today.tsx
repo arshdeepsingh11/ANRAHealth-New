@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import type { TodayDTO } from "@/lib/portal/types";
+import type { TodayDTO, BriefDTO } from "@/lib/portal/types";
+import type { MetricKey } from "@/lib/portal/metrics";
 import { usePortal } from "../context";
-import { EP, useResource } from "../api";
+import { EP, load, useResource } from "../api";
 import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
 
 const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
@@ -33,6 +34,69 @@ function HealthMap({ areas, center, big }: { areas: TodayDTO["areas"]; center: s
   );
 }
 
+const AQ_TONE = (risk: string | null) => (risk === "Low" ? { bg: "rgba(110,168,182,.18)", ink: C.tealDark } : risk === "Moderate" ? { bg: "#FFF1D6", ink: "#8A5A12" } : risk ? { bg: C.peach, ink: C.peachInk } : { bg: "#EFECE8", ink: C.muted });
+const WX_ICON = (c: string | null) => { const x = (c || "").toLowerCase(); return /thunder/.test(x) ? "ph ph-cloud-lightning" : /snow|flurr/.test(x) ? "ph ph-cloud-snow" : /rain|shower|drizzle/.test(x) ? "ph ph-cloud-rain" : /fog|haze|smoke/.test(x) ? "ph ph-cloud-fog" : /cloud|overcast/.test(x) ? "ph ph-cloud-sun" : "ph ph-sun"; };
+
+/** ANRA Today — location-aware daily brief. */
+function BriefCard() {
+  const { go, openSheet } = usePortal();
+  const { data: b, error, reload } = useResource<BriefDTO>(EP.brief);
+  if (!b) return error ? null : <div aria-busy="true" style={{ marginBottom: 24 }}><Shimmer w="100%" h={180} r={24} /></div>;
+  const w = b.weather, aq = AQ_TONE(w?.aqhiRisk ?? null);
+  const open = (target?: string) => { if (!target) return; if (target.startsWith("trend:")) go("trend", { k: target.slice(6) as MetricKey }); else go(target as any); };
+  const move = b.moveAdvice;
+  return (
+    <section aria-label="ANRA Today" style={{ marginBottom: 28, padding: "24px 24px 20px", borderRadius: 24, background: "linear-gradient(160deg,#E4EFF1 0%,#F3EEF8 55%,#FFFDFB 100%)", border: "1px solid rgba(29,35,39,.05)" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, letterSpacing: ".08em", color: C.tealDark }}><i className="ph ph-sun-horizon" style={{ fontSize: 17 }} />ANRA TODAY</span>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {b.streak > 0 && <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph-fill ph-fire" style={{ color: "#D9822B" }} />{b.streak}-day streak</button>}
+          <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph ph-trophy" style={{ color: C.teal }} />{b.points.toLocaleString("en-US")} pts</button>
+        </div>
+      </div>
+      {w && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
+          <button onClick={() => openSheet({ t: "location" })} style={{ display: "flex", alignItems: "center", gap: 7, height: 34, padding: "0 12px", borderRadius: 17, border: "none", background: C.card, fontSize: 14, color: C.ink, cursor: "pointer" }}><i className={WX_ICON(w.condition)} style={{ fontSize: 18, color: "#D9822B" }} />{w.tempC != null ? `${Math.round(w.tempC)}°C` : ""} {w.condition || ""}<span style={{ color: C.muted }}>· {w.place.split(",")[0]}</span></button>
+          {w.aqhi != null && <span title="Air Quality Health Index (Environment Canada)" style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: aq.bg, color: aq.ink, fontSize: 14 }}><i className="ph ph-wind" />AQHI {w.aqhi} · {w.aqhiRisk}</span>}
+          {w.high != null && <span style={{ display: "flex", alignItems: "center", height: 34, padding: "0 12px", borderRadius: 17, background: C.card, fontSize: 14, color: C.ink2 }}>H {Math.round(w.high)}° · L {w.low != null ? Math.round(w.low) : "—"}°</span>}
+          {w.uv != null && w.uv >= 3 && <span style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: C.card, fontSize: 14, color: C.ink2 }}><i className="ph ph-sun" />UV {w.uv}</span>}
+        </div>
+      )}
+      {w?.alerts.map((a) => <div key={a} role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: C.peach, color: C.peachInk, fontSize: 14, marginBottom: 12 }}><i className="ph ph-warning" style={{ fontSize: 17, marginTop: 1 }} />{a}</div>)}
+      <h2 style={{ margin: "0 0 8px", fontSize: 24, lineHeight: 1.25, fontWeight: 500, letterSpacing: "-.015em" }}>{b.headline}</h2>
+      <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.6, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{b.message}</p>
+      {b.byAlba && <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, fontSize: 12, color: C.lavInk }}><i className="ph ph-sparkle" />Written by ALBA from your data</span>}
+      {move && move.verdict && (
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 14, padding: "12px 14px", borderRadius: 14, background: move.verdict === "outside" ? "rgba(110,168,182,.16)" : move.verdict === "easy" ? "#FFF4E0" : C.peach }}>
+          <i className={move.verdict === "outside" ? "ph ph-person-simple-run" : move.verdict === "easy" ? "ph ph-person-simple-walk" : "ph ph-house-line"} style={{ fontSize: 20, color: move.verdict === "outside" ? C.tealDark : move.verdict === "easy" ? "#8A5A12" : C.peachInk, marginTop: 1 }} />
+          <span style={{ fontSize: 14.5, lineHeight: 1.5 }}><b style={{ fontWeight: 500 }}>{move.verdict === "outside" ? "Good day to move outside" : move.verdict === "easy" ? "Move, but take it easy" : "Keep it indoors today"}</b><br />{move.text}</span>
+        </div>
+      )}
+      {b.needsLocation && (
+        <button onClick={() => openSheet({ t: "location" })} className="h-lift" style={{ marginTop: 14, width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 14, border: `1px dashed ${C.tealLight}`, background: "rgba(255,253,251,.7)", cursor: "pointer", textAlign: "left" }}>
+          <i className="ph ph-map-pin" style={{ fontSize: 22, color: C.teal }} /><span style={{ flex: 1, fontSize: 14.5 }}><b style={{ fontWeight: 500 }}>Add your city</b><br /><span style={{ color: C.muted }}>Get local weather, air quality and the best time to move.</span></span><i className="ph ph-caret-right" style={{ color: C.faint }} />
+        </button>
+      )}
+      {b.items.length > 0 && (
+        <ul style={{ listStyle: "none", margin: "16px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 8 }}>
+          {b.items.map((it, i) => (
+            <li key={i}><button onClick={() => open(it.go)} disabled={!it.go} className="h-lift" style={{ width: "100%", height: "100%", display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: 14, border: "none", background: it.tone === "peach" ? "rgba(251,238,232,.9)" : it.tone === "lavender" ? "rgba(240,236,247,.9)" : "rgba(255,253,251,.85)", cursor: it.go ? "pointer" : "default", textAlign: "left" }}>
+              <i className={it.icon} style={{ fontSize: 19, color: it.tone === "peach" ? C.peachInk : it.tone === "lavender" ? C.lavMid : C.teal, marginTop: 1, flex: "none" }} />
+              <span style={{ display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 13, color: C.muted }}>{it.title}</span><span style={{ fontSize: 14.5, lineHeight: 1.45, color: C.ink }}>{it.text}</span></span>
+            </button></li>
+          ))}
+        </ul>
+      )}
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 14, alignItems: "center" }}>
+        <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-book-open-text" />Your monthly story</button>
+        <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask ALBA about my week</button>
+        {w && <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.faint }}>Weather: Environment and Climate Change Canada</span>}
+        {!w && !b.needsLocation && <button onClick={reload} style={{ marginLeft: "auto", fontSize: 12.5, color: C.faint, border: "none", background: "none", cursor: "pointer" }}>Weather unavailable right now · retry</button>}
+      </div>
+    </section>
+  );
+}
+
 export default function Today() {
   const { go, openSheet, toast, profile } = usePortal();
   const { data: t, error, reload, reloading } = useResource<TodayDTO>(EP.today);
@@ -42,7 +106,7 @@ export default function Today() {
 
   const refresh = async () => {
     if (reloading) return;
-    try { await reload(); setSyncError(false); toast("Updated just now"); } catch { setSyncError(true); }
+    try { await Promise.all([reload(), load(EP.brief, true)]); setSyncError(false); toast("Updated just now"); } catch { setSyncError(true); }
   };
   const startAssessment = () => { window.location.href = "/longevity"; };
   const nextStepCard = t.nextStep && (
@@ -86,6 +150,8 @@ export default function Today() {
           </button>
         )}
       </div>
+
+      <BriefCard />
 
       {syncError && (
         <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", marginBottom: 20, borderRadius: 16, background: C.peach, animation: "mhs-fadeUp 300ms ease" }}>
