@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─────────────────────────────────────────────────────────────────────────
+// Anonymous site activity (existing). `patientId` is filled automatically
+// when the visitor is signed in to My Health Space, so their History tab
+// can show it. Nullable: anonymous visitors keep working exactly as before.
+// ─────────────────────────────────────────────────────────────────────────
+
 model PageVisit {
   id        String   @id @default(cuid())
   path      String
@@ -20,7 +26,7 @@ model PageVisit {
 }
 
 model ReferralSubmission {
-  id                 String   @id @default(cuid())
+  id                 String    @id @default(cuid())
   type               String
   patientName        String?
   patientPhone       String?
@@ -34,9 +40,17 @@ model ReferralSubmission {
   clinicalNotes      String?
   sourceText         String?
   sessionId          String
-  createdAt          DateTime @default(now())
+  createdAt          DateTime  @default(now())
+  // My Health Space
+  patientId          String?
+  patient            Patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  status             String    @default("received") // received | reviewed | scheduled | closed
+  reviewedAt         DateTime?
+  reviewedBy         String?
+  scheduledAt        DateTime?
 
   @@index([sessionId])
+  @@index([patientId, createdAt])
 }
 
 model SymptomCheckLog {
@@ -49,8 +63,11 @@ model SymptomCheckLog {
   summary               String
   sessionId             String
   createdAt             DateTime @default(now())
+  patientId             String?
+  patient               Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([patientId, createdAt])
 }
 
 model AlbaConversation {
@@ -59,8 +76,11 @@ model AlbaConversation {
   pageContext String?
   createdAt   DateTime      @default(now())
   messages    AlbaMessage[]
+  patientId   String?
+  patient     Patient?      @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([patientId, createdAt])
 }
 
 model AlbaMessage {
@@ -82,8 +102,11 @@ model LongevityAssessment {
   suggestedNextStep String
   sessionId         String
   createdAt         DateTime @default(now())
+  patientId         String?
+  patient           Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([patientId, createdAt])
 }
 
 model LabResultCheck {
@@ -93,6 +116,272 @@ model LabResultCheck {
   results        String
   sessionId      String
   createdAt      DateTime @default(now())
+  patientId      String?
+  patient        Patient? @relation(fields: [patientId], references: [id], onDelete: SetNull)
 
   @@index([sessionId])
+  @@index([patientId, createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// My Health Space — patient accounts and health data.
+// Real patient data must not go live before the Alberta HIA Privacy Impact
+// Assessment clears (see .env PORTAL_SIGNUP_OPEN).
+// JSON fields are stored as String (SQLite); parse with helpers in
+// backend/patientData.ts. Schema is Postgres-compatible.
+// ─────────────────────────────────────────────────────────────────────────
+
+model Patient {
+  id              String    @id @default(cuid())
+  email           String    @unique // always stored lower-cased
+  passwordHash    String // scrypt$N$r$p$salt$hash
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime?
+  phone           String?
+  timezone        String    @default("America/Edmonton")
+  photoVersion    Int       @default(0) // > 0 = has photo (URL version); ≤ 0 = none. Only ever grows in magnitude (cache-busting)
+  termsAcceptedAt DateTime
+  lastLoginAt     DateTime?
+  failedLogins    Int       @default(0)
+  lockedUntil     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessions        PatientSession[]
+  photo           PatientPhoto?
+  settings        PatientSettings?
+  goals           Goal[]
+  careTeam        CareTeamMember[]
+  devices         DeviceConnection[]
+  readings        HealthReading[]
+  labResults      LabResult[]
+  protocolItems   ProtocolItem[]
+  protocolLogs    ProtocolLog[]
+  appointments    Appointment[]
+  visitQuestions  VisitQuestion[]
+  accessLogs      AccessLog[]
+  referrals       ReferralSubmission[]
+  symptomChecks   SymptomCheckLog[]
+  conversations   AlbaConversation[]
+  assessments     LongevityAssessment[]
+  labChecks       LabResultCheck[]
+}
+
+// Only a SHA-256 hash of the session token is stored — a leaked database
+// can't be used to hijack a session.
+model PatientSession {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  patientId  String
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  userAgent  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  expiresAt  DateTime
+
+  @@index([patientId])
+  @@index([expiresAt])
+}
+
+// Kept out of Patient so profile reads never load image bytes.
+model PatientPhoto {
+  patientId String   @id
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  mime      String
+  data      Bytes
+  updatedAt DateTime @updatedAt
+}
+
+// Consents (Privacy & Data) + notification preferences — one row per patient.
+model PatientSettings {
+  patientId      String   @id
+  patient        Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  shareWearables Boolean  @default(true)
+  shareLabs      Boolean  @default(true)
+  shareRecords   Boolean  @default(true)
+  albaAccess     Boolean  @default(true)
+  notifDaily     Boolean  @default(true)
+  notifWorth     Boolean  @default(true)
+  notifProtocol  Boolean  @default(true)
+  notifAppt      Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  label     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([patientId])
+}
+
+// Added by the clinic. physicianSlug links to src/data/physicians.ts.
+model CareTeamMember {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name          String
+  role          String
+  physicianSlug String?
+  createdAt     DateTime @default(now())
+
+  @@index([patientId])
+}
+
+// provider: apple | oura | whoop | garmin | gfit
+// status: pending (token issued, waiting for first sync) | connected | disconnected
+model DeviceConnection {
+  id          String    @id @default(cuid())
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  provider    String
+  status      String    @default("pending")
+  tokenHash   String?   @unique // SHA-256 of the device ingest token
+  tokenHint   String? // last 4 chars, for display only
+  dataTypes   String    @default("[]") // JSON array of shared metric keys
+  connectedAt DateTime?
+  lastSyncAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([patientId, provider])
+}
+
+// One value per patient + metric + day + source. `day` is YYYY-MM-DD in
+// the patient's timezone, so charts never need timezone math at read time.
+// metric keys: see src/lib/portal/metrics.ts (METRIC_DEFS).
+model HealthReading {
+  id         String   @id @default(cuid())
+  patientId  String
+  patient    Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  metric     String
+  day        String
+  value      Float
+  valueText  String? // e.g. ECG classification, blood pressure "118/76"
+  source     String // apple | oura | ... | clinic | manual
+  recordedAt DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([patientId, metric, day, source])
+  @@index([patientId, metric, day])
+}
+
+// status: final | pending. Written by the clinic / BioAro Labs integration.
+model LabResult {
+  id          String    @id @default(cuid())
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  code        String // stable test key, e.g. "ldl", "hba1c" — groups history
+  name        String
+  fullName    String?
+  category    String // Heart Health | Metabolic Health | Inflammation | Nutrition | Hormones | Genomics | Other
+  value       Float?
+  valueText   String?
+  unit        String?
+  refLow      Float?
+  refHigh     Float?
+  refText     String?
+  status      String    @default("final")
+  expectedAt  DateTime?
+  collectedAt DateTime?
+  source      String    @default("BioAro Labs")
+  panel       String?
+  about       String? // "What is this?"
+  guidance    String? // "What should I know?"
+  createdAt   DateTime  @default(now())
+
+  @@index([patientId, code, collectedAt])
+  @@index([patientId, collectedAt])
+}
+
+model ProtocolItem {
+  id        String        @id @default(cuid())
+  patientId String
+  patient   Patient       @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title     String
+  slot      String // Morning | Midday | Evening
+  timeOfDay String? // "09:10" — shown on the Today timeline
+  dose      String
+  source    String // BioAro Drugs | Care plan | …
+  sections  String        @default("[]") // JSON [{h,t}]
+  guidance  String?
+  sortOrder Int           @default(0)
+  active    Boolean       @default(true)
+  startedAt DateTime      @default(now())
+  endedAt   DateTime?
+  createdAt DateTime      @default(now())
+  logs      ProtocolLog[]
+
+  @@index([patientId, active])
+}
+
+model ProtocolLog {
+  id        String       @id @default(cuid())
+  itemId    String
+  item      ProtocolItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  day       String // YYYY-MM-DD, patient timezone
+  doneAt    DateTime     @default(now())
+
+  @@unique([itemId, day])
+  @@index([patientId, day])
+}
+
+// status: scheduled | completed | cancelled
+model Appointment {
+  id                    String          @id @default(cuid())
+  patientId             String
+  patient               Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title                 String
+  clinician             String
+  location              String
+  startsAt              DateTime
+  durationMin           Int             @default(30)
+  status                String          @default("scheduled")
+  summaryAvailable      Boolean         @default(false)
+  rescheduleRequestedAt DateTime?
+  prepShareTrends       Boolean         @default(true)
+  prepShareResults      Boolean         @default(true)
+  prepShareSymptoms     Boolean         @default(true)
+  prepSavedAt           DateTime?
+  createdAt             DateTime        @default(now())
+  questions             VisitQuestion[]
+
+  @@index([patientId, startsAt])
+}
+
+// "Questions to ask" — kept even before an appointment exists; attached to
+// the next appointment when the patient saves their visit preparation.
+model VisitQuestion {
+  id            String       @id @default(cuid())
+  patientId     String
+  patient       Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  appointmentId String?
+  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  text          String
+  createdAt     DateTime     @default(now())
+
+  @@index([patientId, createdAt])
+}
+
+// Audit trail of every read/write of patient data (HIA requirement).
+// actor: patient | admin | device
+model AccessLog {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  actor     String
+  action    String // read | create | update | delete | login | logout | export
+  resource  String
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([patientId, createdAt])
 }
