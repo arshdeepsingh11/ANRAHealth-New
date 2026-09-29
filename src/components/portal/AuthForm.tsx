@@ -6,6 +6,8 @@
 import React, { useState } from "react";
 import { api, announceSession } from "./api";
 import { C } from "./ui";
+import PasswordStrength from "./PasswordStrength";
+import { passwordProblem } from "@/lib/portal/password";
 
 const field: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: C.muted };
 
@@ -24,16 +26,20 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErr(null); setBusy(true);
+    setErr(null);
+    if (up) { const pwErr = passwordProblem(f.password, f.email); if (pwErr) { setErr(pwErr); return; } }
+    setBusy(true);
     try {
+      let r: { verify?: boolean };
       if (up) {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        await api("/api/portal/auth/sign-up", { body: { ...f, dateOfBirth: f.dateOfBirth || undefined, timezone } });
+        r = await api("/api/portal/auth/sign-up", { body: { ...f, dateOfBirth: f.dateOfBirth || undefined, timezone } });
       } else {
-        await api("/api/portal/auth/sign-in", { body: { email: f.email, password: f.password } });
+        r = await api("/api/portal/auth/sign-in", { body: { email: f.email, password: f.password } });
       }
       announceSession();
-      window.location.assign(safeNext());
+      // New or unverified accounts confirm their email before seeing any health data.
+      window.location.assign(r?.verify ? "/my-health/verify" : safeNext());
     } catch (e: any) {
       setErr(e.message); setBusy(false);
     }
@@ -73,7 +79,7 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
                   <input className="mhs-in" type={showPw ? "text" : "password"} value={f.password} onChange={set("password")} required minLength={up ? 10 : 1} maxLength={200} autoComplete={up ? "new-password" : "current-password"} style={{ paddingRight: 48 }} />
                   <button type="button" onClick={() => setShowPw(!showPw)} aria-label={showPw ? "Hide password" : "Show password"} style={{ position: "absolute", right: 4, top: 4, width: 38, height: 38, border: "none", background: "none", cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center" }}><i className={showPw ? "ph ph-eye-slash" : "ph ph-eye"} style={{ fontSize: 18 }} /></button>
                 </span>
-                {up && <span style={{ fontSize: 12, color: C.faint }}>At least 10 characters, with letters and a number.</span>}
+                {up && <PasswordStrength password={f.password} email={f.email} />}
               </label>
               {up && <label style={field}>Date of birth <span style={{ fontSize: 12, color: C.faint, marginTop: -4 }}>Optional</span><input className="mhs-in" type="date" value={f.dateOfBirth} onChange={set("dateOfBirth")} max={new Date().toISOString().slice(0, 10)} autoComplete="bday" /></label>}
               {up && (
