@@ -57,3 +57,7 @@
 .mhs input.mhs-in { width: 100%; height: 46px; padding: 0 14px; border: 1px solid rgba(29,35,39,.12); border-radius: 12px; background: #FFFDFB; font-size: 15px; outline-color: #3F6F7C; }
 .mhs input.mhs-in:disabled { background: #F3F1EE; color: #5B6369; }
 .mhs .mhs-scroll { overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+/* Numbered guides (global reset removes list markers) */
+.mhs ol { list-style: decimal; }
+.mhs ul { list-style: disc; }
