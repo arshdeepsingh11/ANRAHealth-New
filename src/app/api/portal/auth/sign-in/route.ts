@@ -3,6 +3,7 @@
 // emails, per-IP and per-email rate limits, 15-minute lock after 8 misses.
 
 import { NextResponse } from "next/server";
+import { sendVerificationCode, hasActiveCode } from "@backend/emailVerification";
 import { prisma } from "@backend/db";
 import { verifyPassword, burnPasswordCheck, createSession, normalizeEmail, clientMeta, assertSameOrigin, isLocked, recordFailedLogin } from "@backend/patientAuth";
 import { rateLimit } from "@backend/rateLimit";
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
       throw new HttpError(429, "Too many attempts. Please wait a few minutes and try again.");
     }
 
-    const p = await prisma.patient.findUnique({ where: { email }, select: { id: true, passwordHash: true, failedLogins: true, lockedUntil: true } });
+    const p = await prisma.patient.findUnique({ where: { email }, select: { id: true, passwordHash: true, failedLogins: true, lockedUntil: true, emailVerifiedAt: true, email: true, firstName: true } });
     if (!p) { await burnPasswordCheck(password); throw new HttpError(401, WRONG); }
     if (isLocked(p)) throw new HttpError(423, "This account is temporarily locked after several attempts. Please try again in 15 minutes.");
     if (!(await verifyPassword(password, p.passwordHash))) {
@@ -33,6 +34,11 @@ export async function POST(req: Request) {
     await prisma.patient.update({ where: { id: p.id }, data: { failedLogins: 0, lockedUntil: null, lastLoginAt: new Date() } });
     await createSession(p.id);
     audit(p.id, "patient", "login", "session", ip);
+    if (!p.emailVerifiedAt) {
+      // Unverified: send a fresh code unless one is still valid (errors ignored — the verify page can resend).
+      if (!(await hasActiveCode(p.id))) await sendVerificationCode(p).catch(() => {});
+      return NextResponse.json({ ok: true, verify: true });
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     return toResponse(e);
