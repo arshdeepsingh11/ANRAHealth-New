@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import Link from "next/link";
-import { ArrowLeft, Download, Sparkles, Loader2, Camera, ClipboardCheck, CheckCircle2 } from "lucide-react";
+import { Download, Sparkles, Loader2, Camera, ClipboardCheck, CheckCircle2 } from "lucide-react";
 import { physicians } from "@/data/physicians";
 import { locations } from "@/data/content";
 
@@ -415,13 +414,7 @@ export default function ReferralCentre() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      <div className="px-6 pt-6">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700 glass rounded-full px-4 py-2">
-          <ArrowLeft size={14} /> Back to Main Page
-        </Link>
-      </div>
-
-      <div className="text-center pt-10 pb-8 px-6">
+      <div className="text-center pt-16 md:pt-24 pb-8 px-6">
         <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gold-600 font-display italic">ANRA Health</p>
         <h1 className="text-3xl md:text-4xl font-display font-bold text-graphite-900">Referral Centre</h1>
       </div>
