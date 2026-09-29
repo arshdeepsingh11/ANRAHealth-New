@@ -1,0 +1,321 @@
+"use client";
+
+// Bottom sheet (mobile) / centred dialog (desktop): ALBA, protocol step,
+// visit preparation, device management + Apple Watch setup, history detail.
+
+import React, { useEffect, useRef, useState } from "react";
+import type { AppointmentsDTO, DeviceDTO, HistoryDetailDTO, ProtocolDTO, TrendsDTO } from "@/lib/portal/types";
+import { usePortal } from "./context";
+import { EP, api, prime, invalidate, load, useResource, peek } from "./api";
+import { C, Switch, Loading, longDateTz } from "./ui";
+import { toggleProtocol } from "./screens/Protocol";
+import { relTime } from "./screens/Devices";
+
+const TITLES: Record<string, [string, string]> = { alba: ["ALBA · AI companion", "Ask ALBA"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"] };
+
+export default function Sheets() {
+  const { sheet, openSheet } = usePortal();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { dialogRef.current?.focus(); }, [sheet?.t]);
+  if (!sheet) return null;
+  const [eyebrow, title] = TITLES[sheet.t];
+  const close = () => openSheet(null);
+  return (
+    <div className="mhs-sheetwrap" style={{ position: "fixed", inset: 0, zIndex: 90, display: "flex", justifyContent: "center" }}>
+      <div onClick={close} style={{ position: "absolute", inset: 0, background: "rgba(29,35,39,.32)", animation: "mhs-fadeIn 240ms ease" }} />
+      <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="mhs-sheet" style={{ position: "relative", display: "flex", flexDirection: "column", background: C.sheet, outline: "none" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "18px 20px 10px" }}>
+          <span style={{ fontSize: 13, color: C.muted }}>{eyebrow}</span>
+          <button onClick={close} aria-label="Close" style={{ width: 36, height: 36, border: "none", borderRadius: 18, background: "#F0EEEA", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-x" style={{ fontSize: 16 }} /></button>
+        </div>
+        <div className="mhs-scroll" style={{ padding: "0 22px 24px", flex: 1, minHeight: 0 }}>
+          {sheet.t === "alba" && <AlbaSheet ask={sheet.ask} />}
+          {sheet.t === "protocol" && <ProtocolSheet id={sheet.id} />}
+          {sheet.t === "prepare" && <PrepareSheet />}
+          {sheet.t === "manage" && <ManageSheet id={sheet.id} token={sheet.token} />}
+          {sheet.t === "conversation" && <ConversationSheet type={sheet.type} id={sheet.id} />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── ALBA ────────────────────────────────────────────────────────────────
+type Msg = { role: "user" | "alba"; text: string; src?: string; action?: string };
+// Kept across open/close within the session so the conversation continues.
+const albaMem: { msgs: Msg[]; conversationId: string } = { msgs: [], conversationId: "" };
+
+function AlbaSheet({ ask }: { ask?: string }) {
+  const { tab, go, openSheet, profile } = usePortal();
+  const appts = peek<AppointmentsDTO>(EP.appointments);
+  const [msgs, setMsgs] = useState<Msg[]>(albaMem.msgs);
+  const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const endRef = useRef<HTMLDivElement>(null);
+  const clinician = appts?.upcoming[0]?.clinician || profile.careTeam[0]?.name;
+  const prompts = ["Help me understand my recent health trends.", "What changed in my sleep this week?", clinician ? `What should I ask ${clinician}?` : "What should I ask my care team?"];
+
+  const push = (m: Msg) => setMsgs((cur) => { const n = [...cur, m]; albaMem.msgs = n; return n; });
+  const send = async (q: string) => {
+    q = q.trim();
+    if (!q || busyRef.current) return;
+    busyRef.current = true; setBusy(true); setInput("");
+    push({ role: "user", text: q });
+    try {
+      const r = await api<{ conversationId: string; text: string; src?: string; action?: string }>("/api/portal/alba", { body: { message: q, conversationId: albaMem.conversationId || undefined } });
+      albaMem.conversationId = r.conversationId;
+      push({ role: "alba", text: r.text, src: r.src, action: r.action });
+      invalidate(EP.history);
+    } catch (e: any) {
+      push({ role: "alba", text: e.status === 429 ? e.message : "I can help with your trends, sleep, results or preparing for your visit. For anything about symptoms or treatment, your care team is the right place to start." });
+    } finally { busyRef.current = false; setBusy(false); }
+  };
+  useEffect(() => { if (ask && !albaMem.msgs.length) send(ask); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [msgs.length, busy]);
+
+  const actions: Record<string, [string, string, () => void]> = {
+    trends: ["Explore my trends", C.lavMid, () => { openSheet(null); tab("trends"); }],
+    sleep: ["View sleep trend", C.lavMid, () => { openSheet(null); go("trend", { k: "sleep" }); }],
+    prepare: ["Prepare for your visit", C.lavMid, () => openSheet({ t: "prepare" })],
+    emergency: ["Call 911", C.peachInk, () => { window.location.href = "tel:911"; }],
+  };
+
+  return (
+    <>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, color: C.lavMid, display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-sparkle" style={{ fontSize: 19 }} /></span><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>Ask ALBA</h2></div>
+      <p style={{ margin: "0 0 18px", fontSize: 14, lineHeight: 1.5, color: C.muted }}>ALBA explains your data using the sources you've allowed. It doesn't diagnose or replace your care team.</p>
+      {msgs.length === 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {prompts.map((p) => <button key={p} onClick={() => send(p)} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", border: "1px solid rgba(140,111,184,.22)", borderRadius: 14, background: C.card, cursor: "pointer", textAlign: "left", fontSize: 15 }}>“{p}”</button>)}
+        </div>
+      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }} aria-live="polite">
+        {msgs.map((m, i) => {
+          const u = m.role === "user", a = m.action ? actions[m.action] : undefined;
+          return (
+            <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: u ? "flex-end" : "flex-start", gap: 8, animation: "mhs-fadeUp 300ms ease" }}>
+              <div style={{ maxWidth: "92%", padding: u ? "10px 14px" : "2px 0 2px 14px", borderRadius: 16, background: u ? "#F0EEEA" : "transparent", fontSize: 15, lineHeight: 1.6, whiteSpace: "pre-wrap", borderLeft: u ? "none" : `2px solid ${m.action === "emergency" ? "#C8826A" : "#C9BBE0"}` }}>{m.text}</div>
+              {m.src && <span style={{ fontSize: 12, color: C.lavInk, paddingLeft: 14 }}>{m.src}</span>}
+              {a && <button onClick={a[2]} style={{ marginLeft: 14, height: 40, padding: "0 16px", border: "none", borderRadius: 10, background: a[1], color: C.card, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>{a[0]}</button>}
+            </div>
+          );
+        })}
+        {busy && <div style={{ display: "flex", gap: 5, padding: "8px 14px" }}>{[0, 0.2, 0.4].map((d) => <span key={d} style={{ width: 6, height: 6, borderRadius: 3, background: C.lavMid, animation: `mhs-pulse 1s ${d}s infinite` }} />)}</div>}
+        <div ref={endRef} />
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); send(input); }} style={{ display: "flex", gap: 8, marginTop: 20 }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={1000} placeholder="Ask about your health data" aria-label="Ask ALBA" style={{ flex: 1, minWidth: 0, height: 46, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 12, background: C.card, fontSize: 15, outlineColor: C.lavMid }} />
+        <button type="submit" aria-label="Send" disabled={busy} style={{ width: 46, height: 46, border: "none", borderRadius: 12, background: C.lavMid, color: C.card, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-arrow-up" style={{ fontSize: 18 }} /></button>
+      </form>
+      <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.peachInk, display: "flex", gap: 6 }}><i className="ph ph-first-aid" style={{ fontSize: 14, marginTop: 1 }} />For chest pain, severe shortness of breath or any emergency, call 911. ALBA can't help in an emergency.</p>
+    </>
+  );
+}
+
+// ── Protocol step ───────────────────────────────────────────────────────
+function ProtocolSheet({ id }: { id: string }) {
+  const { toast } = usePortal();
+  const { data } = useResource<ProtocolDTO>(EP.protocol);
+  const q = data?.items.find((x) => x.id === id);
+  if (!q) return <Loading />;
+  const d = q.doneToday;
+  return (
+    <>
+      <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{q.title}</h2>
+      <p style={{ margin: "0 0 20px", fontSize: 15, color: C.muted }}>{q.dose} · {q.slot}{q.timeOfDay ? ` · ${q.timeOfDay}` : ""}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        {q.sections.map((x) => <div key={x.h}><h3 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 500 }}>{x.h}</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: C.ink2 }}>{x.t}</p></div>)}
+      </div>
+      {q.guidance && <div style={{ marginTop: 20, padding: 16, borderRadius: 14, background: C.tealWash, fontSize: 14, lineHeight: 1.55 }}><span style={{ fontWeight: 500 }}>Provider guidance</span><br />{q.guidance}</div>}
+      <p style={{ margin: "14px 0 18px", fontSize: 13, color: C.muted }}>Source: {q.source}</p>
+      <button onClick={() => toggleProtocol(q.id, !d, toast)} style={{ width: "100%", height: 48, border: "none", borderRadius: 12, background: d ? C.tealChip : C.teal, color: d ? C.tealDark : C.card, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>{d ? "Completed today · Undo" : "Mark as done"}</button>
+    </>
+  );
+}
+
+// ── Prepare for visit ───────────────────────────────────────────────────
+function PrepareSheet() {
+  const { tz, toast, openSheet } = usePortal();
+  const { data } = useResource<AppointmentsDTO>(EP.appointments);
+  const trends = peek<TrendsDTO>(EP.trends);
+  const next = data?.upcoming[0];
+  const [share, setShare] = useState(() => ({ trends: next?.prep.shareTrends ?? true, results: next?.prep.shareResults ?? true, symptom: next?.prep.shareSymptoms ?? true }));
+  const [qIn, setQIn] = useState("");
+  const [saving, setSaving] = useState(false);
+  if (!data) return <Loading />;
+
+  const who = next?.clinician || "your care team";
+  const src = trends ? [...new Set(Object.values(trends.sources))].join(", ") : "";
+  const toggles = [
+    ...(data.prepSources.trends ? [{ k: "trends" as const, label: "30-day heart and sleep trends", sub: src ? `From ${src}` : "From your connected devices" }] : []),
+    ...(data.prepSources.results ? [{ k: "results" as const, label: "Recent results", sub: data.prepSources.results }] : []),
+    ...(data.prepSources.symptom ? [{ k: "symptom" as const, label: data.prepSources.symptom.label, sub: data.prepSources.symptom.sub }] : []),
+  ];
+  const refresh = (a: AppointmentsDTO) => prime(EP.appointments, a);
+  const addQ = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const t = qIn.trim(); if (!t) return;
+    setQIn("");
+    try { await api("/api/portal/questions", { body: { text: t } }); refresh(await load<AppointmentsDTO>(EP.appointments, true)); } catch (err: any) { toast(err.message); }
+  };
+  const removeQ = async (id: string) => {
+    refresh({ ...data, questions: data.questions.filter((q) => q.id !== id) });
+    try { await api(`/api/portal/questions?id=${encodeURIComponent(id)}`, { method: "DELETE" }); } catch (err: any) { toast(err.message); load(EP.appointments, true).catch(() => {}); }
+  };
+  const save = async () => {
+    if (!next) { openSheet(null); toast("Saved. Your questions will be ready for your next visit."); return; }
+    setSaving(true);
+    try {
+      refresh(await api<AppointmentsDTO>(`/api/portal/appointments/${next.id}`, { body: { action: "prep", shareTrends: share.trends, shareResults: share.results, shareSymptoms: share.symptom } }));
+      openSheet(null); toast(`Saved. ${who} will see this before your visit.`);
+    } catch (err: any) { toast(err.message); } finally { setSaving(false); }
+  };
+
+  return (
+    <>
+      <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>Prepare for your visit</h2>
+      <p style={{ margin: "0 0 22px", fontSize: 15, color: C.muted }}>
+        {next ? `${next.title} · ${next.clinician} · ${longDateTz(next.startsAt, tz, { month: "short", day: "numeric" })}, ${longDateTz(next.startsAt, tz, { hour: "numeric", minute: "2-digit" })}` : "No visit is booked yet. Your questions will be kept for your next appointment."}
+      </p>
+      {next && toggles.length > 0 && (
+        <>
+          <h3 style={{ margin: "0 0 6px", fontSize: 15, fontWeight: 500 }}>Share with {who}</h3>
+          <div style={{ display: "flex", flexDirection: "column", marginBottom: 22 }}>
+            {toggles.map((t) => (
+              <div key={t.k} style={{ display: "flex", alignItems: "center", gap: 14, minHeight: 56, borderBottom: `1px solid ${C.line}` }}>
+                <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}><span style={{ fontSize: 15 }}>{t.label}</span><span style={{ fontSize: 13, color: C.muted }}>{t.sub}</span></span>
+                <Switch on={share[t.k]} onToggle={() => setShare({ ...share, [t.k]: !share[t.k] })} label={t.label} />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      <h3 style={{ margin: "0 0 8px", fontSize: 15, fontWeight: 500 }}>Questions to ask</h3>
+      <ul style={{ listStyle: "none", margin: "0 0 12px", padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
+        {data.questions.map((q) => (
+          <li key={q.id} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: 12, background: "#F3F1EE", fontSize: 15, lineHeight: 1.45, animation: "mhs-fadeUp 260ms ease" }}>
+            <i className="ph ph-chat-circle" style={{ fontSize: 16, color: C.teal, marginTop: 2 }} /><span style={{ flex: 1, overflowWrap: "anywhere" }}>{q.text}</span>
+            <button onClick={() => removeQ(q.id)} aria-label="Remove question" style={{ border: "none", background: "none", cursor: "pointer", color: C.faint, padding: "0 2px" }}><i className="ph ph-x" /></button>
+          </li>
+        ))}
+      </ul>
+      <form onSubmit={addQ} style={{ display: "flex", gap: 8, marginBottom: 22 }}>
+        <input value={qIn} onChange={(e) => setQIn(e.target.value)} maxLength={300} placeholder="Add a question" aria-label="Add a question" style={{ flex: 1, minWidth: 0, height: 44, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 12, background: C.card, fontSize: 15 }} />
+        <button type="submit" style={{ height: 44, padding: "0 16px", border: "none", borderRadius: 12, background: C.tealChip, color: C.tealDark, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Add</button>
+      </form>
+      <button onClick={save} disabled={saving} style={{ width: "100%", height: 48, border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>{saving ? "Saving…" : "Save preparation"}</button>
+    </>
+  );
+}
+
+// ── Manage device (+ Apple Watch setup via iPhone Shortcuts) ─────────────
+function Copy({ value, label }: { value: string; label: string }) {
+  const [ok, setOk] = useState(false);
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={{ fontSize: 12, color: C.muted }}>{label}</span>
+      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <code style={{ flex: 1, minWidth: 0, padding: "10px 12px", borderRadius: 10, background: "#F0EEEA", fontSize: 13, overflowWrap: "anywhere", fontFamily: "var(--font-jetbrains-mono), ui-monospace, monospace" }}>{value}</code>
+        <button onClick={() => { navigator.clipboard?.writeText(value).then(() => { setOk(true); setTimeout(() => setOk(false), 1500); }); }} style={{ height: 38, padding: "0 12px", border: `1px solid ${C.line12}`, borderRadius: 10, background: C.card, fontSize: 13, cursor: "pointer", flex: "none" }}>{ok ? "Copied" : "Copy"}</button>
+      </div>
+    </div>
+  );
+}
+
+function ManageSheet({ id, token: initialToken }: { id: string; token?: string }) {
+  const { toast, openSheet } = usePortal();
+  const { data, reload } = useResource<DeviceDTO[]>(EP.devices);
+  const [token, setToken] = useState(initialToken);
+  const [showSetup, setShowSetup] = useState(!!initialToken);
+  const d = data?.find((x) => x.id === id);
+  if (!d) return <Loading />;
+  const on = d.status === "on";
+  const endpoint = typeof window !== "undefined" ? `${window.location.origin}/api/wearables/ingest` : "/api/wearables/ingest";
+
+  const setTypes = async (label: string) => {
+    const next = d.dataTypes.includes(label) ? d.dataTypes.filter((x) => x !== label) : [...d.dataTypes, label];
+    prime(EP.devices, data!.map((x) => (x.id === id ? { ...x, dataTypes: next } : x)));
+    try { prime(EP.devices, await api<DeviceDTO[]>(EP.devices, { method: "PATCH", body: { provider: id, dataTypes: next } })); } catch (e: any) { toast(e.message); reload(); }
+  };
+  const newToken = async () => {
+    try { const r = await api<{ token: string; devices: DeviceDTO[] }>(EP.devices, { body: { provider: id } }); prime(EP.devices, r.devices); setToken(r.token); setShowSetup(true); }
+    catch (e: any) { toast(e.message); }
+  };
+  const sync = async () => {
+    openSheet(null);
+    await Promise.all([reload(), load(EP.today, true), load(EP.trends, true)].map((p) => p?.catch(() => {})));
+    toast(on ? "Updated just now" : "Run your ANRA Sync shortcut on your iPhone to send data");
+  };
+  const disconnect = async () => {
+    try { prime(EP.devices, await api<DeviceDTO[]>(`${EP.devices}?provider=${id}`, { method: "DELETE" })); invalidate(EP.today, EP.trends); openSheet(null); toast(`${d.name} disconnected`); }
+    catch (e: any) { toast(e.message); }
+  };
+
+  return (
+    <>
+      <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{d.name}</h2>
+      <p style={{ margin: "0 0 20px", fontSize: 14, color: on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 6 }}>
+        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last synced ${relTime(d.lastSyncAt)}` : "Waiting for your first sync"}
+      </p>
+
+      {id === "apple" && (showSetup || !on) && (
+        <section style={{ marginBottom: 24, padding: 16, borderRadius: 16, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 14 }}>
+          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 500 }}>Set up Apple Watch sync</h3>
+          <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>Your watch saves to Apple Health on your iPhone. A private Shortcut sends a daily summary from Apple Health to My Health Space.</p>
+          {token ? (
+            <>
+              <Copy label="Your private sync token — shown once. Keep it secret." value={token} />
+              <Copy label="Send data to" value={endpoint} />
+            </>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 14, color: C.ink2 }}>
+              <span>{d.tokenHint ? `Your sync token ends in …${d.tokenHint}. For security it can't be shown again.` : "No sync token yet."}</span>
+              <button onClick={newToken} style={{ alignSelf: "flex-start", height: 38, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 10, background: "none", fontSize: 14, cursor: "pointer" }}>Create a new sync token</button>
+            </div>
+          )}
+          <ol style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 8, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>
+            <li>On your iPhone, open <b>Shortcuts</b> → <b>Automation</b> → <b>New Automation</b> → <b>Time of Day</b> (for example 8:00 AM, daily, Run Immediately).</li>
+            <li>Add <b>Find Health Samples</b> actions for Resting Heart Rate, Heart Rate Variability, Sleep, Steps, Exercise Minutes and Blood Oxygen (latest, or total for today).</li>
+            <li>Add <b>Get Contents of URL</b>: the address above, Method <b>POST</b>, Header <code>Authorization</code> = <code>Bearer</code> + your token, Request Body <b>JSON</b> with keys <code>restingHeartRate</code>, <code>heartRateVariability</code>, <code>sleepHours</code>, <code>steps</code>, <code>activeMinutes</code>, <code>oxygenSaturation</code>.</li>
+            <li>Tap run once. This page shows <b>Connected</b> after the first successful sync.</li>
+          </ol>
+        </section>
+      )}
+
+      <h3 style={{ margin: "0 0 6px", fontSize: 15, fontWeight: 500 }}>Data shared with My Health Space</h3>
+      <div style={{ display: "flex", flexDirection: "column", marginBottom: 22 }}>
+        {d.signals.map((s) => (
+          <div key={s} style={{ display: "flex", alignItems: "center", gap: 14, minHeight: 52, borderBottom: `1px solid ${C.line}` }}>
+            <span style={{ flex: 1, fontSize: 15 }}>{s}</span>
+            <Switch on={d.dataTypes.includes(s)} onToggle={() => setTypes(s)} label={s} />
+          </div>
+        ))}
+      </div>
+      {id === "apple" && on && !showSetup && <button onClick={() => setShowSetup(true)} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: "none", fontSize: 15, color: C.teal, cursor: "pointer", marginBottom: 6 }}>Sync setup</button>}
+      <button onClick={sync} style={{ width: "100%", height: 46, border: `1px solid ${C.line12}`, borderRadius: 12, background: "none", fontSize: 15, cursor: "pointer", marginBottom: 10 }}>Sync now</button>
+      <button onClick={disconnect} style={{ width: "100%", height: 46, border: "1px solid rgba(139,75,55,.25)", borderRadius: 12, background: "none", color: C.peachInk, fontSize: 15, cursor: "pointer" }}>Disconnect {d.name}</button>
+      <p style={{ margin: "12px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted }}>Disconnecting stops new data. Data already in My Health Space stays until you delete it in Privacy &amp; Data.</p>
+    </>
+  );
+}
+
+// ── History detail (symptom check, ALBA conversation, assessment…) ──────
+function ConversationSheet({ type, id }: { type: string; id: string }) {
+  const { data, error, reload } = useResource<HistoryDetailDTO>(`/api/portal/history/detail?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`);
+  if (!data) return <Loading error={error} retry={reload} />;
+  return (
+    <>
+      <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{data.title}</h2>
+      <p style={{ margin: "0 0 20px", fontSize: 14, color: C.muted }}>{data.dateLabel}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+        {data.sections.map((x) => <div key={x.h}><h3 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 500 }}>{x.h}</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: C.ink2, whiteSpace: "pre-wrap" }}>{x.t}</p></div>)}
+        {data.messages?.map((m, i) => {
+          const u = m.role === "user";
+          return <div key={i} style={{ alignSelf: u ? "flex-end" : "flex-start", maxWidth: "92%", padding: u ? "10px 14px" : "2px 0 2px 14px", borderRadius: 16, background: u ? "#F0EEEA" : "transparent", fontSize: 15, lineHeight: 1.6, whiteSpace: "pre-wrap", borderLeft: u ? "none" : "2px solid #C9BBE0" }}>{m.text}</div>;
+        })}
+        <p style={{ margin: 0, fontSize: 13, color: C.muted }}>{data.note}</p>
+      </div>
+    </>
+  );
+}
