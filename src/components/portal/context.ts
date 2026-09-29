@@ -10,11 +10,20 @@ export type Sheet =
   | { t: "protocol"; id: string }
   | { t: "prepare" }
   | { t: "manage"; id: string; token?: string }
-  | { t: "conversation"; type: string; id: string };
+  | { t: "conversation"; type: string; id: string }
+  | { t: "connect"; id: string }
+  | { t: "import" }
+  | { t: "reading" }
+  | { t: "bp" }
+  | { t: "location" }
+  | { t: "share" }
+  | { t: "invite" }
+  | { t: "challenge"; mode: "create" | "join" };
 
 // Back target for detail screens (the section tabs cover everything else).
-export const PARENT: Partial<Record<Screen, Screen>> = { result: "results", trend: "trends", privacy: "profile", settings: "profile" };
-export const LABELS: Record<Screen, string> = { today: "Today", trends: "Trends", results: "Results", protocol: "Protocol", more: "More", history: "History", devices: "Devices", appointments: "Appointments", referrals: "Referrals", profile: "Profile", privacy: "Privacy", settings: "Notifications", result: "Result", trend: "Trend" };
+export const PARENT: Partial<Record<Screen, Screen>> = { result: "results", trend: "trends", privacy: "profile", settings: "profile", careview: "family", story: "today" };
+export const LABELS: Record<Screen, string> = { today: "Today", trends: "Trends", results: "Results", protocol: "Protocol", more: "More", history: "History", devices: "Devices", appointments: "Appointments", referrals: "Referrals", profile: "Profile", privacy: "Privacy", settings: "Notifications", result: "Result", trend: "Trend",
+  heart: "Heart", lifestyle: "Lifestyle", family: "Family & sharing", careview: "Care view", rewards: "Rewards", story: "Monthly story" };
 
 export interface PortalCtx {
   route: Route;
