@@ -11,7 +11,7 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
   const current = typeof b.current === "string" ? b.current : "", next = typeof b.next === "string" ? b.next : "";
   const row = await prisma.patient.findUniqueOrThrow({ where: { id: patient.id }, select: { passwordHash: true } });
   if (!(await verifyPassword(current, row.passwordHash))) throw new HttpError(400, "Your current password is incorrect.");
-  const problem = passwordProblem(next);
+  const problem = passwordProblem(next, patient.email);
   if (problem) throw new HttpError(400, problem);
   await prisma.patient.update({ where: { id: patient.id }, data: { passwordHash: await hashPassword(next) } });
   await revokeOtherSessions(patient.id);
