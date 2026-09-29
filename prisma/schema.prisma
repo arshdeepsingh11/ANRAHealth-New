@@ -142,6 +142,7 @@ model Patient {
   timezone        String    @default("America/Edmonton")
   photoVersion    Int       @default(0) // > 0 = has photo (URL version); ≤ 0 = none. Only ever grows in magnitude (cache-busting)
   termsAcceptedAt DateTime
+  emailVerifiedAt DateTime? // null until the 6-digit email code is confirmed
   lastLoginAt     DateTime?
   failedLogins    Int       @default(0)
   lockedUntil     DateTime?
@@ -149,6 +150,7 @@ model Patient {
   updatedAt       DateTime  @updatedAt
 
   sessions        PatientSession[]
+  emailCodes      EmailCode[]
   photo           PatientPhoto?
   settings        PatientSettings?
   goals           Goal[]
@@ -183,6 +185,22 @@ model PatientSession {
 
   @@index([patientId])
   @@index([expiresAt])
+}
+
+// One-time 6-digit email codes (verification now; password reset later).
+// Only a SHA-256 of the code is stored. 10-minute expiry, 5 attempts.
+model EmailCode {
+  id        String    @id @default(cuid())
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  purpose   String // verify
+  codeHash  String
+  attempts  Int       @default(0)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([patientId, purpose, createdAt])
 }
 
 // Kept out of Patient so profile reads never load image bytes.
