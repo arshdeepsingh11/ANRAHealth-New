@@ -47,7 +47,7 @@ async function add() {
   const maya = await prisma.patient.create({ data: {
     id: "test_pt_maya", email: "maya.test@anrahealth.test", firstName: "Maya", lastName: "Chen (Test)", passwordHash: pw, phone: "(403) 555-0142",
     dateOfBirth: new Date("1974-03-11T12:00:00Z"), termsAcceptedAt: ago(60), emailVerifiedAt: ago(60), lastLoginAt: ago(0, 0, 4), createdAt: ago(60),
-    settings: { create: {} },
+    settings: { create: { city: "Calgary", province: "AB", lat: 51.0447, lon: -114.0719 } },
     goals: { create: [{ label: "LDL below 2.6 mmol/L", sortOrder: 0 }, { label: "8,000 steps a day", sortOrder: 1 }, { label: "7+ hours of sleep", sortOrder: 2 }] },
     careTeam: { create: [
       { name: "Dr. Anmol Singh Kapoor", role: "Most responsible physician", physicianSlug: "anmol-kapoor", location: "North East", createdAt: ago(59) },
@@ -69,6 +69,8 @@ async function add() {
   await prisma.labResult.createMany({ data: [
     { id: "test_lab_1", patientId: maya.id, code: "ldl", name: "LDL cholesterol", category: "Heart Health", value: 3.4, unit: "mmol/L", refHigh: 3.5, collectedAt: ago(1), panel: "Lipid panel", staffNote: "Within range; above her 2.6 mmol/L goal.", createdAt: ago(1, 2) },
     { id: "test_lab_2", patientId: maya.id, code: "hba1c", name: "HbA1c", category: "Metabolic Health", value: 6.1, unit: "%", refLow: 4.0, refHigh: 5.9, collectedAt: ago(1), panel: "Metabolic panel", createdAt: ago(1, 2) },
+    { id: "test_lab_0", patientId: maya.id, code: "ldl", name: "LDL cholesterol", category: "Heart Health", value: 3.9, unit: "mmol/L", refHigh: 3.5, collectedAt: ago(200), panel: "Lipid panel", createdAt: ago(200) },
+    { id: "test_lab_4", patientId: maya.id, code: "vitd", name: "Vitamin D (25-OH)", category: "Nutrition", value: 62, unit: "nmol/L", refLow: 75, refHigh: 250, collectedAt: ago(380), panel: "Vitamins", createdAt: ago(380) },
     { id: "test_lab_3", patientId: maya.id, code: "hs-troponin-t", name: "hs-Troponin T", category: "Heart Health", status: "pending", unit: "ng/L", refHigh: 14, collectedAt: ago(0, 1), panel: "Cardiac markers", staffNote: "Ordered after emergency-flagged symptom check.", createdAt: ago(0, 1) },
   ] });
   const prot = [
@@ -97,11 +99,39 @@ async function add() {
   }
   readings.push({ patientId: maya.id, metric: "bp", day: day(ago(17)), value: 138, valueText: "138/86", source: "clinic", recordedAt: ago(17) });
   await prisma.healthReading.createMany({ data: readings });
+  // Health Universe: home BP (morning + evening), check-ins, points, a challenge, family care.
+  const bps = [];
+  for (let i = 0; i < 10; i++) for (const [h, ds, dd] of [[7, 0, 0], [20, -3, -2]]) {
+    const at = ago(i, 0); at.setUTCHours(h + 6, 10, 0, 0);
+    if (at > new Date()) continue;
+    bps.push({ id: `test_bp_${i}_${h}`, patientId: maya.id, sys: 134 + ((i * 3) % 7) + ds, dia: 85 + (i % 3) + dd, pulse: 68 + (i % 4), takenAt: at, day: day(at), source: "manual" });
+  }
+  await prisma.bpReading.createMany({ data: bps });
+  const bpDays = [...new Set(bps.map((b) => b.day))];
+  await prisma.healthReading.createMany({ data: bpDays.map((d) => { const x = bps.filter((b) => b.day === d); const sy = Math.round(x.reduce((a, b) => a + b.sys, 0) / x.length), di = Math.round(x.reduce((a, b) => a + b.dia, 0) / x.length); return { patientId: maya.id, metric: "bp", day: d, value: sy, valueText: `${sy}/${di}`, source: "manual", recordedAt: x[0].takenAt }; }) });
+  const life = [];
+  for (let i = 1; i <= 9; i++) {
+    const d = day(ago(i)), at = (h) => { const x = ago(i); x.setUTCHours(h + 6, 0, 0, 0); return x; };
+    for (let w = 0; w < 5 + (i % 4); w++) life.push({ id: `test_lf_w${i}_${w}`, patientId: maya.id, kind: "water", value: 1, day: d, at: at(8 + w) });
+    life.push({ id: `test_lf_c${i}`, patientId: maya.id, kind: "caffeine", value: 1, day: d, at: at(i % 3 === 0 ? 15 : 8) });
+    if (i % 3 === 1) life.push({ id: `test_lf_a${i}`, patientId: maya.id, kind: "alcohol", value: 2, day: d, at: at(19) });
+    life.push({ id: `test_lf_m${i}`, patientId: maya.id, kind: "mood", value: 3 + (i % 3 === 0 ? 1 : 0), day: d, at: at(9) });
+    life.push({ id: `test_lf_s${i}`, patientId: maya.id, kind: "stress", value: 2 + (i % 2), day: d, at: at(9) });
+  }
+  life.push({ id: "test_lf_meal1", patientId: maya.id, kind: "meal", value: 1, note: "Oatmeal with blueberries (Test)", day: day(ago(1)), at: ago(1, 14) });
+  await prisma.lifestyleLog.createMany({ data: life });
+  await prisma.rewardEvent.createMany({ data: Array.from({ length: 9 }, (_, i) => ({ id: `test_rw_${i}`, patientId: maya.id, kind: "checkin", day: day(ago(i + 1)), points: 10 })).concat([{ id: "test_rw_s", patientId: maya.id, kind: "streak7", day: day(ago(3)), points: 50 }, { id: "test_rw_p", patientId: maya.id, kind: "protocol", day: day(ago(2)), points: 15 }]) });
+
   await prisma.patientSession.create({ data: { tokenHash: "test_" + randomBytes(16).toString("hex"), patientId: maya.id, ip: "142.59.10.18", userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1", lastSeenAt: ago(0, 0, 4), expiresAt: new Date(Date.now() + 20 * 86400000) } });
 
   // ── Daniel: reschedule request + a device that stopped syncing ──
   await prisma.appointment.create({ data: { id: "test_appt_2", patientId: daniel.id, title: "Follow-up", clinician: "Dr. Ravi Varshney", location: "North East", startsAt: ahead(3, 13, 15), rescheduleRequestedAt: ago(0, 3), createdAt: ago(20) } });
   await prisma.deviceConnection.create({ data: { id: "test_dev_2", patientId: daniel.id, provider: "garmin", status: "connected", dataTypes: JSON.stringify(["rhr", "steps", "sleep"]), connectedAt: ago(90), lastSyncAt: ago(4) } });
+
+  // Daniel looks after Maya (family care), and both are in a steps challenge.
+  await prisma.careLink.create({ data: { id: "test_care_1", ownerId: maya.id, caregiverId: daniel.id, email: daniel.email, relation: "Spouse / partner", status: "active", acceptedAt: ago(20), createdAt: ago(21) } });
+  await prisma.challenge.create({ data: { id: "test_chal_1", code: "TESTQ7", name: "October step-up (Test)", metric: "steps", goal: 7000, startDay: day(ago(10)), endDay: day(ahead(10)), org: "ANRA staff (Test)", createdById: maya.id, members: { create: [{ patientId: maya.id }, { patientId: daniel.id }] } } });
+  await prisma.healthReading.createMany({ data: Array.from({ length: 8 }, (_, i) => ({ patientId: daniel.id, metric: "steps", day: day(ago(i + 1)), value: 5400 + i * 420, source: "garmin", recordedAt: ago(i + 1) })) });
 
   // ── Visitors ──
   // v_TEST01: browsed anonymously, then signed up as Maya (history merged).
