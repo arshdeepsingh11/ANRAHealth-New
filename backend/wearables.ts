@@ -27,6 +27,9 @@ const ALIASES: Record<string, MetricKey> = {
   activeenergy: "activeEnergy", activecalories: "activeEnergy", activeenergyburned: "activeEnergy",
   bp: "bp", bloodpressure: "bp",
   ecg: "ecg", ecgclassification: "ecg",
+  weight: "weight", bodymass: "weight", weightkg: "weight", weightlb: "weight", weightlbs: "weight",
+  glucose: "glucose", bloodglucose: "glucose", bloodsugar: "glucose",
+  distance: "distance", walkingdistance: "distance", distancewalkingrunning: "distance", distancekm: "distance",
 };
 
 const num = (v: unknown): number | null => {
@@ -83,6 +86,9 @@ function normalise(metric: MetricKey, field: string, raw: unknown, tz: string): 
   if (v == null) return "not a number";
   if ((metric === "sleep" || metric === "timeInBed") && (f.includes("minute") || v > 24)) v = v / 60;
   if (metric === "spo2" && v <= 1) v = v * 100;
+  if (metric === "weight" && (/lb|pound/.test(f) || /lb/i.test(String(raw)))) v = v * 0.45359237;
+  if (metric === "glucose" && (v > 35 || /mg/i.test(String(raw)) || f.includes("mg"))) v = v / 18.016;
+  if (metric === "distance" && (f.includes("meter") || f.endsWith("m") && !f.endsWith("km") || v > 300)) v = v / 1000;
   const def = METRIC_DEFS[metric];
   if (v < def.min || v > def.max) return `out of range (${def.min}–${def.max})`;
   return { value: Math.round(v * 100) / 100, valueText: null };
