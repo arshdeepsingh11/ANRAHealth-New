@@ -1,0 +1,63 @@
+"use client";
+
+// Site-wide account entry (top-right, above the nav rail on desktop).
+// Signed out → "Sign in"; signed in → photo / initials + "My Health".
+// Reads /api/portal/session once, and again when the portal announces a
+// change (sign-in, sign-out, new photo) via the "anra:session" event.
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+
+type Session = { signedIn: false } | { signedIn: true; firstName: string; initials: string; photoUrl: string | null };
+
+export default function AccountButton({ mobile }: { mobile: boolean }) {
+  const [s, setS] = useState<Session | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    const load = () => fetch("/api/portal/session", { credentials: "same-origin", cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : { signedIn: false }))
+      .then((j) => { if (alive) setS(j); })
+      .catch(() => { if (alive) setS({ signedIn: false }); });
+    load();
+    window.addEventListener("anra:session", load);
+    return () => { alive = false; window.removeEventListener("anra:session", load); };
+  }, []);
+
+  const signedIn = s?.signedIn === true;
+  const href = signedIn ? "/my-health" : "/my-health/sign-in";
+  const size = mobile ? 40 : 44;
+
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      aria-label={signedIn ? "Open My Health Space" : "Sign in to My Health Space"}
+      className="anra-chrome hv-sand"
+      style={{
+        position: "fixed", zIndex: 60,
+        top: mobile ? "calc(10px + env(safe-area-inset-top))" : 18, right: mobile ? 10 : 18,
+        height: size, display: "flex", alignItems: "center", gap: 8,
+        padding: signedIn ? "0 14px 0 5px" : "0 16px 0 12px", borderRadius: 999,
+        background: "rgba(253,252,250,.86)", backdropFilter: "blur(16px) saturate(1.3)", WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+        border: "1px solid rgba(227,222,213,.95)", boxShadow: "0 24px 50px -28px rgba(20,24,27,.4)",
+        color: "#14181B", fontSize: 14, fontWeight: 500, textDecoration: "none", whiteSpace: "nowrap",
+        opacity: s ? 1 : 0, transition: "opacity .3s",
+      }}
+    >
+      {signedIn ? (
+        <>
+          <span style={{ width: size - 10, height: size - 10, borderRadius: "50%", background: "#DCE9EC", color: "#2F5A66", display: "grid", placeItems: "center", fontSize: 13, fontWeight: 500, overflow: "hidden", flex: "none" }}>
+            {s.photoUrl ? <img src={s.photoUrl} alt="" width={size - 10} height={size - 10} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} /> : s.initials}
+          </span>
+          My Health
+        </>
+      ) : (
+        <>
+          <i className="ph ph-user-circle" style={{ fontSize: 20, color: "#3F6F7C" }} />
+          Sign in
+        </>
+      )}
+    </Link>
+  );
+}
