@@ -3,6 +3,7 @@
 import { prisma } from "@backend/db";
 import { getProtocol } from "@backend/patientData";
 import { audit } from "@backend/audit";
+import { evaluateRewards } from "@backend/health";
 import { dayKey } from "@/lib/portal/metrics";
 import { withPatient, withPatientMutation, readJson, str, HttpError } from "@backend/apiHelpers";
 
@@ -22,6 +23,7 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
   } else {
     await prisma.protocolLog.deleteMany({ where: { itemId, day, patientId: patient.id } });
   }
+  await evaluateRewards(patient).catch(() => 0);
   audit(patient.id, "patient", "update", `protocol:${itemId}`, ip);
   return getProtocol(patient);
 });
