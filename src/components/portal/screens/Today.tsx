@@ -1,0 +1,217 @@
+"use client";
+
+import React, { useState } from "react";
+import type { TodayDTO } from "@/lib/portal/types";
+import { usePortal } from "../context";
+import { EP, useResource } from "../api";
+import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
+
+const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
+
+function HealthMap({ areas, center, big }: { areas: TodayDTO["areas"]; center: string; big: boolean }) {
+  const on = (l: string) => !!areas.find((a) => a.label === l)?.on;
+  return (
+    <div style={{ position: "relative", width: "100%", maxWidth: big ? 280 : 260, aspectRatio: "1", margin: big ? "0 auto" : undefined, justifySelf: big ? undefined : "center" }}>
+      {AREA_ORDER.map((l, i) => (
+        <div key={"l" + l} style={{ position: "absolute", left: "50%", top: "50%", width: "36%", height: 0, borderTop: `1px ${on(l) ? "solid" : "dashed"} ${on(l) ? "rgba(63,111,124,.35)" : "rgba(29,35,39,.14)"}`, transformOrigin: "0 0", transform: `rotate(${-90 + i * 45}deg)` }} />
+      ))}
+      {big ? (
+        <div style={{ position: "absolute", left: "50%", top: "50%", width: 48, height: 48, margin: "-24px 0 0 -24px", borderRadius: 24, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 500, color: C.tealDark, overflow: "hidden", textAlign: "center" }}>{center}</div>
+      ) : (
+        <div style={{ position: "absolute", left: "50%", top: "50%", width: 44, height: 44, margin: "-22px 0 0 -22px", borderRadius: 22, background: C.card, border: "1px solid rgba(63,111,124,.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 500, color: C.teal }}>You</div>
+      )}
+      {AREA_ORDER.map((l, i) => {
+        const a = ((-90 + i * 45) * Math.PI) / 180, o = on(l), s = big ? 12 : 10;
+        return (
+          <div key={l} style={{ position: "absolute", left: 50 + Math.cos(a) * 38 + "%", top: 50 + Math.sin(a) * 38 + "%", transform: "translate(-50%,-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+            <span style={{ width: s, height: s, borderRadius: s / 2, background: o ? C.tealLight : C.page, border: `1.5px solid ${o ? C.teal : "#B9B4AC"}` }} />
+            <span style={{ fontSize: big ? 12 : 11, color: big ? (o ? C.ink : C.faint) : C.muted }}>{l}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function Today() {
+  const { go, openSheet, toast, profile } = usePortal();
+  const { data: t, error, reload, reloading } = useResource<TodayDTO>(EP.today);
+  const [insightOpen, setInsightOpen] = useState(false);
+  const [syncError, setSyncError] = useState(false);
+  if (!t) return <Loading error={error} retry={reload} />;
+
+  const refresh = async () => {
+    if (reloading) return;
+    try { await reload(); setSyncError(false); toast("Updated just now"); } catch { setSyncError(true); }
+  };
+  const startAssessment = () => { window.location.href = "/longevity"; };
+  const nextStepCard = t.nextStep && (
+    <section style={{ padding: "20px 22px", borderRadius: 20, background: C.card, border: `1px solid ${C.line}` }}>
+      <span style={{ fontSize: 13, color: C.muted }}>Your next step</span>
+      <p style={{ margin: "6px 0 14px", fontSize: 17, lineHeight: 1.45 }}>{t.nextStep.text}</p>
+      {t.nextStep.kind === "appointment"
+        ? <button onClick={() => openSheet({ t: "prepare" })} className="h-primary" style={btnPrimary}>Prepare for your visit</button>
+        : <button onClick={startAssessment} className="h-primary" style={btnPrimary}>Start health assessment</button>}
+    </section>
+  );
+  const dayList = (
+    <section aria-label="Your day">
+      <h3 style={{ margin: "0 0 14px", fontSize: 18, fontWeight: 500 }}>Your day</h3>
+      {t.dayItems.length ? (
+        <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
+          {t.dayItems.map((d, i) => (
+            <li key={i} style={{ display: "grid", gridTemplateColumns: "68px 16px minmax(0,1fr)", gap: "0 12px", minHeight: 60 }}>
+              <span style={{ fontSize: 13, color: C.muted, paddingTop: 2, fontVariantNumeric: "tabular-nums" }}>{d.time}</span>
+              <span style={{ display: "flex", flexDirection: "column", alignItems: "center" }}><span style={{ width: 9, height: 9, borderRadius: 5, marginTop: 5, background: d.done ? C.tealLight : C.page, border: `1.5px solid ${C.tealLight}`, flex: "none" }} /><span style={{ flex: 1, width: 1, background: "rgba(110,168,182,.3)", marginTop: 4 }} /></span>
+              <span style={{ display: "flex", flexDirection: "column", gap: 2, paddingBottom: 16 }}><span style={{ fontSize: 15, color: d.done ? C.ink : C.muted }}>{d.title}</span><span style={{ fontSize: 14, color: C.muted }}>{d.value}</span></span>
+            </li>
+          ))}
+        </ol>
+      ) : <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Today's readings and routine will appear here as they arrive.</p>}
+    </section>
+  );
+  const onCount = t.areas.filter((a) => a.on).length;
+
+  return (
+    <div style={screenAnim}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 16, marginBottom: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <span style={{ fontSize: 14, color: C.muted }}>{t.dateLabel}</span>
+          <h1 style={{ margin: 0, fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>{t.greeting}</h1>
+          <span style={{ fontSize: 15, color: C.muted }}>Your health snapshot</span>
+        </div>
+        {t.hasWearable && (
+          <button onClick={refresh} aria-live="polite" className="h-tealborder" style={{ whiteSpace: "nowrap", flex: "none", display: "flex", alignItems: "center", gap: 8, height: 36, padding: "0 14px", border: "1px solid rgba(29,35,39,.08)", borderRadius: 18, background: C.card, fontSize: 13, color: C.muted, cursor: "pointer" }}>
+            <i className="ph ph-arrows-clockwise" style={{ fontSize: 15, color: C.teal }} />{reloading ? "Updating your health data…" : t.syncLabel}
+          </button>
+        )}
+      </div>
+
+      {syncError && (
+        <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", marginBottom: 20, borderRadius: 16, background: C.peach, animation: "mhs-fadeUp 300ms ease" }}>
+          <i className="ph ph-cloud-slash" style={{ fontSize: 22, color: C.peachInk, marginTop: 1 }} />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}><span style={{ fontSize: 15, fontWeight: 500 }}>We couldn't update your wearable data.</span><span style={{ fontSize: 14, color: C.muted }}>Your previous data is still available.</span></div>
+          <button onClick={refresh} style={{ height: 36, padding: "0 14px", border: "1px solid rgba(139,75,55,.25)", borderRadius: 10, background: C.card, fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>Try again</button>
+        </div>
+      )}
+
+      {!t.hasWearable && (
+        <>
+          <section style={{ padding: "32px 28px", borderRadius: 24, background: "linear-gradient(165deg,#EAF3F4 0%,#FFFDFB 70%)", border: "1px solid rgba(29,35,39,.05)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 28, alignItems: "center" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <h2 style={{ margin: 0, fontSize: 28, lineHeight: 1.15, fontWeight: 500, letterSpacing: "-.02em" }}>Let's build your health picture.</h2>
+              <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: C.muted, textWrap: "pretty" } as React.CSSProperties}>Connect a device or complete your first assessment. My Health Space gets more useful as your data comes together.</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 6 }}>
+                <button onClick={() => go("devices")} className="h-primary" style={{ height: 46, padding: "0 20px", border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>Connect a device</button>
+                <button onClick={startAssessment} className="h-secondary" style={{ height: 46, padding: "0 20px", border: "none", borderRadius: 12, background: C.tealChip, color: C.tealDark, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>Start health assessment</button>
+              </div>
+            </div>
+            <HealthMap areas={t.areas} center="You" big={false} />
+          </section>
+          {(t.nextStep?.kind === "appointment" || t.dayItems.length > 0) && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 28, alignItems: "start", marginTop: 28 }}>
+              {t.nextStep?.kind === "appointment" && nextStepCard}
+              {t.dayItems.length > 0 && dayList}
+            </div>
+          )}
+        </>
+      )}
+
+      {t.hasWearable && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: 28, alignItems: "start" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
+            <section aria-label="Today's picture" style={{ padding: 24, borderRadius: 24, background: "linear-gradient(165deg,#E8F2F4 0%,#FFFDFB 62%)", border: "1px solid rgba(29,35,39,.05)" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }}>
+                <span style={{ fontSize: 14, color: C.muted }}>Today's picture</span>
+                {t.picture && (
+                  <span style={{ display: "flex", alignItems: "center", gap: 7, height: 28, padding: "0 12px", borderRadius: 14, background: t.picture.status === "Steady" ? "rgba(110,168,182,.16)" : "rgba(139,75,55,.10)", fontSize: 13, fontWeight: 500, color: t.picture.status === "Steady" ? C.tealDark : C.peachInk }}>
+                    <span style={{ width: 7, height: 7, borderRadius: 4, background: t.picture.status === "Steady" ? C.teal : C.peachInk }} />{t.picture.status}
+                  </span>
+                )}
+              </div>
+              {t.picture ? (
+                <>
+                  <h2 style={{ margin: "0 0 10px", fontSize: 26, lineHeight: 1.2, fontWeight: 500, letterSpacing: "-.02em" }}>{t.picture.headline}</h2>
+                  <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{t.picture.text}</p>
+                </>
+              ) : <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: C.ink2 }}>Your picture fills in after a few days of wearable data.</p>}
+              <div style={{ height: 1, background: C.line2, margin: "22px 0 6px" }} />
+              {reloading ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: "4px 16px" }}>
+                  {[1, 2, 3, 4].map((k) => <div key={k} style={{ padding: "14px 0", display: "flex", flexDirection: "column", gap: 8 }}><Shimmer w={56} h={12} r={6} /><Shimmer w={92} h={26} /><div style={{ width: 120, height: 11, borderRadius: 6, background: "#EFECE8" }} /></div>)}
+                </div>
+              ) : (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2,minmax(0,1fr))", gap: "4px 16px", animation: "mhs-fadeIn 400ms ease" }}>
+                  {t.signals.map((g) => (
+                    <button key={g.k} onClick={() => go("trend", { k: g.k })} aria-label={`${g.label} ${g.value} ${g.unit}, ${g.note}. Open trend.`} className="h-signal" style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 3, padding: "12px 8px 12px 0", border: "none", background: "none", cursor: "pointer", textAlign: "left", borderRadius: 12 }}>
+                      <span style={{ fontSize: 13, color: C.muted }}>{g.label}</span>
+                      <span style={{ display: "flex", alignItems: "baseline", gap: 5 }}><span style={{ fontSize: 28, fontWeight: 400, letterSpacing: "-.02em" }}>{g.value}</span><span style={{ fontSize: 14, color: C.muted }}>{g.unit}</span></span>
+                      <span style={{ fontSize: 13, color: C.tealMid }}>{g.note}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.faint, display: "flex", gap: 6, alignItems: "flex-start" }}><i className="ph ph-info" style={{ fontSize: 14, marginTop: 1 }} />A simple reading of your wearable data, not a diagnosis.</p>
+            </section>
+
+            {t.insights.map((ins, i) => ins.tone === "lavender" ? (
+              <section key={i} style={{ padding: "20px 22px", borderRadius: 20, background: C.lav }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-sparkle" style={{ fontSize: 16 }} />{ins.eyebrow}</div>
+                <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, textWrap: "pretty" } as React.CSSProperties}>{ins.text}</p>
+                {insightOpen && ins.detail && (
+                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10, animation: "mhs-fadeUp 260ms ease" }}>
+                    <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: C.ink2 }}>{ins.detail}</p>
+                    {ins.source && <span style={{ fontSize: 12, color: C.lavInk }}>{ins.source}</span>}
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
+                  <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}>{ins.cta}<i className="ph ph-arrow-right" /></button>
+                  {ins.detail && <button onClick={() => setInsightOpen((o) => !o)} aria-expanded={insightOpen} style={{ height: 36, padding: 0, border: "none", background: "none", fontSize: 14, color: C.lavInk, cursor: "pointer" }}>{insightOpen ? "Show less" : "Why this matters"}</button>}
+                </div>
+              </section>
+            ) : (
+              <section key={i} style={{ padding: "20px 22px", borderRadius: 20, background: C.peach }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.peachInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-moon" style={{ fontSize: 16 }} />{ins.eyebrow}</div>
+                <p style={{ margin: "0 0 14px", fontSize: 16, lineHeight: 1.55, textWrap: "pretty" } as React.CSSProperties}>{ins.text}</p>
+                {ins.stats && (
+                  <div style={{ display: "flex", gap: 28, marginBottom: 10 }}>
+                    {ins.stats.map((s) => <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 13, color: C.muted }}>{s.label}</span><span style={{ fontSize: 20 }}>{s.value}</span></div>)}
+                  </div>
+                )}
+                <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>{ins.cta}<i className="ph ph-arrow-right" /></button>
+              </section>
+            ))}
+
+            {nextStepCard}
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 28, minWidth: 0 }}>
+            {dayList}
+
+            <section style={{ padding: 22, borderRadius: 20, background: C.card, border: `1px solid ${C.line}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 6 }}><h3 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Your health picture</h3><span style={{ fontSize: 13, color: C.muted }}>{onCount} of 8 areas</span></div>
+              <p style={{ margin: "0 0 8px", fontSize: 14, color: C.muted, lineHeight: 1.5 }}>Health is a picture, not a score. Each area fills in as data arrives.</p>
+              <HealthMap areas={t.areas} center={profile.firstName.slice(0, 7)} big />
+            </section>
+
+            <button onClick={() => openSheet({ t: "alba", ask: "Help me understand my recent health trends." })} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: "1px solid rgba(140,111,184,.2)", borderRadius: 18, background: C.card, cursor: "pointer", textAlign: "left" }}>
+              <span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, display: "flex", alignItems: "center", justifyContent: "center", color: C.lavMid, flex: "none" }}><i className="ph ph-sparkle" style={{ fontSize: 18 }} /></span>
+              <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}><span style={{ fontSize: 14, fontWeight: 500 }}>Ask ALBA</span><span style={{ fontSize: 14, color: C.muted }}>“Help me understand my recent health trends.”</span></span>
+              <i className="ph ph-caret-right" style={{ color: C.faint }} />
+            </button>
+
+            <section>
+              <h3 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 500 }}>Data sources</h3>
+              <p style={{ margin: "0 0 12px", fontSize: 14, color: C.muted }}>Your health picture is built from:</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {t.sources.map((s) => <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 16, background: "#EFECE8", fontSize: 13, color: C.ink3 }}><i className={s.icon} style={{ fontSize: 15, color: C.teal }} />{s.label}</span>)}
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
+
+      <p style={{ margin: "36px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}><i className="ph ph-first-aid" style={{ fontSize: 16, color: C.peachInk, marginTop: 1 }} /><span>If you think you may be having a medical emergency, call 911 or go to the nearest emergency department.</span></p>
+    </div>
+  );
+}
