@@ -2,13 +2,13 @@
 // insights) and the client (charts, formatting). Copy is from the approved
 // My Health Space prototype.
 
-export type MetricKey = "rhr" | "hrv" | "spo2" | "sleep" | "sleepVar" | "steps" | "active" | "bedtime" | "timeInBed" | "workouts" | "activeEnergy" | "bp" | "ecg";
+export type MetricKey = "rhr" | "hrv" | "spo2" | "sleep" | "sleepVar" | "steps" | "active" | "bedtime" | "timeInBed" | "workouts" | "activeEnergy" | "bp" | "ecg" | "weight" | "glucose" | "distance";
 
 export interface MetricDef {
   name: string;
   short: string;
   unit: string;
-  cat: "Heart" | "Recovery" | "Activity";
+  cat: "Heart" | "Recovery" | "Activity" | "Body";
   what: string;
   why: string;
   min: number; // ingest validation bounds
@@ -45,6 +45,12 @@ export const METRIC_DEFS: Record<MetricKey, MetricDef> = {
   activeEnergy: { name: "Active energy", short: "active energy", unit: "kcal", cat: "Activity", min: 0, max: 20000, chart: false, what: "", why: "" },
   bp: { name: "Blood pressure", short: "blood pressure", unit: "mmHg", cat: "Heart", min: 40, max: 300, chart: false, what: "", why: "" },
   ecg: { name: "ECG", short: "ECG", unit: "", cat: "Heart", min: 0, max: 1, chart: false, what: "", why: "" },
+  weight: { name: "Weight", short: "weight", unit: "kg", cat: "Body", min: 20, max: 350, chart: false,
+    what: "Your body weight from a smart scale, Apple Health or entered by you.", why: "Slow trends over weeks matter more than day-to-day changes, which are mostly water." },
+  glucose: { name: "Blood glucose", short: "glucose", unit: "mmol/L", cat: "Body", min: 1, max: 35, chart: false,
+    what: "Blood sugar from a home meter or sensor.", why: "Patterns around meals, sleep and activity are worth reviewing with your care team." },
+  distance: { name: "Walking distance", short: "distance", unit: "km", cat: "Activity", min: 0, max: 300, chart: false,
+    what: "Distance walked or run, counted by your phone or watch.", why: "" },
 };
 
 export const METRIC_KEYS = Object.keys(METRIC_DEFS) as MetricKey[];
