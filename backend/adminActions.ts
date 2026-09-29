@@ -12,6 +12,7 @@ import { dayKey, METRIC_DEFS, type MetricKey } from "@/lib/portal/metrics";
 import { physicians } from "@/data/physicians";
 import { fmtDate, fmtTime, fmtFull, shortCode } from "@backend/adminFormat";
 import { refStatus, revealHealth, revealLabs, revealAI, patientsList, auditList, referralsList } from "@backend/adminData";
+import { PROVIDER_NAMES } from "@/lib/portal/devices";
 
 const TZ = "America/Edmonton";
 type Ctx = { actor: string; ip: string };
@@ -119,7 +120,7 @@ export async function runAction(b: any, c: Ctx): Promise<Result> {
         const d = await prisma.deviceConnection.findUnique({ where: { id }, include: { patient: { select: { id: true, firstName: true, lastName: true, email: true } } } });
         if (!d) throw new HttpError(404, "Device not found.");
         if (!emailConfigured()) throw new HttpError(503, "Email isn't set up, so the reminder can't be sent.");
-        const name = { apple: "Apple Watch", oura: "Oura Ring", whoop: "WHOOP", garmin: "Garmin", gfit: "Google Fit" }[d.provider] || d.provider;
+        const name = PROVIDER_NAMES[d.provider] || d.provider;
         const text = `Hi ${d.patient.firstName},\n\nYour ${name} hasn't sent new data to My Health Space${d.lastSyncAt ? " since " + fmtDate(d.lastSyncAt) : ""}. Open the ANRA Shortcut or app on your phone to sync again.\n\nIf you'd rather stop sharing, you can turn this off in My Health Space → Devices.\n\nANRA Health`;
         const esc = (x: string) => x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         await sendMail({
