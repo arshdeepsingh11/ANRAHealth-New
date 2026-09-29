@@ -29,6 +29,7 @@ export async function api<T = any>(url: string, opts: { method?: string; body?: 
     cache: "no-store",
   });
   if (res.status === 401) { onUnauthorized(); throw new ApiError("Please sign in again.", 401); }
+  if (res.status === 428 && typeof window !== "undefined") { window.location.href = "/my-health/verify"; throw new ApiError("Please verify your email address first.", 428); }
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new ApiError(json?.error || "Something went wrong. Please try again.", res.status);
   return json as T;
