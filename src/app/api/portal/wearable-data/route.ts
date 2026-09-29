@@ -6,6 +6,7 @@ import { withPatientMutation } from "@backend/apiHelpers";
 
 export const DELETE = () => withPatientMutation(async ({ patient, ip }) => {
   const { count } = await prisma.healthReading.deleteMany({ where: { patientId: patient.id, source: { notIn: ["clinic"] } } });
+  await prisma.bpReading.deleteMany({ where: { patientId: patient.id } });
   audit(patient.id, "patient", "delete", `wearable-data:${count}`, ip);
   return { deleted: count };
 });
