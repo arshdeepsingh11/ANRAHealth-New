@@ -4,6 +4,7 @@
 
 import { prisma } from "@backend/db";
 import { currentPatientIdSafe } from "@backend/patientAuth";
+import { touchVisitor } from "@backend/visitors";
 
 // When the visitor is signed in to My Health Space, their activity is also
 // linked to their patient record (so it appears in their History tab).
@@ -15,6 +16,7 @@ export async function logPageVisit(params: {
   userAgent?: string;
   referrer?: string;
 }) {
+  await touchVisitor(params.sessionId, { path: params.path, referrer: params.referrer, userAgent: params.userAgent, pageView: true });
   return prisma.pageVisit.create({
     data: {
       path: params.path,
@@ -40,6 +42,7 @@ export async function logReferralSubmission(params: {
   clinicalNotes?: string;
   sourceText?: string;
 }) {
+  await touchVisitor(params.sessionId);
   return prisma.referralSubmission.create({
     data: {
       patientId: await currentPatientIdSafe(),
@@ -69,6 +72,7 @@ export async function logSymptomCheck(params: {
   summary: string;
   sessionId: string;
 }) {
+  await touchVisitor(params.sessionId);
   return prisma.symptomCheckLog.create({
     data: {
       patientId: await currentPatientIdSafe(),
@@ -89,6 +93,7 @@ export async function startAlbaConversation(params: {
   sessionId: string;
   pageContext?: string;
 }) {
+  await touchVisitor(params.sessionId);
   const conversation = await prisma.albaConversation.create({
     data: {
       patientId: await currentPatientIdSafe(),
@@ -120,6 +125,7 @@ export async function logLongevityAssessment(params: {
   suggestedNextStep: string;
   sessionId: string;
 }) {
+  await touchVisitor(params.sessionId);
   return prisma.longevityAssessment.create({
     data: {
       patientId: await currentPatientIdSafe(),
@@ -138,6 +144,7 @@ export async function logLabResultCheck(params: {
   results: any[];
   sessionId: string;
 }) {
+  await touchVisitor(params.sessionId);
   return prisma.labResultCheck.create({
     data: {
       patientId: await currentPatientIdSafe(),
@@ -146,5 +153,15 @@ export async function logLabResultCheck(params: {
       results: JSON.stringify(params.results),
       sessionId: params.sessionId,
     },
+  });
+}
+
+// A click from our site to another site (partner links, maps, etc.).
+export async function logOutboundClick(params: { sessionId: string; url: string; fromPath?: string }) {
+  let u: URL;
+  try { u = new URL(params.url); } catch { return; }
+  if (!/^https?:$/.test(u.protocol)) return;
+  return prisma.outboundClick.create({
+    data: { sessionId: params.sessionId, host: u.hostname.replace(/^www\./, "").slice(0, 120), url: (u.origin + u.pathname).slice(0, 300), fromPath: params.fromPath?.slice(0, 200) },
   });
 }
