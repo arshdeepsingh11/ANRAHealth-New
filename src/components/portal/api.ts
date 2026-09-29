@@ -74,6 +74,8 @@ export const EP = {
   today: "/api/portal/today", trends: "/api/portal/trends", results: "/api/portal/results", protocol: "/api/portal/protocol",
   history: "/api/portal/history", appointments: "/api/portal/appointments", referrals: "/api/portal/referrals",
   devices: "/api/portal/devices", settings: "/api/portal/settings", me: "/api/portal/me",
+  brief: "/api/portal/brief", heart: "/api/portal/heart", lifestyle: "/api/portal/lifestyle", family: "/api/portal/family", share: "/api/portal/share",
+  challenges: "/api/portal/challenges", rewards: "/api/portal/rewards", story: "/api/portal/story", retests: "/api/portal/labs/insight",
 } as const;
 
 /** Tell the site-wide account button that sign-in state / photo changed. */
