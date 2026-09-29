@@ -3,6 +3,11 @@
 // function here instead. Keeps all database logic in one organized place.
 
 import { prisma } from "@backend/db";
+import { currentPatientIdSafe } from "@backend/patientAuth";
+
+// When the visitor is signed in to My Health Space, their activity is also
+// linked to their patient record (so it appears in their History tab).
+// Anonymous visitors are unaffected: patientId stays null.
 
 export async function logPageVisit(params: {
   path: string;
@@ -37,6 +42,7 @@ export async function logReferralSubmission(params: {
 }) {
   return prisma.referralSubmission.create({
     data: {
+      patientId: await currentPatientIdSafe(),
       type: params.type,
       sessionId: params.sessionId,
       patientName: params.patientName,
@@ -65,6 +71,7 @@ export async function logSymptomCheck(params: {
 }) {
   return prisma.symptomCheckLog.create({
     data: {
+      patientId: await currentPatientIdSafe(),
       specialty: params.specialty,
       description: params.description,
       emergency: params.emergency,
@@ -84,6 +91,7 @@ export async function startAlbaConversation(params: {
 }) {
   const conversation = await prisma.albaConversation.create({
     data: {
+      patientId: await currentPatientIdSafe(),
       sessionId: params.sessionId,
       pageContext: params.pageContext,
     },
@@ -114,6 +122,7 @@ export async function logLongevityAssessment(params: {
 }) {
   return prisma.longevityAssessment.create({
     data: {
+      patientId: await currentPatientIdSafe(),
       answers: JSON.stringify(params.answers),
       summary: params.summary,
       focusAreas: JSON.stringify(params.focusAreas),
@@ -131,6 +140,7 @@ export async function logLabResultCheck(params: {
 }) {
   return prisma.labResultCheck.create({
     data: {
+      patientId: await currentPatientIdSafe(),
       inputType: params.inputType,
       overallSummary: params.overallSummary,
       results: JSON.stringify(params.results),
