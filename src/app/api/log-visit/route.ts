@@ -1,30 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrCreateSessionId } from "@backend/session";
-import { logPageVisit } from "@backend/logging";
+import { logPageVisit, logOutboundClick } from "@backend/logging";
+import { rateLimit } from "@backend/rateLimit";
 
+// POST { path, referrer }            — a page view
+// POST { outbound: url, from: path } — a click to another site (partner links etc.)
 export async function POST(req: NextRequest) {
   let body: any;
   try {
-    body = await req.json();
+    body = JSON.parse((await req.text()) || "{}");
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { path, referrer } = body || {};
-  if (!path || typeof path !== "string") {
+  const { path, referrer, outbound, from } = body || {};
+  const isOutbound = typeof outbound === "string" && outbound.length < 2000;
+  if (!isOutbound && (!path || typeof path !== "string")) {
     return NextResponse.json({ error: "Missing path" }, { status: 400 });
   }
+  // Staff pages are not visitor activity.
+  if (!isOutbound && path.startsWith("/admin")) return NextResponse.json({ ok: true });
 
   try {
     const sessionId = await getOrCreateSessionId();
+    if (!rateLimit(`visit:${sessionId}`, 120, 60 * 1000)) return NextResponse.json({ ok: false });
     const userAgent = req.headers.get("user-agent") || undefined;
 
-    await logPageVisit({
-      path,
-      sessionId,
-      userAgent,
-      referrer: typeof referrer === "string" ? referrer : undefined,
-    });
+    if (isOutbound) {
+      await logOutboundClick({ sessionId, url: outbound, fromPath: typeof from === "string" ? from : undefined });
+    } else {
+      await logPageVisit({
+        path: path.slice(0, 300),
+        sessionId,
+        userAgent,
+        referrer: typeof referrer === "string" ? referrer.slice(0, 300) : undefined,
+      });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
