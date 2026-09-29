@@ -20,6 +20,7 @@ import History from "./screens/History";
 import { Appointments, Referrals } from "./screens/Appointments";
 import { More, Profile, Privacy, Notifications } from "./screens/Account";
 import Sheets from "./Sheets";
+import { Heart, Lifestyle, Family, CareView, Rewards, Story } from "./screens/Universe";
 
 export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; initialRoute: Route }) {
   const [route, setRoute] = useState<Route>(initialRoute);
@@ -38,7 +39,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
 
   // Warm the other tabs in the background so switching is instant.
   useEffect(() => {
-    const warm = () => [EP.trends, EP.results, EP.protocol, EP.appointments].forEach((u) => load(u).catch(() => {}));
+    const warm = () => [EP.brief, EP.trends, EP.results, EP.protocol, EP.appointments, EP.heart, EP.lifestyle].forEach((u) => load(u).catch(() => {}));
     const w = window as any;
     const id = w.requestIdleCallback ? w.requestIdleCallback(warm, { timeout: 2000 }) : setTimeout(warm, 600);
     return () => (w.cancelIdleCallback ? w.cancelIdleCallback(id) : clearTimeout(id));
@@ -104,11 +105,11 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
   }), [route, go, tab, back, toast, sheet, profile, settings, initials, addQuestion]);
 
   const scr = route.s;
-  const activeTab = scr === "result" || scr === "trend" ? PARENT[scr]! : scr === "privacy" || scr === "settings" ? "profile" : scr;
+  const activeTab = scr === "result" || scr === "trend" || scr === "careview" ? PARENT[scr]! : scr === "privacy" || scr === "settings" ? "profile" : scr === "story" ? "today" : scr;
   const showBack = hist.length > 0 || !!PARENT[scr];
   const backTo = hist.length ? hist[hist.length - 1].s : PARENT[scr] || "today";
   const backLabel = LABELS[backTo] || "Back";
-  const TABS: [Screen, string, string][] = [["today", "Today", "ph-sun"], ["trends", "Trends", "ph-chart-line"], ["results", "Results", "ph-flask"], ["protocol", "Protocol", "ph-check-circle"], ["history", "History", "ph-clock-counter-clockwise"], ["devices", "Devices", "ph-watch"], ["appointments", "Appointments", "ph-calendar-blank"], ["referrals", "Referrals", "ph-arrows-split"], ["profile", "Profile", "ph-user-circle"]];
+  const TABS: [Screen, string, string][] = [["today", "Today", "ph-sun"], ["heart", "Heart", "ph-heartbeat"], ["lifestyle", "Lifestyle", "ph-leaf"], ["trends", "Trends", "ph-chart-line"], ["results", "Results", "ph-flask"], ["protocol", "Protocol", "ph-check-circle"], ["devices", "Devices", "ph-watch"], ["appointments", "Appointments", "ph-calendar-blank"], ["family", "Family", "ph-users-three"], ["rewards", "Rewards", "ph-trophy"], ["history", "History", "ph-clock-counter-clockwise"], ["referrals", "Referrals", "ph-arrows-split"], ["profile", "Profile", "ph-user-circle"]];
 
   const screen = (() => {
     switch (scr) {
@@ -126,6 +127,12 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
       case "profile": return <Profile />;
       case "privacy": return <Privacy />;
       case "settings": return <Notifications />;
+      case "heart": return <Heart />;
+      case "lifestyle": return <Lifestyle />;
+      case "family": return <Family />;
+      case "careview": return <CareView id={route.id!} />;
+      case "rewards": return <Rewards />;
+      case "story": return <Story />;
     }
   })();
 
