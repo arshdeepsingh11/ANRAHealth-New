@@ -9,6 +9,7 @@ import { usePortal } from "../context";
 import { EP, api, prime, invalidate, useResource, announceSession } from "../api";
 import { C, screenAnim, ToggleList, Avatar, longDateTz } from "../ui";
 import { setHistoryFilter } from "./History";
+import PasswordStrength from "../PasswordStrength";
 
 const ALL_DATA = [EP.today, EP.trends, EP.results, EP.protocol, EP.history, EP.appointments, EP.referrals];
 
@@ -216,7 +217,7 @@ export function Profile() {
         <form onSubmit={savePw} style={{ padding: 20, borderRadius: 18, background: C.card, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 14 }}>
           <label style={label}>Current password<input className="mhs-in" type="password" value={pw.current} onChange={(e) => setPw({ ...pw, current: e.target.value })} required autoComplete="current-password" /></label>
           <label style={label}>New password<input className="mhs-in" type="password" value={pw.next} onChange={(e) => setPw({ ...pw, next: e.target.value })} required minLength={10} autoComplete="new-password" /></label>
-          <span style={{ fontSize: 13, color: C.muted, alignSelf: "center" }}>At least 10 characters, with letters and a number.</span>
+          <div style={{ gridColumn: "1 / -1" }}><PasswordStrength password={pw.next} email={profile.email} /></div>
           <div style={{ display: "flex", alignItems: "flex-end" }}><button type="submit" disabled={busy === "pw"} style={saveBtn}>{busy === "pw" ? "Saving…" : "Change password"}</button></div>
         </form>
       </section>
