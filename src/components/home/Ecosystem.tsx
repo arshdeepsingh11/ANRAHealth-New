@@ -3,10 +3,11 @@
 import React from "react";
 import { useAnraNav } from "@/lib/useAnraNav";
 import { PAGE_HREF } from "@/data/homeContent";
+import NeyuLogo from "@/components/brand/NeyuLogo";
 
 export const GALLERY_EVENT = "anra-gallery";
 
-// Home 05: "One ecosystem." — orbiting rings with ANRA at the centre and
+// Home 05: "One ecosystem." — orbiting rings with NEYU at the centre and
 // the partner companies around it.
 export default function Ecosystem({ mobile }: { mobile: boolean }) {
   const go = useAnraNav();
@@ -48,7 +49,7 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: "clamp(28px,5vw,64px)", alignItems: "center" }}>
         <div style={{ minWidth: 0, padding: "20px 0", display: "grid", justifyItems: "center", gap: 20 }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
-            {tag("ANRA Health", { background: "#14181B", color: "#F7F5F1" })}
+            {tag("NEYU Health", { background: "#14181B", color: "#F7F5F1" })}
             {tag("BioAro Labs", { border: "1px solid #6EA8B6", color: "#2F5561" })}
             {tag("BioAro Drugs", { border: "1px solid #8C6FB8", color: "#6A5096" })}
             {tag("Nea", { border: "1px solid #B9786A", color: "#8A4F43" })}
@@ -59,18 +60,18 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
             {ring(r2, 70, true, [
               pill("BioAro Labs", "#6EA8B6", "Testing", () => showGallery("labs")),
               pill("BioAro Drugs", "#8C6FB8", "Wellness", () => showGallery("drugs")),
-              pill("ANRA Clinics", "#F3A993", "Calgary", () => go({ label: "Locations", href: PAGE_HREF.locations })),
+              pill("NEYU Clinics", "#F3A993", "Calgary", () => go({ label: "Locations", href: PAGE_HREF.locations })),
               pill("Nea", "#B9786A", "Skin", () => showGallery("nea")),
             ])}
             <div style={{ position: "absolute", left: "50%", top: "50%", width: mobile ? 96 : 124, height: mobile ? 96 : 124, transform: "translate(-50%,-50%)", borderRadius: "50%", background: "#FFFFFF", border: "1px solid #E3DED5", display: "grid", placeItems: "center", animation: "coreBreath 5s ease-in-out infinite" }}>
-              <img src="/logo.png" alt="ANRA Health" style={{ width: "64%", height: "auto" }} />
+              <NeyuLogo height={mobile ? 62 : 80} layout="stacked" />
             </div>
           </div>
         </div>
         <div>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#5A626A" }}>Our family of companies</div>
           <h2 style={{ margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 }}>One ecosystem.<br />Clinical guidance at the centre.</h2>
-          <p style={{ margin: "18px 0 0", fontSize: 18, color: "#3A4147", maxWidth: 460 }}>ANRA is where care is understood and decided. Testing, wellness and skin care are fulfilled by our partner companies.</p>
+          <p style={{ margin: "18px 0 0", fontSize: 18, color: "#3A4147", maxWidth: 460 }}>NEYU is where care is understood and decided. Testing, wellness and skin care are fulfilled by our partner companies.</p>
           <div style={{ marginTop: 24, borderTop: "1px solid #14181B" }}>
             <div style={{ display: "grid", gridTemplateColumns: "14px 1fr", gap: 14, padding: "16px 0", borderBottom: "1px solid #E3DED5" }}>
               <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#6EA8B6", marginTop: 7 }} />
