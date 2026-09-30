@@ -362,7 +362,7 @@ export function ChallengeSheet({ mode }: { mode: "create" | "join" }) {
     <>
       <H sub="Share this code with friends, family or your team. They join from Rewards → Join.">Challenge created</H>
       <div style={{ fontSize: 34, letterSpacing: ".18em", textAlign: "center", padding: 18, borderRadius: 16, background: C.tealWash, color: C.tealDark, marginBottom: 14 }}>{made}</div>
-      <button onClick={() => navigator.clipboard?.writeText(`Join my ANRA Health challenge "${f.name}" with code ${made} in My Health Space → Rewards.`).then(() => toast("Invite copied"), () => {})} className="h-primary" style={{ ...btnPrimary, width: "100%" }}>Copy invite message</button>
+      <button onClick={() => navigator.clipboard?.writeText(`Join my NEYU Health challenge "${f.name}" with code ${made} in My Health Space → Rewards.`).then(() => toast("Invite copied"), () => {})} className="h-primary" style={{ ...btnPrimary, width: "100%" }}>Copy invite message</button>
     </>
   );
   if (mode === "join") return (
