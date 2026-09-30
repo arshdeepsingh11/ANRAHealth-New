@@ -162,6 +162,7 @@ model Patient {
   goals           Goal[]
   careTeam        CareTeamMember[]
   devices         DeviceConnection[]
+  pairings        DevicePairing[]
   readings        HealthReading[]
   labResults      LabResult[]
   protocolItems   ProtocolItem[]
@@ -295,6 +296,8 @@ model DeviceConnection {
   lastError       String?
   connectedAt DateTime?
   lastSyncAt  DateTime?
+  lastAttemptAt DateTime? // every ingest call, even when nothing was stored
+  lastResult    String? // JSON: { stored, metrics[], rejected[] } of the last attempt
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -646,4 +649,18 @@ model HealthProfile {
   patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   data      String   @default("{}")
   updatedAt DateTime @updatedAt
+}
+
+/// One-time QR pairing: the computer shows a QR, the phone claims it once to
+/// receive its private sync link. Only the SHA-256 of the code is stored.
+model DevicePairing {
+  codeHash  String    @id
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  provider  String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([patientId])
 }
