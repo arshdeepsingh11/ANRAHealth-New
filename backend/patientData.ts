@@ -254,7 +254,7 @@ export async function getToday(patient: { id: string; firstName: string; timezon
   ];
   const sources = [
     ...devices.map((d) => ({ label: PROVIDER_NAMES[d.provider] || d.provider, icon: DEVICE_CATALOG.find((x) => x.id === d.provider)?.icon || "ph ph-watch" })),
-    ...(historyCount + riskCount > 0 || nextAppt ? [{ label: "ANRA", icon: "ph ph-first-aid-kit" }] : []),
+    ...(historyCount + riskCount > 0 || nextAppt ? [{ label: "NEYU", icon: "ph ph-first-aid-kit" }] : []),
     ...(labCount > 0 ? [{ label: "BioAro Labs", icon: "ph ph-flask" }] : []),
     ...(careCount > 0 ? [{ label: "Your care team", icon: "ph ph-users" }] : []),
   ];
