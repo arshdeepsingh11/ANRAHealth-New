@@ -60,7 +60,7 @@ export default function AskPanel({ page, label, suggestions, seed, clearSeed, ac
           <div style={{ display: "grid", justifyItems: "center", gap: 10, textAlign: "center", padding: "22px 8px" }}>
             <AlbaOrb size={46} glow />
             <p style={{ margin: 0, fontSize: 16.5 }}>Ask ALBA anything about {label.toLowerCase()} — conditions, tests, results or what to expect.</p>
-            <p style={{ margin: 0, fontSize: 13, color: T.muted }}>Medical education from ANRA’s AI. It never diagnoses.</p>
+            <p style={{ margin: 0, fontSize: 13, color: T.muted }}>Medical education from NEYU’s AI. It never diagnoses.</p>
           </div>
         )}
         {msgs.map((m, i) => m.role === "user" ? (
