@@ -39,7 +39,7 @@ export default function BackButton({ mobile }: { mobile: boolean }) {
     <button
       onClick={goBack}
       aria-label={hasTrail ? "Go back to the previous page" : "Go to the homepage"}
-      className="anra-chrome hv-sand"
+      className="anra-chrome hv-sand anra-float"
       style={{
         position: "fixed", zIndex: 60,
         top: mobile ? "calc(10px + env(safe-area-inset-top))" : 18, left: mobile ? 10 : 18,
