@@ -48,7 +48,7 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
-      text: "Hi, I'm the ANRA Health assistant. Ask me about our services, physicians, locations, or how to book an appointment.",
+      text: "Hi, I'm the NEYU Health assistant. Ask me about our services, physicians, locations, or how to book an appointment.",
       suggestions: [],
     },
   ]);
@@ -106,7 +106,7 @@ export default function ChatWidget() {
         className="fixed bottom-5 right-5 md:bottom-6 md:right-6 z-50 flex items-center gap-2 rounded-full pl-4 pr-5 py-3.5 shadow-lg bg-blue text-white transition-transform hover:scale-105"
       >
         {open ? <X size={18} /> : <MessageCircle size={18} />}
-        <span className="text-sm font-medium hidden sm:inline">{open ? "Close" : "Ask ANRA"}</span>
+        <span className="text-sm font-medium hidden sm:inline">{open ? "Close" : "Ask NEYU"}</span>
       </button>
 
       {open && (
@@ -116,7 +116,7 @@ export default function ChatWidget() {
         >
           <div className="px-4 py-3 flex items-center gap-2 bg-bluesoft">
             <Heart size={15} color="#D65A5A" />
-            <span className="text-sm font-semibold text-ink">ANRA Health Assistant</span>
+            <span className="text-sm font-semibold text-ink">NEYU Health Assistant</span>
           </div>
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
             {messages.map((m, i) => (
