@@ -1,6 +1,6 @@
 "use client";
 
-// ANRA Health — Admin Console (built 1:1 from the approved Claude Design
+// NEYU Health — Admin Console (built 1:1 from the approved Claude Design
 // prototype). One client app at /admin with hash routes (#/patients/<id>/labs),
 // so staff keep their place and the browser back button works.
 
@@ -196,7 +196,7 @@ export default function AdminConsole({ signedIn, actor: initialActor }: { signed
           <nav aria-label="Primary" style={{ position: "sticky", top: 0, height: "100vh", flex: "none", width: isCollapsed ? 72 : 256, background: T.side, borderRight: `1px solid ${T.line}`, display: "flex", flexDirection: "column", transition: "width 280ms cubic-bezier(.2,.8,.2,1)", overflow: "hidden", zIndex: 30 }}>
             <div style={{ height: 64, display: "flex", alignItems: "center", gap: 10, padding: "0 16px", flex: "none" }}>
               <div style={{ width: 34, height: 34, flex: "none", borderRadius: 11, background: T.teal, display: "grid", placeItems: "center", color: T.card, fontSize: 18 }}><i className="ph-fill ph-heartbeat" /></div>
-              {!isCollapsed && <div style={{ lineHeight: 1.15, whiteSpace: "nowrap" }}><div style={{ fontWeight: 600, fontSize: 15 }}>ANRA Health</div><div style={{ fontSize: 12.5, color: T.faint }}>Admin</div></div>}
+              {!isCollapsed && <div style={{ lineHeight: 1.15, whiteSpace: "nowrap" }}><div style={{ fontWeight: 600, fontSize: 15 }}>NEYU Health</div><div style={{ fontSize: 12.5, color: T.faint }}>Admin</div></div>}
             </div>
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px", display: "flex", flexDirection: "column", gap: 2 }}>
               {nav.map((n) => {
