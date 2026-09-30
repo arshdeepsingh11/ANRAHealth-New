@@ -120,3 +120,7 @@
   .anra-motion-row { overflow-x: auto; }
   .anra-ai-text { animation: none; }
 }
+
+/* Nea page cards */
+.nea-card { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
+@media (hover: hover) { .nea-card:hover { transform: translateY(-3px); box-shadow: 0 28px 50px -30px rgba(20,24,27,.45) !important; } }
