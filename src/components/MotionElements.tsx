@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-// Loads the ANRA motion engine (canvas-based custom elements ported from the
+// Loads the NEYU motion engine (canvas-based custom elements ported from the
 // Claude Design artifact) once, on the client only. Elements rendered before
 // this runs simply upgrade in place when their definitions arrive.
 export default function MotionElements() {
