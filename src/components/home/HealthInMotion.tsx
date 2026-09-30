@@ -3,7 +3,7 @@
 // Home 08 (last): "Health, in motion" — a 3D scroll-trigger marquee.
 // Two tilted rows glide in opposite directions; scrolling the page speeds
 // them up (and flips direction when you scroll back up), and cards lean
-// with the motion. Hover a row to pause it. Content is what ANRA actually
+// with the motion. Hover a row to pause it. Content is what NEYU actually
 // has: words from medicine, BioAro Labs tests, ALBA prompts, clinic facts.
 // Respects prefers-reduced-motion (rows become swipeable, no autoplay).
 
@@ -28,7 +28,7 @@ const QUOTES: Card[] = [
 
 const FACTS: Card[] = [
   { kind: "fact", big: "100,000", text: "times a day your heart beats — quietly, for a lifetime.", icon: "ph-heartbeat" },
-  { kind: "fact", big: "1st", text: "onsite Exercise Stress Echocardiogram program in Alberta — at ANRA.", icon: "ph-pulse" },
+  { kind: "fact", big: "1st", text: "onsite Exercise Stress Echocardiogram program in Alberta — at NEYU.", icon: "ph-pulse" },
   { kind: "fact", big: "9", text: "specialties sharing one connected record, so nothing is seen in isolation.", icon: "ph-stethoscope" },
   { kind: "fact", big: "2", text: "Calgary clinics — North East and Meadow Miles.", icon: "ph-map-pin" },
 ];
