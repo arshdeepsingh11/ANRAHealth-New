@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import type { Physician } from "@/data/physicians";
+import NeyuLogo from "@/components/brand/NeyuLogo";
 
 // Hanging ID-card physician card: a lanyard from the top with pendulum
 // physics (spring return + damping). Drag it left/right and let go to watch
@@ -80,7 +81,7 @@ export default function PhysicianIdCard({ p, index = 0, onOpen }: { p: Physician
     }
   };
 
-  const code = "ANRA-" + p.slug.split("-").map((w) => w[0]).join("").toUpperCase() + "-" + String(index + 1).padStart(2, "0");
+  const code = "NEYU-" + p.slug.split("-").map((w) => w[0]).join("").toUpperCase() + "-" + String(index + 1).padStart(2, "0");
 
   return (
     <div style={{ position: "relative", display: "flex", justifyContent: "center", paddingTop: 4, touchAction: "pan-y" }}>
@@ -109,7 +110,7 @@ export default function PhysicianIdCard({ p, index = 0, onOpen }: { p: Physician
           {/* Header */}
           <div style={{ position: "relative", height: 88, background: "linear-gradient(120deg,#3F6F7C 0%,#6EA8B6 45%,#8C6FB8 100%)", display: "grid", placeItems: "center" }}>
             <span aria-hidden="true" style={{ position: "absolute", left: 12, top: 12, width: 22, height: 17, borderRadius: 4, background: "linear-gradient(135deg,#F3C3B2,#E7A98F)", boxShadow: "inset 0 0 0 1px rgba(122,62,42,.25)" }} />
-            <img src="/logo.png" alt="" aria-hidden="true" style={{ position: "absolute", right: 10, top: 10, height: 14, width: "auto", filter: "brightness(0) invert(1)", opacity: 0.85 }} />
+            <span aria-hidden="true" style={{ position: "absolute", right: 10, top: 9, opacity: 0.9 }}><NeyuLogo height={18} tone="light" mono /></span>
             <span style={{ width: 58, height: 58, borderRadius: "50%", background: "rgba(255,255,255,.22)", border: "2px solid rgba(255,255,255,.7)", display: "grid", placeItems: "center", color: "#FFFFFF", fontWeight: 600, fontSize: 20, letterSpacing: ".04em", backdropFilter: "blur(4px)" }}>
               {initials(p.name)}
             </span>
