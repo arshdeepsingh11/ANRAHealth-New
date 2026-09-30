@@ -1,4 +1,4 @@
-// ANRA Longevity Lab — the research behind the five science features.
+// NEYU Longevity Lab — the research behind the five science features.
 // Every number here was checked against the paper (Sep 2026). Where a paper
 // could not be read in full, only its title/design is used, never numbers.
 
