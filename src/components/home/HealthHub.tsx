@@ -70,7 +70,7 @@ export default function HealthHub({ mobile }: { mobile: boolean }) {
     setAiLoading(true); setAi(null); setAiShown(0);
     let text: string;
     try {
-      text = await askAlbaOnce(`In three short sentences, explain what "${title}" at ANRA Health involves and when people usually consider it. Plain text.`, "Home health map: " + title);
+      text = await askAlbaOnce(`In three short sentences, explain what "${title}" at NEYU Health involves and when people usually consider it. Plain text.`, "Home health map: " + title);
       if (!text) throw new Error("empty");
     } catch {
       text = "ALBA is unavailable right now. The details above still apply, and you can continue with the options below.";
