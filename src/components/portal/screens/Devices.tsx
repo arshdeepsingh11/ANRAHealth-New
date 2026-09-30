@@ -37,7 +37,7 @@ export default function Devices() {
   return (
     <div style={{ ...screenAnim, maxWidth: 980 }}>
       <h1 style={{ margin: "0 0 6px", fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>Connect your health data</h1>
-      <p style={{ margin: "0 0 24px", fontSize: 15, color: C.muted }}>Connect once — ANRA brings in your data every day. Tap any card to see how.</p>
+      <p style={{ margin: "0 0 24px", fontSize: 15, color: C.muted }}>Connect once — NEYU brings in your data every day. Tap any card to see how.</p>
       {!today?.hasWearable && connected === 0 && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "center", padding: 28, borderRadius: 24, background: "linear-gradient(165deg,#EAF3F4 0%,#FFFDFB 70%)", marginBottom: 24 }}>
           <div style={{ position: "relative", width: 96, height: 96, flex: "none" }}>
@@ -83,7 +83,7 @@ export default function Devices() {
       <h2 style={{ margin: "32px 0 12px", fontSize: 20, fontWeight: 500 }}>Other ways to add data</h2>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,300px),1fr))", gap: 16 }}>
         {[
-          { icon: "ph ph-heartbeat", title: "Home blood pressure", text: "Any cuff works. Type in each reading — ANRA tracks your averages against the home target.", cta: "Add a reading", run: () => openSheet({ t: "bp" }) },
+          { icon: "ph ph-heartbeat", title: "Home blood pressure", text: "Any cuff works. Type in each reading — NEYU tracks your averages against the home target.", cta: "Add a reading", run: () => openSheet({ t: "bp" }) },
           { icon: "ph ph-file-arrow-up", title: "Import a file", text: "Apple Health export (a year of history at once) or a CSV from any app or spreadsheet.", cta: "Import", run: () => openSheet({ t: "import" }) },
           { icon: "ph ph-scales", title: "Enter a reading", text: "Weight, blood glucose, steps or sleep from anything that isn't connected.", cta: "Enter", run: () => openSheet({ t: "reading" }) },
         ].map((x) => (
