@@ -184,7 +184,7 @@ export function Lifestyle() {
   const t = l.today, maxW = Math.max(8, ...l.week.map((d) => d.water));
   return (
     <div style={{ ...screenAnim, maxWidth: 980 }}>
-      <H1 sub="Quick check-ins that help ANRA connect your habits to how you sleep and feel.">Lifestyle</H1>
+      <H1 sub="Quick check-ins that help NEYU connect your habits to how you sleep and feel.">Lifestyle</H1>
       <div style={grid(340)}>
         <section style={card}>
           <h2 style={h2}>Today</h2>
@@ -428,7 +428,7 @@ export function Rewards() {
           </section>
           <section style={{ ...card, background: C.lav, border: "none" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-buildings" style={{ fontSize: 16 }} />For companies</div>
-            <p style={{ margin: "0 0 10px", fontSize: 15, lineHeight: 1.55 }}>Run a team wellness challenge with ANRA — private leaderboards, heart-health education and BioAro testing for your people.</p>
+            <p style={{ margin: "0 0 10px", fontSize: 15, lineHeight: 1.55 }}>Run a team wellness challenge with NEYU — private leaderboards, heart-health education and BioAro testing for your people.</p>
             <a href="/contact" style={{ ...btnLink, color: C.lavInk, textDecoration: "none" }}>Talk to us<i className="ph ph-arrow-right" /></a>
           </section>
         </div>
