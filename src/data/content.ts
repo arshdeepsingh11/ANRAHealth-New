@@ -41,13 +41,13 @@ export interface CharmClinic {
 }
 
 // ============================================================
-// ANRA HEALTH — CENTRAL CONTENT FILE
+// NEYU HEALTH — CENTRAL CONTENT FILE
 // Edit text here and it updates across the whole site.
-// Sourced from advancedcardiology.ca (extracted for the ANRA Health rebrand).
+// Sourced from advancedcardiology.ca (extracted for the NEYU Health rebrand).
 // ============================================================
 
 export const brand = {
-  name: "ANRA Health",
+  name: "NEYU Health",
   tagline: "Advanced Cardiac Care",
   founder: "Dr. Anmol S. Kapoor",
   phone: "403-475-4475",
@@ -193,13 +193,13 @@ export const whyChoose: WhyChooseItem[] = [
   { icon: "Stethoscope", title: "Coordinated Team", desc: "Cardiology, internal medicine, and endocrinology on one shared record." },
 ];
 
-export const aboutStory = `ANRA Health continues the work of Advanced Cardiology Consultants and Diagnostics — a one-of-a-kind clinic in Western Canada offering complete cardiopulmonary investigations under one roof, founded under the guidance of Dr. Anmol S. Kapoor.
+export const aboutStory = `NEYU Health continues the work of Advanced Cardiology Consultants and Diagnostics — a one-of-a-kind clinic in Western Canada offering complete cardiopulmonary investigations under one roof, founded under the guidance of Dr. Anmol S. Kapoor.
 
 We were the first clinic in Alberta to offer onsite Exercise Stress Echocardiograms — more specific than a thallium stress test, without the radiation exposure. Our multilingual team communicates in English, Punjabi, Hindi, Urdu, Polish, Swahili, Tagalog, Ukrainian, Gujarati, and Russian.`;
 
 export const charmClinic: CharmClinic = {
   fullName: "Community Heart Failure Assessment, Rehabilitation and Management",
-  intro: "The CHARM Clinic is Alberta's only community-based, outpatient clinic run on a charitable basis with support and donations from the DIL Walk Foundation and ANRA Health. The clinic is physician-directed, but patient care is managed by a nurse. The CHARM Clinic team consists of Heart Failure and Heart Transplant specialists, Cardiologists, Internal Medicine physicians, a Heart Function Nurse, a Respiratory Therapist, and Echocardiogram and Stress Test Technicians.",
+  intro: "The CHARM Clinic is Alberta's only community-based, outpatient clinic run on a charitable basis with support and donations from the DIL Walk Foundation and NEYU Health. The clinic is physician-directed, but patient care is managed by a nurse. The CHARM Clinic team consists of Heart Failure and Heart Transplant specialists, Cardiologists, Internal Medicine physicians, a Heart Function Nurse, a Respiratory Therapist, and Echocardiogram and Stress Test Technicians.",
   howItWorks: "The CHARM Clinic's goal is to help keep patients in the community and out of the hospital. Your family physician can refer directly to the CHARM Clinic when heart failure is suspected. You'll be seen by a cardiologist — once diagnosis is confirmed, you're given a second appointment with the Heart Failure Nurse for self-management assistance, patient education, and medication help. You'll also be followed by the Heart Failure Specialist to optimize medications and avoid hospitalizations. Patients without a heart failure diagnosis, or whose heart function improves, receive continued care in the general cardiology clinic.",
   selfCare: "At CHARM Clinic, patients are taught self-care through a 1:1 session with a nurse, who covers daily weights, fluid/sodium restrictions, and warning signs that heart failure is getting worse. Patients also receive handouts and mutually agreed-upon goals to focus on until their next visit.",
   research: "The CHARM Clinic also engages in research trials, including an ongoing trial for Atrial Fibrillation patients (BRAIN-AF, a blinded randomised trial of anticoagulation to prevent ischemic stroke and neurocognitive impairment in AF) and the GOAL study (Guidelines Oriented Approach to Lipid lowering in Canada). We are currently recruiting patients for both trials.",
