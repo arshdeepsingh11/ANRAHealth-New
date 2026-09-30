@@ -132,7 +132,7 @@ async function add() {
 
   // Daniel looks after Maya (family care), and both are in a steps challenge.
   await prisma.careLink.create({ data: { id: "test_care_1", ownerId: maya.id, caregiverId: daniel.id, email: daniel.email, relation: "Spouse / partner", status: "active", acceptedAt: ago(20), createdAt: ago(21) } });
-  await prisma.challenge.create({ data: { id: "test_chal_1", code: "TESTQ7", name: "October step-up (Test)", metric: "steps", goal: 7000, startDay: day(ago(10)), endDay: day(ahead(10)), org: "ANRA staff (Test)", createdById: maya.id, members: { create: [{ patientId: maya.id }, { patientId: daniel.id }] } } });
+  await prisma.challenge.create({ data: { id: "test_chal_1", code: "TESTQ7", name: "October step-up (Test)", metric: "steps", goal: 7000, startDay: day(ago(10)), endDay: day(ahead(10)), org: "NEYU staff (Test)", createdById: maya.id, members: { create: [{ patientId: maya.id }, { patientId: daniel.id }] } } });
   await prisma.healthReading.createMany({ data: Array.from({ length: 8 }, (_, i) => ({ patientId: daniel.id, metric: "steps", day: day(ago(i + 1)), value: 5400 + i * 420, source: "garmin", recordedAt: ago(i + 1) })) });
 
   // ── Visitors ──
