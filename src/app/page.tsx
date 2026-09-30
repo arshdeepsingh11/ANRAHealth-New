@@ -14,7 +14,7 @@ import FinalConcierge from "@/components/home/FinalConcierge";
 import HealthInMotion from "@/components/home/HealthInMotion";
 import { useIsMobile } from "@/lib/useViewport";
 
-// Homepage — ANRA design system (Claude Design "ANRA Health", Home 01–07).
+// Homepage — NEYU design system (Claude Design "NEYU Health", Home 01–07).
 // The intro video (with skip) still plays first on a visitor's first load.
 export default function Home() {
   const mobile = useIsMobile();
