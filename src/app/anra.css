@@ -1,5 +1,5 @@
-/* ANRA design system — keyframes + hover states ported from the Claude
-   Design "ANRA Health" artifact. Components use inline styles (like the
+/* NEYU design system — keyframes + hover states ported from the Claude
+   Design "NEYU Health" artifact. Components use inline styles (like the
    design), so hover rules here use !important to win over them. */
 
 @keyframes albaBreath { 0%,100% { transform: scale(1); filter: saturate(1) } 50% { transform: scale(1.045); filter: saturate(1.15) } }
