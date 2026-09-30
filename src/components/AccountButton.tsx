@@ -33,7 +33,7 @@ export default function AccountButton({ mobile }: { mobile: boolean }) {
       href={href}
       prefetch={false}
       aria-label={signedIn ? "Open My Health Space" : "Sign in to My Health Space"}
-      className="anra-chrome hv-sand"
+      className="anra-chrome hv-sand anra-float"
       style={{
         position: "fixed", zIndex: 60,
         top: mobile ? "calc(10px + env(safe-area-inset-top))" : 18, right: mobile ? 10 : 18,
