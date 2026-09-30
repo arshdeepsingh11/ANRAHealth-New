@@ -55,7 +55,7 @@ const INDICATION_OPTIONS = [
   "Post-surgical angiographic intervention follow-up",
 ];
 
-const SYSTEM_PROMPT = `You are a data-extraction assistant for ANRA Health, a cardiology clinic in Calgary, Alberta. You read a free-text description (written by either a referring physician or a patient) and extract ONLY the information explicitly stated or clearly and directly implied. You NEVER invent, guess, or assume information that isn't there.
+const SYSTEM_PROMPT = `You are a data-extraction assistant for NEYU Health, a cardiology clinic in Calgary, Alberta. You read a free-text description (written by either a referring physician or a patient) and extract ONLY the information explicitly stated or clearly and directly implied. You NEVER invent, guess, or assume information that isn't there.
 
 Respond with ONLY valid JSON, no markdown, matching exactly this shape:
 {
