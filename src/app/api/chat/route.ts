@@ -12,8 +12,8 @@ import { detectEmergencyKeywords, detectCrisisKeywords, EMERGENCY_MESSAGE, CRISI
 import { knowledgeFor, localAnswer, ALBA_RULES } from "@backend/albaKnowledge";
 
 function pageContextLabel(pathname: string | undefined): string {
-  if (!pathname) return "the ANRA Health website";
-  if (pathname === "/") return "the ANRA Health homepage";
+  if (!pathname) return "the NEYU Health website";
+  if (pathname === "/") return "the NEYU Health homepage";
   if (pathname.startsWith("/specialties/cardiology")) return "the Cardiology specialty page";
   if (pathname.startsWith("/specialties/respiratory-medicine")) return "the Respiratory Medicine specialty page (partner: Advanced Respiratory Care Network — sleep, oxygen, respiratory diagnostics)";
   if (pathname.startsWith("/specialties/skin-health")) return "the Skin Health specialty page (partner: Nea Precision Skin)";
@@ -23,12 +23,12 @@ function pageContextLabel(pathname: string | undefined): string {
   if (pathname.startsWith("/my-health")) return "My Health Space, the patient portal";
   if (pathname.startsWith("/genomics")) return "the Genomics page (BioAro Labs testing)";
   if (pathname.startsWith("/referral-centre")) return "the Referral Centre page";
-  if (pathname.startsWith("/longevity-lab")) return "the ANRA Longevity Lab (research explainers: intervention responsiveness, GDF-15 + telomeres, pace of aging, pharmacogenomics, longevity genetics)";
+  if (pathname.startsWith("/longevity-lab")) return "the NEYU Longevity Lab (research explainers: intervention responsiveness, GDF-15 + telomeres, pace of aging, pharmacogenomics, longevity genetics)";
   if (pathname.startsWith("/longevity")) return "the Longevity & Health Risk Assessment page";
   if (pathname.startsWith("/lab-results")) return "the Lab Result Explainer page";
   if (pathname.startsWith("/resources")) return "the Patient Resources page";
   if (pathname.startsWith("/contact")) return "the Contact page";
-  return "the ANRA Health website";
+  return "the NEYU Health website";
 }
 
 const MODEL = () => process.env.GEMINI_MODEL || "gemini-3.5-flash-lite";
