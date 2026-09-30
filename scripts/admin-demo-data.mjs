@@ -128,6 +128,8 @@ async function add() {
   await prisma.appointment.create({ data: { id: "test_appt_2", patientId: daniel.id, title: "Follow-up", clinician: "Dr. Ravi Varshney", location: "North East", startsAt: ahead(3, 13, 15), rescheduleRequestedAt: ago(0, 3), createdAt: ago(20) } });
   await prisma.deviceConnection.create({ data: { id: "test_dev_2", patientId: daniel.id, provider: "garmin", status: "connected", dataTypes: JSON.stringify(["rhr", "steps", "sleep"]), connectedAt: ago(90), lastSyncAt: ago(4) } });
 
+  await prisma.healthProfile.create({ data: { patientId: maya.id, data: JSON.stringify({ sex: "Female", heightCm: 165, bodyFat: 31, boneDensity: "Not tested", postal: "T2E", language: "English", conditions: ["High cholesterol (Test)"], medications: ["Atorvastatin 20 mg nightly"], allergies: ["Penicillin — rash"], familyHistory: ["Father — heart attack at 58"], diet: "Vegetarian", exerciseDays: 3, sleepQuality: 3, stressUsual: 3, setting: "City" }) } });
+
   // Daniel looks after Maya (family care), and both are in a steps challenge.
   await prisma.careLink.create({ data: { id: "test_care_1", ownerId: maya.id, caregiverId: daniel.id, email: daniel.email, relation: "Spouse / partner", status: "active", acceptedAt: ago(20), createdAt: ago(21) } });
   await prisma.challenge.create({ data: { id: "test_chal_1", code: "TESTQ7", name: "October step-up (Test)", metric: "steps", goal: 7000, startDay: day(ago(10)), endDay: day(ahead(10)), org: "ANRA staff (Test)", createdById: maya.id, members: { create: [{ patientId: maya.id }, { patientId: daniel.id }] } } });
