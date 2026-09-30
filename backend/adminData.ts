@@ -417,7 +417,7 @@ export async function patient360(id: string): Promise<Patient360DTO | null> {
     tl.push({ id: `t${tl.length}`, at: at.getTime(), date: fmtDate(at), time: fmtTime(at), title, source, icon, tone, detail, pre: pre(at) && !/^Signed up/.test(title) });
   add(p.createdAt, p.emailVerifiedAt ? "Signed up and verified" : "Signed up · verification pending", "My Health Space", "ph-user-check", "teal",
     p.visitors.length ? `Visitor ${p.visitors.map((v) => v.id).join(", ")} history merged into this record` : "Account created");
-  p.visitors.forEach((v) => add(v.firstSeenAt, "First visit to anrahealth.ca", "Website", "ph-globe", "neutral", `Landed on ${v.landingPath || "/"} · visitor ${v.id}`));
+  p.visitors.forEach((v) => add(v.firstSeenAt, "First visit to the website", "Website", "ph-globe", "neutral", `Landed on ${v.landingPath || "/"} · visitor ${v.id}`));
   symptoms.forEach((s) => add(s.createdAt, s.emergency ? "Emergency-flagged symptom check" : "Symptom check", "ALBA", s.emergency ? "ph-warning-circle" : "ph-stethoscope", s.emergency ? "urgent" : "ai",
     s.emergency ? (s.reviewedAt ? "Reviewed by staff" : "Patient was shown emergency guidance. Not yet reviewed.") : "Details are in AI & Assessments"));
   convs.forEach((c) => add(c.createdAt, "ALBA conversation", "ALBA", "ph-chat-circle-dots", "ai", "Details are in AI & Assessments"));
@@ -557,7 +557,7 @@ export async function aiDetail(key: string): Promise<AiDetailDTO | null> {
     test: isTestId(x.id) || isTestId(x.patient?.id) || isTestVisitor(vid), date: fmtDay(x.createdAt), time: fmtTime(x.createdAt), mins: minsAgo(x.createdAt),
     pre: !!x.patient && x.createdAt < x.patient.createdAt, status: "Completed", emergency: false, line: "", title: "",
   };
-  const where = x.patient ? "My Health Space" : "anrahealth.ca";
+  const where = x.patient ? "My Health Space" : "Website";
   if (kind === "symptom") return { ...base, status: x.reviewedAt ? "Reviewed" : "New", emergency: x.emergency, line: x.description, title: "Symptom check", from: `${where} · Symptom checker`, desc: x.description, urgency: x.urgency, specialty: x.recommendedDiscipline || x.specialty, summary: x.summary, reviewedBy: x.reviewedBy || undefined, reviewedAt: x.reviewedAt ? fmtShort(x.reviewedAt, true) : undefined };
   if (kind === "alba") return { ...base, title: "ALBA conversation", line: x.messages[0]?.text || "", from: `${where} · ${x.pageContext || "Website"}`, messages: x.messages.map((m: any) => ({ from: m.role === "user" ? "patient" : m.role === "assistant" ? "alba" : "system", text: m.text })) };
   if (kind === "assessment") {
