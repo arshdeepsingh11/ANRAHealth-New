@@ -107,7 +107,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
         </div>
         <button onClick={() => { setIdx(Math.min(list.length - 1, gi + 1)); setPaused(true); }} aria-label="Next" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><i className="ph ph-arrow-right" /></button>
       </div>
-      <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 13, color: "#5A626A" }}>{vendor === "nea" ? <>Treatments are provided and booked by Nea Precision Skin, Calgary NE. <a href="/specialties/skin-health" style={{ color: "#8A4F43" }}>See all Nea treatments</a></> : "ANRA doesn’t sell tests. Ordering and payment are handled by BioAro."}</p>
+      <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 13, color: "#5A626A" }}>{vendor === "nea" ? <>Treatments are provided and booked by Nea Precision Skin, Calgary NE. <a href="/specialties/skin-health" style={{ color: "#8A4F43" }}>See all Nea treatments</a></> : "NEYU doesn’t sell tests. Ordering and payment are handled by BioAro."}</p>
 
       <CatalogDetailSheet item={detail} mobile={mobile} onClose={() => setDetail(null)} onGet={(i) => { setDetail(null); setLeave(i); }} />
       <LeaveModal item={leave} onClose={() => setLeave(null)} />
