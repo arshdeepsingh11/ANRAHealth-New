@@ -367,10 +367,10 @@ export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof t
                 {((res.ai?.tests?.length ? res.ai.tests : res.c.tests.map((id) => ({ id })))).slice(0, 4).map((t: { id: string; why?: string }) => <TestCard key={t.id} id={t.id} why={t.why} accent={accent} />)}
               </div>
               <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderRadius: 18, background: `linear-gradient(120deg, ${accent}14, #6A509614)` }}>
-                <span style={{ fontSize: 15.5, maxWidth: 560 }}>{res.ai?.next || "Book an ANRA consultation — a physician reviews your answers and any results with you."}</span>
+                <span style={{ fontSize: 15.5, maxWidth: 560 }}>{res.ai?.next || "Book an NEYU consultation — a physician reviews your answers and any results with you."}</span>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book a consultation<i className="ph ph-arrow-right" /></a><button onClick={restart} style={btnGhost}><i className="ph ph-arrow-counter-clockwise" />Retake</button></div>
               </div>
-              <p style={{ margin: 0, fontSize: 12, color: T.faint }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs; results are interpreted clinically at ANRA.</p>
+              <p style={{ margin: 0, fontSize: 12, color: T.faint }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs; results are interpreted clinically at NEYU.</p>
             </>
           )}
         </div>
