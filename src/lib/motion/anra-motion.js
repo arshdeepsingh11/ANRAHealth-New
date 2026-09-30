@@ -1,4 +1,4 @@
-// Ported verbatim from the Claude Design "ANRA Health" artifact (anra-motion.js).
+// Ported verbatim from the Claude Design "NEYU Health" artifact (anra-motion.js).
 // Registers <anra-chart>, <anra-dotmap>, <anra-morph>, <anra-particles> custom elements.
 // Client-only — loaded by src/components/MotionElements.tsx.
 (function(){
