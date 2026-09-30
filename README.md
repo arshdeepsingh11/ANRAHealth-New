@@ -1,4 +1,4 @@
-# ANRA Health — Next.js (converted from Vite/React)
+# NEYU Health — Next.js (converted from Vite/React)
 
 ## Setup
 
