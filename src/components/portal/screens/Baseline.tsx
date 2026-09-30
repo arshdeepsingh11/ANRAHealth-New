@@ -47,7 +47,7 @@ export function BaselineCard() {
         <div style={{ flex: 1, minWidth: 220 }}>
           <div style={{ fontSize: 12.5, letterSpacing: ".12em", textTransform: "uppercase", color: C.muted, fontWeight: 500 }}>Your complete health picture</div>
           <h2 style={{ margin: "4px 0 2px", fontSize: 22, fontWeight: 500, letterSpacing: "-.02em" }}>{done ? "Your baseline is complete." : p.overall < 25 ? "Let’s get to know you properly." : "Keep building your baseline."}</h2>
-          <p style={{ margin: 0, fontSize: 14.5, color: C.muted }}>The more ANRA knows, the more personal your brief, ALBA and care become. Every question is optional.</p>
+          <p style={{ margin: 0, fontSize: 14.5, color: C.muted }}>The more NEYU knows, the more personal your brief, ALBA and care become. Every question is optional.</p>
         </div>
         <button onClick={() => go("baseline", { id: (PROFILE_SECTIONS.find((s) => { const x = p.sections.find((y) => y.id === s.id)!; return x.filled < x.total; }) || PROFILE_SECTIONS[0]).id })} className="h-primary" style={{ height: 44, padding: "0 18px", border: "none", borderRadius: 14, background: C.ink, color: W, fontSize: 14.5, fontWeight: 500, cursor: "pointer" }}>{done ? "Review" : "Continue"}</button>
       </div>
@@ -223,7 +223,7 @@ export default function Baseline({ id }: { id?: string }) {
         </section>
       )}
 
-      <p style={{ margin: "22px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-lock-simple" style={{ fontSize: 16, marginTop: 1 }} /><span>Only you and your ANRA care team can see this. Every question is optional, and you can clear any answer at any time. We never ask for income, political views or browsing history.</span></p>
+      <p style={{ margin: "22px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-lock-simple" style={{ fontSize: 16, marginTop: 1 }} /><span>Only you and your NEYU care team can see this. Every question is optional, and you can clear any answer at any time. We never ask for income, political views or browsing history.</span></p>
     </div>
   );
 }
