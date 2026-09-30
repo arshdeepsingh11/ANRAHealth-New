@@ -13,7 +13,7 @@ import { relTime } from "./screens/Devices";
 import { ConnectSheet, ImportSheet, ReadingSheet, BpSheet, LocationSheet, ShareSheet, InviteSheet, ChallengeSheet } from "./UniverseSheets";
 
 const TITLES: Record<string, [string, string]> = { alba: ["ALBA · AI companion", "Ask ALBA"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"],
-  connect: ["Connect", "How to connect"], import: ["Add data", "Import a file"], reading: ["Add data", "Enter a reading"], bp: ["Heart", "Add a blood pressure reading"], location: ["ANRA Today", "Your city"],
+  connect: ["Connect", "How to connect"], import: ["Add data", "Import a file"], reading: ["Add data", "Enter a reading"], bp: ["Heart", "Add a blood pressure reading"], location: ["NEYU Today", "Your city"],
   share: ["Share with my doctor", "Create a share link"], invite: ["Family care", "Invite a family member"], challenge: ["Challenges", "Challenge"] };
 
 export default function Sheets() {
@@ -277,7 +277,7 @@ function QrPair({ id, onPaired }: { id: string; onPaired: () => void }) {
 function SyncLog({ d }: { d: DeviceDTO }) {
   const r = d.lastResult;
   if (!d.lastAttemptAt) return d.status === "on" ? null : (
-    <p style={{ margin: 0, fontSize: 13.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-info" style={{ marginTop: 2 }} />Your iPhone hasn’t reached ANRA yet. If the shortcut ran, check it used your sync link and that this computer was on.</p>
+    <p style={{ margin: 0, fontSize: 13.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-info" style={{ marginTop: 2 }} />Your iPhone hasn’t reached NEYU yet. If the shortcut ran, check it used your sync link and that this computer was on.</p>
   );
   const ok = !!r?.stored;
   return (
@@ -303,7 +303,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
   const lastSync = data?.find((x) => x.id === id)?.lastSyncAt ?? null;
   const seenSync = useRef(lastSync);
   useEffect(() => {
-    if (lastSync && lastSync !== seenSync.current) { seenSync.current = lastSync; invalidate(EP.today, EP.trends, EP.brief); toast("ANRA received new data from your iPhone"); }
+    if (lastSync && lastSync !== seenSync.current) { seenSync.current = lastSync; invalidate(EP.today, EP.trends, EP.brief); toast("NEYU received new data from your iPhone"); }
   }, [lastSync, toast]);
   const d = data?.find((x) => x.id === id);
   if (!d) return <Loading />;
@@ -328,7 +328,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
     }
     openSheet(null);
     await Promise.all([reload(), load(EP.today, true), load(EP.trends, true)].map((p) => p?.catch(() => {})));
-    toast(on ? "Updated just now" : "Run your ANRA Sync shortcut on your iPhone to send data");
+    toast(on ? "Updated just now" : "Run your NEYU Sync shortcut on your iPhone to send data");
   };
   const disconnect = async () => {
     try { prime(EP.devices, await api<DeviceDTO[]>(`${EP.devices}?provider=${id}`, { method: "DELETE" })); invalidate(EP.today, EP.trends, EP.brief); openSheet(null); toast(`${d.name} disconnected`); }
@@ -339,7 +339,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
     <>
       <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{d.name}</h2>
       <p style={{ margin: "0 0 20px", fontSize: 14, color: on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 6 }}>
-        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last data ${relTime(d.lastSyncAt)}` : d.lastAttemptAt ? "Phone reached ANRA · no data stored yet" : "Waiting for your first sync"}
+        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last data ${relTime(d.lastSyncAt)}` : d.lastAttemptAt ? "Phone reached NEYU · no data stored yet" : "Waiting for your first sync"}
       </p>
       {d.lastError && <p role="alert" style={{ margin: "-8px 0 18px", padding: "10px 12px", borderRadius: 10, background: C.peach, color: C.peachInk, fontSize: 14 }}>{d.lastError}</p>}
 
