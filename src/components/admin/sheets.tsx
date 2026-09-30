@@ -52,7 +52,7 @@ function defsFor(type: FormType, v: Record<string, string>, edit: boolean, refs:
       { k: "patient", l: "Patient", t: "ro" }, { k: "test", l: "Test", t: "text", req: true, ph: "e.g. hs-Troponin T" }, { k: "status", l: "Status", t: "seg", o: ["Pending", "Final"] },
       { k: "value", l: "Value", t: "text", req: v.status === "Final", ph: v.status === "Pending" ? "Optional while pending" : "e.g. 12", half: true }, { k: "unit", l: "Unit", t: "text", req: true, ph: "e.g. ng/L", half: true },
       { k: "range", l: "Reference range", t: "text", ph: "e.g. < 14 or 4.0–5.9", half: true }, { k: "collected", l: "Collected date", t: "date", req: true, half: true },
-      { k: "panel", l: "Panel", t: "select", o: ["Cardiac markers", "Lipid panel", "Metabolic panel", "CBC", "Thyroid panel", "Inflammation", "Other"], half: true }, { k: "source", l: "Source", t: "select", o: ["BioAro Labs", "ANRA clinic", "External lab"], half: true },
+      { k: "panel", l: "Panel", t: "select", o: ["Cardiac markers", "Lipid panel", "Metabolic panel", "CBC", "Thyroid panel", "Inflammation", "Other"], half: true }, { k: "source", l: "Source", t: "select", o: ["BioAro Labs", "NEYU clinic", "External lab"], half: true },
       { k: "explanation", l: "Staff note", t: "area", ph: "Optional note for the care team (not shown to the patient)" }] };
     case "protocol": return { title: edit ? "Edit protocol item" : "Add protocol item", sub: "Changes appear in the patient’s protocol in My Health Space.", save: edit ? "Save changes" : "Add to protocol", fields: [
       { k: "name", l: "Protocol", t: "text", req: true, ph: "e.g. Atorvastatin" }, { k: "timing", l: "Timing", t: "seg", o: ["Morning", "Midday", "Evening"] },
