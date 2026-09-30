@@ -9,6 +9,7 @@ import { specialtyContent } from "@/data/specialtyContent";
 import { LAB_TESTS, WELLNESS, money } from "@/data/bioaroCatalog";
 import { NEA, NEA_TREATMENTS, NEA_PACKAGES, NEA_FAQ } from "@/data/nea";
 import { ARC, RESP_ITEMS, RESP_STEPS } from "@/data/respiratory";
+import { PAPERS, PGX_DRUGS, PATHWAYS } from "@/data/longevityScience";
 
 export interface Doc { id: string; title: string; text: string; href?: string; kind: string; words: Set<string> }
 
@@ -62,6 +63,10 @@ export function index(): Doc[] {
   NEA_PACKAGES.forEach((p) => d.push(mk("neapk-" + p.id, "Nea package", p.name + " package", `${p.group} package at Nea: ${p.tiers.map((t) => (t.name ? t.name + ": " : "") + t.items.join(", ")).join(" | ")}.`, "/specialties/skin-health?tab=packages")));
   NEA_FAQ.forEach((f, i) => d.push(mk("neafaq-" + i, "Nea FAQ", f.q, f.a, "/specialties/skin-health?tab=visit")));
   d.push(mk("nea", "Partner clinic", "Nea Precision Skin", `${NEA.legal}, ${NEA.address}. ${NEA.hours}. Phone ${NEA.phone}. ${NEA.founder}. Medical aesthetics, Fotona laser, injectables, facials, body, hair and wellness.`, "/specialties/skin-health"));
+  PAPERS.forEach((p) => d.push(mk("paper-" + p.id, "Longevity research (ANRA Longevity Lab)", p.title, `${p.authors}, ${p.journal} ${p.year}. ${p.design} Findings: ${p.findings.join(" ")} What it means: ${p.means} What it doesn't mean: ${p.notMeans} Paper: ${p.url}`, "/longevity-lab#" + p.feature[0])));
+  d.push(mk("lab-pgx", "ANRA Longevity Lab", "Pharmacogenomics drug–gene pairs", `Well-established CPIC drug–gene pairs: ${PGX_DRUGS.map((x) => `${x.drug} (${x.cls}) — ${x.genes.join(" + ")}`).join("; ")}. Never stop or change a medicine because of a gene result; the prescriber decides. BioAro Pharmacogenomics test.`, "/longevity-lab#pgx"));
+  d.push(mk("lab-genes", "ANRA Longevity Lab", "Longevity genetics pathways", `${PATHWAYS.map((x) => `${x.name}: ${x.text}`).join(" ")} Whole genome sequencing 30X is clinical-standard depth; 100X reads each position more times.`, "/longevity-lab#genes"));
+  d.push(mk("lab", "ANRA page", "ANRA Longevity Lab", "Interactive research explainers at /longevity-lab: 1 Intervention Responsiveness Explorer, 2 GDF-15 + Telomere Cellular Stress Map, 3 Pace of Aging vs Biological Age, 4 Pharmacogenomics Longevity Safety Check, 5 Longevity Genetics Pathway Visualizer, plus a Research Library book and an AI intake. Tests: GDF-15, Telomere Length, Core and Advanced Inflammation Aging, Pharmacogenomics, WGS 30X/100X. Book an ANRA longevity consultation to interpret results.", "/longevity-lab"));
   INDEX = d;
   return d;
 }
