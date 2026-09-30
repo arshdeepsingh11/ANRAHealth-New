@@ -4,10 +4,10 @@
 import { isMetricKey, type MetricKey } from "./metrics";
 
 export type Screen = "today" | "trends" | "trend" | "results" | "result" | "protocol" | "devices" | "history" | "appointments" | "referrals" | "more" | "profile" | "privacy" | "settings"
-  | "heart" | "lifestyle" | "family" | "careview" | "rewards" | "story";
+  | "heart" | "lifestyle" | "family" | "careview" | "rewards" | "story" | "baseline";
 export type Route = { s: Screen; k?: MetricKey; id?: string };
 
-export const SCREENS: Screen[] = ["today", "trends", "trend", "results", "result", "protocol", "devices", "history", "appointments", "referrals", "more", "profile", "privacy", "settings", "heart", "lifestyle", "family", "careview", "rewards", "story"];
+export const SCREENS: Screen[] = ["today", "trends", "trend", "results", "result", "protocol", "devices", "history", "appointments", "referrals", "more", "profile", "privacy", "settings", "heart", "lifestyle", "family", "careview", "rewards", "story", "baseline"];
 
 export function parseRoute(sp: Record<string, string | string[] | undefined>): Route {
   const s = typeof sp.s === "string" && (SCREENS as string[]).includes(sp.s) ? (sp.s as Screen) : "today";
