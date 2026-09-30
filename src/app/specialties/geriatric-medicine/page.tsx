@@ -1,6 +1,9 @@
-import SpecialtyPageTemplate from "@/components/SpecialtyPageTemplate";
-import { specialtyContent } from "@/data/specialtyContent";
+import SpecialtyExperience from "@/components/specialty/SpecialtyExperience";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = { title: "Geriatric Medicine · ANRA Health" };
+
+// Tabbed, AI-assisted specialty page — content and tools in src/data/specialtyStudio.ts.
 export default function GeriatricMedicinePage() {
-  return <SpecialtyPageTemplate content={specialtyContent["geriatric-medicine"]} />;
+  return <SpecialtyExperience slug="geriatric-medicine" />;
 }
