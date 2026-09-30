@@ -1,4 +1,4 @@
-// GET /api/portal/brief — ANRA Today: location-aware daily brief.
+// GET /api/portal/brief — NEYU Today: location-aware daily brief.
 import { getBrief } from "@backend/brief";
 import { syncAll } from "@backend/oauth";
 import { audit } from "@backend/audit";
