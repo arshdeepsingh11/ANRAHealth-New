@@ -37,9 +37,9 @@ export const EMERGENCY_PATTERNS = [
   /swelling.{0,15}(face|throat|lips).{0,20}(rapid|sudden|difficulty breathing)/i,
 
   // Mental health crisis — self-harm / suicidal ideation
-  /suicidal|suicide|kill myself|end my life|want to die/i,
-  /hurt myself|harm myself|self[- ]?harm/i,
-  /plan to (kill|hurt|harm)/i,
+  /suicidal|suicide|kill(ing)? myself|end(ing)? my (own )?life|end it all|want(ing)? to die|wish i (was|were) dead|better off dead|take my (own )?life|(don'?t|do not) want to (live|be alive|wake up)|no reason to live/i,
+  /(hurt|hurting|harm|harming|cut|cutting) myself|self[- ]?harm/i,
+  /plan(ning)? to (kill|hurt|harm)/i,
 ] as const;
 
 export function detectEmergencyKeywords(text: string): boolean {
@@ -55,9 +55,9 @@ export const EMERGENCY_MESSAGE =
 // resources rather than only "call 911 / go to the ER," which reads oddly
 // for someone in emotional distress rather than physical danger.
 const CRISIS_PATTERNS = [
-  /suicidal|suicide|kill myself|end my life|want to die/i,
-  /hurt myself|harm myself|self[- ]?harm/i,
-  /plan to (kill|hurt|harm)/i,
+  /suicidal|suicide|kill(ing)? myself|end(ing)? my (own )?life|end it all|want(ing)? to die|wish i (was|were) dead|better off dead|take my (own )?life|(don'?t|do not) want to (live|be alive|wake up)|no reason to live/i,
+  /(hurt|hurting|harm|harming|cut|cutting) myself|self[- ]?harm/i,
+  /plan(ning)? to (kill|hurt|harm)/i,
 ];
 
 export function detectCrisisKeywords(text: string): boolean {
