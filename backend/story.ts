@@ -96,7 +96,7 @@ export async function getStory(p: P, monthIn?: string): Promise<StoryDTO> {
   const fresh = cached && (month !== cur || Date.now() - cached.createdAt.getTime() < 12 * 3600_000);
   if (fresh) out = parseJSON(cached!.body, out);
   else if (stats.length && process.env.GEMINI_API_KEY) {
-    const sys = `You are ALBA in ANRA Health's My Health Space. Retell a patient's month as a short, warm story: 3 short paragraphs (max 110 words total), second person, specific numbers from the facts, one encouraging suggestion at the end. Never diagnose, never mention medications, no markdown, no emojis. First line: a 3–6 word title, then a blank line, then the paragraphs.`;
+    const sys = `You are ALBA in NEYU Health's My Health Space. Retell a patient's month as a short, warm story: 3 short paragraphs (max 110 words total), second person, specific numbers from the facts, one encouraging suggestion at the end. Never diagnose, never mention medications, no markdown, no emojis. First line: a 3–6 word title, then a blank line, then the paragraphs.`;
     const ai = await gemini(sys, `Patient first name: ${p.firstName}. Month: ${label(month)}.\nFacts:\n${stats.map((x) => `- ${x.label}: ${x.value}${x.note ? ` (${x.note})` : ""}`).join("\n")}`, { maxTokens: 260, temperature: 0.6 });
     if (ai && !unsafeAiText(ai)) {
       const [t, ...rest] = ai.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
