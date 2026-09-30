@@ -33,7 +33,7 @@ export function Results() {
       <p style={{ margin: "0 0 22px", fontSize: 15, color: C.muted }}>Your laboratory results, organized over time.</p>
       <RetestBanner />
       {isNew ? (
-        <EmptyCard icon="ph ph-flask" title="Your results will appear here" text="When ANRA receives your next laboratory result, we'll organize it here and help explain what it means." />
+        <EmptyCard icon="ph ph-flask" title="Your results will appear here" text="When NEYU receives your next laboratory result, we'll organize it here and help explain what it means." />
       ) : (
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
@@ -126,10 +126,10 @@ export function ResultDetail({ id }: { id: string }) {
         {r.guidance && <div><h3 style={{ margin: "0 0 6px", fontSize: 17, fontWeight: 500 }}>What should I know?</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.65, color: C.ink2 }}>{r.guidance}</p></div>}
         {!r.pending && <LabInsight code={r.code} />}
         <div style={{ padding: "18px 20px", borderRadius: 18, background: C.tealWash, display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontSize: 15, lineHeight: 1.5, flex: 1, minWidth: 220 }}>Discuss this result with your ANRA care team at your {next ? longDateTz(next.startsAt, tz, { month: "long", day: "numeric" }) + " " : "next "}visit.</span>
+          <span style={{ fontSize: 15, lineHeight: 1.5, flex: 1, minWidth: 220 }}>Discuss this result with your NEYU care team at your {next ? longDateTz(next.startsAt, tz, { month: "long", day: "numeric" }) + " " : "next "}visit.</span>
           <button onClick={addToVisit} style={{ height: 42, padding: "0 16px", border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>Add to visit questions</button>
         </div>
-        <p style={{ margin: 0, fontSize: 13, color: C.muted }}>Educational information from ANRA. It doesn't diagnose or replace advice from your clinician.</p>
+        <p style={{ margin: 0, fontSize: 13, color: C.muted }}>Educational information from NEYU. It doesn't diagnose or replace advice from your clinician.</p>
       </div>
     </div>
   );
