@@ -57,7 +57,7 @@ export default function DiagnosticPageTemplate({ content }: { content: Diagnosti
   return (
     <div style={{ minHeight: "100vh" }}>
       <div className="text-center pt-16 md:pt-24 pb-6 px-6">
-        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Diagnostics & Testing</p>
+        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">NEYU Health — Diagnostics & Testing</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900">{content.label}</h1>
         <p className="text-sm text-graphite-500 mt-3 max-w-xl mx-auto leading-relaxed">{content.tagline}</p>
       </div>
