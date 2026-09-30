@@ -1,6 +1,6 @@
 "use client";
 
-// ANRA Longevity Lab — five research-backed, interactive explainers that turn
+// NEYU Longevity Lab — five research-backed, interactive explainers that turn
 // 2022–2026 aging science into plain language, with ALBA, 3D models, charts,
 // an AI intake, a page-turning Research Library and BioAro test CTAs.
 import React, { useEffect, useRef, useState } from "react";
@@ -42,13 +42,13 @@ function Hero({ onAsk, onGo }: { onAsk: (q: string) => void; onGo: (t: Tab) => v
       <anra-particles tone="dark" density="9000" style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.7 }} />
       <div style={{ position: "relative", zIndex: 2, padding: "clamp(22px,5vw,56px)", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 18, minWidth: 0, boxSizing: "border-box", width: "100%" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)" }}>ANRA Longevity Lab</span>
+          <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)" }}>NEYU Longevity Lab</span>
           <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", display: "inline-flex", gap: 6, alignItems: "center" }}><AlbaOrb size={14} motion={false} />AI-guided · research-backed</span>
         </div>
         <h1 style={{ margin: 0, fontSize: "clamp(36px,5.4vw,66px)", lineHeight: 1.02, letterSpacing: "-.045em", fontWeight: 500 }}>
           The science of aging,<br /><anra-morph words="made visual|made personal|made measurable" gradient="linear-gradient(90deg,#FFFFFF,#8CD7B5 50%,#C9B8E6)" />
         </h1>
-        <p style={{ margin: 0, fontSize: "clamp(15.5px,1.5vw,18.5px)", lineHeight: 1.55, color: "rgba(247,245,241,.82)", maxWidth: 580 }}>Five interactive explainers built from peer-reviewed studies (2022–2026) — with 3D models, live charts and ALBA to answer your questions. Then measure your own biology with BioAro Labs and review it with an ANRA physician.</p>
+        <p style={{ margin: 0, fontSize: "clamp(15.5px,1.5vw,18.5px)", lineHeight: 1.55, color: "rgba(247,245,241,.82)", maxWidth: 580 }}>Five interactive explainers built from peer-reviewed studies (2022–2026) — with 3D models, live charts and ALBA to answer your questions. Then measure your own biology with BioAro Labs and review it with an NEYU physician.</p>
         <form onSubmit={(e) => { e.preventDefault(); if (q.trim().length > 1) onAsk(q.trim()); }} style={{ position: "relative", maxWidth: 560, borderRadius: 999 }}>
           <anra-electro radius="30" style={{ position: "absolute", inset: -6, pointerEvents: "none" }} />
           <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, padding: "6px 6px 6px 14px", borderRadius: 999, background: "rgba(255,255,255,.96)" }}>
@@ -143,7 +143,7 @@ export default function LongevityLab() {
           </section>
 
           <section style={{ borderRadius: 26, padding: "clamp(20px,4vw,40px)", background: "linear-gradient(135deg,#14181B,#241D33)", color: "#F7F5F1", display: "flex", gap: 20, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
-            <div style={{ maxWidth: 640 }}><div style={{ ...eyebrow, color: "#8CD7B5" }}>From science to your care</div><p style={{ margin: "8px 0 0", fontSize: "clamp(18px,2vw,22px)", lineHeight: 1.45 }}>Measure it with BioAro Labs. Understand it with an ANRA physician. Re-check what changes.</p></div>
+            <div style={{ maxWidth: 640 }}><div style={{ ...eyebrow, color: "#8CD7B5" }}>From science to your care</div><p style={{ margin: "8px 0 0", fontSize: "clamp(18px,2vw,22px)", lineHeight: 1.45 }}>Measure it with BioAro Labs. Understand it with an NEYU physician. Re-check what changes.</p></div>
             <a href={CONSULT_HREF} style={{ ...btnInk, background: "#F7F5F1", color: T.ink }}>Book a longevity consultation<i className="ph ph-arrow-right" /></a>
           </section>
           <p style={{ margin: 0, fontSize: 12.5, color: T.muted, lineHeight: 1.6 }}>Educational content only — not a diagnosis or medical advice. Research findings describe groups of people, not individuals. Medical emergency? Call 911.</p>
