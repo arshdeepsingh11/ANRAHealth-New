@@ -38,7 +38,7 @@ function HealthMap({ areas, center, big }: { areas: TodayDTO["areas"]; center: s
 const AQ_TONE = (risk: string | null) => (risk === "Low" ? { bg: "rgba(110,168,182,.18)", ink: C.tealDark } : risk === "Moderate" ? { bg: "#FFF1D6", ink: "#8A5A12" } : risk ? { bg: C.peach, ink: C.peachInk } : { bg: "#EFECE8", ink: C.muted });
 const WX_ICON = (c: string | null) => { const x = (c || "").toLowerCase(); return /thunder/.test(x) ? "ph ph-cloud-lightning" : /snow|flurr/.test(x) ? "ph ph-cloud-snow" : /rain|shower|drizzle/.test(x) ? "ph ph-cloud-rain" : /fog|haze|smoke/.test(x) ? "ph ph-cloud-fog" : /cloud|overcast/.test(x) ? "ph ph-cloud-sun" : "ph ph-sun"; };
 
-/** ANRA Today — location-aware daily brief. */
+/** NEYU Today — location-aware daily brief. */
 function BriefCard() {
   const { go, openSheet } = usePortal();
   const { data: b, error, reload } = useResource<BriefDTO>(EP.brief);
@@ -47,9 +47,9 @@ function BriefCard() {
   const open = (target?: string) => { if (!target) return; if (target.startsWith("trend:")) go("trend", { k: target.slice(6) as MetricKey }); else go(target as any); };
   const move = b.moveAdvice;
   return (
-    <section aria-label="ANRA Today" style={{ marginBottom: 28, padding: "24px 24px 20px", borderRadius: 24, background: "linear-gradient(160deg,#E4EFF1 0%,#F3EEF8 55%,#FFFDFB 100%)", border: "1px solid rgba(29,35,39,.05)" }}>
+    <section aria-label="NEYU Today" style={{ marginBottom: 28, padding: "24px 24px 20px", borderRadius: 24, background: "linear-gradient(160deg,#E4EFF1 0%,#F3EEF8 55%,#FFFDFB 100%)", border: "1px solid rgba(29,35,39,.05)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, letterSpacing: ".08em", color: C.tealDark }}><i className="ph ph-sun-horizon" style={{ fontSize: 17 }} />ANRA TODAY</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, letterSpacing: ".08em", color: C.tealDark }}><i className="ph ph-sun-horizon" style={{ fontSize: 17 }} />NEYU TODAY</span>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {b.streak > 0 && <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph-fill ph-fire" style={{ color: "#D9822B" }} />{b.streak}-day streak</button>}
           <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph ph-trophy" style={{ color: C.teal }} />{b.points.toLocaleString("en-US")} pts</button>
