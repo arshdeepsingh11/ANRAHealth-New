@@ -12,6 +12,11 @@ export const EMERGENCY_PATTERNS = [
   // Cardiac
   /crushing.{0,15}(chest|pain)/i,
   /chest pain.{0,20}(radiating|arm|jaw)/i,
+  // First-person, happening now ("I have chest pain", "my chest feels tight right now")
+  /\b(i('m| am)?|i've|im)\s+(having|have|got|feel|feeling|getting|experiencing)\s+(some |bad |severe |sharp |sudden |strong |really bad |a lot of )?chest (pain|pressure|tightness)/i,
+  /\bmy chest (hurts|is (tight|hurting|heavy)|feels (tight|heavy|crushed))/i,
+  /chest (pain|pressure|tightness).{0,25}\b(right now|now|currently|won'?t (go away|stop))\b/i,
+  /(having|think i'?m having|i'?m having) a (heart attack|stroke)/i,
 
   // Respiratory
   /can'?t breathe/i,
