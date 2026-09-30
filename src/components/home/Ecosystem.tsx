@@ -64,7 +64,7 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
               pill("Nea", "#B9786A", "Skin", () => showGallery("nea")),
             ])}
             <div style={{ position: "absolute", left: "50%", top: "50%", width: mobile ? 96 : 124, height: mobile ? 96 : 124, transform: "translate(-50%,-50%)", borderRadius: "50%", background: "#FFFFFF", border: "1px solid #E3DED5", display: "grid", placeItems: "center", animation: "coreBreath 5s ease-in-out infinite" }}>
-              <NeyuLogo height={mobile ? 62 : 80} layout="stacked" />
+              <NeyuLogo height={mobile ? 54 : 72} layout="stacked" />
             </div>
           </div>
         </div>
