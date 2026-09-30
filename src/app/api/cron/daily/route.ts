@@ -1,7 +1,7 @@
 // GET /api/cron/daily — the daily job. Call every hour (it only acts once
 // per patient per day) with header  Authorization: Bearer $CRON_SECRET
 //   • pulls new data from Withings / Oura / WHOOP
-//   • emails the ANRA Today brief (patients who turned it on), after 6 AM local
+//   • emails the NEYU Today brief (patients who turned it on), after 6 AM local
 //   • visit nudges 2 days before an appointment (notifAppt)
 //   • lab retest reminders (once per test per due date)
 import { NextResponse } from "next/server";
@@ -37,7 +37,7 @@ export async function GET(req: Request) {
       if (s?.briefEmail && s.notifDaily && (await once(p.id, "brief-email", today, async () => {
         const b = await getBrief(p);
         const lines = [b.message, ...(b.moveAdvice ? [b.moveAdvice.text] : []), ...b.items.slice(0, 4).map((i) => `${i.title}: ${i.text}`)];
-        await sendMail({ to: p.email, ...simpleEmail(`${b.headline} Here's your ANRA Today`, lines, { label: "Open My Health Space", url: `${base}/my-health` }, "ANRA Health · Wellness information, not a diagnosis. Emergency? Call 911. Turn off in My Health Space → Profile → Daily brief.") });
+        await sendMail({ to: p.email, ...simpleEmail(`${b.headline} Here's your NEYU Today`, lines, { label: "Open My Health Space", url: `${base}/my-health` }, "NEYU Health · Wellness information, not a diagnosis. Emergency? Call 911. Turn off in My Health Space → Profile → Daily brief.") });
       }))) out.briefs++;
       if (s?.notifAppt !== false) {
         const appt = await prisma.appointment.findFirst({ where: { patientId: p.id, status: "scheduled", startsAt: { gte: now } }, orderBy: { startsAt: "asc" }, select: { id: true, clinician: true, startsAt: true } });
