@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useAlba } from "@/components/AlbaContext";
 import { useRegion } from "@/components/RegionContext";
-import { GALLERY_LABS, GALLERY_DRUGS, VENDOR_NAME, money, type CatalogItem, type Vendor } from "@/data/bioaroCatalog";
+import { GALLERY_LABS, GALLERY_DRUGS, GALLERY_NEA, VENDOR_NAME, VENDOR_COLOR, money, type CatalogItem, type Vendor } from "@/data/bioaroCatalog";
 import CatalogDetailSheet from "@/components/home/CatalogDetailSheet";
 import LeaveModal from "@/components/home/LeaveModal";
 import { GALLERY_EVENT } from "@/components/home/Ecosystem";
@@ -20,7 +20,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
   const [detail, setDetail] = useState<CatalogItem | null>(null);
   const [leave, setLeave] = useState<CatalogItem | null>(null);
 
-  const list = vendor === "labs" ? GALLERY_LABS : GALLERY_DRUGS;
+  const list = vendor === "labs" ? GALLERY_LABS : vendor === "drugs" ? GALLERY_DRUGS : GALLERY_NEA;
   const gi = Math.min(idx, list.length - 1);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
     return () => document.removeEventListener(GALLERY_EVENT, on);
   }, []);
 
-  const tabs: [Vendor, string][] = [["labs", "BioAro Labs · Tests"], ["drugs", "BioAro Drugs · Wellness"]];
+  const tabs: [Vendor, string][] = [["labs", "BioAro Labs · Tests"], ["drugs", "BioAro Drugs · Wellness"], ["nea", "Nea · Skin & Aesthetics"]];
   const someUnavailable = list.some((t) => !t.regions.includes(region));
 
   return (
@@ -45,7 +45,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", gap: 16, alignItems: "end" }}>
         <div>
           <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#5A626A" }}>From our partner companies</div>
-          <h2 style={{ margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 }}>Explore advanced testing.</h2>
+          <h2 style={{ margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 }}>{vendor === "nea" ? "Explore skin & aesthetics." : "Explore advanced testing."}</h2>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {tabs.map(([k, l]) => {
@@ -72,7 +72,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
               {active && <anra-electro radius="22" style={{ position: "absolute", inset: -6, pointerEvents: "none", zIndex: 2 }} />}
               <div style={{ position: "relative", height: "100%", borderRadius: 22, background: "#FDFCFA", border: "1px solid #E3DED5", boxShadow: "0 30px 60px -34px rgba(20,24,27,.45)", padding: 24, display: "grid", gridTemplateRows: "auto auto 1fr auto", gap: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: "#5A626A" }}>
-                  <span style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: t.vendor === "drugs" ? "#8C6FB8" : "#6EA8B6" }} />{VENDOR_NAME[t.vendor]}</span>
+                  <span style={{ display: "flex", gap: 8, alignItems: "center" }}><span style={{ width: 8, height: 8, borderRadius: "50%", background: VENDOR_COLOR[t.vendor] }} />{VENDOR_NAME[t.vendor]}</span>
                   <span style={{ textAlign: "right" }}>{t.cat}</span>
                 </div>
                 <h3 style={{ margin: 0, fontSize: 24, lineHeight: 1.15, letterSpacing: "-.02em", fontWeight: 500 }}>{t.name}</h3>
@@ -80,8 +80,8 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
                 <div style={{ display: "grid", gap: 12, paddingTop: 14, borderTop: "1px solid #EFECE6" }}>
                   <div style={{ fontSize: 13, color: "#5A626A" }}>{t.meta}</div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
-                    <span style={{ fontSize: 26, letterSpacing: "-.02em", fontWeight: 500 }}>{money(t.price)}</span>
-                    <span style={{ fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: "#2F5561" }}>Explore →</span>
+                    <span style={{ fontSize: t.price ? 26 : 20, letterSpacing: "-.02em", fontWeight: 500 }}>{money(t.price)}</span>
+                    <span style={{ fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: t.vendor === "nea" ? "#8A4F43" : "#2F5561" }}>{t.vendor === "nea" ? "Book →" : "Explore →"}</span>
                   </div>
                   {!available && <div style={{ fontSize: 13, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Not available in your region</div>}
                 </div>
@@ -98,7 +98,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
         </div>
         <button onClick={() => { setIdx(Math.min(list.length - 1, gi + 1)); setPaused(true); }} aria-label="Next" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><i className="ph ph-arrow-right" /></button>
       </div>
-      <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 13, color: "#5A626A" }}>ANRA doesn’t sell tests. Ordering and payment are handled by BioAro.</p>
+      <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 13, color: "#5A626A" }}>{vendor === "nea" ? <>Treatments are provided and booked by Nea Precision Skin, Calgary NE. <a href="/specialties/skin-health" style={{ color: "#8A4F43" }}>See all Nea treatments</a></> : "ANRA doesn’t sell tests. Ordering and payment are handled by BioAro."}</p>
 
       <CatalogDetailSheet item={detail} mobile={mobile} onClose={() => setDetail(null)} onGet={(i) => { setDetail(null); setLeave(i); }} />
       <LeaveModal item={leave} onClose={() => setLeave(null)} />
