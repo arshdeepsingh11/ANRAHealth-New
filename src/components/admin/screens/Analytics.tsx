@@ -26,7 +26,7 @@ export default function Analytics() {
   const card = { ...S.card, padding: "22px 24px" };
   return (
     <section data-screen-label="16 Analytics" style={{ display: "flex", flexDirection: "column", gap: 24, animation: "anraFade 260ms ease-out" }}>
-      <div><h1 style={S.h1}>Analytics</h1><p style={{ margin: "4px 0 0", color: T.ink2 }}>How ANRA's digital health experience is performing{data ? " · " + data.rangeLabel : ""}</p></div>
+      <div><h1 style={S.h1}>Analytics</h1><p style={{ margin: "4px 0 0", color: T.ink2 }}>How NEYU's digital health experience is performing{data ? " · " + data.rangeLabel : ""}</p></div>
       {loading && <><BlockSkeleton h={90} /><BlockSkeleton h={300} /></>}
       {error && !data && <Failed what="analytics" onRetry={reload} />}
       {data && (
@@ -73,7 +73,7 @@ export default function Analytics() {
                 <h2 style={{ ...S.h2, flex: 1, display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-arrow-square-out" style={{ color: T.teal }} />Outbound to partner sites</h2>
                 <span style={{ fontSize: 24, fontWeight: 500, letterSpacing: "-0.02em" }}>{data.outTotalL}</span><span style={{ fontSize: 13, color: T.faint }}>{data.outPctL}</span>
               </div>
-              <p style={{ margin: "0 0 16px", fontSize: 13.5, color: T.faint }}>People who left anrahealth.com or My Health Space through a link to another site. Counted as clicks; no health data is shared with the destination.</p>
+              <p style={{ margin: "0 0 16px", fontSize: 13.5, color: T.faint }}>People who left the website or My Health Space through a link to another site. Counted as clicks; no health data is shared with the destination.</p>
               {data.outbound.length === 0 && <p style={{ margin: 0, fontSize: 13.5, color: T.faint }}>No outbound clicks in this range yet.</p>}
               <div role="img" aria-label="Outbound clicks by destination" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {data.outbound.map((o) => (
