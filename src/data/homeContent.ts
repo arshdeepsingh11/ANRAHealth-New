@@ -1,5 +1,5 @@
 // Content for the redesigned homepage + universal chrome (nav rail, mobile
-// menu, search). Ported from the Claude Design "ANRA Health" artifact
+// menu, search). Ported from the Claude Design "NEYU Health" artifact
 // (anra-data.js + component logic), with every destination mapped to a real
 // route in this app.
 import { detectEmergencyKeywords, detectCrisisKeywords } from "@/lib/emergencyDetection";
@@ -131,7 +131,7 @@ export interface Diag { name: string; href: string; signal: string; desc: string
 
 export const DIAGS: Diag[] = [
   { name: "Cardiac Imaging", href: "/diagnostics/cardiac-imaging", signal: "Structure", desc: "Echocardiography shows the heart's chambers, valves and pumping function in real time.", tests: ["Transthoracic echocardiogram", "Strain imaging", "Valve assessment"] },
-  { name: "Stress Testing", href: "/diagnostics/stress-testing", signal: "Function", desc: "How the heart responds to exertion. ANRA runs Alberta's first onsite exercise stress echocardiogram program.", tests: ["Exercise stress echocardiogram", "Treadmill ECG"] },
+  { name: "Stress Testing", href: "/diagnostics/stress-testing", signal: "Function", desc: "How the heart responds to exertion. NEYU runs Alberta's first onsite exercise stress echocardiogram program.", tests: ["Exercise stress echocardiogram", "Treadmill ECG"] },
   { name: "Vascular", href: "/diagnostics/vascular", signal: "Circulation", desc: "How well blood moves through the arteries that supply the brain and limbs.", tests: ["Carotid ultrasound", "Ankle-brachial index"] },
   { name: "Monitoring", href: "/diagnostics/monitoring", signal: "Rhythm", desc: "Recordings over days capture rhythms and pressures a single visit can miss.", tests: ["24–48 hour Holter", "Extended event monitor", "Ambulatory blood pressure"] },
   { name: "Pulmonary", href: "/diagnostics/pulmonary", signal: "Breathing", desc: "Measures how much air the lungs move, how fast, and how well oxygen transfers.", tests: ["Spirometry", "Full pulmonary function", "Six-minute walk test"] },
@@ -240,7 +240,7 @@ export function albaSuggestionsFor(pathname: string): string[] {
   if (pathname.startsWith("/genomics")) return ["Which genetic test fits a family history of heart disease?", "What does pharmacogenomics mean?", "Is genomic testing covered?"];
   if (pathname.startsWith("/lab-results")) return ["What does a high LDL mean?", "Why would hs-CRP be repeated?", "What is ApoB?"];
   if (pathname.startsWith("/referral-centre")) return ["What should a referral include?", "How long does intake take?"];
-  return ["How do I get a referral?", "What does ANRA offer?", "Help me prepare for a visit"];
+  return ["How do I get a referral?", "What does NEYU offer?", "Help me prepare for a visit"];
 }
 
 // ── Search index ──────────────────────────────────────────────────────────
