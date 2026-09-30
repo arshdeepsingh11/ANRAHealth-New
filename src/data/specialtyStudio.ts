@@ -42,7 +42,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     slug: "cardiology", label: "Cardiology", icon: "ph-heartbeat", accent: ["#A5485A", "#E08A84"],
     morph: ["your heart.", "your rhythm.", "your pressure.", "your future."],
     tagline: "Advanced heart care in Calgary — home of Alberta’s first onsite exercise stress echocardiogram program.",
-    overview: ["ANRA Health combines specialist physicians, advanced diagnostics, genomics, artificial intelligence and preventive medicine to deliver personalized heart care for every stage of life.", "From a first consultation to stress echo, Holter and ambulatory blood-pressure monitoring, testing and follow-up happen under one roof."],
+    overview: ["NEYU Health combines specialist physicians, advanced diagnostics, genomics, artificial intelligence and preventive medicine to deliver personalized heart care for every stage of life.", "From a first consultation to stress echo, Holter and ambulatory blood-pressure monitoring, testing and follow-up happen under one roof."],
     video: { kind: "mp4", src: "/videos/cardiology-hero.mp4" }, heroLine: "Healthcare designed around you",
     care: services.filter((s) => CARDIAC_SLUGS.includes(s.slug)).map((s) => ({ name: s.name, desc: s.long || s.short, icon: ICON[s.slug] || "ph-heartbeat", group: "Diagnostics & care" })),
     conditions: cardiacSymptoms.map((s) => s.name),
@@ -50,7 +50,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     tools: ["symptoms-cardio", "bp", "hrzones"],
     tests: ["high-sensitive-crp-hs-crp", "gdf-15", "pai-1-total", "core-inflammation-aging", "advanced-inflammation-aging", "pharmacogenomics-test"],
     disciplines: ["Cardiology"],
-    ask: ["What is an exercise stress echo?", "How do I prepare for a Holter monitor?", "What does high blood pressure do to the heart?", "Which heart tests does ANRA offer?"],
+    ask: ["What is an exercise stress echo?", "How do I prepare for a Holter monitor?", "What does high blood pressure do to the heart?", "Which heart tests does NEYU offer?"],
   },
   "heart-failure-clinic": {
     slug: "heart-failure-clinic", label: sc["heart-failure-clinic"].label, icon: "ph-heart-break", accent: ["#7E3350", "#D9798F"],
@@ -59,7 +59,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     care: conditionCare(sc["heart-failure-clinic"].conditionsTreated, "ph-heart-break"), conditions: sc["heart-failure-clinic"].conditionsTreated, whenToSee: sc["heart-failure-clinic"].whenToSee,
     tools: ["nyha", "weight"], tests: ["high-sensitive-crp-hs-crp", "gdf-15", "cystatin-c", "timp-1"],
     disciplines: sc["heart-failure-clinic"].physicianDisciplines || [], physicianNote: sc["heart-failure-clinic"].physicianNote,
-    ask: ["What is heart failure with preserved ejection fraction?", "Why track my weight every day?", "What do the NYHA classes mean?", "How is heart failure followed at ANRA?"],
+    ask: ["What is heart failure with preserved ejection fraction?", "Why track my weight every day?", "What do the NYHA classes mean?", "How is heart failure followed at NEYU?"],
   },
   "internal-medicine": {
     slug: "internal-medicine", label: sc["internal-medicine"].label, icon: "ph-stethoscope", accent: ["#2F6F80", "#6EB5C4"],
