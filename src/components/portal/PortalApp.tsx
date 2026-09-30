@@ -21,6 +21,7 @@ import { Appointments, Referrals } from "./screens/Appointments";
 import { More, Profile, Privacy, Notifications } from "./screens/Account";
 import Sheets from "./Sheets";
 import { Heart, Lifestyle, Family, CareView, Rewards, Story } from "./screens/Universe";
+import Baseline from "./screens/Baseline";
 
 export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; initialRoute: Route }) {
   const [route, setRoute] = useState<Route>(initialRoute);
@@ -39,7 +40,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
 
   // Warm the other tabs in the background so switching is instant.
   useEffect(() => {
-    const warm = () => [EP.brief, EP.trends, EP.results, EP.protocol, EP.appointments, EP.heart, EP.lifestyle].forEach((u) => load(u).catch(() => {}));
+    const warm = () => [EP.brief, EP.profile, EP.trends, EP.results, EP.protocol, EP.appointments, EP.heart, EP.lifestyle].forEach((u) => load(u).catch(() => {}));
     const w = window as any;
     const id = w.requestIdleCallback ? w.requestIdleCallback(warm, { timeout: 2000 }) : setTimeout(warm, 600);
     return () => (w.cancelIdleCallback ? w.cancelIdleCallback(id) : clearTimeout(id));
@@ -105,7 +106,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
   }), [route, go, tab, back, toast, sheet, profile, settings, initials, addQuestion]);
 
   const scr = route.s;
-  const activeTab = scr === "result" || scr === "trend" || scr === "careview" ? PARENT[scr]! : scr === "privacy" || scr === "settings" ? "profile" : scr === "story" ? "today" : scr;
+  const activeTab = scr === "result" || scr === "trend" || scr === "careview" ? PARENT[scr]! : scr === "privacy" || scr === "settings" ? "profile" : scr === "story" || scr === "baseline" ? "today" : scr;
   const showBack = hist.length > 0 || !!PARENT[scr];
   const backTo = hist.length ? hist[hist.length - 1].s : PARENT[scr] || "today";
   const backLabel = LABELS[backTo] || "Back";
@@ -133,6 +134,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
       case "careview": return <CareView id={route.id!} />;
       case "rewards": return <Rewards />;
       case "story": return <Story />;
+      case "baseline": return <Baseline id={route.id} />;
     }
   })();
 
