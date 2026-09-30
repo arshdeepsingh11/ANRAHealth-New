@@ -1,4 +1,4 @@
-// Nea Precision Skin — ANRA's aesthetics & skin-health partner (Calgary NE).
+// Nea Precision Skin — NEYU's aesthetics & skin-health partner (Calgary NE).
 // Captured from neaprecisionskin.com (/treatments, /wellness-packages, /about),
 // Sep 2026. Nea does not publish prices online — every treatment is booked
 // through Nea's own Jane booking page after a free 15-minute consultation.
@@ -212,7 +212,7 @@ export const itemQty = (item: string) => { const m = item.match(/^(\d+)\s/); ret
 export const NEA_FAQ: { q: string; a: string; keys: string[] }[] = [
   { q: "How much do treatments cost?", a: "Nea doesn’t publish prices online. Pricing is set with you at a free 15-minute consultation, based on your plan.", keys: ["price", "cost", "how much", "fee", "$", "expensive", "cheap"] },
   { q: "How do I book?", a: "Book any treatment online through Nea’s Jane booking page, or request a free 15-minute consultation. You can also call 1-403-230-8812.", keys: ["book", "appointment", "schedule", "reserve"] },
-  { q: "Where is Nea?", a: "#104, 3151 27 Street NE, Calgary, AB — in Calgary’s NE, near ANRA Health.", keys: ["where", "address", "location", "parking", "directions"] },
+  { q: "Where is Nea?", a: "#104, 3151 27 Street NE, Calgary, AB — in Calgary’s NE, near NEYU Health.", keys: ["where", "address", "location", "parking", "directions"] },
   { q: "What are the hours?", a: "Monday to Saturday, 9 AM to 5 PM. Closed Sunday.", keys: ["hour", "open", "close", "sunday", "saturday", "time"] },
   { q: "Is there downtime?", a: "It depends on the treatment. Intra-oral tightening, TightSculpting and dermaplaning have none; chemical peels mean 2–3 days of peeling; 2D resurfacing 3–5 days; fractional resurfacing 4–5 days.", keys: ["downtime", "recovery", "back to work", "heal"] },
   { q: "Does it work for all skin types?", a: "Nea lists several treatments as suitable for all skin types, including laser hair removal (FRAC3) and the Perfect Derma Peel. Your consultation confirms what’s right for your skin.", keys: ["skin type", "dark skin", "ethnic", "all skin", "brown skin"] },
