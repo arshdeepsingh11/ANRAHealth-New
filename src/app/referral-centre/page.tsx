@@ -406,7 +406,7 @@ export default function ReferralCentre() {
 
       logSubmission();
 
-      doc.save(`ANRA-Referral-${form.patientName || "patient"}.pdf`);
+      doc.save(`NEYU-Referral-${form.patientName || "patient"}.pdf`);
     } finally {
       setGenerating(false);
     }
@@ -415,7 +415,7 @@ export default function ReferralCentre() {
   return (
     <div style={{ minHeight: "100vh" }}>
       <div className="text-center pt-16 md:pt-24 pb-8 px-6">
-        <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gold-600 font-display italic">ANRA Health</p>
+        <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gold-600 font-display italic">NEYU Health</p>
         <h1 className="text-3xl md:text-4xl font-display font-bold text-graphite-900">Referral Centre</h1>
       </div>
 
