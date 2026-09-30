@@ -112,7 +112,7 @@ export default function LongevityPage() {
   return (
     <div style={{ minHeight: "100vh" }}>
       <div className="text-center pt-16 md:pt-24 pb-6 px-6">
-        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Longevity</p>
+        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">NEYU Health — Longevity</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900 flex items-center justify-center gap-3">
           <HeartPulse className="text-gold-500" size={36} />
           Longevity
@@ -140,7 +140,7 @@ export default function LongevityPage() {
             <Assessment kind="longevity" accent="#2E7D5B" />
             <Link href="/longevity-lab" className="glass rounded-3xl p-6 md:p-8 flex flex-wrap items-center justify-between gap-4 card-hover">
               <span>
-                <span className="block text-xs font-semibold uppercase tracking-wide text-gold-600 mb-1">New · ANRA Longevity Lab</span>
+                <span className="block text-xs font-semibold uppercase tracking-wide text-gold-600 mb-1">New · NEYU Longevity Lab</span>
                 <span className="block text-base font-semibold text-graphite-900">See what the latest research says about slowing biological aging — with 3D models, live charts and ALBA.</span>
               </span>
               <span className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">Open the Lab <ArrowRight size={14} /></span>
