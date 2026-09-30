@@ -138,3 +138,95 @@ export function matchNeaTreatments(text: string, max = 3): NeaTreatment[] {
   const scored = NEA_TREATMENTS.map((t) => ({ t, s: t.concerns.reduce((a, c) => a + (q.includes(c) ? c.length : 0), 0) + (q.includes(t.name.toLowerCase()) ? 20 : 0) }));
   return scored.filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, max).map((x) => x.t);
 }
+
+// ── Structured layers for the interactive tools ─────────────────────────
+// Concern axes used by the Skin Profile, the concern map and the radar.
+export const NEA_AXES = [
+  { id: "acne", label: "Acne & scars" },
+  { id: "texture", label: "Texture & pores" },
+  { id: "lines", label: "Lines & aging" },
+  { id: "tone", label: "Tone & pigment" },
+  { id: "redness", label: "Redness" },
+  { id: "lift", label: "Sagging & volume" },
+  { id: "hair", label: "Hair" },
+  { id: "body", label: "Body & wellness" },
+] as const;
+export type NeaAxis = (typeof NEA_AXES)[number]["id"];
+
+/** How directly each treatment addresses each concern (2 = primary, 1 = also helps),
+ *  taken from what each treatment's description on Nea's site says it treats. */
+export const NEA_REL: Record<string, Partial<Record<NeaAxis, 1 | 2>>> = {
+  active: { acne: 2 }, scarring: { acne: 2, texture: 2 }, rosacea: { redness: 2 }, hyperpigmentation: { tone: 2 },
+  lines: { lines: 2, tone: 1, lift: 1, texture: 1 }, large: { texture: 2 }, stretch: { body: 2, texture: 1 },
+  fotona: { lift: 2, lines: 1, texture: 1 }, facial: { lift: 2, lines: 1 }, cosmetic: { lines: 2 }, fillers: { lift: 2, lines: 1 },
+  migraine: { body: 1 }, hair: { hair: 2 }, laser: { hair: 2 }, facials: { texture: 1, tone: 1, acne: 1 },
+  perfect: { tone: 2, lines: 1, texture: 1 }, body: { body: 2, lift: 1 }, muscle: { body: 2 }, weight: { body: 2 },
+  snoring: { body: 2 }, feminine: { body: 2 }, fungal: { body: 1 }, wart: { body: 1 },
+  medical: { acne: 1, tone: 1, lines: 1, redness: 1 },
+};
+
+/** Timings Nea publishes, as numbers (days / minutes / months). Missing = not published. */
+export interface NeaMeta { downtime?: [number, number]; sessionMin?: [number, number]; sessions?: [number, number]; courseWeeks?: number; onsetDays?: number; lastsMonths?: [number, number] }
+export const NEA_META: Record<string, NeaMeta> = {
+  scarring: { downtime: [3, 5] },
+  lines: { downtime: [0, 5] },
+  facial: { downtime: [0, 0] },
+  cosmetic: { sessionMin: [10, 20], onsetDays: 3, lastsMonths: [3, 6] },
+  fillers: { onsetDays: 0 },
+  hair: { sessionMin: [15, 20] },
+  facials: { downtime: [0, 0] },
+  body: { downtime: [0, 0], onsetDays: 0 },
+  muscle: { sessionMin: [45, 45] },
+  snoring: { sessions: [3, 3], courseWeeks: 6, lastsMonths: [0, 12] },
+  feminine: { sessionMin: [15, 15], sessions: [1, 3] },
+  fungal: { sessionMin: [45, 45], sessions: [3, 4] },
+};
+
+/** Profile → ranked treatments with a 0–100 match score. */
+export function scoreNeaProfile(profile: Partial<Record<NeaAxis, number>>, maxDowntime?: number) {
+  const want = NEA_AXES.map((a) => profile[a.id] ?? 0);
+  const total = want.reduce((a, b) => a + b, 0) || 1;
+  return NEA_TREATMENTS.map((t) => {
+    const rel = NEA_REL[t.id] || {};
+    const hit = NEA_AXES.reduce((s, a, i) => s + want[i] * ((rel[a.id] ?? 0) / 2), 0);
+    const dt = NEA_META[t.id]?.downtime;
+    const excluded = maxDowntime != null && dt != null && dt[1] > maxDowntime;
+    return { t, score: excluded ? 0 : Math.round((hit / total) * 100), excluded };
+  }).filter((x) => x.score > 0 || x.excluded).sort((a, b) => b.score - a.score);
+}
+
+/** Package composition, grouped by what each item is. */
+export const NEA_MIX = ["Treatments", "Facials", "Devices & laser", "Testing", "Nutrition & care"] as const;
+export type NeaMix = (typeof NEA_MIX)[number];
+export function mixOf(item: string): NeaMix {
+  const s = item.toLowerCase();
+  if (/facial/.test(s)) return "Facials";
+  if (/laser|flex|tightening|restoration/.test(s)) return "Devices & laser";
+  if (/microbiome|dna|genomic|dexa|study|test/.test(s)) return "Testing";
+  if (/nutrition|dietitian|meal|assessment|follow-up|feedback|consult/.test(s)) return "Nutrition & care";
+  return "Treatments";
+}
+/** "6 PRP treatments" → 6 (defaults to 1). */
+export const itemQty = (item: string) => { const m = item.match(/^(\d+)\s/); return m ? Number(m[1]) : 1; };
+
+export const NEA_FAQ: { q: string; a: string; keys: string[] }[] = [
+  { q: "How much do treatments cost?", a: "Nea doesn’t publish prices online. Pricing is set with you at a free 15-minute consultation, based on your plan.", keys: ["price", "cost", "how much", "fee", "$", "expensive", "cheap"] },
+  { q: "How do I book?", a: "Book any treatment online through Nea’s Jane booking page, or request a free 15-minute consultation. You can also call 1-403-230-8812.", keys: ["book", "appointment", "schedule", "reserve"] },
+  { q: "Where is Nea?", a: "#104, 3151 27 Street NE, Calgary, AB — in Calgary’s NE, near ANRA Health.", keys: ["where", "address", "location", "parking", "directions"] },
+  { q: "What are the hours?", a: "Monday to Saturday, 9 AM to 5 PM. Closed Sunday.", keys: ["hour", "open", "close", "sunday", "saturday", "time"] },
+  { q: "Is there downtime?", a: "It depends on the treatment. Intra-oral tightening, TightSculpting and dermaplaning have none; chemical peels mean 2–3 days of peeling; 2D resurfacing 3–5 days; fractional resurfacing 4–5 days.", keys: ["downtime", "recovery", "back to work", "heal"] },
+  { q: "Does it work for all skin types?", a: "Nea lists several treatments as suitable for all skin types, including laser hair removal (FRAC3) and the Perfect Derma Peel. Your consultation confirms what’s right for your skin.", keys: ["skin type", "dark skin", "ethnic", "all skin", "brown skin"] },
+  { q: "Who runs Nea?", a: "Nea is a physician-managed medical aesthetic clinic founded by Raman Kapoor, RD, Chief Healthspan Officer. Nutrition is led by Registered Dietitians.", keys: ["who", "doctor", "physician", "founder", "staff", "dietitian"] },
+  { q: "What is the inside-out approach?", a: "Nea pairs skin treatments with gut, skin or vaginal microbiome testing and a dietitian consultation, so plans address what’s happening inside too.", keys: ["microbiome", "gut", "inside", "diet", "nutrition"] },
+];
+
+/** Live open/closed status in Calgary time. */
+export function neaOpenNow(d = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Edmonton", weekday: "short", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(d);
+  const wd = parts.find((p) => p.type === "weekday")?.value || "";
+  const h = Number(parts.find((p) => p.type === "hour")?.value || 0) % 24, m = Number(parts.find((p) => p.type === "minute")?.value || 0);
+  const mins = h * 60 + m, day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(wd);
+  const open = day >= 1 && day <= 6 && mins >= 540 && mins < 1020;
+  const next = open ? `Closes 5 PM` : day === 6 && mins >= 1020 ? "Opens Monday 9 AM" : day === 0 ? "Opens Monday 9 AM" : mins < 540 ? "Opens 9 AM today" : day === 6 ? "Opens Monday 9 AM" : "Opens 9 AM tomorrow";
+  return { open, next, day };
+}
