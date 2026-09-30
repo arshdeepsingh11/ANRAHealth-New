@@ -39,7 +39,7 @@ export function SignIn({ onSignedIn }: { onSignedIn: (actor: string) => void }) 
       <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 28, animation: "anraPop 320ms cubic-bezier(.2,.8,.2,1)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div style={{ width: 44, height: 44, borderRadius: 14, background: T.teal, display: "grid", placeItems: "center", color: T.card, fontSize: 22 }}><i className="ph-fill ph-heartbeat" /></div>
-          <div><h1 style={{ margin: 0, fontSize: 30, fontWeight: 500, letterSpacing: "-0.025em" }}>ANRA Health</h1><div style={{ fontSize: 16, color: T.ink2, marginTop: 2 }}>Admin Console</div></div>
+          <div><h1 style={{ margin: 0, fontSize: 30, fontWeight: 500, letterSpacing: "-0.025em" }}>NEYU Health</h1><div style={{ fontSize: 16, color: T.ink2, marginTop: 2 }}>Admin Console</div></div>
         </div>
         <form onSubmit={submit} style={{ background: T.card, border: `1px solid ${T.line}`, borderRadius: 22, padding: 28, display: "flex", flexDirection: "column", gap: 18, boxShadow: T.shadow }}>
           <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -50,13 +50,13 @@ export function SignIn({ onSignedIn }: { onSignedIn: (actor: string) => void }) 
             <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}><span style={{ fontSize: 13, fontWeight: 500, color: T.ink2 }}>Password</span><button type="button" onClick={() => setNote(true)} className="h-line" style={{ background: "none", border: "none", padding: 0, color: T.tealDk, fontSize: 13, cursor: "pointer" }}>Forgot password?</button></span>
             <input type="password" autoComplete="current-password" value={pw} onChange={(e) => { setPw(e.target.value); setErr(""); }} placeholder="Shared admin password" className="f-teal" style={input} />
           </label>
-          {note && <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: T.wash, color: T.tealDk, borderRadius: 12, padding: "10px 12px", fontSize: 13.5 }}><i className="ph ph-info" style={{ marginTop: 2 }} />The shared admin password is managed by ANRA’s owner. Individual resets arrive with staff accounts.</div>}
+          {note && <div style={{ display: "flex", gap: 8, alignItems: "flex-start", background: T.wash, color: T.tealDk, borderRadius: 12, padding: "10px 12px", fontSize: 13.5 }}><i className="ph ph-info" style={{ marginTop: 2 }} />The shared admin password is managed by NEYU’s owner. Individual resets arrive with staff accounts.</div>}
           {err && <div role="alert" style={{ display: "flex", gap: 8, alignItems: "center", background: T.peach, color: T.peachInk, borderRadius: 12, padding: "10px 12px", fontSize: 14 }}><i className="ph ph-warning-circle" />{err}</div>}
           <button type="submit" disabled={busy} className="h-primary" style={{ height: 46, borderRadius: 12, border: "none", background: T.teal, color: T.card, fontSize: 15, fontWeight: 500, cursor: "pointer", transition: "background 200ms", opacity: busy ? 0.8 : 1 }}>{busy ? "Signing in…" : "Sign in"}</button>
           <p style={{ margin: 0, fontSize: 13, color: T.faint, lineHeight: 1.5 }}>Using the shared clinic admin account. Individual staff sign-in is coming in Phase 2. Every sign-in is recorded in the audit log.</p>
         </form>
         <div style={{ display: "flex", gap: 16, flexWrap: "wrap", fontSize: 13, color: T.faint }}>
-          <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><i className="ph ph-lock-simple" />Authorized ANRA staff only</span>
+          <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><i className="ph ph-lock-simple" />Authorized NEYU staff only</span>
           <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><i className="ph ph-map-pin" />Health data stored in Canada</span>
         </div>
       </div>
