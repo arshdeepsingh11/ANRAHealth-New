@@ -10,7 +10,7 @@ const CONCERN_LABELS = [
   "Pediatrics",
 ];
 
-const SYSTEM_PROMPT = `You classify a patient's free-text description of their health concern into exactly one category from this fixed list, for ANRA Health's physician matcher:
+const SYSTEM_PROMPT = `You classify a patient's free-text description of their health concern into exactly one category from this fixed list, for NEYU Health's physician matcher:
 ${JSON.stringify(CONCERN_LABELS)}
 
 Return ONLY valid JSON, no markdown, matching exactly:
