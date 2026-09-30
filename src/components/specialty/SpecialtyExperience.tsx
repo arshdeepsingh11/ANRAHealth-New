@@ -28,13 +28,13 @@ function Hero({ c, onAsk }: { c: StudioConfig; onAsk: (q: string) => void }) {
   return (
     <section style={{ position: "relative", overflow: "hidden", borderRadius: 30, minHeight: "clamp(440px,62vh,600px)", color: "#F7F5F1", display: "grid", gridTemplateColumns: "minmax(0,1fr)", alignItems: "end", background: `radial-gradient(120% 90% at 85% 5%, ${b}55 0%, transparent 55%), radial-gradient(90% 80% at 5% 100%, ${a}66 0%, transparent 60%), linear-gradient(150deg,#15171B 0%,#1D1F26 55%,#171520 100%)` }}>
       {c.video?.kind === "mp4" && <video src={c.video.src} autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />}
-      {c.video?.kind === "youtube" && <iframe ref={yt} title={`${c.label} — ANRA Health`} src={`https://www.youtube.com/embed/${c.video.id}?autoplay=1&mute=1&loop=1&playlist=${c.video.id}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`} allow="autoplay; encrypted-media" style={{ position: "absolute", top: "50%", left: "50%", width: "max(100%, 177.78vh)", height: "max(100%, 56.25vw)", transform: "translate(-50%,-50%)", border: 0, pointerEvents: "none" }} />}
+      {c.video?.kind === "youtube" && <iframe ref={yt} title={`${c.label} — NEYU Health`} src={`https://www.youtube.com/embed/${c.video.id}?autoplay=1&mute=1&loop=1&playlist=${c.video.id}&controls=0&modestbranding=1&rel=0&playsinline=1&enablejsapi=1`} allow="autoplay; encrypted-media" style={{ position: "absolute", top: "50%", left: "50%", width: "max(100%, 177.78vh)", height: "max(100%, 56.25vw)", transform: "translate(-50%,-50%)", border: 0, pointerEvents: "none" }} />}
       {!c.video && <><anra-particles tone="dark" density="7000" style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.85 }} /><anra-meteors count="6" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} /></>}
       <div style={{ position: "absolute", inset: 0, background: c.video ? "linear-gradient(0deg, rgba(12,14,18,.92) 0%, rgba(12,14,18,.55) 55%, rgba(12,14,18,.2) 100%)" : "linear-gradient(0deg, rgba(12,14,18,.5), transparent 60%)" }} />
       {c.video?.kind === "youtube" && <button onClick={toggle} aria-label={muted ? "Unmute video" : "Mute video"} style={{ position: "absolute", top: 16, right: 16, zIndex: 3, width: 42, height: 42, borderRadius: 21, border: "1px solid rgba(255,255,255,.3)", background: "rgba(255,255,255,.12)", color: "#fff", backdropFilter: "blur(10px)", cursor: "pointer" }}><i className={"ph " + (muted ? "ph-speaker-slash" : "ph-speaker-high")} /></button>}
       <div style={{ position: "relative", zIndex: 2, padding: "clamp(20px,5vw,56px)", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 18, maxWidth: 820, minWidth: 0, boxSizing: "border-box", width: "100%" }}>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)" }}>{c.partner ? `Partner · ${c.partner.name}` : "ANRA Health specialty"}</span>
+          <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)" }}>{c.partner ? `Partner · ${c.partner.name}` : "NEYU Health specialty"}</span>
           <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", display: "inline-flex", gap: 6, alignItems: "center" }}><AlbaOrb size={14} motion={false} />AI-assisted</span>
         </div>
         <h1 style={{ margin: 0, fontSize: "clamp(36px,5.6vw,68px)", lineHeight: 1.02, letterSpacing: "-.045em", fontWeight: 500 }}>
@@ -185,7 +185,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
     <div style={{ color: T.ink, paddingBottom: 90 }}>
       <style>{`.sx-tabs::-webkit-scrollbar{display:none}.sx-bar{top:10px;transition:top .28s ease}@media (max-width:859px){.sx-bar{top:62px}html[data-chrome="hidden"] .sx-bar{top:10px}}.sx-card:hover{transform:translateY(-3px);box-shadow:0 26px 50px -30px rgba(20,24,27,.45)!important}.sx-card{transition:transform .25s ease, box-shadow .25s ease}`}</style>
       <header style={{ ...wrap, paddingTop: "clamp(34px,6vw,72px)", textAlign: "center" }}>
-        <p style={{ margin: 0, fontSize: 12.5, letterSpacing: ".16em", textTransform: "uppercase", color: a }}>ANRA Health · {c.partner ? "Partner specialty" : "Medical specialties"}</p>
+        <p style={{ margin: 0, fontSize: 12.5, letterSpacing: ".16em", textTransform: "uppercase", color: a }}>NEYU Health · {c.partner ? "Partner specialty" : "Medical specialties"}</p>
         <h1 style={{ margin: "10px 0 0", fontSize: "clamp(34px,5vw,58px)", lineHeight: 1.02, letterSpacing: "-.04em", fontWeight: 500, display: "inline-flex", gap: 14, alignItems: "center" }}><i className={"ph " + c.icon} style={{ color: a, fontSize: ".8em" }} />{c.label}</h1>
       </header>
 
@@ -203,7 +203,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
         {tab === "overview" && <>
           <Hero c={c} onAsk={ask} />
           <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,165px),1fr))", gap: 12 }}>
-            <Stat icon="ph-user-circle" tone={a} value={<CountUp to={docs.length || physicians.length} />} label={docs.length ? `${c.label} physician${docs.length > 1 ? "s" : ""} · ${physicians.length} on the ANRA team` : "ANRA physicians"} />
+            <Stat icon="ph-user-circle" tone={a} value={<CountUp to={docs.length || physicians.length} />} label={docs.length ? `${c.label} physician${docs.length > 1 ? "s" : ""} · ${physicians.length} on the NEYU team` : "NEYU physicians"} />
             {c.partner ? <Stat icon="ph-map-trifold" tone="#2A78D6" value="AB" label={c.partner.note.replace(/\.$/, "")} /> : <Stat icon="ph-map-pin" tone="#2A78D6" value={<CountUp to={locations.length} />} label="Calgary clinics" />}
             {langCount > 0 && <Stat icon="ph-translate" tone={T.ai} value={<CountUp to={langCount} />} label="languages spoken by our team" />}
             <Stat icon="ph-first-aid-kit" tone={T.good} value={<CountUp to={c.care.length} />} label={c.partner ? "services" : "areas of care"} />
@@ -284,7 +284,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))", gap: 16 }}>
             {testCount > 0 && !c.tools.includes("tests") && <ChartCard title="Related tests, by price" sub="BioAro Labs"><TestsChart slugs={c.tests} accent={a} /></ChartCard>}
-            <ChartCard title="Languages spoken" sub="Across our ANRA physicians" table={{ head: ["Physician", "Languages"], rows: physicians.map((p) => [p.name, p.languages.join(", ")]) }}><LangChart list={physicians} accent={a} /></ChartCard>
+            <ChartCard title="Languages spoken" sub="Across our NEYU physicians" table={{ head: ["Physician", "Languages"], rows: physicians.map((p) => [p.name, p.languages.join(", ")]) }}><LangChart list={physicians} accent={a} /></ChartCard>
           </div>
         </>}
 
@@ -295,7 +295,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{["All", ...locations.map((l) => l.tag)].map((l) => <button key={l} onClick={() => setLoc(l)} aria-pressed={loc === l} style={{ ...chip(loc === l), minHeight: 36, fontSize: 13.5 }}><i className="ph ph-map-pin" />{l === "All" ? "Any location" : l}</button>)}</div>
           </div>
           <p style={{ margin: 0, fontSize: 13.5, color: T.muted }}>Drag a card to swing it, or tap to open the physician’s profile.</p>
-          {[[shownDocs, c.partner ? "" : `${c.label} physicians`], [shownTeam, docs.length ? "Also on our ANRA team" : "Our ANRA physicians"]].map(([list, title]) => (list as Physician[]).length > 0 && (
+          {[[shownDocs, c.partner ? "" : `${c.label} physicians`], [shownTeam, docs.length ? "Also on our NEYU team" : "Our NEYU physicians"]].map(([list, title]) => (list as Physician[]).length > 0 && (
             <section key={title as string} style={{ display: "grid", gap: 8 }}>
               {title && <div style={{ ...eyebrow, color: a }}>{title as string} · {(list as Physician[]).length}</div>}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,300px),1fr))", columnGap: 24, rowGap: 48 }}>
