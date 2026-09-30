@@ -6,7 +6,7 @@ import { clientMeta } from "@backend/patientAuth";
 import PrintButton from "./PrintButton";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Shared health summary — ANRA Health", robots: { index: false, follow: false }, referrer: "no-referrer" };
+export const metadata: Metadata = { title: "Shared health summary — NEYU Health", robots: { index: false, follow: false }, referrer: "no-referrer" };
 
 const card: React.CSSProperties = { padding: "20px 22px", borderRadius: 18, background: "#FFFDFB", border: "1px solid rgba(29,35,39,.07)", marginBottom: 16 };
 const th: React.CSSProperties = { textAlign: "left", padding: "8px 10px", fontSize: 12, color: "#5B6369", fontWeight: 500, borderBottom: "1px solid rgba(29,35,39,.1)" };
@@ -24,7 +24,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
     <main className="share-print" style={{ maxWidth: 880, margin: "32px auto 64px", padding: "0 16px", color: "#1D2327" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16, flexWrap: "wrap", marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 12, letterSpacing: ".14em", color: "#5B6369", fontWeight: 500 }}>ANRA HEALTH · SHARED BY THE PATIENT</div>
+          <div style={{ fontSize: 12, letterSpacing: ".14em", color: "#5B6369", fontWeight: 500 }}>NEYU HEALTH · SHARED BY THE PATIENT</div>
           <h1 style={{ margin: "6px 0 4px", fontSize: 30, fontWeight: 500, letterSpacing: "-.02em" }}>{v.name}</h1>
           <div style={{ fontSize: 14, color: "#5B6369" }}>{v.dob ? `DOB ${v.dob}${v.age != null ? ` · ${v.age} y` : ""} · ` : ""}For: {v.label} · Link valid until {v.expires}</div>
         </div>
@@ -57,7 +57,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
           {v.lifestyle.length ? <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse" }}><thead><tr><th style={th}>Day</th><th style={th}>Water</th><th style={th}>Caffeine</th><th style={th}>Alcohol</th><th style={th}>Mood</th><th style={th}>Stress</th></tr></thead><tbody>{v.lifestyle.map((l) => <tr key={l.day}><td style={td}>{l.day}</td><td style={td}>{l.water}</td><td style={td}>{l.caffeine}</td><td style={td}>{l.alcohol}</td><td style={td}>{l.mood}</td><td style={td}>{l.stress}</td></tr>)}</tbody></table></div> : <p style={{ margin: 0, color: "#5B6369", fontSize: 14 }}>No check-ins.</p>}
         </section>
       )}
-      <p style={{ fontSize: 12.5, color: "#737A80" }}>Shared from ANRA Health My Health Space. The patient can turn this link off at any time.</p>
+      <p style={{ fontSize: 12.5, color: "#737A80" }}>Shared from NEYU Health My Health Space. The patient can turn this link off at any time.</p>
     </main>
   );
 }
