@@ -184,6 +184,7 @@ model Patient {
   challengeJoins  ChallengeMember[]
   rewardEvents    RewardEvent[]
   notes           GeneratedNote[]
+  healthProfile   HealthProfile?
 }
 
 // Only a SHA-256 hash of the session token is stored — a leaked database
@@ -636,4 +637,13 @@ model GeneratedNote {
   createdAt DateTime  @default(now())
 
   @@unique([patientId, kind, period])
+}
+
+// Patient-entered health baseline (5 sections, all optional). JSON keyed by
+// the field keys in src/lib/portal/profileSchema.ts; validated on write.
+model HealthProfile {
+  patientId String   @id
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  data      String   @default("{}")
+  updatedAt DateTime @updatedAt
 }
