@@ -90,7 +90,7 @@ export const specialtyContent: Record<string, SpecialtyContent> = {
     tagline: "Healthy aging, mobility, memory, and medication support for older adults.",
     overview: [
       "Geriatric medicine focuses on the health needs specific to older adults — where several conditions, medications, and life changes often intersect. The goal is to support independence, safety, and quality of life, not just treat individual diagnoses in isolation.",
-      "We're currently building out a dedicated geriatric medicine program at ANRA Health. In the meantime, our internal medicine physicians provide care for many of the concerns below, with referral out to specialist geriatric services where needed.",
+      "We're currently building out a dedicated geriatric medicine program at NEYU Health. In the meantime, our internal medicine physicians provide care for many of the concerns below, with referral out to specialist geriatric services where needed.",
     ],
     conditionsTreated: [
       "Frailty and falls risk assessment",
@@ -153,7 +153,7 @@ export const specialtyContent: Record<string, SpecialtyContent> = {
     tagline: "Genomics, biomarkers, and AI — working together to personalize your care.",
     overview: [
       "Precision medicine means moving away from one-size-fits-all care toward treatment shaped by your own biology — your genetics, your biomarkers, and your lifestyle data, brought together with AI-assisted analysis to guide decisions.",
-      "At ANRA Health, this shows up in two connected ways: genomic and biomarker testing through our partner lab BioAro Labs, and physicians who interpret those results as part of your broader care plan — not just a report you're left to make sense of alone.",
+      "At NEYU Health, this shows up in two connected ways: genomic and biomarker testing through our partner lab BioAro Labs, and physicians who interpret those results as part of your broader care plan — not just a report you're left to make sense of alone.",
     ],
     conditionsTreated: [
       "Hereditary disease risk assessment",
