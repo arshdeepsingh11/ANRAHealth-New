@@ -143,7 +143,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
       <div className="mhs mhs-page">
         <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 18 }}>
           <button onClick={() => tab("today")} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2, background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
-            <span style={{ fontSize: 12, letterSpacing: ".14em", color: C.muted, fontWeight: 500 }}>ANRA HEALTH</span>
+            <span style={{ fontSize: 12, letterSpacing: ".14em", color: C.muted, fontWeight: 500 }}>NEYU HEALTH</span>
             <span style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em" }}>My Health Space</span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
