@@ -6,6 +6,7 @@ import type { MetricKey } from "@/lib/portal/metrics";
 import { usePortal } from "../context";
 import { EP, load, useResource } from "../api";
 import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
+import { BaselineCard } from "./Baseline";
 
 const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
 
@@ -152,6 +153,7 @@ export default function Today() {
       </div>
 
       <BriefCard />
+      <BaselineCard />
 
       {syncError && (
         <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", marginBottom: 20, borderRadius: 16, background: C.peach, animation: "mhs-fadeUp 300ms ease" }}>
