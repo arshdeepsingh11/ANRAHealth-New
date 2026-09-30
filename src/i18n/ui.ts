@@ -32,7 +32,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "Calgary, Alberta · Two Locations",
     "home.heroTitle": "Every heart deserves precise, coordinated care.",
-    "home.heroSubtitle": "ANRA Health brings cardiology, internal medicine, and endocrinology together in one clinic — with Alberta's first onsite Exercise Stress Echocardiogram program.",
+    "home.heroSubtitle": "NEYU Health brings cardiology, internal medicine, and endocrinology together in one clinic — with Alberta's first onsite Exercise Stress Echocardiogram program.",
     "home.viewServices": "View Services",
     "home.calgaryLocations": "Calgary Locations",
     "home.languagesSpoken": "Languages Spoken",
@@ -40,7 +40,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "What We Offer",
     "home.diagnosticTeam": "A full diagnostic & consultative team",
     "home.seeAllServices": "See all services",
-    "home.whyChoose": "Why Choose ANRA Health",
+    "home.whyChoose": "Why Choose NEYU Health",
     "home.ourStory": "Our Story",
     "home.aboutHeading": "Advanced thinking, applied to advanced care",
     "home.learnMoreTeam": "Learn more about our team",
@@ -114,7 +114,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "Something went wrong. Please try again, or call us directly.",
 
     "contact.getInTouch": "Get in Touch",
-    "contact.heading": "Contact ANRA Health",
+    "contact.heading": "Contact NEYU Health",
     "contact.subtitle": "Reach us by phone, email, or visit either of our Calgary locations.",
     "contact.aiReferral": "AI Referral Assistant",
     "contact.describeSituation": "Describe the situation, we'll fill the referral",
@@ -158,7 +158,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "Book a consultation at either of our Calgary locations.",
 
     "careers.joinTeam": "Join Our Team",
-    "careers.heading": "Careers at ANRA Health",
+    "careers.heading": "Careers at NEYU Health",
     "careers.subtitle": "We're always looking for skilled, compassionate people to join our care team.",
 
     "footer.tagline": "Advanced cardiac & internal medicine care in Calgary, Alberta.",
@@ -168,12 +168,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "About Us",
     "footer.rights": "All rights reserved.",
 
-    "chat.title": "ANRA Health Assistant",
-    "chat.greeting": "Hi, I'm the ANRA Health assistant. Ask me about our services, physicians, locations, or how to book an appointment.",
+    "chat.title": "NEYU Health Assistant",
+    "chat.greeting": "Hi, I'm the NEYU Health assistant. Ask me about our services, physicians, locations, or how to book an appointment.",
     "chat.placeholder": "Ask about services, hours...",
     "chat.thinking": "Thinking…",
     "chat.close": "Close",
-    "chat.ask": "Ask ANRA",
+    "chat.ask": "Ask NEYU",
   },
 
   hi: {
@@ -203,7 +203,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "कैलगरी, अल्बर्टा · दो स्थान",
     "home.heroTitle": "हर दिल सटीक, समन्वित देखभाल का हकदार है।",
-    "home.heroSubtitle": "ANRA Health हृदय रोग, आंतरिक चिकित्सा और एंडोक्राइनोलॉजी को एक क्लिनिक में साथ लाता है — अल्बर्टा के पहले ऑनसाइट एक्सरसाइज स्ट्रेस इकोकार्डियोग्राम प्रोग्राम के साथ।",
+    "home.heroSubtitle": "NEYU Health हृदय रोग, आंतरिक चिकित्सा और एंडोक्राइनोलॉजी को एक क्लिनिक में साथ लाता है — अल्बर्टा के पहले ऑनसाइट एक्सरसाइज स्ट्रेस इकोकार्डियोग्राम प्रोग्राम के साथ।",
     "home.viewServices": "सेवाएं देखें",
     "home.calgaryLocations": "कैलगरी स्थान",
     "home.languagesSpoken": "बोली जाने वाली भाषाएं",
@@ -211,7 +211,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "हम क्या प्रदान करते हैं",
     "home.diagnosticTeam": "एक संपूर्ण डायग्नोस्टिक और परामर्श टीम",
     "home.seeAllServices": "सभी सेवाएं देखें",
-    "home.whyChoose": "ANRA Health क्यों चुनें",
+    "home.whyChoose": "NEYU Health क्यों चुनें",
     "home.ourStory": "हमारी कहानी",
     "home.aboutHeading": "उन्नत सोच, उन्नत देखभाल पर लागू",
     "home.learnMoreTeam": "हमारी टीम के बारे में और जानें",
@@ -285,7 +285,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "कुछ गलत हो गया। कृपया फिर से प्रयास करें, या हमें सीधे कॉल करें।",
 
     "contact.getInTouch": "संपर्क में रहें",
-    "contact.heading": "ANRA Health से संपर्क करें",
+    "contact.heading": "NEYU Health से संपर्क करें",
     "contact.subtitle": "फ़ोन, ईमेल से हमसे संपर्क करें, या हमारे किसी भी कैलगरी स्थान पर जाएं।",
     "contact.aiReferral": "AI रेफरल सहायक",
     "contact.describeSituation": "स्थिति का वर्णन करें, हम रेफरल भरेंगे",
@@ -329,7 +329,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "हमारे किसी भी कैलगरी स्थान पर परामर्श बुक करें।",
 
     "careers.joinTeam": "हमारी टीम से जुड़ें",
-    "careers.heading": "ANRA Health में करियर",
+    "careers.heading": "NEYU Health में करियर",
     "careers.subtitle": "हम हमेशा हमारी देखभाल टीम में शामिल होने के लिए कुशल, दयालु लोगों की तलाश में हैं।",
 
     "footer.tagline": "कैलगरी, अल्बर्टा में उन्नत हृदय और आंतरिक चिकित्सा देखभाल।",
@@ -339,12 +339,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "हमारे बारे में",
     "footer.rights": "सर्वाधिकार सुरक्षित।",
 
-    "chat.title": "ANRA Health सहायक",
-    "chat.greeting": "नमस्ते, मैं ANRA Health सहायक हूं। हमारी सेवाओं, चिकित्सकों, स्थानों, या अपॉइंटमेंट बुक करने के बारे में पूछें।",
+    "chat.title": "NEYU Health सहायक",
+    "chat.greeting": "नमस्ते, मैं NEYU Health सहायक हूं। हमारी सेवाओं, चिकित्सकों, स्थानों, या अपॉइंटमेंट बुक करने के बारे में पूछें।",
     "chat.placeholder": "सेवाओं, समय के बारे में पूछें...",
     "chat.thinking": "सोच रहा हूं…",
     "chat.close": "बंद करें",
-    "chat.ask": "ANRA से पूछें",
+    "chat.ask": "NEYU से पूछें",
   },
 
   pa: {
@@ -374,7 +374,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "ਕੈਲਗਰੀ, ਅਲਬਰਟਾ · ਦੋ ਸਥਾਨ",
     "home.heroTitle": "ਹਰ ਦਿਲ ਸਟੀਕ, ਤਾਲਮੇਲ ਵਾਲੀ ਦੇਖਭਾਲ ਦਾ ਹੱਕਦਾਰ ਹੈ।",
-    "home.heroSubtitle": "ANRA Health ਦਿਲ ਦੀ ਬਿਮਾਰੀ, ਅੰਦਰੂਨੀ ਦਵਾਈ, ਅਤੇ ਐਂਡੋਕਰਾਈਨੋਲੋਜੀ ਨੂੰ ਇੱਕ ਕਲੀਨਿਕ ਵਿੱਚ ਇਕੱਠਾ ਲਿਆਉਂਦਾ ਹੈ।",
+    "home.heroSubtitle": "NEYU Health ਦਿਲ ਦੀ ਬਿਮਾਰੀ, ਅੰਦਰੂਨੀ ਦਵਾਈ, ਅਤੇ ਐਂਡੋਕਰਾਈਨੋਲੋਜੀ ਨੂੰ ਇੱਕ ਕਲੀਨਿਕ ਵਿੱਚ ਇਕੱਠਾ ਲਿਆਉਂਦਾ ਹੈ।",
     "home.viewServices": "ਸੇਵਾਵਾਂ ਵੇਖੋ",
     "home.calgaryLocations": "ਕੈਲਗਰੀ ਸਥਾਨ",
     "home.languagesSpoken": "ਬੋਲੀਆਂ ਜਾਣ ਵਾਲੀਆਂ ਭਾਸ਼ਾਵਾਂ",
@@ -382,7 +382,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "ਅਸੀਂ ਕੀ ਪੇਸ਼ ਕਰਦੇ ਹਾਂ",
     "home.diagnosticTeam": "ਇੱਕ ਪੂਰੀ ਡਾਇਗਨੌਸਟਿਕ ਅਤੇ ਸਲਾਹ ਟੀਮ",
     "home.seeAllServices": "ਸਾਰੀਆਂ ਸੇਵਾਵਾਂ ਵੇਖੋ",
-    "home.whyChoose": "ANRA Health ਕਿਉਂ ਚੁਣੋ",
+    "home.whyChoose": "NEYU Health ਕਿਉਂ ਚੁਣੋ",
     "home.ourStory": "ਸਾਡੀ ਕਹਾਣੀ",
     "home.aboutHeading": "ਉੱਨਤ ਸੋਚ, ਉੱਨਤ ਦੇਖਭਾਲ 'ਤੇ ਲਾਗੂ",
     "home.learnMoreTeam": "ਸਾਡੀ ਟੀਮ ਬਾਰੇ ਹੋਰ ਜਾਣੋ",
@@ -456,7 +456,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
 
     "contact.getInTouch": "ਸੰਪਰਕ ਵਿੱਚ ਰਹੋ",
-    "contact.heading": "ANRA Health ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
+    "contact.heading": "NEYU Health ਨਾਲ ਸੰਪਰਕ ਕਰੋ",
     "contact.subtitle": "ਫ਼ੋਨ, ਈਮੇਲ ਰਾਹੀਂ ਸਾਡੇ ਤੱਕ ਪਹੁੰਚੋ, ਜਾਂ ਸਾਡੇ ਕਿਸੇ ਵੀ ਕੈਲਗਰੀ ਸਥਾਨ 'ਤੇ ਜਾਓ।",
     "contact.aiReferral": "AI ਰੈਫਰਲ ਸਹਾਇਕ",
     "contact.describeSituation": "ਸਥਿਤੀ ਦੱਸੋ, ਅਸੀਂ ਰੈਫਰਲ ਭਰਾਂਗੇ",
@@ -500,7 +500,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "ਸਾਡੇ ਕਿਸੇ ਵੀ ਕੈਲਗਰੀ ਸਥਾਨ 'ਤੇ ਸਲਾਹ ਬੁੱਕ ਕਰੋ।",
 
     "careers.joinTeam": "ਸਾਡੀ ਟੀਮ ਵਿੱਚ ਸ਼ਾਮਲ ਹੋਵੋ",
-    "careers.heading": "ANRA Health ਵਿੱਚ ਕਰੀਅਰ",
+    "careers.heading": "NEYU Health ਵਿੱਚ ਕਰੀਅਰ",
     "careers.subtitle": "ਅਸੀਂ ਹਮੇਸ਼ਾ ਹੁਨਰਮੰਦ, ਦਿਆਲੂ ਲੋਕਾਂ ਦੀ ਭਾਲ ਵਿੱਚ ਹਾਂ।",
 
     "footer.tagline": "ਕੈਲਗਰੀ, ਅਲਬਰਟਾ ਵਿੱਚ ਉੱਨਤ ਦਿਲ ਅਤੇ ਅੰਦਰੂਨੀ ਦਵਾਈ ਦੇਖਭਾਲ।",
@@ -510,12 +510,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "ਸਾਡੇ ਬਾਰੇ",
     "footer.rights": "ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।",
 
-    "chat.title": "ANRA Health ਸਹਾਇਕ",
-    "chat.greeting": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ, ਮੈਂ ANRA Health ਸਹਾਇਕ ਹਾਂ। ਸਾਡੀਆਂ ਸੇਵਾਵਾਂ ਬਾਰੇ ਪੁੱਛੋ।",
+    "chat.title": "NEYU Health ਸਹਾਇਕ",
+    "chat.greeting": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ, ਮੈਂ NEYU Health ਸਹਾਇਕ ਹਾਂ। ਸਾਡੀਆਂ ਸੇਵਾਵਾਂ ਬਾਰੇ ਪੁੱਛੋ।",
     "chat.placeholder": "ਸੇਵਾਵਾਂ, ਸਮੇਂ ਬਾਰੇ ਪੁੱਛੋ...",
     "chat.thinking": "ਸੋਚ ਰਿਹਾ ਹਾਂ…",
     "chat.close": "ਬੰਦ ਕਰੋ",
-    "chat.ask": "ANRA ਨੂੰ ਪੁੱਛੋ",
+    "chat.ask": "NEYU ਨੂੰ ਪੁੱਛੋ",
   },
 
   ar: {
@@ -545,7 +545,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "كالغاري، ألبرتا · موقعان",
     "home.heroTitle": "كل قلب يستحق رعاية دقيقة ومنسقة.",
-    "home.heroSubtitle": "تجمع ANRA Health بين أمراض القلب والطب الباطني والغدد الصماء في عيادة واحدة.",
+    "home.heroSubtitle": "تجمع NEYU Health بين أمراض القلب والطب الباطني والغدد الصماء في عيادة واحدة.",
     "home.viewServices": "عرض الخدمات",
     "home.calgaryLocations": "مواقع كالغاري",
     "home.languagesSpoken": "اللغات المتحدثة",
@@ -553,7 +553,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "ما نقدمه",
     "home.diagnosticTeam": "فريق تشخيصي واستشاري متكامل",
     "home.seeAllServices": "عرض جميع الخدمات",
-    "home.whyChoose": "لماذا تختار ANRA Health",
+    "home.whyChoose": "لماذا تختار NEYU Health",
     "home.ourStory": "قصتنا",
     "home.aboutHeading": "تفكير متقدم، مطبق على رعاية متقدمة",
     "home.learnMoreTeam": "تعرف أكثر على فريقنا",
@@ -627,7 +627,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة.",
 
     "contact.getInTouch": "تواصل معنا",
-    "contact.heading": "اتصل بـ ANRA Health",
+    "contact.heading": "اتصل بـ NEYU Health",
     "contact.subtitle": "تواصل معنا عبر الهاتف أو البريد الإلكتروني، أو قم بزيارة أحد موقعينا في كالغاري.",
     "contact.aiReferral": "مساعد الإحالة بالذكاء الاصطناعي",
     "contact.describeSituation": "صف الحالة، وسنقوم بملء الإحالة",
@@ -671,7 +671,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "احجز استشارة في أحد موقعينا في كالغاري.",
 
     "careers.joinTeam": "انضم إلى فريقنا",
-    "careers.heading": "الوظائف في ANRA Health",
+    "careers.heading": "الوظائف في NEYU Health",
     "careers.subtitle": "نبحث دائماً عن أشخاص ماهرين ورحيمين للانضمام إلى فريق الرعاية لدينا.",
 
     "footer.tagline": "رعاية متقدمة للقلب والطب الباطني في كالغاري، ألبرتا.",
@@ -681,12 +681,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "من نحن",
     "footer.rights": "جميع الحقوق محفوظة.",
 
-    "chat.title": "مساعد ANRA Health",
-    "chat.greeting": "مرحباً، أنا مساعد ANRA Health. اسألني عن خدماتنا وأطبائنا ومواقعنا.",
+    "chat.title": "مساعد NEYU Health",
+    "chat.greeting": "مرحباً، أنا مساعد NEYU Health. اسألني عن خدماتنا وأطبائنا ومواقعنا.",
     "chat.placeholder": "اسأل عن الخدمات، ساعات العمل...",
     "chat.thinking": "أفكر…",
     "chat.close": "إغلاق",
-    "chat.ask": "اسأل ANRA",
+    "chat.ask": "اسأل NEYU",
   },
 
   fr: {
@@ -716,7 +716,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "Calgary, Alberta · Deux emplacements",
     "home.heroTitle": "Chaque cœur mérite des soins précis et coordonnés.",
-    "home.heroSubtitle": "ANRA Health réunit la cardiologie, la médecine interne et l'endocrinologie dans une seule clinique.",
+    "home.heroSubtitle": "NEYU Health réunit la cardiologie, la médecine interne et l'endocrinologie dans une seule clinique.",
     "home.viewServices": "Voir les services",
     "home.calgaryLocations": "Emplacements à Calgary",
     "home.languagesSpoken": "Langues parlées",
@@ -724,7 +724,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "Ce que nous offrons",
     "home.diagnosticTeam": "Une équipe diagnostique et consultative complète",
     "home.seeAllServices": "Voir tous les services",
-    "home.whyChoose": "Pourquoi choisir ANRA Health",
+    "home.whyChoose": "Pourquoi choisir NEYU Health",
     "home.ourStory": "Notre histoire",
     "home.aboutHeading": "Une pensée avancée, appliquée à des soins avancés",
     "home.learnMoreTeam": "En savoir plus sur notre équipe",
@@ -798,7 +798,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "Une erreur s'est produite. Veuillez réessayer ou nous appeler directement.",
 
     "contact.getInTouch": "Contactez-nous",
-    "contact.heading": "Contacter ANRA Health",
+    "contact.heading": "Contacter NEYU Health",
     "contact.subtitle": "Joignez-nous par téléphone, courriel, ou visitez l'un de nos emplacements de Calgary.",
     "contact.aiReferral": "Assistant de référence IA",
     "contact.describeSituation": "Décrivez la situation, nous remplirons la référence",
@@ -842,7 +842,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "Prenez rendez-vous dans l'un de nos emplacements de Calgary.",
 
     "careers.joinTeam": "Rejoignez notre équipe",
-    "careers.heading": "Carrières chez ANRA Health",
+    "careers.heading": "Carrières chez NEYU Health",
     "careers.subtitle": "Nous recherchons toujours des personnes qualifiées et bienveillantes pour rejoindre notre équipe de soins.",
 
     "footer.tagline": "Soins cardiaques et de médecine interne avancés à Calgary, Alberta.",
@@ -852,12 +852,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "À propos",
     "footer.rights": "Tous droits réservés.",
 
-    "chat.title": "Assistant ANRA Health",
-    "chat.greeting": "Bonjour, je suis l'assistant ANRA Health. Posez-moi des questions sur nos services, médecins ou rendez-vous.",
+    "chat.title": "Assistant NEYU Health",
+    "chat.greeting": "Bonjour, je suis l'assistant NEYU Health. Posez-moi des questions sur nos services, médecins ou rendez-vous.",
     "chat.placeholder": "Demandez les services, horaires...",
     "chat.thinking": "Je réfléchis…",
     "chat.close": "Fermer",
-    "chat.ask": "Demander à ANRA",
+    "chat.ask": "Demander à NEYU",
   },
 
   sw: {
@@ -887,7 +887,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "Calgary, Alberta · Maeneo Mawili",
     "home.heroTitle": "Kila moyo unastahili huduma sahihi na iliyoratibiwa.",
-    "home.heroSubtitle": "ANRA Health inaunganisha magonjwa ya moyo, dawa za ndani, na endocrinology katika kliniki moja.",
+    "home.heroSubtitle": "NEYU Health inaunganisha magonjwa ya moyo, dawa za ndani, na endocrinology katika kliniki moja.",
     "home.viewServices": "Angalia Huduma",
     "home.calgaryLocations": "Maeneo ya Calgary",
     "home.languagesSpoken": "Lugha Zinazozungumzwa",
@@ -895,7 +895,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "Tunachotoa",
     "home.diagnosticTeam": "Timu kamili ya uchunguzi na ushauri",
     "home.seeAllServices": "Ona huduma zote",
-    "home.whyChoose": "Kwa Nini Uchague ANRA Health",
+    "home.whyChoose": "Kwa Nini Uchague NEYU Health",
     "home.ourStory": "Hadithi Yetu",
     "home.aboutHeading": "Fikra za hali ya juu, zinazotumika kwa huduma za hali ya juu",
     "home.learnMoreTeam": "Jifunze zaidi kuhusu timu yetu",
@@ -969,7 +969,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "Hitilafu imetokea. Tafadhali jaribu tena, au tupigie moja kwa moja.",
 
     "contact.getInTouch": "Wasiliana Nasi",
-    "contact.heading": "Wasiliana na ANRA Health",
+    "contact.heading": "Wasiliana na NEYU Health",
     "contact.subtitle": "Tufikie kwa simu, barua pepe, au tembelea mojawapo ya maeneo yetu ya Calgary.",
     "contact.aiReferral": "Msaidizi wa Rufaa wa AI",
     "contact.describeSituation": "Eleza hali, tutajaza rufaa",
@@ -1013,7 +1013,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "Weka miadi katika mojawapo ya maeneo yetu ya Calgary.",
 
     "careers.joinTeam": "Jiunge na Timu Yetu",
-    "careers.heading": "Kazi katika ANRA Health",
+    "careers.heading": "Kazi katika NEYU Health",
     "careers.subtitle": "Tunatafuta daima watu wenye ujuzi na huruma kujiunga na timu yetu ya huduma.",
 
     "footer.tagline": "Huduma za hali ya juu za moyo na dawa za ndani huko Calgary, Alberta.",
@@ -1023,12 +1023,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "Kuhusu Sisi",
     "footer.rights": "Haki zote zimehifadhiwa.",
 
-    "chat.title": "Msaidizi wa ANRA Health",
-    "chat.greeting": "Habari, mimi ni msaidizi wa ANRA Health. Niulize kuhusu huduma zetu, madaktari, au jinsi ya kuweka miadi.",
+    "chat.title": "Msaidizi wa NEYU Health",
+    "chat.greeting": "Habari, mimi ni msaidizi wa NEYU Health. Niulize kuhusu huduma zetu, madaktari, au jinsi ya kuweka miadi.",
     "chat.placeholder": "Uliza kuhusu huduma, masaa...",
     "chat.thinking": "Ninafikiri…",
     "chat.close": "Funga",
-    "chat.ask": "Uliza ANRA",
+    "chat.ask": "Uliza NEYU",
   },
 
   ur: {
@@ -1058,7 +1058,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "کیلگری، البرٹا · دو مقامات",
     "home.heroTitle": "ہر دل درست، مربوط دیکھ بھال کا حقدار ہے۔",
-    "home.heroSubtitle": "ANRA Health ایک کلینک میں امراض قلب، انٹرنل میڈیسن، اور اینڈوکرائنولوجی کو اکٹھا کرتا ہے۔",
+    "home.heroSubtitle": "NEYU Health ایک کلینک میں امراض قلب، انٹرنل میڈیسن، اور اینڈوکرائنولوجی کو اکٹھا کرتا ہے۔",
     "home.viewServices": "خدمات دیکھیں",
     "home.calgaryLocations": "کیلگری مقامات",
     "home.languagesSpoken": "بولی جانے والی زبانیں",
@@ -1066,7 +1066,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "ہم کیا پیش کرتے ہیں",
     "home.diagnosticTeam": "ایک مکمل تشخیصی اور مشاورتی ٹیم",
     "home.seeAllServices": "تمام خدمات دیکھیں",
-    "home.whyChoose": "ANRA Health کیوں منتخب کریں",
+    "home.whyChoose": "NEYU Health کیوں منتخب کریں",
     "home.ourStory": "ہماری کہانی",
     "home.aboutHeading": "جدید سوچ، جدید دیکھ بھال پر لاگو",
     "home.learnMoreTeam": "ہماری ٹیم کے بارے میں مزید جانیں",
@@ -1140,7 +1140,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "کچھ غلط ہو گیا۔ براہ کرم دوبارہ کوشش کریں، یا ہمیں براہ راست کال کریں۔",
 
     "contact.getInTouch": "رابطے میں رہیں",
-    "contact.heading": "ANRA Health سے رابطہ کریں",
+    "contact.heading": "NEYU Health سے رابطہ کریں",
     "contact.subtitle": "ہم سے فون، ای میل کے ذریعے رابطہ کریں، یا ہمارے کسی بھی کیلگری مقام پر آئیں۔",
     "contact.aiReferral": "AI ریفرل اسسٹنٹ",
     "contact.describeSituation": "صورتحال بیان کریں، ہم ریفرل بھریں گے",
@@ -1184,7 +1184,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "ہمارے کسی بھی کیلگری مقام پر مشاورت بک کریں۔",
 
     "careers.joinTeam": "ہماری ٹیم میں شامل ہوں",
-    "careers.heading": "ANRA Health میں ملازمتیں",
+    "careers.heading": "NEYU Health میں ملازمتیں",
     "careers.subtitle": "ہم ہمیشہ ہنر مند، ہمدرد لوگوں کی تلاش میں ہیں۔",
 
     "footer.tagline": "کیلگری، البرٹا میں جدید دل اور اندرونی طب کی دیکھ بھال۔",
@@ -1194,12 +1194,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "ہمارے بارے میں",
     "footer.rights": "جملہ حقوق محفوظ ہیں۔",
 
-    "chat.title": "ANRA Health اسسٹنٹ",
-    "chat.greeting": "السلام علیکم، میں ANRA Health اسسٹنٹ ہوں۔ ہماری خدمات، معالجین کے بارے میں پوچھیں۔",
+    "chat.title": "NEYU Health اسسٹنٹ",
+    "chat.greeting": "السلام علیکم، میں NEYU Health اسسٹنٹ ہوں۔ ہماری خدمات، معالجین کے بارے میں پوچھیں۔",
     "chat.placeholder": "خدمات، اوقات کے بارے میں پوچھیں...",
     "chat.thinking": "سوچ رہا ہوں…",
     "chat.close": "بند کریں",
-    "chat.ask": "ANRA سے پوچھیں",
+    "chat.ask": "NEYU سے پوچھیں",
   },
 
   uk: {
@@ -1229,7 +1229,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "Калгарі, Альберта · Два розташування",
     "home.heroTitle": "Кожне серце заслуговує на точну, скоординовану допомогу.",
-    "home.heroSubtitle": "ANRA Health об'єднує кардіологію, внутрішню медицину та ендокринологію в одній клініці.",
+    "home.heroSubtitle": "NEYU Health об'єднує кардіологію, внутрішню медицину та ендокринологію в одній клініці.",
     "home.viewServices": "Переглянути послуги",
     "home.calgaryLocations": "Розташування в Калгарі",
     "home.languagesSpoken": "Мови спілкування",
@@ -1237,7 +1237,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "Що ми пропонуємо",
     "home.diagnosticTeam": "Повна діагностична та консультативна команда",
     "home.seeAllServices": "Переглянути всі послуги",
-    "home.whyChoose": "Чому обрати ANRA Health",
+    "home.whyChoose": "Чому обрати NEYU Health",
     "home.ourStory": "Наша історія",
     "home.aboutHeading": "Передове мислення, застосоване до передової допомоги",
     "home.learnMoreTeam": "Дізнатися більше про нашу команду",
@@ -1311,7 +1311,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "Щось пішло не так. Спробуйте ще раз або зателефонуйте нам напряму.",
 
     "contact.getInTouch": "Зв'яжіться з нами",
-    "contact.heading": "Зв'язатися з ANRA Health",
+    "contact.heading": "Зв'язатися з NEYU Health",
     "contact.subtitle": "Зв'яжіться з нами по телефону, електронною поштою, або відвідайте одне з наших розташувань у Калгарі.",
     "contact.aiReferral": "AI-помічник направлень",
     "contact.describeSituation": "Опишіть ситуацію, ми заповнимо направлення",
@@ -1355,7 +1355,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "Запишіться на консультацію в одному з наших розташувань у Калгарі.",
 
     "careers.joinTeam": "Приєднуйтесь до нашої команди",
-    "careers.heading": "Кар'єра в ANRA Health",
+    "careers.heading": "Кар'єра в NEYU Health",
     "careers.subtitle": "Ми завжди шукаємо кваліфікованих, небайдужих людей для нашої команди догляду.",
 
     "footer.tagline": "Передова кардіологічна та внутрішня медична допомога в Калгарі, Альберта.",
@@ -1365,12 +1365,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "Про нас",
     "footer.rights": "Усі права захищені.",
 
-    "chat.title": "Помічник ANRA Health",
-    "chat.greeting": "Привіт, я помічник ANRA Health. Запитайте мене про наші послуги, лікарів чи запис на прийом.",
+    "chat.title": "Помічник NEYU Health",
+    "chat.greeting": "Привіт, я помічник NEYU Health. Запитайте мене про наші послуги, лікарів чи запис на прийом.",
     "chat.placeholder": "Запитайте про послуги, години роботи...",
     "chat.thinking": "Думаю…",
     "chat.close": "Закрити",
-    "chat.ask": "Запитати ANRA",
+    "chat.ask": "Запитати NEYU",
   },
 
   gu: {
@@ -1400,7 +1400,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
 
     "home.heroTag": "કેલગરી, આલ્બર્ટા · બે સ્થાનો",
     "home.heroTitle": "દરેક હૃદય ચોક્કસ, સંકલિત સંભાળનું હકદાર છે.",
-    "home.heroSubtitle": "ANRA Health એક ક્લિનિકમાં કાર્ડિયોલોજી, ઇન્ટરનલ મેડિસિન અને એન્ડોક્રિનોલોજીને એકસાથે લાવે છે.",
+    "home.heroSubtitle": "NEYU Health એક ક્લિનિકમાં કાર્ડિયોલોજી, ઇન્ટરનલ મેડિસિન અને એન્ડોક્રિનોલોજીને એકસાથે લાવે છે.",
     "home.viewServices": "સેવાઓ જુઓ",
     "home.calgaryLocations": "કેલગરી સ્થાનો",
     "home.languagesSpoken": "બોલાતી ભાષાઓ",
@@ -1408,7 +1408,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "home.whatWeOffer": "અમે શું ઓફર કરીએ છીએ",
     "home.diagnosticTeam": "એક સંપૂર્ણ નિદાન અને પરામર્શ ટીમ",
     "home.seeAllServices": "બધી સેવાઓ જુઓ",
-    "home.whyChoose": "ANRA Health શા માટે પસંદ કરો",
+    "home.whyChoose": "NEYU Health શા માટે પસંદ કરો",
     "home.ourStory": "અમારી વાર્તા",
     "home.aboutHeading": "અદ્યતન વિચારસરણી, અદ્યતન સંભાળ પર લાગુ",
     "home.learnMoreTeam": "અમારી ટીમ વિશે વધુ જાણો",
@@ -1482,7 +1482,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "symptoms.somethingWrong": "કંઈક ખોટું થયું. કૃપા કરી ફરી પ્રયાસ કરો, અથવા અમને સીધા કૉલ કરો.",
 
     "contact.getInTouch": "સંપર્કમાં રહો",
-    "contact.heading": "ANRA Health નો સંપર્ક કરો",
+    "contact.heading": "NEYU Health નો સંપર્ક કરો",
     "contact.subtitle": "ફોન, ઈમેલ દ્વારા અમારો સંપર્ક કરો, અથવા અમારા કોઈપણ કેલગરી સ્થાનની મુલાકાત લો.",
     "contact.aiReferral": "AI રેફરલ સહાયક",
     "contact.describeSituation": "પરિસ્થિતિનું વર્ણન કરો, અમે રેફરલ ભરીશું",
@@ -1526,7 +1526,7 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "about.bookConsultation": "અમારા કોઈપણ કેલગરી સ્થાન પર પરામર્શ બુક કરો.",
 
     "careers.joinTeam": "અમારી ટીમમાં જોડાઓ",
-    "careers.heading": "ANRA Health માં કારકિર્દી",
+    "careers.heading": "NEYU Health માં કારકિર્દી",
     "careers.subtitle": "અમે હંમેશા અમારી સંભાળ ટીમમાં જોડાવા માટે કુશળ, દયાળુ લોકોની શોધમાં છીએ.",
 
     "footer.tagline": "કેલગરી, આલ્બર્ટામાં અદ્યતન કાર્ડિયાક અને ઇન્ટરનલ મેડિસિન સંભાળ.",
@@ -1536,11 +1536,11 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     "footer.aboutUs": "અમારા વિશે",
     "footer.rights": "બધા હકો સુરક્ષિત.",
 
-    "chat.title": "ANRA Health સહાયક",
-    "chat.greeting": "નમસ્તે, હું ANRA Health સહાયક છું. અમારી સેવાઓ, ડોક્ટરો વિશે પૂછો.",
+    "chat.title": "NEYU Health સહાયક",
+    "chat.greeting": "નમસ્તે, હું NEYU Health સહાયક છું. અમારી સેવાઓ, ડોક્ટરો વિશે પૂછો.",
     "chat.placeholder": "સેવાઓ, સમય વિશે પૂછો...",
     "chat.thinking": "વિચારી રહ્યા છીએ…",
     "chat.close": "બંધ કરો",
-    "chat.ask": "ANRA ને પૂછો",
+    "chat.ask": "NEYU ને પૂછો",
   },
 };
