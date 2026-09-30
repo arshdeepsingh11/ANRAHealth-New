@@ -1,8 +1,11 @@
 // POST /api/wearables/ingest — wearable data in (Apple Watch via iOS Shortcuts
 // today; the same endpoint serves a native companion app later).
 //
-// Auth: "Authorization: Bearer anra_dev_…" — the per-device token issued in
-// My Health Space → Devices → Apple Watch. Only its SHA-256 is stored.
+// Auth: "Authorization: Bearer anra_dev_…", or the private sync link from QR
+// pairing (…/api/wearables/ingest?k=anra_dev_…). Only the SHA-256 is stored.
+// Every call is logged on the device (lastAttemptAt/lastResult) so the
+// patient can see what arrived; the device only turns "connected" once
+// real data has been stored.
 // Body: see backend/wearables.ts (structured or flat Shortcuts object).
 // Only metrics the patient allows for that device are stored; the rest are
 // reported back as rejected. Re-sending the same day overwrites (idempotent).
@@ -20,7 +23,8 @@ import type { ProviderId } from "@/lib/portal/types";
 export async function POST(req: Request) {
   try {
     const auth = req.headers.get("authorization") || "";
-    const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
+    // The key in the sync link wins, so an old Authorization header left in a shortcut can't break it.
+    const token = (new URL(req.url).searchParams.get("k") || "").trim() || (auth.startsWith("Bearer ") ? auth.slice(7).trim() : "");
     if (!token.startsWith("anra_dev_") || token.length > 80) throw new HttpError(401, "Missing or invalid device token.");
     const { ip } = await clientMeta();
     if (!rateLimit(`ingest:${sha256(token).slice(0, 16)}`, 60, 60_000)) throw new HttpError(429, "Too many requests.");
@@ -30,9 +34,16 @@ export async function POST(req: Request) {
       select: { id: true, provider: true, status: true, dataTypes: true, patient: { select: { id: true, timezone: true, settings: { select: { shareWearables: true } } } } },
     });
     if (!conn || conn.status === "disconnected") throw new HttpError(401, "Missing or invalid device token.");
-    if (conn.patient.settings && !conn.patient.settings.shareWearables) throw new HttpError(403, "Wearable sharing is turned off in Privacy & Data.");
+    const log = (stored: number, metrics: string[], rejected: { field: string; reason: string }[], extra: object = {}) =>
+      prisma.deviceConnection.update({ where: { id: conn.id }, data: { lastAttemptAt: new Date(), lastResult: JSON.stringify({ stored, metrics, rejected: rejected.slice(0, 8) }), ...extra } });
+    if (conn.patient.settings && !conn.patient.settings.shareWearables) {
+      await log(0, [], [{ field: "all", reason: "Wearable sharing is turned off in Privacy & Data" }]);
+      throw new HttpError(403, "Wearable sharing is turned off in Privacy & Data.");
+    }
 
-    const body = await readJson(req, 2_000_000);
+    let body: unknown;
+    try { body = await readJson(req, 2_000_000); }
+    catch (e) { await log(0, [], [{ field: "body", reason: "not valid JSON — set Request Body to JSON" }]); throw e; }
     const { readings, rejected } = parseIngest(body, conn.patient.timezone);
     const allowed = allowedMetrics(conn.provider as ProviderId, JSON.parse(conn.dataTypes || "[]"));
     const accepted = readings.filter((r) => allowed.has(r.metric));
@@ -44,9 +55,11 @@ export async function POST(req: Request) {
     await storeReadings(patientId, source, accepted.filter((r) => r.metric !== "bp"));
     if (bp.length) await storeBp({ id: patientId, timezone: conn.patient.timezone }, source, bp);
     const now = new Date();
-    await prisma.deviceConnection.update({ where: { id: conn.id }, data: { status: "connected", lastSyncAt: now, ...(conn.status === "pending" ? { connectedAt: now } : {}) } });
+    const metrics = [...new Set(accepted.map((r) => r.metric))];
+    await log(accepted.length, metrics, rejected, accepted.length ? { status: "connected", lastSyncAt: now, ...(conn.status === "pending" ? { connectedAt: now } : {}) } : {});
     audit(patientId, "device", "create", `readings:${source}:${accepted.length}`, ip);
-    return NextResponse.json({ ok: true, stored: accepted.length, rejected }, { headers: { "Cache-Control": "no-store" } });
+    const message = accepted.length ? `ANRA received ${metrics.length} kind${metrics.length === 1 ? "" : "s"} of data.` : rejected.length ? "Nothing stored — see rejected." : "Nothing stored — Apple Health had no samples for today yet.";
+    return NextResponse.json({ ok: true, stored: accepted.length, metrics, rejected, message }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     return toResponse(e);
   }
