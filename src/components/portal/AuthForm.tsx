@@ -50,7 +50,7 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ width: "100%", maxWidth: 440, display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
           <a href="/" style={{ display: "flex", flexDirection: "column", gap: 2, color: C.ink, textDecoration: "none" }}>
-            <span style={{ fontSize: 12, letterSpacing: ".14em", color: C.muted, fontWeight: 500 }}>ANRA HEALTH</span>
+            <span style={{ fontSize: 12, letterSpacing: ".14em", color: C.muted, fontWeight: 500 }}>NEYU HEALTH</span>
             <span style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em" }}>My Health Space</span>
           </a>
         </div>
@@ -61,7 +61,7 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
 
           {up && !signupOpen ? (
             <div style={{ padding: "24px 22px", borderRadius: 20, background: C.card, border: `1px solid ${C.line}`, fontSize: 15, lineHeight: 1.55, color: C.ink2 }}>
-              New accounts aren't open yet. If you're an ANRA patient, please contact the clinic to get access.
+              New accounts aren't open yet. If you're an NEYU patient, please contact the clinic to get access.
               <p style={{ margin: "16px 0 0" }}><a href="/my-health/sign-in">Already have an account? Sign in</a></p>
             </div>
           ) : (
@@ -85,7 +85,7 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
               {up && (
                 <label style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, lineHeight: 1.5, color: C.ink2, cursor: "pointer" }}>
                   <input type="checkbox" checked={f.consent} onChange={set("consent")} required style={{ width: 18, height: 18, marginTop: 2, accentColor: C.teal, flex: "none" }} />
-                  <span>I agree that ANRA Health may store the health information I add or connect, to show it to me and — only when I choose — to my care team. I can export or delete it at any time.</span>
+                  <span>I agree that NEYU Health may store the health information I add or connect, to show it to me and — only when I choose — to my care team. I can export or delete it at any time.</span>
                 </label>
               )}
               {err && <p role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 12, background: C.peach, color: C.peachInk, fontSize: 14, lineHeight: 1.5 }}>{err}</p>}
