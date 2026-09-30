@@ -70,7 +70,7 @@ export default function HeroConcierge() {
   return (
     <div style={{ position: "relative", maxWidth: 1240, margin: "0 auto", padding: "clamp(40px,6vw,72px) clamp(16px,4vw,40px) 24px", textAlign: "center" }}>
       <style>{`@keyframes anraTypeIn{from{opacity:0;transform:translateY(6px);filter:blur(4px)}to{opacity:1;transform:none;filter:blur(0)}}@media (prefers-reduced-motion: reduce){#concierge ~ div span{animation:none!important}}`}</style>
-      <NeyuLogo height={96} layout="stacked" />
+      <NeyuLogo layout="stacked" fluid="clamp(128px,13vw,172px)" />
       <h1 style={{ margin: "14px 0 0", fontSize: "clamp(38px,6.2vw,80px)", lineHeight: 1.04, letterSpacing: "-.04em", fontWeight: 600, color: "#14181B" }}>
         Healthcare designed around<br />
         <anra-morph words="you.|your heart.|your biology.|your family.|your future." />
