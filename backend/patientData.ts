@@ -4,7 +4,7 @@
 // DTO says so and the UI shows the prototype's empty state.
 
 import { prisma } from "@backend/db";
-import { METRIC_DEFS, TREND_CATS, avg, fmt, fmtU, dayKey, addDays, daysBetween, fmtDay, type MetricKey } from "@/lib/portal/metrics";
+import { METRIC_DEFS, isMetricKey, TREND_CATS, avg, fmt, fmtU, dayKey, addDays, daysBetween, fmtDay, type MetricKey } from "@/lib/portal/metrics";
 import { DEVICE_CATALOG, PROVIDER_NAMES, WEARABLE_SOURCES, sharedLabels } from "@/lib/portal/devices";
 import { physicians } from "@/data/physicians";
 import type {
@@ -454,8 +454,15 @@ export async function getReferrals(patient: { id: string; timezone: string }): P
 }
 
 // ── Devices ─────────────────────────────────────────────────────────────
+/** Stored attempt log with metric keys turned into names ("steps" → "Steps"). */
+function readableResult(raw?: string | null): DeviceDTO["lastResult"] {
+  const r = raw ? parseJSON<DeviceDTO["lastResult"]>(raw, null) : null;
+  if (!r) return null;
+  return { ...r, metrics: (r.metrics || []).map((m) => (isMetricKey(m) ? METRIC_DEFS[m].name : m)) };
+}
+
 export async function getDevices(patientId: string): Promise<DeviceDTO[]> {
-  const rows = await prisma.deviceConnection.findMany({ where: { patientId }, select: { provider: true, status: true, lastSyncAt: true, dataTypes: true, tokenHint: true, lastError: true } });
+  const rows = await prisma.deviceConnection.findMany({ where: { patientId }, select: { provider: true, status: true, lastSyncAt: true, dataTypes: true, tokenHint: true, lastError: true, lastAttemptAt: true, lastResult: true } });
   const { oauthConfigured } = await import("@backend/oauth");
   return DEVICE_CATALOG.map((d) => {
     const r = rows.find((x) => x.provider === d.id);
@@ -464,7 +471,8 @@ export async function getDevices(patientId: string): Promise<DeviceDTO[]> {
     const stale = status === "on" && !!r?.lastSyncAt && Date.now() - r.lastSyncAt.getTime() > 3 * 86400000;
     return { id: d.id, name: d.name, icon: d.icon, signals: d.signals.map((s) => s.label), available, status, lastSyncAt: r?.lastSyncAt?.toISOString() ?? null,
       dataTypes: r && r.status !== "waitlist" ? sharedLabels(d.id, parseJSON<string[]>(r.dataTypes, [])) : d.signals.map((s) => s.label), tokenHint: r?.tokenHint ?? null,
-      mode: d.mode, blurb: d.blurb, beta: !!d.beta, stale, lastError: r?.lastError ?? null, guide: d.guide };
+      mode: d.mode, blurb: d.blurb, beta: !!d.beta, stale, lastError: r?.lastError ?? null,
+      lastAttemptAt: r?.lastAttemptAt?.toISOString() ?? null, lastResult: readableResult(r?.lastResult), guide: d.guide };
   });
 }
 
