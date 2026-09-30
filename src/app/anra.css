@@ -132,3 +132,7 @@
   html[data-chrome="hidden"] .nea-bar { top: 10px !important; }
   .nea-bar { transition: top .28s ease; }
 }
+
+/* Lift-on-hover cards (specialty pages, Longevity Lab, assessments) */
+.sx-card { transition: transform .25s ease, box-shadow .25s ease; }
+@media (hover: hover) { .sx-card:hover { transform: translateY(-3px); box-shadow: 0 26px 50px -30px rgba(20,24,27,.45) !important; } }
