@@ -124,3 +124,11 @@
 /* Nea page cards */
 .nea-card { transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s; }
 @media (hover: hover) { .nea-card:hover { transform: translateY(-3px); box-shadow: 0 28px 50px -30px rgba(20,24,27,.45) !important; } }
+
+/* Phones: floating Back / Sign-in pills hide while scrolling down (NavChrome sets data-chrome). */
+@media (max-width: 859px) {
+  .anra-float { transition: transform .28s ease, opacity .28s ease; }
+  html[data-chrome="hidden"] .anra-float { transform: translateY(-80px); opacity: 0; pointer-events: none; }
+  html[data-chrome="hidden"] .nea-bar { top: 10px !important; }
+  .nea-bar { transition: top .28s ease; }
+}
