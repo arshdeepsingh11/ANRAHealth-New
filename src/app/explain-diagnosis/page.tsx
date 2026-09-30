@@ -95,7 +95,7 @@ export default function ExplainDiagnosisPage() {
   return (
     <div style={{ minHeight: "100vh" }}>
       <div className="text-center pt-16 md:pt-24 pb-6 px-6">
-        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Patient Resources</p>
+        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">NEYU Health — Patient Resources</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900 flex items-center justify-center gap-3">
           <BookOpenCheck className="text-gold-500" size={36} />
           Explain My Diagnosis
