@@ -1,6 +1,6 @@
 "use client";
 
-// Nea Precision Skin — ANRA's aesthetics & skin-health partner.
+// Nea Precision Skin — NEYU's aesthetics & skin-health partner.
 // Tabbed like the specialty pages. Content from neaprecisionskin.com; every
 // "Book" goes to Nea's own Jane booking, packages to Nea's consultation form.
 // URL: ?tab=studio|treatments|results|packages|visit · #<treatment-id> opens it.
@@ -70,7 +70,7 @@ export default function NeaPage() {
 
       {/* Title (like the specialty pages) */}
       <header style={{ ...wrap, paddingTop: "clamp(34px,6vw,72px)", textAlign: "center" }}>
-        <p style={{ margin: 0, fontSize: 12.5, letterSpacing: ".16em", textTransform: "uppercase", color: T.deep }}>ANRA Health · Skin & Aesthetics partner</p>
+        <p style={{ margin: 0, fontSize: 12.5, letterSpacing: ".16em", textTransform: "uppercase", color: T.deep }}>NEYU Health · Skin & Aesthetics partner</p>
         <h1 style={{ margin: "10px 0 0", fontSize: "clamp(36px,5vw,60px)", lineHeight: 1.02, letterSpacing: "-.04em", fontWeight: 500 }}>Nea Precision Skin</h1>
         <div style={{ marginTop: 14, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
           <OpenPill />
@@ -111,7 +111,7 @@ export default function NeaPage() {
             <span style={{ fontSize: 15.5 }}>Every Nea plan starts with a <b style={{ fontWeight: 600 }}>free 15-minute consultation</b>.</span>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Book small label="Book consult" href={NEA.consult} /><Book small ghost /></div>
           </div>
-          <p style={{ margin: "14px 0 0", fontSize: 12.5, color: T.muted }}>Nea Precision Skin is a separate clinic partnered with ANRA Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
+          <p style={{ margin: "14px 0 0", fontSize: 12.5, color: T.muted }}>Nea Precision Skin is a separate clinic partnered with NEYU Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
         </div>
       )}
 
