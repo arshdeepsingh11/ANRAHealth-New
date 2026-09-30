@@ -1,5 +1,5 @@
 // GET /api/pair/status?code=… — the phone page polls this after pairing to
-// show "ANRA received your data". Works for 2 hours after the code was used.
+// show "NEYU received your data". Works for 2 hours after the code was used.
 import { NextResponse } from "next/server";
 import { prisma } from "@backend/db";
 import { sha256, clientMeta } from "@backend/patientAuth";
