@@ -51,6 +51,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing message" }, { status: 400 });
   }
   const text = message.slice(0, 2000);
+  // Some clients include the current question as the last history item — drop it so the model doesn't see it twice.
+  const hist: { role?: string; text?: string }[] = Array.isArray(history) ? [...history] : [];
+  while (hist.length && hist[hist.length - 1]?.role === "user") hist.pop();
   const page = typeof pageContext === "string" ? pageContext : "/";
 
   // Logging runs alongside the AI call — it never delays or blocks ALBA.
@@ -75,7 +78,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply, conversationId: await conversationIdSoon(), emergency: true });
   }
 
-  const { text: knowledge } = knowledgeFor(text + " " + history.slice(-2).map((h: any) => h?.text || "").join(" "), page);
+  const { text: knowledge } = knowledgeFor(text + " " + hist.slice(-2).map((h: any) => h?.text || "").join(" "), page);
   const fallback = () => {
     const a = localAnswer(text, page);
     logReply(a.text);
@@ -87,7 +90,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const contents = [
-      ...history.slice(-6).map((h: any) => ({ role: h.role === "user" ? "user" : "model", parts: [{ text: String(h.text || "").slice(0, 1500) }] })),
+      ...hist.slice(-6).map((h: any) => ({ role: h.role === "user" ? "user" : "model", parts: [{ text: String(h.text || "").slice(0, 1500) }] })),
       { role: "user", parts: [{ text }] },
     ];
     const ctrl = new AbortController();
