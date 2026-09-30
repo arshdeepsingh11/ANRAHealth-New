@@ -4,7 +4,7 @@ import type { MetricKey } from "./metrics";
 // Every health source My Health Space knows about, and how it connects.
 //   shortcut — Apple Health on iPhone sends a daily summary through a private
 //              Shortcut + sync token (no app needed).
-//   oauth    — one-time sign-in with the maker (Withings, Oura, WHOOP); ANRA
+//   oauth    — one-time sign-in with the maker (Withings, Oura, WHOOP); NEYU
 //              then pulls new data every day. Live only when the clinic has
 //              set that maker's client id/secret on the server.
 //   waitlist — not open yet (maker's program closed or our app not ready);
@@ -37,7 +37,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
       steps: [
         "Tap Connect, then Connect with a QR code.",
         "Scan the code with your iPhone camera and open the link.",
-        "On your phone: copy your sync link, add the ANRA Sync shortcut, and tap Allow for Health.",
+        "On your phone: copy your sync link, add the NEYU Sync shortcut, and tap Allow for Health.",
         "Turn on the daily 9 PM automation. This card turns Connected when the first data arrives.",
       ],
       note: "Sleep appears if you use Sleep Schedule or a sleep app that writes to Health. Heart rate variability and blood oxygen need an Apple Watch.",
@@ -56,7 +56,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
       steps: [
         "Tap Connect, then Connect with a QR code.",
         "Scan the code with your iPhone camera and open the link.",
-        "On your phone: copy your sync link, add the ANRA Sync shortcut, and tap Allow for Health.",
+        "On your phone: copy your sync link, add the NEYU Sync shortcut, and tap Allow for Health.",
         "Turn on the daily 9 PM automation. This card turns Connected when the first data arrives.",
       ],
     } },
@@ -65,7 +65,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     signals: [{ label: "Blood pressure", metrics: ["bp"] }, { label: "Weight", metrics: ["weight"] }],
     guide: {
       needs: "A Withings account with your blood pressure monitor or scale set up in the Withings app.",
-      steps: ["Tap Connect with Withings.", "Sign in to Withings and allow ANRA Health to read your measurements.", "You come back here automatically. ANRA pulls your new readings every morning — nothing else to do."],
+      steps: ["Tap Connect with Withings.", "Sign in to Withings and allow NEYU Health to read your measurements.", "You come back here automatically. NEYU pulls your new readings every morning — nothing else to do."],
       meanwhile: "Any home BP monitor works: add readings in Heart → Add reading.",
     } },
   { id: "oura", name: "Oura", icon: "ph ph-circle", mode: "oauth",
@@ -73,7 +73,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     signals: [{ label: "Sleep", metrics: SLEEP }, { label: "HRV", metrics: ["hrv"] }, { label: "Resting heart rate", metrics: ["rhr"] }, { label: "Activity", metrics: ["steps", "active", "activeEnergy"] }, { label: "Blood oxygen", metrics: ["spo2"] }],
     guide: {
       needs: "An Oura account (the Oura app on your phone).",
-      steps: ["Tap Connect with Oura.", "Sign in to Oura and allow ANRA Health.", "You come back here automatically. ANRA pulls last night's data every morning."],
+      steps: ["Tap Connect with Oura.", "Sign in to Oura and allow NEYU Health.", "You come back here automatically. NEYU pulls last night's data every morning."],
       meanwhile: "On iPhone, Oura can write to Apple Health (Oura app → Settings → Apple Health). Then connect iPhone here.",
     } },
   { id: "whoop", name: "WHOOP", icon: "ph ph-waveform", mode: "oauth", beta: true,
@@ -81,7 +81,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     signals: [{ label: "Recovery", metrics: ["hrv", "rhr"] }, { label: "Sleep", metrics: SLEEP }, { label: "Blood oxygen", metrics: ["spo2"] }],
     guide: {
       needs: "A WHOOP membership and the WHOOP app.",
-      steps: ["Tap Connect with WHOOP.", "Sign in to WHOOP and allow ANRA Health.", "You come back here automatically. ANRA pulls each new recovery and sleep every morning."],
+      steps: ["Tap Connect with WHOOP.", "Sign in to WHOOP and allow NEYU Health.", "You come back here automatically. NEYU pulls each new recovery and sleep every morning."],
       meanwhile: "On iPhone, WHOOP can write to Apple Health (WHOOP app → Integrations). Then connect iPhone here.",
     } },
   { id: "garmin", name: "Garmin", icon: "ph ph-compass", mode: "waitlist",
@@ -105,7 +105,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     signals: [{ label: "Activity", metrics: ACTIVITY }, { label: "Heart rate", metrics: ["rhr", "hrv"] }, { label: "Sleep", metrics: SLEEP }, { label: "Blood pressure", metrics: ["bp"] }, { label: "Weight", metrics: ["weight"] }],
     guide: {
       needs: "An Android phone with Health Connect.",
-      steps: ["Health Connect only works from an app on the phone. The ANRA Android app is in development — tap Notify me and we'll tell you when it's in Google Play."],
+      steps: ["Health Connect only works from an app on the phone. The NEYU Android app is in development — tap Notify me and we'll tell you when it's in Google Play."],
       meanwhile: "Import a CSV file or enter readings yourself.",
     } },
 ];
@@ -113,7 +113,7 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
 export const PROVIDER_NAMES: Record<string, string> = Object.fromEntries(DEVICE_CATALOG.map((d) => [d.id, d.name]));
 PROVIDER_NAMES.apple = "Apple Watch";
 PROVIDER_NAMES.gfit = "Google Fit";
-PROVIDER_NAMES.clinic = "ANRA clinic";
+PROVIDER_NAMES.clinic = "NEYU clinic";
 PROVIDER_NAMES.manual = "Entered by you";
 PROVIDER_NAMES.import = "Imported file";
 
