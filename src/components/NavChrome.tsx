@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import NavRail from "@/components/NavRail";
 import MobileNav from "@/components/MobileNav";
@@ -18,6 +18,22 @@ export default function NavChrome() {
   const [search, setSearch] = useState(false);
   const openSearch = useCallback(() => setSearch(true), []);
   const closeSearch = useCallback(() => setSearch(false), []);
+
+  // Phones: the floating Back / Sign-in pills slide away while scrolling down
+  // (so they never cover headings) and return on scroll up or near the top.
+  useEffect(() => {
+    const root = document.documentElement;
+    let last = window.scrollY, ticking = false;
+    const run = () => {
+      ticking = false;
+      const y = window.scrollY, hide = y > 90 && y > last + 4, show = y < 90 || y < last - 4;
+      if (hide) root.dataset.chrome = "hidden"; else if (show) root.dataset.chrome = "shown";
+      last = y;
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); delete root.dataset.chrome; };
+  }, []);
 
   if (pathname?.startsWith("/admin")) return null;
 
