@@ -18,7 +18,8 @@ export default function CatalogDetailSheet({ item, mobile, onClose, onGet }: { i
 
   if (!item) return null;
   const available = item.regions.includes(region);
-  const note = item.vendor === "drugs" ? "Supportive wellness option. Fulfilled by BioAro Drugs." : "Ordering, collection and payment are handled by BioAro Labs.";
+  const nea = item.vendor === "nea";
+  const note = nea ? "Booked, provided and billed by Nea Precision Skin · #104, 3151 27 St NE, Calgary." : item.vendor === "drugs" ? "Supportive wellness option. Fulfilled by BioAro Drugs." : "Ordering, collection and payment are handled by BioAro Labs.";
 
   return (
     <div className="anra-chrome">
@@ -35,13 +36,13 @@ export default function CatalogDetailSheet({ item, mobile, onClose, onGet }: { i
             <div key={k}><dt style={{ fontSize: 12, color: "#5A626A" }}>{k}</dt><dd style={{ margin: "4px 0 0" }}>{v}</dd></div>
           ))}
         </dl>
-        <div style={{ marginTop: 16, fontSize: 14, color: "#5A626A" }}>{item.vendor === "labs" ? "Best suited for: " + item.bestFor : "Relevant to: " + item.areas.join(", ")}</div>
-        <p style={{ margin: "20px 0 0", fontSize: 15, color: "#3A4147", padding: "14px 16px", borderRadius: 12, background: "#EFECE6" }}>Results are most useful alongside your history and other tests. An ANRA clinician can review them with you.</p>
+        <div style={{ marginTop: 16, fontSize: 14, color: "#5A626A" }}>{item.vendor === "labs" ? "Best suited for: " + item.bestFor : nea ? <a href={"/specialties/skin-health#" + item.id.slice(4)} style={{ color: "#8A4F43" }}>Full treatment details →</a> : "Relevant to: " + item.areas.join(", ")}</div>
+        <p style={{ margin: "20px 0 0", fontSize: 15, color: "#3A4147", padding: "14px 16px", borderRadius: 12, background: nea ? "#F6E9E4" : "#EFECE6" }}>{nea ? "Every Nea treatment starts with a free 15-minute consultation. Pricing and your plan are set with Nea’s team." : "Results are most useful alongside your history and other tests. An ANRA clinician can review them with you."}</p>
         <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 30, letterSpacing: "-.025em", fontWeight: 500 }}>{money(item.price)}</span>
+          <span style={{ fontSize: nea ? 22 : 30, letterSpacing: "-.025em", fontWeight: 500 }}>{money(item.price)}</span>
           {available ? (
             <button onClick={() => onGet(item)} className="hv-ink" style={{ height: 52, padding: "0 22px", border: "1px solid #14181B", borderRadius: 12, background: "#14181B", color: "#F7F5F1", fontSize: 14, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 500, display: "flex", gap: 10, alignItems: "center" }}>
-              {item.vendor === "labs" ? "Get this test" : "Get this product"}<i className="ph ph-arrow-up-right" />
+              {nea ? "Book at Nea" : item.vendor === "labs" ? "Get this test" : "Get this product"}<i className="ph ph-arrow-up-right" />
             </button>
           ) : (
             <span style={{ fontSize: 14, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Not available in your region</span>
