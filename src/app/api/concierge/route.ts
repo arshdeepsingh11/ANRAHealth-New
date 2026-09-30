@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { brand } from "@/data/content";
+import { routeFor } from "@/data/homeContent";
 import { detectEmergencyKeywords, detectCrisisKeywords, EMERGENCY_MESSAGE, CRISIS_MESSAGE } from "@/lib/emergencyDetection";
 
 // Every real destination the concierge is allowed to route to — all tools
@@ -57,17 +58,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reply: EMERGENCY_MESSAGE, destination: { href: "/contact", label: "Contact" }, emergency: true });
   }
 
+  // Without AI (no key, error or slow), route by keywords so the front door always works.
+  const byKeywords = () => {
+    const r = routeFor(message);
+    const hrefs = (r.steps || []).map((x) => x.href);
+    const d = DESTINATIONS.find((x) => hrefs.includes(x.href)) || DESTINATIONS.find((x) => x.key === "contact")!;
+    return NextResponse.json({ reply: r.summary, destination: { href: d.href, label: d.label }, source: "local" });
+  };
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ error: "Server not configured" }, { status: 500 });
-  }
+  if (!apiKey) return byKeywords();
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${process.env.GEMINI_MODEL || "gemini-3.5-flash-lite"}:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(8_000),
         body: JSON.stringify({
           system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: "user", parts: [{ text: message }] }],
@@ -79,7 +86,7 @@ export async function POST(req: NextRequest) {
     if (!response.ok) {
       const errText = await response.text();
       console.error("Gemini API error:", errText);
-      return NextResponse.json({ error: "Upstream AI error" }, { status: 502 });
+      return byKeywords();
     }
 
     const data = await response.json();
@@ -102,6 +109,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error("Concierge handler error:", err);
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return byKeywords();
   }
 }
