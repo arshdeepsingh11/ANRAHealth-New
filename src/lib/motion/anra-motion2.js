@@ -1,4 +1,4 @@
-// Ported verbatim from the Claude Design "ANRA Health" artifact (anra-motion2.js).
+// Ported verbatim from the Claude Design "NEYU Health" artifact (anra-motion2.js).
 // Registers <anra-city>, <anra-converge>, <anra-electro>, <anra-funnel>, <anra-meteors>, <anra-typeph>.
 // Client-only — loaded by src/components/MotionElements.tsx.
 (function(){
