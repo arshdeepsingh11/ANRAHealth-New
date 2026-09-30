@@ -41,7 +41,7 @@ function mk(id: string, kind: string, title: string, text: string, href?: string
   return { id, kind, title, text: text.replace(/\s+/g, " ").trim(), href, words: wordSet(title + " " + title + " " + text) };
 }
 
-const CORE = `${brand.name} (formerly ANRA Health) — cardiology and internal medicine clinic in Calgary, Alberta, founded by Dr. Anmol Singh Kapoor. Hours: ${brand.hours}. Phone ${brand.phone}. Email ${brand.email}.
+const CORE = `${brand.name} — cardiology and internal medicine clinic in Calgary, Alberta, founded by Dr. Anmol Singh Kapoor. Hours: ${brand.hours}. Phone ${brand.phone}. Email ${brand.email}.
 Locations: ${locations.map((l) => `${l.name}, ${l.address} (phone ${l.phone})`).join("; ")}.
 Languages spoken: ${languages.join(", ")}.
 Specialties: Cardiology, Heart Failure Clinic, Internal Medicine, Endocrinology, Geriatric Medicine, Pediatric Rheumatology, Precision Medicine; partners: Respiratory Medicine (Advanced Respiratory Care Network), Nutrition (Nea Precision Nutrition), Skin Health (Nea Precision Skin).
@@ -52,7 +52,7 @@ let INDEX: Doc[] | null = null;
 export function index(): Doc[] {
   if (INDEX) return INDEX;
   const d: Doc[] = [];
-  d.push(mk("about", "About NEYU Health", "NEYU Health", `${brand.name} (formerly ANRA Health — same clinic, physicians and locations) is a cardiology and internal medicine clinic in Calgary, Alberta, founded by Dr. Anmol Singh Kapoor. Locations: ${locations.map((l) => `${l.name}, ${l.address}`).join("; ")}. Phone ${brand.phone}. Email ${brand.email}. Hours: ${brand.hours}.`, "/about"));
+  d.push(mk("about", "About NEYU Health", "NEYU Health", `A cardiology and internal medicine clinic in Calgary, Alberta, founded by Dr. Anmol Singh Kapoor. Locations: ${locations.map((l) => `${l.name}, ${l.address}`).join("; ")}. Phone ${brand.phone}. Email ${brand.email}. Hours: ${brand.hours}.`, "/about"));
   locations.forEach((l, i) => d.push(mk("loc-" + i, "NEYU location", `${l.name} (clinic location)`, `${l.name}: ${l.address}. Phone ${l.phone}. Fax ${l.fax}.`, "/contact")));
   d.push(mk("referral", "NEYU page", "Referral Centre — how to get a referral", "Most NEYU specialist visits need a referral from your family practice or a walk-in clinic. They can send it to NEYU, or use the Referral Centre on the site, which can auto-fill a referral from a photo and create a referral letter PDF.", "/referral-centre"));
   RESP_ITEMS.forEach((it, i) => d.push(mk("resp-" + i, "Respiratory service (Advanced Respiratory Care Network)", it.name, `${it.desc} Offered through our partner Advanced Respiratory Care Network (${ARC.phone}).`, "/specialties/respiratory-medicine")));
@@ -97,6 +97,7 @@ function scored(question: string, page: string, k: number): { d: Doc; s: number 
       expanded.forEach((w) => { if (d.words.has(w)) s += Math.log(1 + docs.length / (1 + (df.get(w) || 0))); });
       s /= 0.6 + 0.4 * (d.words.size / avgLen); // long pages shouldn't win on sheer length
       if (lq.includes(d.title.toLowerCase())) s += 8;
+      if (d.id === "about" && /\b(neyu|anra|who are you|about you|your clinic)\b/.test(lq)) s += 10; // brand questions go to "About"
       tokens(d.title).forEach((w) => { if (!GENERIC.has(w) && (expanded.has(w) || expanded.has(stem(w)))) s += 2.5; }); // title matches beat long pages
       if (page && d.href && page.startsWith(d.href.split(/[?#]/)[0]) && d.href !== "/") s += 1.5;
       return { d, s };
@@ -118,16 +119,18 @@ Rules:
 2. If symptoms could be serious (chest pain, trouble breathing, fainting, stroke signs, severe bleeding or allergic reaction), tell them to call 911 now.
 3. When relevant, point to the right NEYU specialty, test or partner service by its exact name; give prices or facts ONLY as written in the reference. Never invent physicians, prices, wait times or services.
 4. Plain text only, no markdown or lists symbols. Keep it under 120 words unless they ask for more detail. End with one helpful next step when it fits.
-5. For personal medical decisions, suggest discussing with their doctor or booking with NEYU.`;
+5. For personal medical decisions, suggest discussing with their doctor or booking with NEYU.
+6. The clinic's name is NEYU Health (say "NEYU"). Never call it ANRA. Only if the person asks about ANRA or ANRA Health, explain that ANRA Health is now called NEYU Health — same clinic, physicians and locations. "Nea" is a different company (Nea Precision Skin, a partner); never confuse NEYU with Nea.`;
 
 /** Answer without the AI model, from the index alone. */
 export function localAnswer(question: string, page = ""): { text: string; href?: string } {
   const hits = scored(question, page, 3);
+  const renamed = /\banra\b/i.test(question) ? "ANRA Health is now called NEYU Health — same clinic, physicians and locations.\n\n" : "";
   const docs = hits.filter((h) => h.s >= hits[0]?.s * 0.6).map((h) => h.d);
   if (!docs.length) return { text: `I can help with NEYU's specialties, tests, partners and general health questions. My AI is briefly unavailable, so for anything specific please call ${brand.phone} or use the Referral Centre.` };
   const top = docs[0];
   const also = docs.slice(1).map((d) => d.title).join(" and ");
   const t0 = top.text.startsWith(top.title) ? top.text.slice(top.title.length).replace(/^[\s:—-]+/, "") : top.text;
   const body = t0.length > 420 ? t0.slice(0, 420).replace(/\s\S*$/, "") + "…" : t0;
-  return { text: `${top.title}: ${body}${also ? `\n\nRelated: ${also}.` : ""}`, href: top.href };
+  return { text: `${renamed}${top.title}: ${body}${also ? `\n\nRelated: ${also}.` : ""}`, href: top.href };
 }
