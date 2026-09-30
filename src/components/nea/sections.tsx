@@ -47,7 +47,7 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
         <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,400px),1fr))", gap: "clamp(24px,4vw,48px)", alignItems: "center" }}>
           <div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-              <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)" }}>ANRA partner clinic</span>
+              <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.18)" }}>NEYU partner clinic</span>
               <OpenPill dark />
             </div>
             <h1 style={{ margin: "20px 0 0", fontSize: "clamp(38px,5.6vw,72px)", lineHeight: 1.02, letterSpacing: "-.045em", fontWeight: 500 }}>
@@ -309,7 +309,7 @@ export function Visit({ askSeed }: { askSeed: (q: string) => void }) {
         </div>
         <iframe title="Nea Precision Skin map" loading="lazy" src="https://www.google.com/maps?q=3151%2027%20St%20NE%2C%20Calgary%2C%20AB&output=embed" style={{ width: "100%", minHeight: 380, border: 0, borderRadius: 22 }} />
       </div>
-      <p style={{ margin: "6px 0 0", fontSize: 13, color: T.muted, display: "flex", gap: 8 }}><i className="ph ph-info" />Treatments are provided and booked by Nea Precision Skin, a separate clinic partnered with ANRA Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
+      <p style={{ margin: "6px 0 0", fontSize: 13, color: T.muted, display: "flex", gap: 8 }}><i className="ph ph-info" />Treatments are provided and booked by Nea Precision Skin, a separate clinic partnered with NEYU Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
     </div>
   );
 }
