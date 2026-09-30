@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAlba } from "@/components/AlbaContext";
 import { useRegion } from "@/components/RegionContext";
 import { GALLERY_LABS, GALLERY_DRUGS, GALLERY_NEA, VENDOR_NAME, VENDOR_COLOR, money, type CatalogItem, type Vendor } from "@/data/bioaroCatalog";
@@ -17,6 +17,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
   const [vendor, setVendor] = useState<Vendor>("labs");
   const [idx, setIdx] = useState(2);
   const [paused, setPaused] = useState(false);
+  const swipe = useRef<{ x: number; y: number } | null>(null);
   const [detail, setDetail] = useState<CatalogItem | null>(null);
   const [leave, setLeave] = useState<CatalogItem | null>(null);
 
@@ -58,7 +59,15 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
         <p style={{ margin: "14px 0 0", fontSize: 14, color: "#5A626A", display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Some BioAro Drugs products aren’t sold in your region. They’re shown for information.</p>
       )}
 
-      <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} style={{ position: "relative", height: 420, marginTop: 28, perspective: 1300 }}>
+      <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
+        // Phones: swipe left/right to move through the cards.
+        onTouchStart={(e) => { swipe.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; setPaused(true); }}
+        onTouchEnd={(e) => {
+          const s0 = swipe.current; swipe.current = null; if (!s0) return;
+          const dx = e.changedTouches[0].clientX - s0.x, dy = e.changedTouches[0].clientY - s0.y;
+          if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { e.preventDefault(); setIdx(dx < 0 ? Math.min(list.length - 1, gi + 1) : Math.max(0, gi - 1)); }
+        }}
+        style={{ position: "relative", height: 420, marginTop: 28, perspective: 1300, touchAction: "pan-y" }}>
         {list.map((t, i) => {
           const o = i - gi, ao = Math.abs(o);
           const active = o === 0;
