@@ -4,8 +4,10 @@
 //
 // To update: edit the rows below. Prices are USD/CAD as listed by BioAro.
 
+import { NEA, NEA_TREATMENTS } from "./nea";
+
 export type Region = "CA" | "US" | "UK";
-export type Vendor = "labs" | "drugs";
+export type Vendor = "labs" | "drugs" | "nea";
 
 export interface CatalogItem {
   id: string;
@@ -22,9 +24,11 @@ export interface CatalogItem {
   url: (region: Region) => string;
 }
 
-export const VENDOR_NAME: Record<Vendor, string> = { labs: "BioAro Labs", drugs: "BioAro Drugs" };
+export const VENDOR_NAME: Record<Vendor, string> = { labs: "BioAro Labs", drugs: "BioAro Drugs", nea: "Nea Precision Skin" };
+export const VENDOR_COLOR: Record<Vendor, string> = { labs: "#6EA8B6", drugs: "#8C6FB8", nea: "#B9786A" };
 
-export const money = (p: number) => "$" + (p % 1 ? p.toFixed(2) : p.toLocaleString("en-CA"));
+/** Price label. 0 = price set at consultation (Nea treatments). */
+export const money = (p: number) => (p === 0 ? "Free consult" : "$" + (p % 1 ? p.toFixed(2) : p.toLocaleString("en-CA")));
 
 // ── BioAro Labs ───────────────────────────────────────────────────────────
 // [slug, name, badge, focus areas, price, purpose, best suited for]
@@ -157,5 +161,16 @@ const FEATURED_DRUGS = [
 export const GALLERY_LABS = FEATURED_LABS.map((s) => LAB_TESTS.find((t) => t.id === "labs-" + s)!).filter(Boolean);
 export const GALLERY_DRUGS = FEATURED_DRUGS.map((s) => WELLNESS.find((t) => t.id === "drugs-" + s)!).filter(Boolean);
 
-export const ALL_CATALOG: CatalogItem[] = [...LAB_TESTS, ...WELLNESS];
+// ── Nea Precision Skin (treatments; priced at consultation) ───────────────
+export const NEA_ITEMS: CatalogItem[] = NEA_TREATMENTS.map((t) => ({
+  id: "nea-" + t.id, vendor: "nea", name: t.name, cat: t.cat, price: 0, why: t.summary, bestFor: t.summary,
+  facts: (t.facts.length >= 3 ? t.facts.slice(0, 3) : [...t.facts, ["Booking", "Free 15-min consult"] as [string, string], ["Clinic", "Calgary NE"] as [string, string]].slice(0, 3)),
+  areas: t.concerns.slice(0, 3), meta: `${t.cat}${t.tech ? " · " + t.tech : ""}`,
+  regions: ["CA", "US", "UK"],
+  url: () => NEA.book,
+}));
+const FEATURED_NEA = ["facial", "cosmetic", "fillers", "hair", "muscle", "lines", "perfect", "facials", "snoring", "laser"];
+export const GALLERY_NEA = FEATURED_NEA.map((s) => NEA_ITEMS.find((t) => t.id === "nea-" + s)!).filter(Boolean);
+
+export const ALL_CATALOG: CatalogItem[] = [...LAB_TESTS, ...WELLNESS, ...NEA_ITEMS];
 export const findCatalogItem = (id: string) => ALL_CATALOG.find((t) => t.id === id);
