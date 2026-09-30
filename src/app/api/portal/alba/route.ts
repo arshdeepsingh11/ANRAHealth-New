@@ -16,6 +16,7 @@ import { withPatientMutation, readJson, str, HttpError } from "@backend/apiHelpe
 import { placeFor } from "@backend/brief";
 import { getWeather } from "@backend/weather";
 import { getRetests } from "@backend/labs";
+import { profileSummary } from "@backend/healthProfile";
 
 const EMERGENCY_TEXT = "This could need urgent care. If you have chest pain, severe shortness of breath, fainting or other emergency symptoms, call 911 or go to the nearest emergency department now.";
 const EXTRA_EMERGENCY = /chest pain|can'?t breathe|cannot breathe|trouble breathing|faint|stroke|suicid|severe/i;
@@ -89,6 +90,7 @@ async function buildContext(patient: { id: string; firstName: string; timezone: 
     lines.push(`Check-ins last 7 days: ${sum("water")} glasses of water, ${sum("caffeine")} caffeinated drinks, ${sum("alcohol")} alcoholic drinks${mood.length ? `, average mood ${avg(mood).toFixed(1)}/5` : ""}${stress.length ? `, average stress ${avg(stress).toFixed(1)}/5` : ""}; meals logged: ${wkLogs.filter((l) => l.kind === "meal").map((l) => l.note).slice(-5).join("; ") || "none"}`);
   }
   if (place) { const w = await getWeather(place); if (w) lines.push(`Today in ${w.place}: ${w.tempC ?? "?"}°C ${w.condition || ""}, AQHI ${w.aqhi ?? "?"} (${w.aqhiRisk || "unknown"})${w.alerts[0] ? `, alert: ${w.alerts[0]}` : ""}`); }
+  if (c.records) { const prof = await profileSummary(patient.id); if (prof) lines.push("Health profile (patient-entered):\n" + prof); }
   if (retests.length) lines.push(`Lab retests due: ${retests.map((r) => `${r.name} (last ${r.last}, due ${r.due})`).join("; ")}`);
   if (protocol.items.length) lines.push(`Daily protocol: ${protocol.items.map((i) => `${i.title} (${i.dose})${i.doneToday ? " — done today" : ""}`).join("; ")}`);
   return { text: lines.join("\n"), sources: [...sources], hasSleep: byMetric.has("sleep"), hasTrends: byMetric.size > 0, hasAppt: !!appt };
