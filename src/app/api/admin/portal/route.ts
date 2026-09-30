@@ -97,7 +97,7 @@ export async function POST(req: Request) {
         const title = str(d.title, 120), clinician = str(d.clinician, 120), startsAt = dateOrNull(d.startsAt, "startsAt");
         if (!title || !clinician || !startsAt) throw new HttpError(400, "title, clinician and startsAt are required.");
         created = await prisma.appointment.create({ data: {
-          patientId: p.id, title, clinician, startsAt, location: str(d.location, 200) || "ANRA Clinic",
+          patientId: p.id, title, clinician, startsAt, location: str(d.location, 200) || "NEYU Clinic",
           durationMin: Math.min(480, Math.max(5, Number(d.durationMin) || 30)), status: ["scheduled", "completed", "cancelled"].includes(d.status) ? d.status : "scheduled",
           summaryAvailable: d.summaryAvailable === true,
         }, select: { id: true } });
