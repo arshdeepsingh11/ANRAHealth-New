@@ -40,7 +40,7 @@ export interface NavLink {
 
 // ── Emergency safety net (client side) ────────────────────────────────────
 // Design list + the site's shared server patterns. Never weaken — only add.
-const EMERG = ["chest pain", "chest pressure", "crushing", "tightness in my chest", "chest tightness", "can't breathe", "can’t breathe", "cannot breathe", "struggling to breathe", "trouble breathing", "difficulty breathing", "fainted", "fainting", "passed out", "unconscious", "stroke", "face drooping", "drooping face", "slurred", "numbness on one side", "weakness on one side", "one side of my body", "seizure", "suicid", "kill myself", "end my life", "overdose", "severe bleeding", "coughing blood", "coughing up blood", "vomiting blood", "blue lips", "anaphyla", "throat swelling", "throat is closing", "worst headache", "heart attack"];
+const EMERG = ["chest pain", "chest pressure", "crushing", "tightness in my chest", "chest tightness", "can't breathe", "can’t breathe", "cannot breathe", "struggling to breathe", "trouble breathing", "difficulty breathing", "fainted", "fainting", "passed out", "unconscious", "stroke", "face drooping", "drooping face", "slurred", "numbness on one side", "weakness on one side", "one side of my body", "seizure", "suicid", "kill myself", "killing myself", "end my life", "want to die", "hurt myself", "self harm", "self-harm", "overdose", "severe bleeding", "coughing blood", "coughing up blood", "vomiting blood", "blue lips", "anaphyla", "throat swelling", "throat is closing", "worst headache", "heart attack"];
 export const isEmergency = (t: string) => {
   const s = (t || "").toLowerCase();
   return EMERG.some((k) => s.includes(k)) || detectEmergencyKeywords(t || "") || detectCrisisKeywords(t || "");
