@@ -37,7 +37,7 @@ export default function CatalogDetailSheet({ item, mobile, onClose, onGet }: { i
           ))}
         </dl>
         <div style={{ marginTop: 16, fontSize: 14, color: "#5A626A" }}>{item.vendor === "labs" ? "Best suited for: " + item.bestFor : nea ? <a href={"/specialties/skin-health#" + item.id.slice(4)} style={{ color: "#8A4F43" }}>Full treatment details →</a> : "Relevant to: " + item.areas.join(", ")}</div>
-        <p style={{ margin: "20px 0 0", fontSize: 15, color: "#3A4147", padding: "14px 16px", borderRadius: 12, background: nea ? "#F6E9E4" : "#EFECE6" }}>{nea ? "Every Nea treatment starts with a free 15-minute consultation. Pricing and your plan are set with Nea’s team." : "Results are most useful alongside your history and other tests. An ANRA clinician can review them with you."}</p>
+        <p style={{ margin: "20px 0 0", fontSize: 15, color: "#3A4147", padding: "14px 16px", borderRadius: 12, background: nea ? "#F6E9E4" : "#EFECE6" }}>{nea ? "Every Nea treatment starts with a free 15-minute consultation. Pricing and your plan are set with Nea’s team." : "Results are most useful alongside your history and other tests. An NEYU clinician can review them with you."}</p>
         <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: nea ? 22 : 30, letterSpacing: "-.025em", fontWeight: 500 }}>{money(item.price)}</span>
           {available ? (
