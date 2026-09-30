@@ -27,7 +27,7 @@ export function Appointments() {
   return (
     <div style={{ ...screenAnim, maxWidth: 720 }}>
       <h1 style={{ margin: "0 0 6px", fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>Appointments</h1>
-      <p style={{ margin: "0 0 24px", fontSize: 15, color: C.muted }}>Your visits with the ANRA care team.</p>
+      <p style={{ margin: "0 0 24px", fontSize: 15, color: C.muted }}>Your visits with the NEYU care team.</p>
       <h2 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 500, color: C.muted }}>Upcoming</h2>
       {next ? (
         <article style={{ padding: 24, borderRadius: 22, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 16, marginBottom: 32 }}>
@@ -84,7 +84,7 @@ export function Referrals() {
       <h1 style={{ margin: "0 0 6px", fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>Referrals</h1>
       <p style={{ margin: "0 0 24px", fontSize: 15, color: C.muted }}>Where each referral stands.</p>
       {!data ? <Loading error={error} retry={reload} /> : data.length === 0 ? (
-        <EmptyCard icon="ph ph-arrows-split" title="No referrals yet" text="When a referral to ANRA is linked to your account, you'll be able to follow each step here." maxWidth="none" />
+        <EmptyCard icon="ph ph-arrows-split" title="No referrals yet" text="When a referral to NEYU is linked to your account, you'll be able to follow each step here." maxWidth="none" />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {data.map((r) => (
