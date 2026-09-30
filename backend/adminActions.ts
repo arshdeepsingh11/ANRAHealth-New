@@ -121,7 +121,7 @@ export async function runAction(b: any, c: Ctx): Promise<Result> {
         if (!d) throw new HttpError(404, "Device not found.");
         if (!emailConfigured()) throw new HttpError(503, "Email isn't set up, so the reminder can't be sent.");
         const name = PROVIDER_NAMES[d.provider] || d.provider;
-        const text = `Hi ${d.patient.firstName},\n\nYour ${name} hasn't sent new data to My Health Space${d.lastSyncAt ? " since " + fmtDate(d.lastSyncAt) : ""}. Open the ANRA Shortcut or app on your phone to sync again.\n\nIf you'd rather stop sharing, you can turn this off in My Health Space → Devices.\n\nANRA Health`;
+        const text = `Hi ${d.patient.firstName},\n\nYour ${name} hasn't sent new data to My Health Space${d.lastSyncAt ? " since " + fmtDate(d.lastSyncAt) : ""}. Open the NEYU Shortcut or app on your phone to sync again.\n\nIf you'd rather stop sharing, you can turn this off in My Health Space → Devices.\n\nNEYU Health`;
         const esc = (x: string) => x.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         await sendMail({
           to: d.patient.email, subject: `Your ${name} hasn't synced with My Health Space`, text,
@@ -387,7 +387,7 @@ export async function runAction(b: any, c: Ctx): Promise<Result> {
     case "export.patients": {
       const rows = await patientsList();
       await log({ kind: "Export", action: "Exported patient list (CSV)", resource: "Patient list", subject: `${rows.length} patients` });
-      return { ok: true, file: { name: `anra-patients-${stamp()}.csv`, mime: "text/csv", content: csv([["Patient ID", "Name", "Email", "Phone", "Verified", "Age", "Last active", "Connected devices", "Next appointment", "Member since", "Account", "Test"], ...rows.map((r) => [r.id, r.name, r.email, r.phone, r.verified ? "Yes" : "No", r.age ?? "", r.lastActive, r.devices, r.nextAppt, r.since, r.acct, r.test ? "Yes" : ""])]) } };
+      return { ok: true, file: { name: `neyu-patients-${stamp()}.csv`, mime: "text/csv", content: csv([["Patient ID", "Name", "Email", "Phone", "Verified", "Age", "Last active", "Connected devices", "Next appointment", "Member since", "Account", "Test"], ...rows.map((r) => [r.id, r.name, r.email, r.phone, r.verified ? "Yes" : "No", r.age ?? "", r.lastActive, r.devices, r.nextAppt, r.since, r.acct, r.test ? "Yes" : ""])]) } };
     }
     case "export.audit": {
       const rows = await auditList(20000);
@@ -402,7 +402,7 @@ export async function runAction(b: any, c: Ctx): Promise<Result> {
         "", "# Appointments", csv([["Patient", "Type", "Clinician", "Location", "Starts (MT)", "Status"], ...appts.map((a) => [fullName(a.patient), a.title, a.clinician, a.location, fmtFull(a.startsAt), a.status])]),
         "", "# Accounts", csv([["Patient ID", "Name", "Email", "Verified", "Member since", "Account"], ...pts.map((p) => [p.id, p.name, p.email, p.verified ? "Yes" : "No", p.since, p.acct])]),
       ];
-      return { ok: true, file: { name: `anra-system-export-${stamp()}.csv`, mime: "text/csv", content: parts.join("\n") } };
+      return { ok: true, file: { name: `neyu-system-export-${stamp()}.csv`, mime: "text/csv", content: parts.join("\n") } };
     }
 
     default:
