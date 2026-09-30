@@ -55,10 +55,10 @@ function Cta({ f, accent, line, onAsk, ask }: { f: FeatureId; accent: string; li
     <section style={{ borderRadius: 24, padding: "clamp(18px,3vw,28px)", background: `linear-gradient(135deg, ${accent}12, #6A509612)`, border: `1px solid ${accent}2A`, display: "grid", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 14, flexWrap: "wrap", alignItems: "end" }}>
         <div style={{ maxWidth: 620 }}><div style={{ ...eyebrow, color: accent }}>Your next step</div><p style={{ margin: "6px 0 0", fontSize: 17, lineHeight: 1.55 }}>{line}</p></div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book an ANRA consultation<i className="ph ph-arrow-right" /></a><button onClick={() => onAsk(ask)} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask ALBA</button></div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book an NEYU consultation<i className="ph ph-arrow-right" /></a><button onClick={() => onAsk(ask)} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask ALBA</button></div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,240px),1fr))", gap: 12 }}>{FEATURE_TESTS[f].map((id) => <TestCard key={id} id={id} accent={accent} />)}</div>
-      <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs. Results are interpreted clinically at ANRA, together with your history.</p>
+      <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs. Results are interpreted clinically at NEYU, together with your history.</p>
     </section>
   );
 }
@@ -75,7 +75,7 @@ export function Responsiveness({ onAsk }: { onAsk: Ask }) {
   const list = INTERVENTIONS.filter((x) => type === "All" || x.type === type);
   return (
     <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 20 }}>
-      <Head n={1} kicker="Intervention Responsiveness Explorer" accent={A} title={<>What actually moves <span style={aiText}>your aging clocks?</span></>} lead="In 2026, researchers pooled 51 human intervention studies to see which changes truly shift biological-aging measures. Some did — reliably. Here is what the evidence shows, and how ANRA and BioAro help you measure your starting point." />
+      <Head n={1} kicker="Intervention Responsiveness Explorer" accent={A} title={<>What actually moves <span style={aiText}>your aging clocks?</span></>} lead="In 2026, researchers pooled 51 human intervention studies to see which changes truly shift biological-aging measures. Some did — reliably. Here is what the evidence shows, and how NEYU and BioAro help you measure your starting point." />
       <Kpis accent={A} items={[{ v: 51, l: "intervention studies pooled" }, { v: 3128, l: "blood samples analysed" }, { v: 16, l: "epigenetic clocks compared" }, { v: 19, l: "interventions that significantly lowered epigenetic age" }]} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: 16 }}>
         <Panel title="Average effect by type" sub="Mean reduction in epigenetic age measures (larger = more change)"><HBars rows={EFFECT_BY_TYPE} max={0.1} color={A} fmt={(v) => "−" + v.toFixed(3)} /><p style={{ margin: 0, fontSize: 13, color: T.muted }}>Medications changed clocks more on average; diet changes were the most consistent.</p></Panel>
@@ -95,8 +95,8 @@ export function Responsiveness({ onAsk }: { onAsk: Ask }) {
         {mine.length > 0 && <button onClick={() => onAsk(`I'm doing or considering: ${mine.join(", ")}. What does the 2026 Nature Medicine research say about these and biological aging, and how could I measure my starting point?`)} style={{ ...btnInk, justifySelf: "start", background: `linear-gradient(120deg, ${A}, #6A5096)` }}><i className="ph ph-sparkle" />ALBA: what does this mean for me?</button>}
         <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>Medications and procedures are clinical decisions for your physician — never a reason to start anything on your own.</p>
       </Panel>
-      <Panel title="How ANRA and BioAro fit in" sub="Honest framing">
-        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>The clocks in this study (DunedinPACE, GrimAge and others) are research-grade DNA-methylation tests. BioAro’s inflammation panels, GDF-15 and telomere tests measure <b style={{ fontWeight: 600 }}>related aging biology</b> — chronic inflammation, cellular stress and chromosome caps — giving you and your ANRA physician a baseline before a change, and something to re-check after.</p>
+      <Panel title="How NEYU and BioAro fit in" sub="Honest framing">
+        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>The clocks in this study (DunedinPACE, GrimAge and others) are research-grade DNA-methylation tests. BioAro’s inflammation panels, GDF-15 and telomere tests measure <b style={{ fontWeight: 600 }}>related aging biology</b> — chronic inflammation, cellular stress and chromosome caps — giving you and your NEYU physician a baseline before a change, and something to re-check after.</p>
       </Panel>
       <Cta f="respond" accent={A} onAsk={onAsk} ask="Which interventions have the best evidence for slowing biological aging, and what should I measure first?" line="Measure your inflammation and cellular-stress baseline, then plan changes with a physician who can re-check what moves." />
       <Sources ids={["sehgal2026"]} />
@@ -142,7 +142,7 @@ export function StressMap({ onAsk }: { onAsk: Ask }) {
           <button onClick={() => onAsk(`My FRAIL score is ${score} out of 5. What does that mean, and how do GDF-15 and telomere tests relate to it?`)} style={{ ...btnGhost, height: 38, fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain with ALBA</button>
         </div>
       </Panel>
-      <Cta f="stress" accent={A} onAsk={onAsk} ask="Why measure GDF-15 and telomere length together?" line="Test GDF-15 and telomere length together for a two-sided view of cellular stress and aging — then review both with an ANRA physician." />
+      <Cta f="stress" accent={A} onAsk={onAsk} ask="Why measure GDF-15 and telomere length together?" line="Test GDF-15 and telomere length together for a two-sided view of cellular stress and aging — then review both with an NEYU physician." />
       <Sources ids={["yu2025", "lee2026"]} />
     </div>
   );
@@ -199,9 +199,9 @@ export function PaceVsAge({ onAsk }: { onAsk: Ask }) {
         </Panel>
       </div>
       <Panel title="How we connect this to you">
-        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>Pace-of-aging clocks are research tests. What ANRA and BioAro offer today are measurable drivers linked to aging biology — inflammation panels, GDF-15 and telomere length — which your physician reads alongside blood pressure, glucose, lipids and how you feel, to judge where your pace might be headed and what to change first.</p>
+        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>Pace-of-aging clocks are research tests. What NEYU and BioAro offer today are measurable drivers linked to aging biology — inflammation panels, GDF-15 and telomere length — which your physician reads alongside blood pressure, glucose, lipids and how you feel, to judge where your pace might be headed and what to change first.</p>
       </Panel>
-      <Cta f="pace" accent={A} onAsk={onAsk} ask="What is the difference between biological age and pace of aging, and what can change my pace?" line="Build your aging baseline — inflammation, GDF-15 and telomeres — and review it with an ANRA physician." />
+      <Cta f="pace" accent={A} onAsk={onAsk} ask="What is the difference between biological age and pace of aging, and what can change my pace?" line="Build your aging baseline — inflammation, GDF-15 and telomeres — and review it with an NEYU physician." />
       <Sources ids={["belsky2022", "sehgal2026"]} />
     </div>
   );
@@ -250,7 +250,7 @@ export function PgxSafety({ onAsk }: { onAsk: Ask }) {
         </div>
       </div>
       <p role="note" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBF1E4", color: "#7A4B12", fontSize: 14.5, display: "flex", gap: 8 }}><i className="ph ph-warning" style={{ marginTop: 3 }} />Never stop, start or change a medicine because of a gene result or this tool. Your prescriber decides, with your full history.</p>
-      <Cta f="pgx" accent={A} onAsk={onAsk} ask="What is pharmacogenomic testing and why does it matter more as we age?" line="Get your drug–gene profile once, and have an ANRA physician translate it into a plan your prescribers can use for years." />
+      <Cta f="pgx" accent={A} onAsk={onAsk} ask="What is pharmacogenomic testing and why does it matter more as we age?" line="Get your drug–gene profile once, and have an NEYU physician translate it into a plan your prescribers can use for years." />
       <Sources ids={["bousman2025"]} />
     </div>
   );
@@ -291,9 +291,9 @@ export function GeneticsPathways({ onAsk }: { onAsk: Ask }) {
         </div>
       </div>
       <Panel title="What sequencing can — and can’t — tell you">
-        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>Whole genome sequencing reads essentially all of your DNA once, including these pathways and genes with clear medical actions (inherited disease risk, medication response). It <b style={{ fontWeight: 600 }}>cannot predict how long you will live</b> — this study was in one ancestry group and used predicted variant effects. Its value is a lifelong reference your ANRA physician can revisit as science advances. 30X is the clinical standard depth; 100X reads each position more times for extra confidence.</p>
+        <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>Whole genome sequencing reads essentially all of your DNA once, including these pathways and genes with clear medical actions (inherited disease risk, medication response). It <b style={{ fontWeight: 600 }}>cannot predict how long you will live</b> — this study was in one ancestry group and used predicted variant effects. Its value is a lifelong reference your NEYU physician can revisit as science advances. 30X is the clinical standard depth; 100X reads each position more times for extra confidence.</p>
       </Panel>
-      <Cta f="genes" accent={A} onAsk={onAsk} ask="What does whole genome sequencing show, and what's the difference between 30X and 100X?" line="Sequence your genome once and review it with an ANRA physician — a reference for decades of care." />
+      <Cta f="genes" accent={A} onAsk={onAsk} ask="What does whole genome sequencing show, and what's the difference between 30X and 100X?" line="Sequence your genome once and review it with an NEYU physician — a reference for decades of care." />
       <Sources ids={["ying2024"]} />
     </div>
   );
