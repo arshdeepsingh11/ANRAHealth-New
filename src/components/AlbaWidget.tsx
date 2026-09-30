@@ -22,7 +22,7 @@ function greetingForPath(pathname: string): string {
   if (pathname.startsWith("/genomics")) return "Hi, I'm ALBA. Want help understanding these testing options?";
   if (pathname.startsWith("/explain-diagnosis")) return "Hi, I'm ALBA. Share a term from your report and I’ll explain it in plain language.";
   if (pathname.startsWith("/resources")) return "Hi, I'm ALBA. Looking for test prep, condition info, or forms? Ask me and I'll point you in the right direction.";
-  return "Hi, I'm ALBA — ANRA Health's AI companion. Ask me about our services, physicians, locations, or how to book.";
+  return "Hi, I'm ALBA — NEYU Health's AI companion. Ask me about our services, physicians, locations, or how to book.";
 }
 
 const iconBtn: React.CSSProperties = { width: 40, height: 40, border: 0, background: "none", borderRadius: 10, fontSize: 18, display: "grid", placeItems: "center", flex: "none" };
