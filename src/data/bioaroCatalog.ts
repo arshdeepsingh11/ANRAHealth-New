@@ -1,6 +1,6 @@
 // Live BioAro catalogs, captured from bioarolabs.com/shop (44 tests) and
 // bioarodrugs.com/us/shop (29 products), Sep 2026. Every item deep-links to
-// its exact product page on the partner site — ANRA never sells or checks out.
+// its exact product page on the partner site — NEYU never sells or checks out.
 //
 // To update: edit the rows below. Prices are USD/CAD as listed by BioAro.
 
