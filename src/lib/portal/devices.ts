@@ -35,11 +35,10 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     guide: {
       needs: "An iPhone with the Health and Shortcuts apps (built in).",
       steps: [
-        "Tap Connect. You'll get a private sync token — copy it.",
-        "On your iPhone open Shortcuts → Automation → New Automation → Time of Day (8:00 AM, Daily, Run Immediately).",
-        "Add Find Health Samples for Steps, Walking + Running Distance, Exercise Minutes and Sleep (today / last night).",
-        "Add Get Contents of URL with the address shown, Method POST, header Authorization = Bearer + your token, and a JSON body (keys shown after you connect).",
-        "Run it once. This card turns Connected after the first sync. After that ANRA gets your summary every morning.",
+        "Tap Connect, then Connect with a QR code.",
+        "Scan the code with your iPhone camera and open the link.",
+        "On your phone: copy your sync link, add the ANRA Sync shortcut, and tap Allow for Health.",
+        "Turn on the daily 9 PM automation. This card turns Connected when the first data arrives.",
       ],
       note: "Sleep appears if you use Sleep Schedule or a sleep app that writes to Health. Heart rate variability and blood oxygen need an Apple Watch.",
     } },
@@ -55,11 +54,10 @@ export const DEVICE_CATALOG: CatalogDevice[] = [
     guide: {
       needs: "Apple Watch paired with your iPhone, plus the Shortcuts app.",
       steps: [
-        "Tap Connect. You'll get a private sync token — copy it.",
-        "On your iPhone open Shortcuts → Automation → New Automation → Time of Day (8:00 AM, Daily, Run Immediately).",
-        "Add Find Health Samples for Resting Heart Rate, Heart Rate Variability, Sleep, Steps, Exercise Minutes and Blood Oxygen.",
-        "Add Get Contents of URL with the address shown, Method POST, header Authorization = Bearer + your token, and a JSON body (keys shown after you connect).",
-        "Run it once. This card turns Connected after the first sync.",
+        "Tap Connect, then Connect with a QR code.",
+        "Scan the code with your iPhone camera and open the link.",
+        "On your phone: copy your sync link, add the ANRA Sync shortcut, and tap Allow for Health.",
+        "Turn on the daily 9 PM automation. This card turns Connected when the first data arrives.",
       ],
     } },
   { id: "withings", name: "Withings", icon: "ph ph-heartbeat", mode: "oauth",
