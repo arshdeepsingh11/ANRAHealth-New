@@ -21,9 +21,9 @@ export type Sheet =
   | { t: "challenge"; mode: "create" | "join" };
 
 // Back target for detail screens (the section tabs cover everything else).
-export const PARENT: Partial<Record<Screen, Screen>> = { result: "results", trend: "trends", privacy: "profile", settings: "profile", careview: "family", story: "today" };
+export const PARENT: Partial<Record<Screen, Screen>> = { result: "results", trend: "trends", privacy: "profile", settings: "profile", careview: "family", story: "today", baseline: "today" };
 export const LABELS: Record<Screen, string> = { today: "Today", trends: "Trends", results: "Results", protocol: "Protocol", more: "More", history: "History", devices: "Devices", appointments: "Appointments", referrals: "Referrals", profile: "Profile", privacy: "Privacy", settings: "Notifications", result: "Result", trend: "Trend",
-  heart: "Heart", lifestyle: "Lifestyle", family: "Family & sharing", careview: "Care view", rewards: "Rewards", story: "Monthly story" };
+  heart: "Heart", lifestyle: "Lifestyle", family: "Family & sharing", careview: "Care view", rewards: "Rewards", story: "Monthly story", baseline: "Health profile" };
 
 export interface PortalCtx {
   route: Route;
