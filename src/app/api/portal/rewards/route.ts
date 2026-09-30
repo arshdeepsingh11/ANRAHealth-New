@@ -16,7 +16,7 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
   const tier = REWARD_TIERS.find((t) => t.points === want);
   if (!tier) throw new HttpError(400, "Choose a reward.");
   if ((await balance(patient.id)) < tier.points) throw new HttpError(400, "Not enough points yet — keep your streak going!");
-  const code = "ANRA-" + randomBytes(4).toString("hex").toUpperCase();
+  const code = "NEYU-" + randomBytes(4).toString("hex").toUpperCase();
   await prisma.rewardEvent.create({ data: { patientId: patient.id, kind: "redeem", day: `${dayKey(new Date(), patient.timezone)}:${code}`, points: -tier.points, code, note: tier.label } });
   audit(patient.id, "patient", "create", `reward:${code}`, ip);
   return { code, rewards: await getRewards(patient) };
