@@ -1,6 +1,6 @@
 // POST /api/pair/claim { code } — called by the phone after scanning the QR.
 // One use only: issues a new private sync link for that device (the old
-// token stops working) and returns the ANRA Sync shortcut link if configured.
+// token stops working) and returns the NEYU Sync shortcut link if configured.
 import { randomBytes } from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@backend/db";
