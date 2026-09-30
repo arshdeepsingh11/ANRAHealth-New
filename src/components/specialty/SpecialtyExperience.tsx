@@ -8,6 +8,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
 import SymptomChecker from "@/components/SymptomChecker";
+import PhysicianIdCard from "@/components/PhysicianIdCard";
 import { STUDIO, type StudioConfig, type CareItem } from "@/data/specialtyStudio";
 import { physicians, type Physician } from "@/data/physicians";
 import { locations, brand } from "@/data/content";
@@ -143,12 +144,13 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
   const c = STUDIO[slug];
   const [a] = c.accent;
   const docs = useMemo(() => (c.disciplines.length ? physicians.filter((p) => c.disciplines.some((d) => p.disciplines.includes(d))) : []), [c]);
+  const team = useMemo(() => physicians.filter((p) => !docs.includes(p)), [docs]);
   const TABS: { v: Tab; label: string; icon: string }[] = [
     { v: "overview", label: "Overview", icon: "ph-house-simple" },
     { v: "alba", label: "Ask ALBA", icon: "ph-sparkle" },
     { v: "care", label: c.partner ? "Services" : "Care & tests", icon: "ph-first-aid-kit" },
     { v: "tools", label: "Tools & insights", icon: "ph-chart-line-up" },
-    ...(docs.length ? [{ v: "physicians" as Tab, label: "Physicians", icon: "ph-user-circle" }] : []),
+    { v: "physicians" as Tab, label: "Physicians", icon: "ph-user-circle" },
     { v: "visit", label: "Visit", icon: "ph-map-pin" },
   ];
   const [tab, setTabState] = useState<Tab>("overview");
@@ -172,10 +174,11 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
   useEffect(() => { const t = new URLSearchParams(window.location.search).get("tab") as Tab | null; if (t && TABS.some((x) => x.v === t)) setTabState(t); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
   const ask = useCallback((q: string) => { setSeed(q); setTab("alba"); }, [setTab]);
 
-  const langs = ["All", ...Array.from(new Set(docs.flatMap((p) => p.languages))).sort()];
-  const shownDocs = docs.filter((p) => (lang === "All" || p.languages.includes(lang)) && (loc === "All" || p.location === loc));
+  const langs = ["All", ...Array.from(new Set(physicians.flatMap((p) => p.languages))).sort()];
+  const pick = (l: Physician[]) => l.filter((p) => (lang === "All" || p.languages.includes(lang)) && (loc === "All" || p.location === loc));
+  const shownDocs = pick(docs), shownTeam = pick(team);
   const testCount = c.tests.filter((s) => LAB_TESTS.some((t) => t.id === "labs-" + s)).length;
-  const langCount = new Set(docs.flatMap((p) => p.languages)).size;
+  const langCount = new Set(physicians.flatMap((p) => p.languages)).size;
   const groups = Array.from(new Set(c.care.map((x) => x.group || "")));
 
   return (
@@ -200,7 +203,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
         {tab === "overview" && <>
           <Hero c={c} onAsk={ask} />
           <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,165px),1fr))", gap: 12 }}>
-            {docs.length > 0 && <Stat icon="ph-user-circle" tone={a} value={<CountUp to={docs.length} />} label={`physician${docs.length > 1 ? "s" : ""} in this specialty`} />}
+            <Stat icon="ph-user-circle" tone={a} value={<CountUp to={docs.length || physicians.length} />} label={docs.length ? `${c.label} physician${docs.length > 1 ? "s" : ""} · ${physicians.length} on the ANRA team` : "ANRA physicians"} />
             {c.partner ? <Stat icon="ph-map-trifold" tone="#2A78D6" value="AB" label={c.partner.note.replace(/\.$/, "")} /> : <Stat icon="ph-map-pin" tone="#2A78D6" value={<CountUp to={locations.length} />} label="Calgary clinics" />}
             {langCount > 0 && <Stat icon="ph-translate" tone={T.ai} value={<CountUp to={langCount} />} label="languages spoken by our team" />}
             <Stat icon="ph-first-aid-kit" tone={T.good} value={<CountUp to={c.care.length} />} label={c.partner ? "services" : "areas of care"} />
@@ -281,29 +284,26 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))", gap: 16 }}>
             {testCount > 0 && !c.tools.includes("tests") && <ChartCard title="Related tests, by price" sub="BioAro Labs"><TestsChart slugs={c.tests} accent={a} /></ChartCard>}
-            {docs.length > 0 && <ChartCard title="Languages spoken" sub={`By our ${c.label.toLowerCase()} physicians`} table={{ head: ["Physician", "Languages"], rows: docs.map((p) => [p.name, p.languages.join(", ")]) }}><LangChart list={docs} accent={a} /></ChartCard>}
+            <ChartCard title="Languages spoken" sub="Across our ANRA physicians" table={{ head: ["Physician", "Languages"], rows: physicians.map((p) => [p.name, p.languages.join(", ")]) }}><LangChart list={physicians} accent={a} /></ChartCard>
           </div>
         </>}
 
-        {tab === "physicians" && docs.length > 0 && <>
+        {tab === "physicians" && <>
           {c.physicianNote && <p style={{ margin: 0, fontSize: 15, color: T.ink2 }}>{c.physicianNote}</p>}
           <div style={{ display: "grid", gap: 8 }}>
             <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }}>{langs.map((l) => <button key={l} onClick={() => setLang(l)} aria-pressed={lang === l} style={{ ...chip(lang === l), minHeight: 36, fontSize: 13.5 }}>{l === "All" ? "Any language" : l}</button>)}</div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{["All", ...locations.map((l) => l.tag)].map((l) => <button key={l} onClick={() => setLoc(l)} aria-pressed={loc === l} style={{ ...chip(loc === l), minHeight: 36, fontSize: 13.5 }}><i className="ph ph-map-pin" />{l === "All" ? "Any location" : l}</button>)}</div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,280px),1fr))", gap: 12 }}>
-            {shownDocs.map((p, i) => (
-              <button key={p.slug} onClick={() => setDoc(p)} className="sx-card" style={{ ...card, padding: 18, textAlign: "left", cursor: "pointer", display: "grid", gap: 10, animation: `fadeUp .35s ${i * 0.05}s both` }}>
-                <span style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                  <span style={{ width: 48, height: 48, borderRadius: 24, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${a}, #6A5096)`, color: "#fff", fontWeight: 500, flex: "none" }}>{p.name.replace(/^Dr\.?\s*/, "").split(" ").map((w) => w[0]).slice(0, 2).join("")}</span>
-                  <span><b style={{ display: "block", fontWeight: 500, fontSize: 16.5 }}>{p.name}</b><span style={{ fontSize: 13, color: a }}>{p.title}</span></span>
-                </span>
-                <span style={{ fontSize: 13.5, color: T.muted, display: "flex", gap: 6 }}><i className="ph ph-map-pin" />{p.location}</span>
-                <span style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{p.languages.map((l) => <span key={l} style={{ fontSize: 12, padding: "3px 8px", borderRadius: 8, background: T.paper, border: `1px solid ${T.line}` }}>{l}</span>)}</span>
-              </button>
-            ))}
-            {!shownDocs.length && <p style={{ color: T.muted }}>No physician matches both filters — try “Any”.</p>}
-          </div>
+          <p style={{ margin: 0, fontSize: 13.5, color: T.muted }}>Drag a card to swing it, or tap to open the physician’s profile.</p>
+          {[[shownDocs, c.partner ? "" : `${c.label} physicians`], [shownTeam, docs.length ? "Also on our ANRA team" : "Our ANRA physicians"]].map(([list, title]) => (list as Physician[]).length > 0 && (
+            <section key={title as string} style={{ display: "grid", gap: 8 }}>
+              {title && <div style={{ ...eyebrow, color: a }}>{title as string} · {(list as Physician[]).length}</div>}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,300px),1fr))", columnGap: 24, rowGap: 48 }}>
+                {(list as Physician[]).map((p, i) => <PhysicianIdCard key={p.slug} p={p} index={i} onOpen={() => setDoc(p)} />)}
+              </div>
+            </section>
+          ))}
+          {!shownDocs.length && !shownTeam.length && <p style={{ color: T.muted }}>No physician matches both filters — try “Any”.</p>}
         </>}
 
         {tab === "visit" && (
