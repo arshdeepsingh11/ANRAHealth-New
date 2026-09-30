@@ -7,6 +7,7 @@ import { Menu, X, Phone, ChevronDown, Globe } from "lucide-react";
 import { brand } from "@/data/content";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LANGUAGES } from "@/i18n/languages";
+import NeyuLogo from "@/components/brand/NeyuLogo";
 
 function LanguageSwitcher({ lang, setLang, t }: { lang: string; setLang: (l: string) => void; t: (key: string) => string }) {
   const [open, setOpen] = useState(false);
@@ -48,7 +49,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { lang, setLang, t } = useLanguage();
 
-  // Pages that use the new ANRA design system render their own chrome
+  // Pages that use the new NEYU design system render their own chrome
   // (back arrow + tabs), so the legacy navbar must not appear on them.
   const hideNavbar =
     pathname === "/" ||
@@ -83,7 +84,7 @@ export default function Navbar() {
     <header className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? "glass-nav shadow-glass" : "bg-pearl-50 border-b border-pearl-200"}`}>
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-3 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <img src="/logo.png" alt="ANRA Health" className="h-14 md:h-16 w-auto" />
+          <NeyuLogo height={44} />
         </Link>
         <nav className="hidden lg:flex items-center gap-8 text-sm font-medium">
           {navItems.map((item) => (
