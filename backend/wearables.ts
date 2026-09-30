@@ -94,6 +94,24 @@ function normalise(metric: MetricKey, field: string, raw: unknown, tz: string): 
   return { value: Math.round(v * 100) / 100, valueText: null };
 }
 
+// Totals across a day are summed when Shortcuts sends a list of samples
+// (e.g. several step samples); for everything else the latest value wins.
+const SUM = new Set<MetricKey>(["steps", "active", "activeEnergy", "distance", "workouts", "sleep", "timeInBed"]);
+
+/** Shortcuts sends a Health Samples variable as an array, or as text with one
+ *  sample per line. Collapse it to one value (sum or latest), keeping the unit. */
+export function collapse(metric: MetricKey, raw: unknown): unknown | undefined {
+  const isList = Array.isArray(raw) || (typeof raw === "string" && /\r?\n/.test(raw.trim()));
+  if (!isList) return raw;
+  const items = (Array.isArray(raw) ? raw : (raw as string).split(/\r?\n/)).filter((x) => x !== null && x !== undefined && String(x).trim() !== "");
+  if (!items.length) return undefined; // no samples yet today — not an error
+  if (!SUM.has(metric)) return items[items.length - 1];
+  const nums = items.map(num).filter((n): n is number => n != null);
+  if (!nums.length) return items[0];
+  const unit = String(items[0]).replace(/^[\s\d.,-]+/, "").trim();
+  return `${Math.round(nums.reduce((a, b) => a + b, 0) * 100) / 100}${unit ? " " + unit : ""}`;
+}
+
 export function parseIngest(body: any, tz: string, now = new Date()): ParseResult {
   const readings: ParsedReading[] = [], rejected: ParseResult["rejected"] = [];
   const fallbackDay = toDay(body?.date ?? body?.day, tz) || dayKey(now, tz);
@@ -104,7 +122,9 @@ export function parseIngest(body: any, tz: string, now = new Date()): ParseResul
     const metric = isMetricKey(metricRaw) ? (metricRaw as MetricKey) : ALIASES[key];
     if (!metric) return rejected.push({ field, reason: "unknown metric" });
     if (raw === null || raw === undefined || raw === "") return; // Shortcuts sends blanks for missing samples
-    const n = normalise(metric, field, raw, tz);
+    const one = collapse(metric, raw);
+    if (one === undefined || one === "") return;
+    const n = normalise(metric, field, one, tz);
     if (typeof n === "string") return rejected.push({ field, reason: n });
     const day = toDay(dayRaw, tz) || fallbackDay;
     const at = atRaw ? new Date(String(atRaw)) : recordedAt;
