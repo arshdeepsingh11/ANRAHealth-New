@@ -191,7 +191,7 @@ export function Profile() {
               </div>
             ))}
           </div>
-        ) : <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Your ANRA care team will appear here after your first visit.</p>}
+        ) : <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Your NEYU care team will appear here after your first visit.</p>}
       </section>
 
       <section style={{ borderRadius: 18, background: C.card, overflow: "hidden", marginBottom: 28 }}>
@@ -225,7 +225,7 @@ export function Profile() {
       </section>
 
       <button onClick={signOut} disabled={busy === "out"} className="h-danger" style={{ width: "100%", height: 48, border: "1px solid rgba(139,75,55,.25)", borderRadius: 12, background: "none", color: C.peachInk, fontSize: 15, cursor: "pointer", marginBottom: 16 }}>Sign out</button>
-      <p style={{ margin: 0, fontSize: 13, color: C.muted }}>My Health Space shows information from your connected sources and ANRA. It doesn't replace advice from your care team.</p>
+      <p style={{ margin: 0, fontSize: 13, color: C.muted }}>My Health Space shows information from your connected sources and NEYU. It doesn't replace advice from your care team.</p>
     </div>
   );
 }
@@ -246,9 +246,9 @@ function useSettingToggle() {
 
 const FAQ: [string, string][] = [
   ["Connected devices", "Devices share only the data types you allow. You can change or disconnect them at any time from Connected Devices."],
-  ["Data sharing", "Your care team sees data you choose to share, for example when preparing for a visit. ANRA does not sell your health data."],
+  ["Data sharing", "Your care team sees data you choose to share, for example when preparing for a visit. NEYU does not sell your health data."],
   ["AI usage", "ALBA reads your data only when you ask it something and only from sources you allow. Conversations are saved to your history so you and your care team can review them."],
-  ["Clinical record data", "Results and visit notes come from ANRA and BioAro Labs. They are part of your medical record and are kept according to health privacy law."],
+  ["Clinical record data", "Results and visit notes come from NEYU and BioAro Labs. They are part of your medical record and are kept according to health privacy law."],
   ["Disconnecting services", "Disconnecting stops new data. You can also delete previously imported wearable data from here."],
 ];
 
@@ -271,7 +271,7 @@ export function Privacy() {
         <ToggleList items={[
           { label: "Apple Watch", sub: "Heart, sleep and activity signals", on: settings.shareWearables, toggle: toggle("shareWearables", true) },
           { label: "BioAro Labs", sub: "Laboratory results", on: settings.shareLabs, toggle: toggle("shareLabs", true) },
-          { label: "ANRA clinical records", sub: "Visits, referrals and care plans", on: settings.shareRecords, toggle: toggle("shareRecords", true) },
+          { label: "NEYU clinical records", sub: "Visits, referrals and care plans", on: settings.shareRecords, toggle: toggle("shareRecords", true) },
           { label: "ALBA access", sub: "Let ALBA reference your data when you ask", on: settings.albaAccess, toggle: toggle("albaAccess") },
         ]} />
       </div>
