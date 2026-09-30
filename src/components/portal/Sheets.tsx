@@ -234,6 +234,61 @@ function Copy({ value, label }: { value: string; label: string }) {
   );
 }
 
+// Scan-to-connect: the computer shows a one-time QR; the phone page does the rest.
+function QrPair({ id, onPaired }: { id: string; onPaired: () => void }) {
+  const { toast } = usePortal();
+  const [pair, setPair] = useState<{ url: string; qrSvg: string; expiresAt: string; local: boolean } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [left, setLeft] = useState(0);
+  const paired = useRef(onPaired); paired.current = onPaired;
+  const make = async () => {
+    setBusy(true);
+    try { setPair(await api(`${EP.devices}/pair`, { body: { provider: id } })); }
+    catch (e: any) { toast(e.message); } finally { setBusy(false); }
+  };
+  useEffect(() => {
+    if (!pair) return;
+    const tick = () => setLeft(Math.max(0, Math.round((new Date(pair.expiresAt).getTime() - Date.now()) / 1000)));
+    tick(); const t = setInterval(tick, 1000);
+    const poll = setInterval(() => paired.current(), 4000); // refresh device status while the phone sets up
+    return () => { clearInterval(t); clearInterval(poll); };
+  }, [pair]);
+  if (!pair) return (
+    <button onClick={make} disabled={busy} style={{ width: "100%", minHeight: 52, border: "none", borderRadius: 14, background: C.teal, color: C.card, fontSize: 15.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, opacity: busy ? 0.6 : 1 }}>
+      <i className="ph ph-qr-code" style={{ fontSize: 22 }} />{busy ? "Making your code…" : "Connect with a QR code"}
+    </button>
+  );
+  const expired = left === 0;
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0,170px) 1fr", gap: 16, alignItems: "center", padding: 14, borderRadius: 16, background: "#F6F4F0" }}>
+      <div aria-label="QR code to connect your iPhone" role="img" style={{ background: "#fff", borderRadius: 12, padding: 8, opacity: expired ? 0.2 : 1, lineHeight: 0 }} dangerouslySetInnerHTML={{ __html: pair.qrSvg }} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 14, lineHeight: 1.5, color: C.ink2 }}>
+        <b style={{ fontWeight: 500, fontSize: 15, color: C.ink }}>Scan with your iPhone camera</b>
+        <span>Open the link, then follow the 4 short steps on your phone. This page updates when data arrives.</span>
+        {expired ? <button onClick={make} style={{ alignSelf: "flex-start", height: 36, padding: "0 12px", border: `1px solid ${C.line12}`, borderRadius: 10, background: C.card, fontSize: 13.5, cursor: "pointer" }}>Make a new code</button>
+          : <span style={{ fontSize: 12.5, color: C.muted }}>Code works once · expires in {Math.floor(left / 60)}:{String(left % 60).padStart(2, "0")}</span>}
+        {pair.local && <span style={{ fontSize: 12.5, color: C.peachInk }}>Test mode: your iPhone must be on the same Wi-Fi as this computer ({new URL(pair.url).host}).</span>}
+      </div>
+    </div>
+  );
+}
+
+// What the phone last sent — so "no data" always has a reason.
+function SyncLog({ d }: { d: DeviceDTO }) {
+  const r = d.lastResult;
+  if (!d.lastAttemptAt) return d.status === "on" ? null : (
+    <p style={{ margin: 0, fontSize: 13.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-info" style={{ marginTop: 2 }} />Your iPhone hasn’t reached ANRA yet. If the shortcut ran, check it used your sync link and that this computer was on.</p>
+  );
+  const ok = !!r?.stored;
+  return (
+    <div style={{ padding: "10px 12px", borderRadius: 12, background: ok ? "#EAF4EE" : C.peach, fontSize: 13.5, lineHeight: 1.5, color: ok ? "#2E5D47" : C.peachInk, display: "flex", flexDirection: "column", gap: 2 }}>
+      <b style={{ fontWeight: 500 }}>Last sync attempt · {relTime(d.lastAttemptAt)}</b>
+      {ok ? <span>Stored {r!.stored} reading{r!.stored === 1 ? "" : "s"}{r!.metrics.length ? ` (${r!.metrics.join(", ")})` : ""}.</span>
+        : <span>Nothing stored. {r?.rejected?.length ? r.rejected.slice(0, 3).map((x) => `${x.field}: ${x.reason}`).join(" · ") : "Apple Health had no samples for today yet."}</span>}
+    </div>
+  );
+}
+
 const SHORTCUT_KEYS: Record<string, string> = {
   apple: "restingHeartRate, heartRateVariability, sleepHours, steps, activeMinutes, oxygenSaturation",
   iphone: "steps, walkingDistance (km), activeMinutes, sleepHours, weight (kg), bloodPressure (\"120/80\"), bloodGlucose (mmol/L)",
@@ -244,6 +299,12 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
   const [token, setToken] = useState(initialToken);
   const [showSetup, setShowSetup] = useState(!!initialToken);
   const [syncing, setSyncing] = useState(false);
+  // New data arrived from the phone while this sheet is open → refresh the rest.
+  const lastSync = data?.find((x) => x.id === id)?.lastSyncAt ?? null;
+  const seenSync = useRef(lastSync);
+  useEffect(() => {
+    if (lastSync && lastSync !== seenSync.current) { seenSync.current = lastSync; invalidate(EP.today, EP.trends, EP.brief); toast("ANRA received new data from your iPhone"); }
+  }, [lastSync, toast]);
   const d = data?.find((x) => x.id === id);
   if (!d) return <Loading />;
   const on = d.status === "on", shortcut = d.mode === "shortcut";
@@ -278,7 +339,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
     <>
       <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{d.name}</h2>
       <p style={{ margin: "0 0 20px", fontSize: 14, color: on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 6 }}>
-        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last synced ${relTime(d.lastSyncAt)}` : "Waiting for your first sync"}
+        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last data ${relTime(d.lastSyncAt)}` : d.lastAttemptAt ? "Phone reached ANRA · no data stored yet" : "Waiting for your first sync"}
       </p>
       {d.lastError && <p role="alert" style={{ margin: "-8px 0 18px", padding: "10px 12px", borderRadius: 10, background: C.peach, color: C.peachInk, fontSize: 14 }}>{d.lastError}</p>}
 
@@ -286,6 +347,11 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
         <section style={{ marginBottom: 24, padding: 16, borderRadius: 16, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 14 }}>
           <h3 style={{ margin: 0, fontSize: 15, fontWeight: 500 }}>Set up {d.name} sync</h3>
           <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>{id === "apple" ? "Your watch saves to Apple Health on your iPhone." : "Your iPhone keeps your steps, walking and sleep in Apple Health."} A private Shortcut sends a daily summary from Apple Health to My Health Space.</p>
+          <QrPair id={id} onPaired={reload} />
+          <SyncLog d={d} />
+          <details style={{ fontSize: 14, color: C.ink2 }}>
+          <summary style={{ cursor: "pointer", color: C.teal, minHeight: 32, display: "flex", alignItems: "center" }}>Set up by hand instead</summary>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, marginTop: 10 }}>
           {token ? (
             <>
               <Copy label="Your private sync token — shown once. Keep it secret." value={token} />
@@ -303,6 +369,8 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
             <li>Add <b>Get Contents of URL</b>: the address above, Method <b>POST</b>, Header <code>Authorization</code> = <code>Bearer</code> + your token, Request Body <b>JSON</b> with keys: <code>{SHORTCUT_KEYS[id] || SHORTCUT_KEYS.apple}</code>.</li>
             <li>Tap run once. This page shows <b>Connected</b> after the first successful sync.</li>
           </ol>
+          </div>
+          </details>
         </section>
       )}
 
@@ -315,6 +383,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
           </div>
         ))}
       </div>
+      {shortcut && on && !showSetup && <div style={{ marginBottom: 12 }}><SyncLog d={d} /></div>}
       {shortcut && on && !showSetup && <button onClick={() => setShowSetup(true)} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: "none", fontSize: 15, color: C.teal, cursor: "pointer", marginBottom: 6 }}>Sync setup</button>}
       {d.lastError && !shortcut && <button onClick={() => { window.location.href = `/api/portal/oauth/${id}/start`; }} style={{ width: "100%", height: 46, border: "none", borderRadius: 12, background: C.teal, color: C.card, fontSize: 15, cursor: "pointer", marginBottom: 10 }}>Reconnect {d.name}</button>}
       <button onClick={sync} disabled={syncing} style={{ width: "100%", height: 46, border: `1px solid ${C.line12}`, borderRadius: 12, background: "none", fontSize: 15, cursor: "pointer", marginBottom: 10 }}>{syncing ? "Syncing…" : "Sync now"}</button>
