@@ -19,6 +19,7 @@ export const PAGE_HREF = {
   visitprep: "/referral-centre",
   matcher: "/physicians",
   genomics: "/genomics",
+  lab: "/longevity-lab",
   catalog: "/genomics",
   packages: "/genomics",
   referral: "/referral-centre",
@@ -199,7 +200,7 @@ export interface RailItem { k: string; label: string; icon?: string; ai?: boolea
 export const RAIL: RailItem[] = [
   { k: "care", label: "Care", icon: "ph-stethoscope", title: "Medical Specialties", blurb: "Nine specialties, one connected record.", links: SPECS.map((x) => ({ label: x.name, href: x.href })) },
   { k: "diag", label: "Diagnostics", icon: "ph-pulse", title: "Diagnostics & Testing", blurb: "Structure, function, circulation, rhythm and breathing, onsite.", links: DIAGS.map((d) => ({ label: d.name, sub: d.signal, href: d.href })) },
-  { k: "prec", label: "Precision Health", icon: "ph-dna", title: "Precision Medicine & Genomics", blurb: "Information more personal to you than population averages.", links: [{ label: "Genomics", sub: "Explainer", href: PAGE_HREF.genomics }, { label: "Test catalog", sub: "BioAro Labs", href: PAGE_HREF.catalog }, { label: "Packages", sub: "Pathways", href: PAGE_HREF.packages }, { label: "Biomarkers", sub: "Health map", hub: { layer: "prec", sub: 2 } }] },
+  { k: "prec", label: "Precision Health", icon: "ph-dna", title: "Precision Medicine & Genomics", blurb: "Information more personal to you than population averages.", links: [{ label: "Genomics", sub: "Explainer", href: PAGE_HREF.genomics }, { label: "Longevity Lab", sub: "Research · 3D · AI", href: PAGE_HREF.lab }, { label: "Test catalog", sub: "BioAro Labs", href: PAGE_HREF.catalog }, { label: "Packages", sub: "Pathways", href: PAGE_HREF.packages }, { label: "Biomarkers", sub: "Health map", hub: { layer: "prec", sub: 2 } }] },
   { k: "long", label: "Longevity", icon: "ph-plant", title: "Longevity", blurb: "Proactive care to extend your healthspan.", links: [{ label: "Health Risk Assessment", href: PAGE_HREF.risk }, { label: "Nutrition Starter Plan", href: PAGE_HREF.nutrition }, { label: "Longevity Score", sub: "Health map", hub: { layer: "long", sub: 2 } }] },
   { k: "ai", label: "AI Health", ai: true, title: "AI Health · ALBA", blurb: "Tools that explain, organize and guide. None replace a clinician.", links: [{ label: "Ask ALBA", sub: "Companion", alba: true }, { label: "Symptom Checker", sub: "Safety-first", href: PAGE_HREF.symptoms }, { label: "Lab Result Explainer", sub: "Text · photo · PDF", href: PAGE_HREF.labs }, { label: "Explain My Diagnosis", sub: "Plain language", href: PAGE_HREF.diagnosis }, { label: "Visit Prep", sub: "One-page summary", href: PAGE_HREF.visitprep }, { label: "Physician Matcher", sub: "Find a pathway", href: PAGE_HREF.matcher }] },
   { k: "ref", label: "Referral Centre", icon: "ph-paper-plane-tilt", title: "Referral Centre", blurb: "Scan, upload or enter a referral in minutes.", links: [{ label: "Start a referral", sub: "Scan or upload", href: PAGE_HREF.referral }, { label: "Find the right physician", href: PAGE_HREF.matcher }] },
@@ -235,6 +236,7 @@ export const ALBA_SUGGESTIONS = ["What does a cardiologist assess?", "What is an
 // ALBA panel suggestions, by the page the visitor is on.
 export function albaSuggestionsFor(pathname: string): string[] {
   if (pathname === "/") return ["What does a cardiologist assess?", "How do I get a referral?", "What is an exercise stress echo?"];
+  if (pathname.startsWith("/longevity-lab")) return ["What is pace of aging?", "Why test GDF-15 and telomeres together?", "What does pharmacogenomics show?"];
   if (pathname.startsWith("/genomics")) return ["Which genetic test fits a family history of heart disease?", "What does pharmacogenomics mean?", "Is genomic testing covered?"];
   if (pathname.startsWith("/lab-results")) return ["What does a high LDL mean?", "Why would hs-CRP be repeated?", "What is ApoB?"];
   if (pathname.startsWith("/referral-centre")) return ["What should a referral include?", "How long does intake take?"];
@@ -257,6 +259,11 @@ export const SEARCH_INDEX: { label: string; kind: string; link: NavLink }[] = [
   { label: "Visit Prep", kind: "Tool", link: { label: "Visit Prep", href: PAGE_HREF.visitprep } },
   { label: "Physician Matcher", kind: "Tool", link: { label: "Physician Matcher", href: PAGE_HREF.matcher } },
   { label: "Genomics", kind: "Precision Health", link: { label: "Genomics", href: PAGE_HREF.genomics } },
+  { label: "Longevity Lab", kind: "Precision Health", link: { label: "Longevity Lab", href: PAGE_HREF.lab } },
+  { label: "Pace of Aging", kind: "Longevity Lab", link: { label: "Pace of Aging", href: PAGE_HREF.lab + "#pace" } },
+  { label: "GDF-15 + Telomere Stress Map", kind: "Longevity Lab", link: { label: "GDF-15 + Telomere Stress Map", href: PAGE_HREF.lab + "#stress" } },
+  { label: "Pharmacogenomics Safety Check", kind: "Longevity Lab", link: { label: "Pharmacogenomics Safety Check", href: PAGE_HREF.lab + "#pgx" } },
+  { label: "Longevity Research Library", kind: "Longevity Lab", link: { label: "Longevity Research Library", href: PAGE_HREF.lab + "#library" } },
   { label: "Packages", kind: "Precision Health", link: { label: "Packages", href: PAGE_HREF.packages } },
   { label: "Referral Centre", kind: "Patients", link: { label: "Referral Centre", href: PAGE_HREF.referral } },
   { label: "Patient Resources", kind: "Patients", link: { label: "Patient Resources", href: PAGE_HREF.resources } },
