@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { SEARCH_INDEX, SEARCH_SUGGESTED, PAGE_HREF, type NavLink } from "@/data/homeContent";
 import { LAB_TESTS, WELLNESS } from "@/data/bioaroCatalog";
+import { NEA_TREATMENTS } from "@/data/nea";
 import { useRegion } from "@/components/RegionContext";
 import { useAnraNav } from "@/lib/useAnraNav";
 
@@ -25,6 +26,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
     ...SEARCH_INDEX,
     ...LAB_TESTS.map((t) => ({ label: t.name, kind: "Test · " + t.cat, link: { label: t.name, href: PAGE_HREF.catalog } as NavLink })),
     ...WELLNESS.map((t) => ({ label: t.name, kind: "Wellness · " + t.cat, link: { label: t.name, href: t.url(region) } as NavLink })),
+    ...NEA_TREATMENTS.map((t) => ({ label: t.name, kind: "Nea · " + t.cat, link: { label: t.name, href: "/specialties/skin-health#" + t.id } as NavLink })),
   ], [region]);
 
   const s = q.trim().toLowerCase();
