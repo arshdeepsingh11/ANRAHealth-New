@@ -1,4 +1,4 @@
-// JSX typings for the ANRA motion custom elements (src/lib/motion/*.js).
+// JSX typings for the NEYU motion custom elements (src/lib/motion/*.js).
 // All attributes are plain strings, exactly as the design passes them.
 import type React from "react";
 
