@@ -3,6 +3,7 @@
 import React from "react";
 import { PAGE_HREF, CLINIC_PHONE, CLINIC_EMAIL, type NavLink } from "@/data/homeContent";
 import { useAnraNav } from "@/lib/useAnraNav";
+import NeyuLogo from "@/components/brand/NeyuLogo";
 
 const head: React.CSSProperties = { fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#5A626A" };
 const col: React.CSSProperties = { marginTop: 12, display: "grid", gap: 8, justifyItems: "start" };
@@ -18,7 +19,7 @@ export default function Footer() {
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "clamp(48px,7vw,88px) clamp(20px,4vw,40px) 32px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 32 }}>
           <div style={{ gridColumn: "span 2", minWidth: 0 }}>
-            <div style={{ letterSpacing: ".16em", fontSize: 14, fontWeight: 600 }}>ANRA <span style={{ fontWeight: 400, color: "#5A626A" }}>HEALTH</span></div>
+            <NeyuLogo height={38} />
             <p style={{ margin: "10px 0 0", color: "#3A4147", maxWidth: 320 }}>Advanced cardiac &amp; internal medicine care. Calgary, Alberta.</p>
             <p style={{ margin: "16px 0 0", fontSize: 15, color: "#3A4147" }}><a href={`tel:${CLINIC_PHONE}`}>{CLINIC_PHONE}</a> · <a href={`mailto:${CLINIC_EMAIL}`}>{CLINIC_EMAIL}</a></p>
           </div>
@@ -50,10 +51,10 @@ export default function Footer() {
         </div>
         <div style={{ marginTop: 40, padding: "16px 18px", borderRadius: 12, background: "#FDFCFA", display: "flex", gap: 10, alignItems: "flex-start", fontSize: 15 }}>
           <i className="ph ph-first-aid" style={{ fontSize: 20, color: "#9B2317" }} />
-          <span><strong style={{ fontWeight: 600 }}>Emergency information.</strong> ANRA isn’t an emergency service. If you think you’re having a medical emergency, call <a href="tel:911" style={{ color: "#9B2317", fontWeight: 600 }}>911</a>. For nurse advice in Alberta, call Health Link <a href="tel:811">811</a>.</span>
+          <span><strong style={{ fontWeight: 600 }}>Emergency information.</strong> NEYU isn’t an emergency service. If you think you’re having a medical emergency, call <a href="tel:911" style={{ color: "#9B2317", fontWeight: 600 }}>911</a>. For nurse advice in Alberta, call Health Link <a href="tel:811">811</a>.</span>
         </div>
         <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: "8px 20px", fontSize: 13, color: "#5A626A" }}>
-          <span>© {new Date().getFullYear()} ANRA Health</span>
+          <span>© {new Date().getFullYear()} NEYU Health</span>
           <a href="#" style={{ color: "#5A626A" }}>Privacy</a>
           <a href="#" style={{ color: "#5A626A" }}>Terms</a>
           <a href="#" style={{ color: "#5A626A" }}>Accessibility</a>
