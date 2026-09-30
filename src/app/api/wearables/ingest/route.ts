@@ -58,7 +58,7 @@ export async function POST(req: Request) {
     const metrics = [...new Set(accepted.map((r) => r.metric))];
     await log(accepted.length, metrics, rejected, accepted.length ? { status: "connected", lastSyncAt: now, ...(conn.status === "pending" ? { connectedAt: now } : {}) } : {});
     audit(patientId, "device", "create", `readings:${source}:${accepted.length}`, ip);
-    const message = accepted.length ? `ANRA received ${metrics.length} kind${metrics.length === 1 ? "" : "s"} of data.` : rejected.length ? "Nothing stored — see rejected." : "Nothing stored — Apple Health had no samples for today yet.";
+    const message = accepted.length ? `NEYU received ${metrics.length} kind${metrics.length === 1 ? "" : "s"} of data.` : rejected.length ? "Nothing stored — see rejected." : "Nothing stored — Apple Health had no samples for today yet.";
     return NextResponse.json({ ok: true, stored: accepted.length, metrics, rejected, message }, { headers: { "Cache-Control": "no-store" } });
   } catch (e) {
     return toResponse(e);
