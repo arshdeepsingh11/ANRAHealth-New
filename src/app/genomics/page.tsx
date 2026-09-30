@@ -21,7 +21,7 @@ function LabLink() {
   return (
     <Link href="/longevity-lab" className="glass rounded-3xl p-6 md:p-8 flex flex-wrap items-center justify-between gap-4 card-hover">
       <span>
-        <span className="block text-xs font-semibold uppercase tracking-wide text-gold-600 mb-1">New · ANRA Longevity Lab</span>
+        <span className="block text-xs font-semibold uppercase tracking-wide text-gold-600 mb-1">New · NEYU Longevity Lab</span>
         <span className="block text-base font-semibold text-graphite-900">Explore longevity genes, pharmacogenomics and pace of aging — in 3D, with ALBA.</span>
       </span>
       <span className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">Open the Lab <ArrowRight size={14} /></span>
@@ -57,7 +57,7 @@ export default function GenomicsPage() {
   return (
     <div style={{ minHeight: "100vh" }}>
       <div className="text-center pt-16 md:pt-24 pb-6 px-6">
-        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">ANRA Health — Precision Medicine</p>
+        <p className="text-sm font-semibold tracking-wide uppercase mb-2 text-gold-600 font-display italic">NEYU Health — Precision Medicine</p>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-graphite-900 flex items-center justify-center gap-3">
           <Dna className="text-gold-500" size={36} />
           Genomics
@@ -80,7 +80,7 @@ export default function GenomicsPage() {
                 BioAro Labs is a Calgary-based precision health company offering genomic, microbiome, and biomarker testing — from full genome sequencing to gut, hormone, and vascular panels. Results are clinically guided and delivered through secure, encrypted reports.
               </p>
               <p className="text-base leading-relaxed text-graphite-700">
-                ANRA Health connects patients to this testing as part of a broader precision medicine approach — combining your genetics, biomarkers, and lifestyle with our physicians' expertise to build a health plan that's actually built around you.
+                NEYU Health connects patients to this testing as part of a broader precision medicine approach — combining your genetics, biomarkers, and lifestyle with our physicians' expertise to build a health plan that's actually built around you.
               </p>
             </div>
 
