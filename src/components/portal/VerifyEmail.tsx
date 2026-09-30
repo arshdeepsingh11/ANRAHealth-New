@@ -108,7 +108,7 @@ export default function VerifyEmail({ maskedEmail, needsCode, initialWait, devMo
             </div>
           )}
           <p style={{ margin: "20px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}>
-            <i className="ph ph-shield-check" style={{ fontSize: 16, marginTop: 1 }} /><span>The code expires in 10 minutes. Check your spam folder if it doesn't arrive. ANRA will never ask you for this code.</span>
+            <i className="ph ph-shield-check" style={{ fontSize: 16, marginTop: 1 }} /><span>The code expires in 10 minutes. Check your spam folder if it doesn't arrive. NEYU will never ask you for this code.</span>
           </p>
           {devMode && <p style={{ margin: "12px 0 0", fontSize: 12, color: C.peachInk }}>Development: email isn't set up yet, so the code is printed in the terminal running the site.</p>}
         </main>
