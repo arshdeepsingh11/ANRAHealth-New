@@ -1,4 +1,4 @@
-// ANRA Today — the daily brief. Location-aware (ECCC weather + AQHI),
+// NEYU Today — the daily brief. Location-aware (ECCC weather + AQHI),
 // built from the patient's own data by clear rules, then (when a Gemini key
 // is set) rewritten by ALBA into a short, warm message. Cached per day in
 // GeneratedNote; rules are recomputed on every load, the AI text only when
@@ -168,7 +168,7 @@ export async function getBrief(p: P, opts: { ai?: boolean } = {}): Promise<Brief
   const fresh = cached && (body.factKey === factKey || now.getTime() - cached.createdAt.getTime() < 3 * 3600_000);
   if (fresh && body.message && body.byAlba) { message = body.message; byAlba = true; }
   else if (opts.ai !== false && facts.length && process.env.GEMINI_API_KEY) {
-    const sys = `You are ALBA, the warm health companion in ANRA Health's My Health Space (Calgary). Write the patient's morning brief: 2 short sentences, max 45 words, plain language, encouraging, specific to the facts. Mention the weather/air and one thing from their data. Never diagnose, never mention medications, no markdown, no emojis. Patient first name: ${p.firstName}.`;
+    const sys = `You are ALBA, the warm health companion in NEYU Health's My Health Space (Calgary). Write the patient's morning brief: 2 short sentences, max 45 words, plain language, encouraging, specific to the facts. Mention the weather/air and one thing from their data. Never diagnose, never mention medications, no markdown, no emojis. Patient first name: ${p.firstName}.`;
     const ai = await gemini(sys, `Facts for today:\n- ${facts.join("\n- ")}\nMovement advice: ${advice?.text || "none"}`, { maxTokens: 120 });
     if (ai && !unsafeAiText(ai) && ai.length < 400) { message = ai; byAlba = true; }
     const data = JSON.stringify({ message, factKey, byAlba });
