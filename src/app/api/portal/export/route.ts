@@ -28,5 +28,5 @@ export const GET = () => withPatient(async ({ patient, ip }) => {
   const clean = (rows: any[]) => rows.map(({ patientId, sessionId, itemId, ...r }) => r);
   audit(id, "patient", "export", "all", ip);
   const body = JSON.stringify({ exportedAt: new Date().toISOString(), profile, settings, goals, careTeam, devices, readings, labResults: clean(labResults), protocol: clean(protocol), appointments: clean(appointments), questions, referrals: clean(referrals), symptomChecks: clean(symptomChecks), assessments: clean(assessments), labChecks: clean(labChecks), conversations }, null, 2);
-  return new Response(body, { headers: { "Content-Type": "application/json; charset=utf-8", "Content-Disposition": `attachment; filename="anra-my-health-space-${new Date().toISOString().slice(0, 10)}.json"`, "Cache-Control": "private, no-store" } });
+  return new Response(body, { headers: { "Content-Type": "application/json; charset=utf-8", "Content-Disposition": `attachment; filename="neyu-my-health-space-${new Date().toISOString().slice(0, 10)}.json"`, "Cache-Control": "private, no-store" } });
 });
