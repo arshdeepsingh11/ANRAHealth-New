@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useRef } from "react";
 
-// Renders an ANRA motion custom element and keeps its *observed* attributes
+// Renders an NEYU motion custom element and keeps its *observed* attributes
 // (e.g. mode/param, stage, focus, nodes/active) in sync via setAttribute.
 //
 // Why: Next.js 15 runs React 19, which assigns props to custom-element
