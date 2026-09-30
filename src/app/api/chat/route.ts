@@ -23,6 +23,7 @@ function pageContextLabel(pathname: string | undefined): string {
   if (pathname.startsWith("/my-health")) return "My Health Space, the patient portal";
   if (pathname.startsWith("/genomics")) return "the Genomics page (BioAro Labs testing)";
   if (pathname.startsWith("/referral-centre")) return "the Referral Centre page";
+  if (pathname.startsWith("/longevity-lab")) return "the ANRA Longevity Lab (research explainers: intervention responsiveness, GDF-15 + telomeres, pace of aging, pharmacogenomics, longevity genetics)";
   if (pathname.startsWith("/longevity")) return "the Longevity & Health Risk Assessment page";
   if (pathname.startsWith("/lab-results")) return "the Lab Result Explainer page";
   if (pathname.startsWith("/resources")) return "the Patient Resources page";
