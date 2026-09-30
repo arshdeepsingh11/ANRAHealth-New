@@ -94,14 +94,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "CHARM क्लिनिक अल्बर्टा का एकमात्र समुदाय-आधारित, आउटपेशेंट क्लिनिक है जो DIL Walk फाउंडेशन और ANRA Health के समर्थन और दान से एक धर्मार्थ आधार पर चलाया जाता है। क्लिनिक चिकित्सक-निर्देशित है, लेकिन रोगी देखभाल एक नर्स द्वारा प्रबंधित की जाती है। CHARM क्लिनिक टीम में हार्ट फेलियर और हार्ट ट्रांसप्लांट विशेषज्ञ, कार्डियोलॉजिस्ट, इंटरनल मेडिसिन चिकित्सक, एक हार्ट फंक्शन नर्स, एक रेस्पिरेटरी थेरेपिस्ट, और इकोकार्डियोग्राम व स्ट्रेस टेस्ट तकनीशियन शामिल हैं।",
+        intro: "CHARM क्लिनिक अल्बर्टा का एकमात्र समुदाय-आधारित, आउटपेशेंट क्लिनिक है जो DIL Walk फाउंडेशन और NEYU Health के समर्थन और दान से एक धर्मार्थ आधार पर चलाया जाता है। क्लिनिक चिकित्सक-निर्देशित है, लेकिन रोगी देखभाल एक नर्स द्वारा प्रबंधित की जाती है। CHARM क्लिनिक टीम में हार्ट फेलियर और हार्ट ट्रांसप्लांट विशेषज्ञ, कार्डियोलॉजिस्ट, इंटरनल मेडिसिन चिकित्सक, एक हार्ट फंक्शन नर्स, एक रेस्पिरेटरी थेरेपिस्ट, और इकोकार्डियोग्राम व स्ट्रेस टेस्ट तकनीशियन शामिल हैं।",
         howItWorks: "CHARM क्लिनिक का लक्ष्य मरीजों को समुदाय में रखना और अस्पताल से दूर रखना है। जब हार्ट फेलियर का संदेह हो, तो आपका पारिवारिक चिकित्सक सीधे CHARM क्लिनिक को रेफर कर सकता है। आपको एक कार्डियोलॉजिस्ट द्वारा देखा जाएगा — निदान की पुष्टि होने के बाद, आपको स्व-प्रबंधन सहायता, रोगी शिक्षा, और दवा सहायता के लिए हार्ट फेलियर नर्स के साथ दूसरी अपॉइंटमेंट दी जाती है। दवाओं को अनुकूलित करने और अस्पताल में भर्ती होने से बचने के लिए आपको हार्ट फेलियर विशेषज्ञ द्वारा भी फॉलो किया जाएगा।",
         selfCare: "CHARM क्लिनिक में, मरीजों को एक नर्स के साथ 1:1 सेशन के माध्यम से स्व-देखभाल सिखाई जाती है, जो दैनिक वजन, तरल/सोडियम प्रतिबंध, और हार्ट फेलियर बिगड़ने के चेतावनी संकेतों को कवर करती है। मरीजों को अपनी अगली विज़िट तक ध्यान केंद्रित करने के लिए हैंडआउट्स और आपसी सहमति वाले लक्ष्य भी मिलते हैं।",
         research: "CHARM क्लिनिक अनुसंधान परीक्षणों में भी शामिल है, जिसमें एट्रियल फिब्रिलेशन मरीजों के लिए एक चल रहा परीक्षण (BRAIN-AF) और GOAL अध्ययन शामिल हैं। हम वर्तमान में दोनों परीक्षणों के लिए मरीजों की भर्ती कर रहे हैं।",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health, Advanced Cardiology Consultants and Diagnostics के काम को जारी रखता है — पश्चिमी कनाडा में एक अनूठा क्लिनिक जो एक ही छत के नीचे संपूर्ण कार्डियोपल्मोनरी जांच प्रदान करता है, जिसकी स्थापना डॉ. अनमोल एस. कपूर के मार्गदर्शन में हुई।\n\nहम अल्बर्टा में ऑनसाइट एक्सरसाइज स्ट्रेस इकोकार्डियोग्राम प्रदान करने वाला पहला क्लिनिक थे — थैलियम स्ट्रेस टेस्ट से अधिक विशिष्ट, विकिरण जोखिम के बिना। हमारी बहुभाषी टीम अंग्रेज़ी, पंजाबी, हिंदी, उर्दू, पोलिश, स्वाहिली, तागालोग, यूक्रेनी, गुजराती, और रूसी में संवाद करती है।" },
+      aboutStory: { text: "NEYU Health, Advanced Cardiology Consultants and Diagnostics के काम को जारी रखता है — पश्चिमी कनाडा में एक अनूठा क्लिनिक जो एक ही छत के नीचे संपूर्ण कार्डियोपल्मोनरी जांच प्रदान करता है, जिसकी स्थापना डॉ. अनमोल एस. कपूर के मार्गदर्शन में हुई।\n\nहम अल्बर्टा में ऑनसाइट एक्सरसाइज स्ट्रेस इकोकार्डियोग्राम प्रदान करने वाला पहला क्लिनिक थे — थैलियम स्ट्रेस टेस्ट से अधिक विशिष्ट, विकिरण जोखिम के बिना। हमारी बहुभाषी टीम अंग्रेज़ी, पंजाबी, हिंदी, उर्दू, पोलिश, स्वाहिली, तागालोग, यूक्रेनी, गुजराती, और रूसी में संवाद करती है।" },
     },
     faqs: {
       0: { q: "मुझे अपनी पहली अपॉइंटमेंट में क्या लाना चाहिए?", a: "यह मददगार होगा यदि आप अपना अल्बर्टा हेल्थ कार्ड, फोटो आईडी, और अपनी वर्तमान दवाओं की सूची लाएं।" },
@@ -170,14 +170,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "CHARM ਕਲੀਨਿਕ ਅਲਬਰਟਾ ਦਾ ਇਕਲੌਤਾ ਕਮਿਊਨਿਟੀ-ਅਧਾਰਿਤ, ਆਊਟਪੇਸ਼ੈਂਟ ਕਲੀਨਿਕ ਹੈ ਜੋ DIL Walk ਫਾਊਂਡੇਸ਼ਨ ਅਤੇ ANRA Health ਦੇ ਸਮਰਥਨ ਨਾਲ ਦਾਨੀ ਆਧਾਰ 'ਤੇ ਚਲਾਇਆ ਜਾਂਦਾ ਹੈ। ਕਲੀਨਿਕ ਡਾਕਟਰ-ਨਿਰਦੇਸ਼ਿਤ ਹੈ, ਪਰ ਮਰੀਜ਼ ਦੀ ਦੇਖਭਾਲ ਇੱਕ ਨਰਸ ਦੁਆਰਾ ਪ੍ਰਬੰਧਿਤ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।",
+        intro: "CHARM ਕਲੀਨਿਕ ਅਲਬਰਟਾ ਦਾ ਇਕਲੌਤਾ ਕਮਿਊਨਿਟੀ-ਅਧਾਰਿਤ, ਆਊਟਪੇਸ਼ੈਂਟ ਕਲੀਨਿਕ ਹੈ ਜੋ DIL Walk ਫਾਊਂਡੇਸ਼ਨ ਅਤੇ NEYU Health ਦੇ ਸਮਰਥਨ ਨਾਲ ਦਾਨੀ ਆਧਾਰ 'ਤੇ ਚਲਾਇਆ ਜਾਂਦਾ ਹੈ। ਕਲੀਨਿਕ ਡਾਕਟਰ-ਨਿਰਦੇਸ਼ਿਤ ਹੈ, ਪਰ ਮਰੀਜ਼ ਦੀ ਦੇਖਭਾਲ ਇੱਕ ਨਰਸ ਦੁਆਰਾ ਪ੍ਰਬੰਧਿਤ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।",
         howItWorks: "CHARM ਕਲੀਨਿਕ ਦਾ ਟੀਚਾ ਮਰੀਜ਼ਾਂ ਨੂੰ ਕਮਿਊਨਿਟੀ ਵਿੱਚ ਰੱਖਣਾ ਅਤੇ ਹਸਪਤਾਲ ਤੋਂ ਦੂਰ ਰੱਖਣਾ ਹੈ। ਤੁਹਾਡਾ ਪਰਿਵਾਰਕ ਡਾਕਟਰ ਸਿੱਧਾ CHARM ਕਲੀਨਿਕ ਨੂੰ ਰੈਫਰ ਕਰ ਸਕਦਾ ਹੈ। ਤੁਹਾਨੂੰ ਇੱਕ ਕਾਰਡੀਓਲੋਜਿਸਟ ਦੁਆਰਾ ਦੇਖਿਆ ਜਾਵੇਗਾ, ਫਿਰ ਹਾਰਟ ਫੇਲੀਅਰ ਨਰਸ ਨਾਲ ਦੂਜੀ ਅਪੌਇੰਟਮੈਂਟ ਦਿੱਤੀ ਜਾਂਦੀ ਹੈ।",
         selfCare: "CHARM ਕਲੀਨਿਕ ਵਿੱਚ, ਮਰੀਜ਼ਾਂ ਨੂੰ ਇੱਕ ਨਰਸ ਨਾਲ 1:1 ਸੈਸ਼ਨ ਰਾਹੀਂ ਸਵੈ-ਦੇਖਭਾਲ ਸਿਖਾਈ ਜਾਂਦੀ ਹੈ, ਜੋ ਰੋਜ਼ਾਨਾ ਭਾਰ, ਤਰਲ/ਸੋਡੀਅਮ ਪਾਬੰਦੀਆਂ, ਅਤੇ ਚੇਤਾਵਨੀ ਸੰਕੇਤਾਂ ਨੂੰ ਕਵਰ ਕਰਦੀ ਹੈ।",
         research: "CHARM ਕਲੀਨਿਕ ਖੋਜ ਟਰਾਇਲਾਂ ਵਿੱਚ ਵੀ ਸ਼ਾਮਲ ਹੈ, ਜਿਸ ਵਿੱਚ ਐਟਰੀਅਲ ਫਾਈਬ੍ਰੀਲੇਸ਼ਨ ਮਰੀਜ਼ਾਂ ਲਈ ਇੱਕ ਚੱਲ ਰਿਹਾ ਟਰਾਇਲ (BRAIN-AF) ਅਤੇ GOAL ਅਧਿਐਨ ਸ਼ਾਮਲ ਹੈ। ਅਸੀਂ ਵਰਤਮਾਨ ਵਿੱਚ ਦੋਵਾਂ ਟਰਾਇਲਾਂ ਲਈ ਮਰੀਜ਼ਾਂ ਦੀ ਭਰਤੀ ਕਰ ਰਹੇ ਹਾਂ।",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health, Advanced Cardiology Consultants and Diagnostics ਦੇ ਕੰਮ ਨੂੰ ਜਾਰੀ ਰੱਖਦਾ ਹੈ — ਪੱਛਮੀ ਕੈਨੇਡਾ ਵਿੱਚ ਇੱਕ ਵਿਲੱਖਣ ਕਲੀਨਿਕ ਜੋ ਇੱਕ ਹੀ ਛੱਤ ਹੇਠ ਪੂਰੀ ਕਾਰਡੀਓਪਲਮੋਨਰੀ ਜਾਂਚ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ, ਜਿਸਦੀ ਸਥਾਪਨਾ ਡਾ. ਅਨਮੋਲ ਐਸ. ਕਪੂਰ ਦੀ ਅਗਵਾਈ ਹੇਠ ਹੋਈ।\n\nਅਸੀਂ ਅਲਬਰਟਾ ਵਿੱਚ ਆਨਸਾਈਟ ਐਕਸਰਸਾਈਜ਼ ਸਟਰੈੱਸ ਈਕੋਕਾਰਡੀਓਗਰਾਮ ਪ੍ਰਦਾਨ ਕਰਨ ਵਾਲਾ ਪਹਿਲਾ ਕਲੀਨਿਕ ਸੀ। ਸਾਡੀ ਬਹੁਭਾਸ਼ੀ ਟੀਮ ਅੰਗਰੇਜ਼ੀ, ਪੰਜਾਬੀ, ਹਿੰਦੀ, ਉਰਦੂ, ਪੋਲਿਸ਼, ਸਵਾਹਿਲੀ, ਤਾਗਾਲੋਗ, ਯੂਕਰੇਨੀ, ਗੁਜਰਾਤੀ, ਅਤੇ ਰੂਸੀ ਵਿੱਚ ਗੱਲਬਾਤ ਕਰਦੀ ਹੈ।" },
+      aboutStory: { text: "NEYU Health, Advanced Cardiology Consultants and Diagnostics ਦੇ ਕੰਮ ਨੂੰ ਜਾਰੀ ਰੱਖਦਾ ਹੈ — ਪੱਛਮੀ ਕੈਨੇਡਾ ਵਿੱਚ ਇੱਕ ਵਿਲੱਖਣ ਕਲੀਨਿਕ ਜੋ ਇੱਕ ਹੀ ਛੱਤ ਹੇਠ ਪੂਰੀ ਕਾਰਡੀਓਪਲਮੋਨਰੀ ਜਾਂਚ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ, ਜਿਸਦੀ ਸਥਾਪਨਾ ਡਾ. ਅਨਮੋਲ ਐਸ. ਕਪੂਰ ਦੀ ਅਗਵਾਈ ਹੇਠ ਹੋਈ।\n\nਅਸੀਂ ਅਲਬਰਟਾ ਵਿੱਚ ਆਨਸਾਈਟ ਐਕਸਰਸਾਈਜ਼ ਸਟਰੈੱਸ ਈਕੋਕਾਰਡੀਓਗਰਾਮ ਪ੍ਰਦਾਨ ਕਰਨ ਵਾਲਾ ਪਹਿਲਾ ਕਲੀਨਿਕ ਸੀ। ਸਾਡੀ ਬਹੁਭਾਸ਼ੀ ਟੀਮ ਅੰਗਰੇਜ਼ੀ, ਪੰਜਾਬੀ, ਹਿੰਦੀ, ਉਰਦੂ, ਪੋਲਿਸ਼, ਸਵਾਹਿਲੀ, ਤਾਗਾਲੋਗ, ਯੂਕਰੇਨੀ, ਗੁਜਰਾਤੀ, ਅਤੇ ਰੂਸੀ ਵਿੱਚ ਗੱਲਬਾਤ ਕਰਦੀ ਹੈ।" },
     },
     faqs: {
       0: { q: "ਮੈਨੂੰ ਆਪਣੀ ਪਹਿਲੀ ਅਪੌਇੰਟਮੈਂਟ ਵਿੱਚ ਕੀ ਲਿਆਉਣਾ ਚਾਹੀਦਾ ਹੈ?", a: "ਇਹ ਮਦਦਗਾਰ ਹੋਵੇਗਾ ਜੇ ਤੁਸੀਂ ਆਪਣਾ ਅਲਬਰਟਾ ਹੈਲਥ ਕਾਰਡ, ਫੋਟੋ ਆਈਡੀ, ਅਤੇ ਆਪਣੀਆਂ ਮੌਜੂਦਾ ਦਵਾਈਆਂ ਦੀ ਸੂਚੀ ਲਿਆਓ।" },
@@ -246,14 +246,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "عيادة CHARM هي العيادة الوحيدة المجتمعية للمرضى الخارجيين في ألبرتا، تُدار على أساس خيري بدعم وتبرعات من مؤسسة DIL Walk و ANRA Health. العيادة موجهة من قبل الأطباء، لكن رعاية المرضى تُدار من قبل ممرضة. يتكون فريق عيادة CHARM من أخصائيي فشل القلب وزراعة القلب، وأطباء القلب، وأطباء الطب الباطني، وممرضة وظائف القلب، وأخصائي جهاز تنفسي، وفنيي تخطيط صدى القلب واختبار الإجهاد.",
+        intro: "عيادة CHARM هي العيادة الوحيدة المجتمعية للمرضى الخارجيين في ألبرتا، تُدار على أساس خيري بدعم وتبرعات من مؤسسة DIL Walk و NEYU Health. العيادة موجهة من قبل الأطباء، لكن رعاية المرضى تُدار من قبل ممرضة. يتكون فريق عيادة CHARM من أخصائيي فشل القلب وزراعة القلب، وأطباء القلب، وأطباء الطب الباطني، وممرضة وظائف القلب، وأخصائي جهاز تنفسي، وفنيي تخطيط صدى القلب واختبار الإجهاد.",
         howItWorks: "هدف عيادة CHARM هو مساعدة المرضى على البقاء في المجتمع وخارج المستشفى. يمكن لطبيبك العائلي الإحالة مباشرة إلى عيادة CHARM عند الاشتباه بفشل القلب. سيتم رؤيتك من قبل طبيب قلب — بعد تأكيد التشخيص، ستحصل على موعد ثانٍ مع ممرضة فشل القلب.",
         selfCare: "في عيادة CHARM، يتم تعليم المرضى الرعاية الذاتية من خلال جلسة فردية مع ممرضة، تغطي الوزن اليومي، وقيود السوائل/الصوديوم، وعلامات التحذير من تفاقم فشل القلب.",
         research: "تشارك عيادة CHARM أيضاً في التجارب البحثية، بما في ذلك تجربة جارية لمرضى الرجفان الأذيني (BRAIN-AF) ودراسة GOAL. نحن حالياً نجند مرضى لكلا التجربتين.",
       },
     },
     misc: {
-      aboutStory: { text: "تواصل ANRA Health عمل Advanced Cardiology Consultants and Diagnostics — عيادة فريدة من نوعها في غرب كندا تقدم فحوصات قلبية رئوية كاملة تحت سقف واحد، تأسست تحت إشراف الدكتور أنمول إس. كابور.\n\nكنا أول عيادة في ألبرتا تقدم تخطيط صدى القلب أثناء الجهد في الموقع — أكثر دقة من اختبار الإجهاد بالثاليوم، دون التعرض للإشعاع. يتواصل فريقنا متعدد اللغات بالإنجليزية والبنجابية والهندية والأردية والبولندية والسواحيلية والتاغالوغية والأوكرانية والغوجاراتية والروسية." },
+      aboutStory: { text: "تواصل NEYU Health عمل Advanced Cardiology Consultants and Diagnostics — عيادة فريدة من نوعها في غرب كندا تقدم فحوصات قلبية رئوية كاملة تحت سقف واحد، تأسست تحت إشراف الدكتور أنمول إس. كابور.\n\nكنا أول عيادة في ألبرتا تقدم تخطيط صدى القلب أثناء الجهد في الموقع — أكثر دقة من اختبار الإجهاد بالثاليوم، دون التعرض للإشعاع. يتواصل فريقنا متعدد اللغات بالإنجليزية والبنجابية والهندية والأردية والبولندية والسواحيلية والتاغالوغية والأوكرانية والغوجاراتية والروسية." },
     },
     faqs: {
       0: { q: "ماذا يجب أن أحضر لموعدي الأول؟", a: "سيكون من المفيد إحضار بطاقة صحة ألبرتا الخاصة بك، هوية بصورة، وقائمة بأدويتك الحالية." },
@@ -322,14 +322,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "La clinique CHARM est la seule clinique communautaire ambulatoire de l'Alberta, gérée sur une base caritative avec le soutien de la Fondation DIL Walk et d'ANRA Health. La clinique est dirigée par des médecins, mais les soins aux patients sont gérés par une infirmière. L'équipe de la clinique CHARM comprend des spécialistes de l'insuffisance cardiaque et de la transplantation cardiaque, des cardiologues, des internistes, une infirmière spécialisée en fonction cardiaque, un thérapeute respiratoire, et des techniciens en échocardiogramme et tests d'effort.",
+        intro: "La clinique CHARM est la seule clinique communautaire ambulatoire de l'Alberta, gérée sur une base caritative avec le soutien de la Fondation DIL Walk et d'NEYU Health. La clinique est dirigée par des médecins, mais les soins aux patients sont gérés par une infirmière. L'équipe de la clinique CHARM comprend des spécialistes de l'insuffisance cardiaque et de la transplantation cardiaque, des cardiologues, des internistes, une infirmière spécialisée en fonction cardiaque, un thérapeute respiratoire, et des techniciens en échocardiogramme et tests d'effort.",
         howItWorks: "L'objectif de la clinique CHARM est d'aider les patients à rester dans la communauté et hors de l'hôpital. Votre médecin de famille peut vous référer directement à la clinique CHARM en cas de suspicion d'insuffisance cardiaque. Vous serez vu par un cardiologue, puis vous aurez un deuxième rendez-vous avec l'infirmière spécialisée en insuffisance cardiaque.",
         selfCare: "À la clinique CHARM, les patients apprennent l'autosoins lors d'une session individuelle avec une infirmière, couvrant les pesées quotidiennes, les restrictions liquidiennes/sodiques, et les signes avant-coureurs d'aggravation.",
         research: "La clinique CHARM participe également à des essais de recherche, notamment un essai en cours pour les patients atteints de fibrillation auriculaire (BRAIN-AF) et l'étude GOAL. Nous recrutons actuellement des patients pour ces deux essais.",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health poursuit le travail d'Advanced Cardiology Consultants and Diagnostics — une clinique unique en son genre dans l'Ouest canadien offrant des examens cardiopulmonaires complets sous un même toit, fondée sous la direction du Dr Anmol S. Kapoor.\n\nNous avons été la première clinique de l'Alberta à offrir des échocardiogrammes d'effort sur site — plus précis qu'un test d'effort au thallium, sans exposition aux radiations. Notre équipe multilingue communique en anglais, pendjabi, hindi, ourdou, polonais, swahili, tagalog, ukrainien, gujarati et russe." },
+      aboutStory: { text: "NEYU Health poursuit le travail d'Advanced Cardiology Consultants and Diagnostics — une clinique unique en son genre dans l'Ouest canadien offrant des examens cardiopulmonaires complets sous un même toit, fondée sous la direction du Dr Anmol S. Kapoor.\n\nNous avons été la première clinique de l'Alberta à offrir des échocardiogrammes d'effort sur site — plus précis qu'un test d'effort au thallium, sans exposition aux radiations. Notre équipe multilingue communique en anglais, pendjabi, hindi, ourdou, polonais, swahili, tagalog, ukrainien, gujarati et russe." },
     },
     faqs: {
       0: { q: "Que dois-je apporter à mon premier rendez-vous ?", a: "Il sera utile d'apporter votre carte Alberta Health, une pièce d'identité avec photo, et une liste de vos médicaments actuels." },
@@ -398,14 +398,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "Kliniki ya CHARM ni kliniki pekee ya jamii ya wagonjwa wa nje Alberta, inayoendeshwa kwa msingi wa hisani kwa msaada wa DIL Walk Foundation na ANRA Health. Kliniki inaongozwa na madaktari, lakini huduma ya mgonjwa inasimamiwa na muuguzi. Timu ya CHARM inajumuisha wataalamu wa kushindwa kwa moyo na upandikizaji wa moyo, madaktari wa moyo, madaktari wa dawa za ndani, muuguzi wa kazi za moyo, mtaalamu wa kupumua, na mafundi wa echocardiogram na stress test.",
+        intro: "Kliniki ya CHARM ni kliniki pekee ya jamii ya wagonjwa wa nje Alberta, inayoendeshwa kwa msingi wa hisani kwa msaada wa DIL Walk Foundation na NEYU Health. Kliniki inaongozwa na madaktari, lakini huduma ya mgonjwa inasimamiwa na muuguzi. Timu ya CHARM inajumuisha wataalamu wa kushindwa kwa moyo na upandikizaji wa moyo, madaktari wa moyo, madaktari wa dawa za ndani, muuguzi wa kazi za moyo, mtaalamu wa kupumua, na mafundi wa echocardiogram na stress test.",
         howItWorks: "Lengo la Kliniki ya CHARM ni kusaidia wagonjwa kubaki katika jamii na nje ya hospitali. Daktari wako wa familia anaweza kupeleka moja kwa moja kwa Kliniki ya CHARM wakati kushindwa kwa moyo kunashukiwa. Utaonwa na daktari wa moyo, kisha utapewa miadi ya pili na muuguzi wa kushindwa kwa moyo.",
         selfCare: "Katika Kliniki ya CHARM, wagonjwa wanafundishwa kujitunza kupitia kikao cha mtu mmoja na muuguzi, kinachojumuisha uzito wa kila siku, vikwazo vya maji/sodiamu, na dalili za onyo.",
         research: "Kliniki ya CHARM pia inashiriki katika majaribio ya utafiti, ikiwa ni pamoja na jaribio linaloendelea kwa wagonjwa wa Atrial Fibrillation (BRAIN-AF) na utafiti wa GOAL. Kwa sasa tunaajiri wagonjwa kwa majaribio yote mawili.",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health inaendeleza kazi ya Advanced Cardiology Consultants and Diagnostics — kliniki ya kipekee Magharibi mwa Kanada inayotoa uchunguzi kamili wa moyo na mapafu chini ya paa moja, iliyoanzishwa chini ya uongozi wa Dk. Anmol S. Kapoor.\n\nTulikuwa kliniki ya kwanza Alberta kutoa Echocardiogram za mazoezi papo hapo — sahihi zaidi kuliko kipimo cha stress cha thallium, bila mionzi. Timu yetu ya lugha nyingi inawasiliana kwa Kiingereza, Kipunjabi, Kihindi, Kiurdu, Kipolishi, Kiswahili, Kitagalogi, Kiukreni, Kigujarati, na Kirusi." },
+      aboutStory: { text: "NEYU Health inaendeleza kazi ya Advanced Cardiology Consultants and Diagnostics — kliniki ya kipekee Magharibi mwa Kanada inayotoa uchunguzi kamili wa moyo na mapafu chini ya paa moja, iliyoanzishwa chini ya uongozi wa Dk. Anmol S. Kapoor.\n\nTulikuwa kliniki ya kwanza Alberta kutoa Echocardiogram za mazoezi papo hapo — sahihi zaidi kuliko kipimo cha stress cha thallium, bila mionzi. Timu yetu ya lugha nyingi inawasiliana kwa Kiingereza, Kipunjabi, Kihindi, Kiurdu, Kipolishi, Kiswahili, Kitagalogi, Kiukreni, Kigujarati, na Kirusi." },
     },
     faqs: {
       0: { q: "Nilete nini kwenye miadi yangu ya kwanza?", a: "Itasaidia ukileta Kadi yako ya Afya ya Alberta, kitambulisho chenye picha, na orodha ya dawa zako za sasa." },
@@ -474,14 +474,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "CHARM کلینک البرٹا کا واحد کمیونٹی پر مبنی، آؤٹ پیشنٹ کلینک ہے جو DIL Walk فاؤنڈیشن اور ANRA Health کی مدد سے خیراتی بنیادوں پر چلایا جاتا ہے۔ کلینک ڈاکٹر کی رہنمائی میں ہے، لیکن مریض کی دیکھ بھال نرس کے ذریعے کی جاتی ہے۔ CHARM کلینک ٹیم میں ہارٹ فیلیئر اور ہارٹ ٹرانسپلانٹ ماہرین، کارڈیالوجسٹ، انٹرنل میڈیسن ڈاکٹرز، ایک ہارٹ فنکشن نرس، ایک ریسپائریٹری تھراپسٹ، اور ایکوکارڈیوگرام و سٹریس ٹیسٹ ٹیکنیشن شامل ہیں۔",
+        intro: "CHARM کلینک البرٹا کا واحد کمیونٹی پر مبنی، آؤٹ پیشنٹ کلینک ہے جو DIL Walk فاؤنڈیشن اور NEYU Health کی مدد سے خیراتی بنیادوں پر چلایا جاتا ہے۔ کلینک ڈاکٹر کی رہنمائی میں ہے، لیکن مریض کی دیکھ بھال نرس کے ذریعے کی جاتی ہے۔ CHARM کلینک ٹیم میں ہارٹ فیلیئر اور ہارٹ ٹرانسپلانٹ ماہرین، کارڈیالوجسٹ، انٹرنل میڈیسن ڈاکٹرز، ایک ہارٹ فنکشن نرس، ایک ریسپائریٹری تھراپسٹ، اور ایکوکارڈیوگرام و سٹریس ٹیسٹ ٹیکنیشن شامل ہیں۔",
         howItWorks: "CHARM کلینک کا مقصد مریضوں کو کمیونٹی میں رکھنا اور ہسپتال سے دور رکھنا ہے۔ آپ کا فیملی ڈاکٹر براہ راست CHARM کلینک کو ریفر کر سکتا ہے۔ آپ کو ایک کارڈیالوجسٹ دیکھے گا، پھر ہارٹ فیلیئر نرس کے ساتھ دوسری اپائنٹمنٹ دی جائے گی۔",
         selfCare: "CHARM کلینک میں، مریضوں کو نرس کے ساتھ ون آن ون سیشن کے ذریعے خود نگہداشت سکھائی جاتی ہے، جو روزانہ وزن، سیال/سوڈیم کی پابندیوں، اور انتباہی علامات کا احاطہ کرتی ہے۔",
         research: "CHARM کلینک تحقیقی ٹرائلز میں بھی حصہ لیتا ہے، بشمول ایٹریل فبریلیشن مریضوں کے لیے جاری ٹرائل (BRAIN-AF) اور GOAL مطالعہ۔ ہم فی الحال دونوں ٹرائلز کے لیے مریضوں کو بھرتی کر رہے ہیں۔",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health، Advanced Cardiology Consultants and Diagnostics کے کام کو جاری رکھتا ہے — مغربی کینیڈا میں ایک منفرد کلینک جو ایک ہی چھت کے نیچے مکمل کارڈیو پلمونری تحقیقات فراہم کرتا ہے، جو ڈاکٹر انمول ایس کپور کی رہنمائی میں قائم ہوا۔\n\nہم البرٹا میں آن سائٹ ایکسرسائز سٹریس ایکوکارڈیوگرام پیش کرنے والا پہلا کلینک تھے۔ ہماری کثیر لسانی ٹیم انگریزی، پنجابی، ہندی، اردو، پولش، سواحلی، تاگالوگ، یوکرینی، گجراتی، اور روسی میں بات چیت کرتی ہے۔" },
+      aboutStory: { text: "NEYU Health، Advanced Cardiology Consultants and Diagnostics کے کام کو جاری رکھتا ہے — مغربی کینیڈا میں ایک منفرد کلینک جو ایک ہی چھت کے نیچے مکمل کارڈیو پلمونری تحقیقات فراہم کرتا ہے، جو ڈاکٹر انمول ایس کپور کی رہنمائی میں قائم ہوا۔\n\nہم البرٹا میں آن سائٹ ایکسرسائز سٹریس ایکوکارڈیوگرام پیش کرنے والا پہلا کلینک تھے۔ ہماری کثیر لسانی ٹیم انگریزی، پنجابی، ہندی، اردو، پولش، سواحلی، تاگالوگ، یوکرینی، گجراتی، اور روسی میں بات چیت کرتی ہے۔" },
     },
     faqs: {
       0: { q: "مجھے اپنی پہلی اپائنٹمنٹ پر کیا لانا چاہیے؟", a: "یہ مددگار ہوگا اگر آپ اپنا البرٹا ہیلتھ کارڈ، فوٹو آئی ڈی، اور موجودہ ادویات کی فہرست لائیں۔" },
@@ -550,14 +550,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "Клініка CHARM — єдина громадська амбулаторна клініка в Альберті, що працює на благодійній основі за підтримки DIL Walk Foundation та ANRA Health. Клінікою керують лікарі, але догляд за пацієнтами здійснює медсестра. Команда CHARM включає фахівців із серцевої недостатності та трансплантації серця, кардіологів, терапевтів, медсестру з функції серця, респіраторного терапевта та техніків ехокардіографії.",
+        intro: "Клініка CHARM — єдина громадська амбулаторна клініка в Альберті, що працює на благодійній основі за підтримки DIL Walk Foundation та NEYU Health. Клінікою керують лікарі, але догляд за пацієнтами здійснює медсестра. Команда CHARM включає фахівців із серцевої недостатності та трансплантації серця, кардіологів, терапевтів, медсестру з функції серця, респіраторного терапевта та техніків ехокардіографії.",
         howItWorks: "Мета клініки CHARM — допомогти пацієнтам залишатися в громаді та поза лікарнею. Ваш сімейний лікар може направити безпосередньо до клініки CHARM. Вас огляне кардіолог, потім призначать другий прийом з медсестрою із серцевої недостатності.",
         selfCare: "У клініці CHARM пацієнтів навчають самообслуговуванню під час індивідуальної сесії з медсестрою, яка охоплює щоденне зважування, обмеження рідини/натрію та попереджувальні ознаки.",
         research: "Клініка CHARM також бере участь у дослідницьких випробуваннях, включаючи триваюче випробування для пацієнтів з фібриляцією передсердь (BRAIN-AF) та дослідження GOAL. Наразі ми набираємо пацієнтів для обох випробувань.",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health продовжує роботу Advanced Cardiology Consultants and Diagnostics — унікальної клініки в Західній Канаді, яка пропонує повне кардіопульмональне обстеження під одним дахом, заснованої під керівництвом доктора Анмола С. Капура.\n\nМи були першою клінікою в Альберті, яка запропонувала стрес-ехокардіографію на місці — точнішу за талієвий стрес-тест, без опромінення. Наша багатомовна команда спілкується англійською, панджабі, гінді, урду, польською, суахілі, тагальською, українською, гуджараті та російською." },
+      aboutStory: { text: "NEYU Health продовжує роботу Advanced Cardiology Consultants and Diagnostics — унікальної клініки в Західній Канаді, яка пропонує повне кардіопульмональне обстеження під одним дахом, заснованої під керівництвом доктора Анмола С. Капура.\n\nМи були першою клінікою в Альберті, яка запропонувала стрес-ехокардіографію на місці — точнішу за талієвий стрес-тест, без опромінення. Наша багатомовна команда спілкується англійською, панджабі, гінді, урду, польською, суахілі, тагальською, українською, гуджараті та російською." },
     },
     faqs: {
       0: { q: "Що мені взяти на перший прийом?", a: "Буде корисно взяти вашу картку Alberta Health, посвідчення особи з фото, та список поточних ліків." },
@@ -626,14 +626,14 @@ export const CONTENT_TRANSLATIONS: Record<string, any> = {
     },
     charmClinic: {
       info: {
-        intro: "CHARM ક્લિનિક આલ્બર્ટાનું એકમાત્ર સમુદાય-આધારિત, આઉટપેશન્ટ ક્લિનિક છે જે DIL Walk ફાઉન્ડેશન અને ANRA Health ના સમર્થનથી ચેરિટેબલ ધોરણે ચલાવવામાં આવે છે. ક્લિનિક ડોક્ટર-નિર્દેશિત છે, પરંતુ દર્દીની સંભાળ નર્સ દ્વારા સંચાલિત થાય છે. CHARM ટીમમાં હાર્ટ ફેલ્યોર અને હાર્ટ ટ્રાન્સપ્લાન્ટ નિષ્ણાતો, કાર્ડિયોલોજિસ્ટ્સ, ઇન્ટરનલ મેડિસિન ડોક્ટરો, હાર્ટ ફંક્શન નર્સ, રેસ્પિરેટરી થેરાપિસ્ટ, અને ઇકોકાર્ડિયોગ્રામ ટેકનિશિયનનો સમાવેશ થાય છે.",
+        intro: "CHARM ક્લિનિક આલ્બર્ટાનું એકમાત્ર સમુદાય-આધારિત, આઉટપેશન્ટ ક્લિનિક છે જે DIL Walk ફાઉન્ડેશન અને NEYU Health ના સમર્થનથી ચેરિટેબલ ધોરણે ચલાવવામાં આવે છે. ક્લિનિક ડોક્ટર-નિર્દેશિત છે, પરંતુ દર્દીની સંભાળ નર્સ દ્વારા સંચાલિત થાય છે. CHARM ટીમમાં હાર્ટ ફેલ્યોર અને હાર્ટ ટ્રાન્સપ્લાન્ટ નિષ્ણાતો, કાર્ડિયોલોજિસ્ટ્સ, ઇન્ટરનલ મેડિસિન ડોક્ટરો, હાર્ટ ફંક્શન નર્સ, રેસ્પિરેટરી થેરાપિસ્ટ, અને ઇકોકાર્ડિયોગ્રામ ટેકનિશિયનનો સમાવેશ થાય છે.",
         howItWorks: "CHARM ક્લિનિકનો ધ્યેય દર્દીઓને સમુદાયમાં રાખવાનો અને હોસ્પિટલથી દૂર રાખવાનો છે. તમારા ફેમિલી ડોક્ટર સીધા CHARM ક્લિનિકને રિફર કરી શકે છે. તમને કાર્ડિયોલોજિસ્ટ દ્વારા જોવામાં આવશે, પછી હાર્ટ ફેલ્યોર નર્સ સાથે બીજી એપોઇન્ટમેન્ટ આપવામાં આવશે.",
         selfCare: "CHARM ક્લિનિકમાં, દર્દીઓને નર્સ સાથે 1:1 સેશન દ્વારા સ્વ-સંભાળ શીખવવામાં આવે છે, જે દૈનિક વજન, પ્રવાહી/સોડિયમ પ્રતિબંધો, અને ચેતવણી સંકેતોને આવરી લે છે.",
         research: "CHARM ક્લિનિક સંશોધન ટ્રાયલ્સમાં પણ ભાગ લે છે, જેમાં એટ્રિયલ ફાઇબ્રિલેશન દર્દીઓ માટે ચાલુ ટ્રાયલ (BRAIN-AF) અને GOAL અભ્યાસનો સમાવેશ થાય છે. અમે હાલમાં બંને ટ્રાયલ્સ માટે દર્દીઓની ભરતી કરી રહ્યા છીએ.",
       },
     },
     misc: {
-      aboutStory: { text: "ANRA Health, Advanced Cardiology Consultants and Diagnostics ના કાર્યને ચાલુ રાખે છે — પશ્ચિમ કેનેડામાં એક અનોખું ક્લિનિક જે એક જ છત નીચે સંપૂર્ણ કાર્ડિયોપલ્મોનરી તપાસ પ્રદાન કરે છે, જેની સ્થાપના ડૉ. અનમોલ એસ. કપૂરના માર્ગદર્શન હેઠળ થઈ.\n\nઅમે આલ્બર્ટામાં ઓનસાઇટ એક્સરસાઇઝ સ્ટ્રેસ ઇકોકાર્ડિયોગ્રામ ઓફર કરનાર પ્રથમ ક્લિનિક હતા. અમારી બહુભાષી ટીમ અંગ્રેજી, પંજાબી, હિન્દી, ઉર્દુ, પોલિશ, સ્વાહિલી, તાગાલોગ, યુક્રેનિયન, ગુજરાતી, અને રશિયનમાં વાતચીત કરે છે." },
+      aboutStory: { text: "NEYU Health, Advanced Cardiology Consultants and Diagnostics ના કાર્યને ચાલુ રાખે છે — પશ્ચિમ કેનેડામાં એક અનોખું ક્લિનિક જે એક જ છત નીચે સંપૂર્ણ કાર્ડિયોપલ્મોનરી તપાસ પ્રદાન કરે છે, જેની સ્થાપના ડૉ. અનમોલ એસ. કપૂરના માર્ગદર્શન હેઠળ થઈ.\n\nઅમે આલ્બર્ટામાં ઓનસાઇટ એક્સરસાઇઝ સ્ટ્રેસ ઇકોકાર્ડિયોગ્રામ ઓફર કરનાર પ્રથમ ક્લિનિક હતા. અમારી બહુભાષી ટીમ અંગ્રેજી, પંજાબી, હિન્દી, ઉર્દુ, પોલિશ, સ્વાહિલી, તાગાલોગ, યુક્રેનિયન, ગુજરાતી, અને રશિયનમાં વાતચીત કરે છે." },
     },
     faqs: {
       0: { q: "મારે મારી પ્રથમ એપોઇન્ટમેન્ટમાં શું લાવવું જોઈએ?", a: "તમે તમારું આલ્બર્ટા હેલ્થ કાર્ડ, ફોટો આઈડી, અને વર્તમાન દવાઓની યાદી લાવો તે મદદરૂપ થશે." },
