@@ -6,6 +6,7 @@ import { REGIONS, useRegion } from "@/components/RegionContext";
 import { useAlba } from "@/components/AlbaContext";
 import AlbaOrb from "@/components/AlbaOrb";
 import { useAnraNav } from "@/lib/useAnraNav";
+import NeyuLogo from "@/components/brand/NeyuLogo";
 
 const tab: React.CSSProperties = { height: 56, border: 0, background: "none", display: "grid", placeItems: "center", gap: 2, fontSize: 11, color: "#3A4147" };
 
@@ -34,7 +35,7 @@ export default function MobileNav({ onSearch }: { onSearch: () => void }) {
           <div onClick={() => setMenu(false)} style={{ position: "fixed", inset: 0, zIndex: 57, background: "rgba(20,24,27,.25)" }} />
           <div role="dialog" aria-label="Menu" style={{ position: "fixed", left: 0, right: 0, bottom: 0, maxHeight: "82vh", zIndex: 58, background: "#FBFAF7", borderRadius: "24px 24px 0 0", overflow: "auto", padding: "10px 20px 100px", animation: "fadeUp .25s ease", boxShadow: "0 -20px 40px -20px rgba(20,24,27,.3)" }}>
             <div style={{ width: 40, height: 4, borderRadius: 2, background: "#D6D0C5", margin: "4px auto 12px" }} />
-            <img src="/logo.png" alt="ANRA Health" style={{ height: 34, width: "auto", margin: "4px 0 8px" }} />
+            <div style={{ margin: "4px 0 10px" }}><NeyuLogo height={34} /></div>
             {RAIL.map((r) => {
               const open = sec === r.k;
               return (
