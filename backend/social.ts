@@ -46,7 +46,7 @@ export async function inviteCaregiver(p: P & { email: string }, emailRaw: string
   const link = await prisma.careLink.create({ data: { ownerId: p.id, email, relation: relation || "Family", inviteHash: sha256(token) } });
   const url = `${base}/my-health/care?token=${encodeURIComponent(token)}`;
   const mail = simpleEmail(`${p.firstName} invited you to My Health Space`, [
-    `${p.firstName} ${p.lastName || ""} would like you to be able to see a summary of their health in ANRA Health's My Health Space — daily signals, home blood pressure, their protocol and upcoming visits.`,
+    `${p.firstName} ${p.lastName || ""} would like you to be able to see a summary of their health in NEYU Health's My Health Space — daily signals, home blood pressure, their protocol and upcoming visits.`,
     "Sign in (or create a free account) with this email address to accept. They can remove your access at any time.",
   ], { label: "Accept invite", url });
   await sendMail({ to: email, ...mail }).catch((e) => console.error("Invite email failed:", e?.message));
