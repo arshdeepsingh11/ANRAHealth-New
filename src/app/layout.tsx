@@ -17,15 +17,14 @@ import ParticleField from "@/components/ParticleField";
 import PageVisitTracker from "@/components/PageVisitTracker";
 import { cn } from "@/lib/utils";
 
-// DM Sans powers body and display text (Glacier / ANRA design system).
+// DM Sans powers body and display text (Glacier / NEYU design system).
 // 300 is included for the design's light weights.
 const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800"], variable: "--font-dm-sans" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-jetbrains-mono" });
 
 export const metadata: Metadata = {
-  title: "ANRA Health — Advanced Cardiac & Internal Medicine Care",
-  description: "ANRA Health brings cardiology, internal medicine, and endocrinology together in one Calgary clinic — with Alberta's first onsite Exercise Stress Echocardiogram program.",
-  icons: { icon: "/logo.png" },
+  title: "NEYU Health — Advanced Cardiac & Internal Medicine Care",
+  description: "NEYU Health brings cardiology, internal medicine, and endocrinology together in one Calgary clinic — with Alberta's first onsite Exercise Stress Echocardiogram program.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
