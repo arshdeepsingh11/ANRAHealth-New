@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const SYSTEM_PROMPT = `You extract structured referral data either from a short free-text description written by a referring physician or staff member, OR from a photo of an actual physical referral document, for ANRA Health.
+const SYSTEM_PROMPT = `You extract structured referral data either from a short free-text description written by a referring physician or staff member, OR from a photo of an actual physical referral document, for NEYU Health.
 
 If given an image, read it carefully — it may be a fax, a handwritten note, or a printed referral form. Extract whatever is legible. If a field isn't present or isn't legible, leave it empty rather than guessing.
 
