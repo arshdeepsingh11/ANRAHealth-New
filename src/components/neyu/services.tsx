@@ -13,6 +13,7 @@ import { LAB_TESTS, money } from "@/data/bioaroCatalog";
 import { PAPERS } from "@/data/longevityScience";
 import { OS, PHILOSOPHY, PACKAGES, pkgLabTotal, MEMBERSHIP, MEMBERSHIP_COMPARE, memberHas, AT_HOME_TESTS, SERVICES, PILLARS, type Pkg } from "@/data/neyu";
 import { N, Section, PillarHero, NodeNet, LiveChart, NeyuReads, CapCard, CtaBand, StepRail, AiBadge, RequestForm, AskNeyu, btn, cardN, gradText, IconTile, FlowLines, StatN, wrapN, type NetNode } from "./kit";
+import { NIcon } from "./icons";
 
 // ═════════════════════ MEET NEYU ═════════════════════
 export function MeetNeyuPage() {
@@ -54,7 +55,7 @@ export function MeetNeyuPage() {
       <Section tone="dark" label="OS" eyebrow="How NEYU works" title={<>One identity. One record. <span style={gradText}>One intelligence.</span></>} lead="NEYU is built in layers, so new services plug in without changing how you use it.">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,380px),1fr))", gap: 24, alignItems: "center" }}>
           <div style={{ display: "grid", gap: 8 }}>
-            {OS.map((o, i) => <button key={o.k} onClick={() => setOs(i)} aria-pressed={os === i} style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 16px", borderRadius: 16, border: `1px solid ${os === i ? "rgba(126,224,192,.6)" : "rgba(255,255,255,.1)"}`, background: os === i ? "rgba(60,199,158,.14)" : "rgba(255,255,255,.03)", color: "#EAF2F6", cursor: "pointer", textAlign: "left", marginLeft: i * 10 }}><span style={{ fontSize: 12, color: "#7EE0C0", width: 20 }}>0{i + 1}</span><i className={"ph " + o.icon} style={{ fontSize: 22, color: "#7EE0C0" }} /><span><b style={{ fontWeight: 600, color: "#fff" }}>NEYU {o.k}</b><span style={{ display: "block", fontSize: 14, color: "rgba(234,242,246,.72)" }}>{o.text}</span></span></button>)}
+            {OS.map((o, i) => <button key={o.k} onClick={() => setOs(i)} aria-pressed={os === i} style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 16px", borderRadius: 16, border: `1px solid ${os === i ? "rgba(126,224,192,.6)" : "rgba(255,255,255,.1)"}`, background: os === i ? "rgba(60,199,158,.14)" : "rgba(255,255,255,.03)", color: "#EAF2F6", cursor: "pointer", textAlign: "left", marginLeft: i * 10 }}><span style={{ fontSize: 12, color: "#7EE0C0", width: 20 }}>0{i + 1}</span><NIcon name={o.icon} size={22} tone="#7EE0C0" /><span><b style={{ fontWeight: 600, color: "#fff" }}>NEYU {o.k}</b><span style={{ display: "block", fontSize: 14, color: "rgba(234,242,246,.72)" }}>{o.text}</span></span></button>)}
           </div>
           <NeyuReads dark key={os} title={`NEYU ${OS[os].k}`} text={OS[os].text + " " + (["Your consent settings decide what Neyu can read.", "Wearables, labs, imaging and genomics all flow into the same place.", "Neyu explains, connects and flags — it never diagnoses.", "Specialists, virtual visits and diagnostics share one record.", "Assessments, packages and programs catch risk early.", "Your healthspan is tracked over years."][os])} />
         </div>
@@ -91,9 +92,9 @@ export function VirtualCare() {
       </Section>
       <Section label="Suitability" eyebrow="Is virtual right for me?" title="Good for virtual — and when to come in.">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,320px),1fr))", gap: 16 }}>
-          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10 }}><b style={{ fontWeight: 500, fontSize: 19, color: "#1F7A55" }}><i className="ph ph-check-circle" /> Usually good virtually</b>{["Follow-up visits and results reviews", "Blood-pressure and diabetes check-ins", "Medication reviews", "Questions about a diagnosis or test", "Planning tests before an in-person visit"].map((x) => <span key={x} style={{ fontSize: 15, color: N.ink2 }}>• {x}</span>)}</div>
-          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10 }}><b style={{ fontWeight: 500, fontSize: 19, color: "#9A4A1C" }}><i className="ph ph-buildings" /> Better in person</b>{["When an examination or test is needed", "New, severe or worsening symptoms", "Imaging, stress testing or monitoring", "Procedures"].map((x) => <span key={x} style={{ fontSize: 15, color: N.ink2 }}>• {x}</span>)}</div>
-          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10, background: "#FBEDE9", borderColor: "#F1C9BD" }}><b style={{ fontWeight: 600, fontSize: 19, color: "#8B2F1C" }}><i className="ph ph-siren" /> Emergencies</b><span style={{ fontSize: 15, color: "#5A2A1E", lineHeight: 1.55 }}>Chest pain, trouble breathing, fainting, stroke signs or severe bleeding: call 911 or go to the nearest emergency department. Virtual care is not for emergencies.</span></div>
+          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10 }}><b style={{ fontWeight: 500, fontSize: 19, color: "#1F7A55" }}><NIcon name="ph-check-circle" size={18} tone={"currentColor"} /> Usually good virtually</b>{["Follow-up visits and results reviews", "Blood-pressure and diabetes check-ins", "Medication reviews", "Questions about a diagnosis or test", "Planning tests before an in-person visit"].map((x) => <span key={x} style={{ fontSize: 15, color: N.ink2 }}>• {x}</span>)}</div>
+          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10 }}><b style={{ fontWeight: 500, fontSize: 19, color: "#9A4A1C" }}><NIcon name="ph-buildings" size={18} tone={"currentColor"} /> Better in person</b>{["When an examination or test is needed", "New, severe or worsening symptoms", "Imaging, stress testing or monitoring", "Procedures"].map((x) => <span key={x} style={{ fontSize: 15, color: N.ink2 }}>• {x}</span>)}</div>
+          <div style={{ ...cardN, padding: 22, display: "grid", gap: 10, background: "#FBEDE9", borderColor: "#F1C9BD" }}><b style={{ fontWeight: 600, fontSize: 19, color: "#8B2F1C" }}><NIcon name="ph-siren" size={18} tone={"currentColor"} /> Emergencies</b><span style={{ fontSize: 15, color: "#5A2A1E", lineHeight: 1.55 }}>Chest pain, trouble breathing, fainting, stroke signs or severe bleeding: call 911 or go to the nearest emergency department. Virtual care is not for emergencies.</span></div>
         </div>
       </Section>
       <Section id="request" tone="white" label="Request" eyebrow="Request a virtual visit" title="Tell us what you need.">
@@ -101,7 +102,7 @@ export function VirtualCare() {
           <RequestForm service="virtual-care" title="Request a virtual visit" options={{ label: "Visit type", values: ["New concern", "Follow-up", "Results review", "Medication review", "Blood-pressure check-in"] }} cta="Request my visit" />
           <div style={{ display: "grid", gap: 12 }}>
             <NeyuReads text="Most specialist visits in Alberta need a referral. If you have one, the team links it to your visit; if not, they'll explain the options." ask="Do I need a referral for a virtual visit?" />
-            <a href="/referral-centre" style={{ ...btn("ghost"), justifySelf: "start" }}><i className="ph ph-paper-plane-tilt" />Upload a referral</a>
+            <a href="/referral-centre" style={{ ...btn("ghost"), justifySelf: "start" }}><NIcon name="ph-paper-plane-tilt" size={18} tone={"currentColor"} />Upload a referral</a>
           </div>
         </div>
       </Section>
@@ -197,7 +198,7 @@ export function Packages() {
           </div>
           <div key={rec.id} style={{ display: "grid", gap: 12, animation: "fadeUp .3s ease" }}>
             <AiBadge label="Neyu suggests" />
-            <a href={`#${rec.id}`} style={{ ...cardN, padding: 20, display: "flex", gap: 14, alignItems: "center", textDecoration: "none", color: N.ink }}><IconTile icon={rec.icon} /><span style={{ flex: 1 }}><b style={{ fontWeight: 500, fontSize: 20 }}>{rec.title}</b><span style={{ display: "block", fontSize: 14.5, color: N.muted }}>{rec.tag}</span></span><i className="ph ph-arrow-down" /></a>
+            <a href={`#${rec.id}`} style={{ ...cardN, padding: 20, display: "flex", gap: 14, alignItems: "center", textDecoration: "none", color: N.ink }}><IconTile icon={rec.icon} /><span style={{ flex: 1 }}><b style={{ fontWeight: 500, fontSize: 20 }}>{rec.title}</b><span style={{ display: "block", fontSize: 14.5, color: N.muted }}>{rec.tag}</span></span><NIcon name="ph-arrow-down" size={18} tone={"currentColor"} /></a>
             <NeyuReads text={`${rec.for} ${rec.neyu}`} ask={`Is the ${rec.title} package right for me?`} />
           </div>
         </div>
@@ -215,13 +216,13 @@ export function Packages() {
               </div>
               <div style={{ display: "grid", gap: 8, alignContent: "start" }}>
                 <span style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: N.muted }}>In clinic</span>
-                {p.clinic.map((c) => <span key={c} style={{ display: "flex", gap: 8, fontSize: 15 }}><i className="ph ph-check" style={{ color: N.green, marginTop: 3 }} />{c}</span>)}
+                {p.clinic.map((c) => <span key={c} style={{ display: "flex", gap: 8, fontSize: 15 }}><NIcon name="ph-check" size={18} tone={N.green} style={{ marginTop: 3 }} />{c}</span>)}
                 <span style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: N.muted, marginTop: 8 }}>Advanced labs · BioAro</span>
-                {p.labs.map((l) => <span key={l.slug} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 15 }}><span><i className="ph ph-flask" style={{ color: N.blue }} /> {l.name}</span><span style={{ color: N.muted }}>{money(l.price)}</span></span>)}
+                {p.labs.map((l) => <span key={l.slug} style={{ display: "flex", justifyContent: "space-between", gap: 10, fontSize: 15 }}><span><NIcon name="ph-flask" size={18} tone={N.blue} /> {l.name}</span><span style={{ color: N.muted }}>{money(l.price)}</span></span>)}
                 <span style={{ display: "flex", justifyContent: "space-between", borderTop: `1px solid ${N.line}`, paddingTop: 8, fontSize: 15 }}><b style={{ fontWeight: 600 }}>Lab component</b><b style={{ fontWeight: 600 }}>{money(pkgLabTotal(p))}</b></span>
                 <span style={{ fontSize: 12.5, color: N.faint }}>Lab prices are BioAro list prices. Clinic services are quoted by the NEYU team.</span>
               </div>
-              <div style={{ display: "grid", gap: 10, alignContent: "start" }}><LiveChart mode={p.chart} height={150} /><a href="#request" style={{ ...btn("grad"), justifySelf: "start" }}>Request this package<i className="ph ph-arrow-right" /></a></div>
+              <div style={{ display: "grid", gap: 10, alignContent: "start" }}><LiveChart mode={p.chart} height={150} /><a href="#request" style={{ ...btn("grad"), justifySelf: "start" }}>Request this package<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a></div>
             </article>
           ))}
         </div>
@@ -258,14 +259,14 @@ export function Membership() {
               <b style={{ fontWeight: 500, fontSize: 28, letterSpacing: "-.02em" }}>{m.title}</b>
               <span style={{ fontSize: 15, color: N.teal, fontWeight: 600 }}>{m.tag}</span>
               <span style={{ fontSize: 14, color: N.muted }}>Pricing shared on request · founding members</span>
-              {m.features.map((f) => <span key={f} style={{ display: "flex", gap: 8, fontSize: 15 }}><i className="ph ph-check" style={{ color: N.green, marginTop: 3 }} />{f}</span>)}
+              {m.features.map((f) => <span key={f} style={{ display: "flex", gap: 8, fontSize: 15 }}><NIcon name="ph-check" size={18} tone={N.green} style={{ marginTop: 3 }} />{f}</span>)}
             </button>
           ))}
         </div>
         <div style={{ ...cardN, padding: 0, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560, fontSize: 15 }}>
             <thead><tr><th style={{ textAlign: "left", padding: 16, fontWeight: 500, color: N.muted }}>Benefit</th>{MEMBERSHIP.map((m) => <th key={m.id} style={{ padding: 16, fontWeight: 600, color: tier === m.id ? N.deep : N.ink, background: tier === m.id ? "rgba(42,132,228,.06)" : "transparent" }}>{m.title}</th>)}</tr></thead>
-            <tbody>{MEMBERSHIP_COMPARE.map((f) => <tr key={f} style={{ borderTop: `1px solid ${N.line2}` }}><td style={{ padding: "12px 16px" }}>{f}</td>{MEMBERSHIP.map((m) => <td key={m.id} style={{ textAlign: "center", padding: 12, background: tier === m.id ? "rgba(42,132,228,.06)" : "transparent" }}>{memberHas(m.id, f) ? <i className="ph-fill ph-check-circle" style={{ color: N.green, fontSize: 20 }} aria-label="Included" /> : <span style={{ color: N.faint }} aria-label="Not included">—</span>}</td>)}</tr>)}</tbody>
+            <tbody>{MEMBERSHIP_COMPARE.map((f) => <tr key={f} style={{ borderTop: `1px solid ${N.line2}` }}><td style={{ padding: "12px 16px" }}>{f}</td>{MEMBERSHIP.map((m) => <td key={m.id} style={{ textAlign: "center", padding: 12, background: tier === m.id ? "rgba(42,132,228,.06)" : "transparent" }}>{memberHas(m.id, f) ? <NIcon name="ph-check-circle" size={20} tone={N.green} aria-label="Included" /> : <span style={{ color: N.faint }} aria-label="Not included">—</span>}</td>)}</tr>)}</tbody>
           </table>
         </div>
       </Section>
@@ -308,7 +309,7 @@ export function AtHome() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,340px),1fr))", gap: 20, alignItems: "start" }}>
           <div style={{ ...cardN, padding: 22, display: "grid", gap: 10 }}>
             <label style={{ display: "grid", gap: 6, fontSize: 15 }}>Your postal code<input value={postal} onChange={(e) => setPostal(e.target.value.slice(0, 7))} placeholder="T2E 7K6" autoComplete="postal-code" style={{ height: 50, borderRadius: 14, border: `1px solid ${N.line}`, padding: "0 14px", fontSize: 17, textTransform: "uppercase" }} /></label>
-            {area && <p role="status" style={{ margin: 0, fontSize: 15.5, color: area.ok ? "#1F7A55" : "#9A4A1C", display: "flex", gap: 8 }}><i className={"ph " + (area.ok ? "ph-check-circle" : "ph-info")} style={{ marginTop: 3 }} />{area.t}</p>}
+            {area && <p role="status" style={{ margin: 0, fontSize: 15.5, color: area.ok ? "#1F7A55" : "#9A4A1C", display: "flex", gap: 8 }}><NIcon name={area.ok ? "check" : "info"} size={18} tone="currentColor" style={{ marginTop: 2 }} />{area.t}</p>}
           </div>
           <NeyuReads text="Some tests need fasting or a morning sample. When you book, the team confirms the exact preparation for the tests you chose." ask="How should I prepare for an at-home blood test?" />
         </div>
