@@ -13,6 +13,13 @@ const DESTINATIONS = [
   { key: "nutrition", href: "/longevity", label: "Nutrition Starter Plan", desc: "Diet, nutrition goals, weight management, eating habits." },
   { key: "lab-results", href: "/lab-results", label: "Lab Result Explainer", desc: "Understanding lab test results or blood work values." },
   { key: "genomics", href: "/genomics", label: "Genomics — BioAro Labs Testing", desc: "Genetic testing, DNA, microbiome testing, ancestry, hereditary risk." },
+  { key: "virtual-care", href: "/virtual-care", label: "Virtual Care", desc: "Wanting to see a doctor by video from home, follow-ups, results reviews, medication reviews." },
+  { key: "hypertension", href: "/hypertension-clinic", label: "Virtual Hypertension Clinic", desc: "High blood pressure, home BP readings, wanting blood pressure managed remotely." },
+  { key: "packages", href: "/packages", label: "Private Health Packages & Executive Health", desc: "Full health check, executive physical, screening package, heart check, longevity baseline." },
+  { key: "membership", href: "/membership", label: "NEYU Membership", desc: "Subscription, ongoing care plan, membership tiers." },
+  { key: "at-home", href: "/at-home", label: "At-home Blood Collection", desc: "Blood test at home or office, mobile collection." },
+  { key: "care", href: "/care", label: "Care — specialists & care navigator", desc: "Finding the right specialist or type of care in general." },
+  { key: "diagnostics", href: "/diagnostics", label: "Diagnostics", desc: "Imaging, stress testing, monitoring, which test to get." },
   { key: "referral", href: "/referral-centre", label: "Referral Centre", desc: "Starting or submitting a referral, already have a referral from a doctor." },
   { key: "resources", href: "/resources", label: "Patient Resources", desc: "Test preparation info, new patient information, general forms." },
   { key: "contact", href: "/contact", label: "Contact", desc: "General contact, locations, booking an appointment directly, or anything not clearly matching the above." },
@@ -48,7 +55,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Emergency/crisis safety net — deterministic, checked BEFORE calling the
-  // AI at all. This is the same shared check used by ALBA chat and the
+  // AI at all. This is the same shared check used by Neyu chat and the
   // Symptom Checker, so a real emergency always gets the same reliable
   // response here too, instead of being left to the AI's own judgment.
   if (detectCrisisKeywords(message)) {
