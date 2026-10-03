@@ -73,7 +73,7 @@ export default function Patient360({ id, tab }: { id: string; tab: string }) {
     p.consent.wearables ? chip("Wearables · Shared", "teal", "ph-check-circle") : chip("Wearables · Off", "neutral", "ph-minus-circle"),
     p.consent.labs ? chip("Labs · Shared", "teal", "ph-check-circle") : chip("Labs · Off", "neutral", "ph-minus-circle"),
     p.consent.clinical ? chip("Clinical records · Shared", "teal", "ph-check-circle") : chip("Clinical records · Off", "neutral", "ph-minus-circle"),
-    p.consent.alba ? chip("ALBA · Allowed", "teal", "ph-check-circle") : chip("ALBA · Off", "neutral", "ph-minus-circle"),
+    p.consent.alba ? chip("Neyu · Allowed", "teal", "ph-check-circle") : chip("Neyu · Off", "neutral", "ph-minus-circle"),
   ];
   const next = p.upcoming[0];
   const active = p.protocol.filter((x) => x.status === "Active");
@@ -208,7 +208,7 @@ export default function Patient360({ id, tab }: { id: string; tab: string }) {
           <ol style={{ listStyle: "none", margin: 0, padding: 0 }}>
             {p.timeline.map((t) => {
               const c = tone(t.tone), isOpen = !!open[t.id];
-              const src = chip(t.source, t.source === "ALBA" ? "ai" : t.tone === "urgent" ? "urgent" : "neutral");
+              const src = chip(t.source, t.source === "Neyu" ? "ai" : t.tone === "urgent" ? "urgent" : "neutral");
               return (
                 <li key={t.id} style={{ display: "flex", gap: 16, padding: "14px 0", borderBottom: `1px solid ${T.line}` }}>
                   <div style={{ width: 96, flex: "none", fontSize: 13, color: T.faint, paddingTop: 8 }}><span style={{ display: "block", color: T.ink, fontWeight: 500 }}>{t.date}</span>{t.time}</div>
@@ -411,13 +411,13 @@ export default function Patient360({ id, tab }: { id: string; tab: string }) {
           {!revealed.ai ? (
             <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", padding: 22, borderRadius: 20, background: T.lavWash, border: "1px dashed rgba(95,74,138,.25)" }}>
               <Orb size={36} />
-              <div style={{ flex: 1, minWidth: 220 }}><div style={{ fontSize: 15.5, fontWeight: 500, color: T.lavInk }}>AI conversations and assessments · {p.aisN}</div><div style={{ fontSize: 14, color: T.lavInk }}>ALBA conversations, symptom checks, assessments and lab explainers are masked. Revealing asks for a reason and is logged.</div></div>
+              <div style={{ flex: 1, minWidth: 220 }}><div style={{ fontSize: 15.5, fontWeight: 500, color: T.lavInk }}>AI conversations and assessments · {p.aisN}</div><div style={{ fontSize: 14, color: T.lavInk }}>Neyu conversations, symptom checks, assessments and lab explainers are masked. Revealing asks for a reason and is logged.</div></div>
               {a.canEdit && <button onClick={() => reveal("ai", "AI conversations")} className="h-page" style={{ height: 40, padding: "0 16px", borderRadius: 12, border: "1px solid rgba(95,74,138,.3)", background: T.card, color: T.lavInk, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "inline-flex", gap: 8, alignItems: "center", whiteSpace: "nowrap" }}><i className="ph ph-eye" />Reveal AI activity</button>}
             </div>
           ) : (
             <>
               <RevealedBar onHide={() => hide("ai")} />
-              {revealed.ai.length === 0 && <EmptyCard title="No AI activity" sub="This patient hasn't used ALBA or any AI tools." />}
+              {revealed.ai.length === 0 && <EmptyCard title="No AI activity" sub="This patient hasn't used Neyu or any AI tools." />}
               {revealed.ai.map((x) => { const d = decAI(x); return (
                 <button key={x.key} onClick={() => a.openAI(x.key)} className="h-lift" style={{ display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap", padding: "14px 18px", borderRadius: 18, background: T.card, border: `1px solid ${T.line}`, textAlign: "left", cursor: "pointer", width: "100%" }}>
                   <span style={{ width: 36, height: 36, borderRadius: 11, background: T.lavWash, color: T.lavInk, display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}><i className={d.icon} /></span>
