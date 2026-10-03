@@ -4,6 +4,7 @@ import React from "react";
 import { PAGE_HREF, CLINIC_PHONE, CLINIC_EMAIL, type NavLink } from "@/data/homeContent";
 import { useAnraNav } from "@/lib/useAnraNav";
 import NeyuLogo from "@/components/brand/NeyuLogo";
+import { NIcon } from "@/components/neyu/icons";
 
 const head: React.CSSProperties = { fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#5A626A" };
 const col: React.CSSProperties = { marginTop: 12, display: "grid", gap: 8, justifyItems: "start" };
@@ -55,7 +56,7 @@ export default function Footer() {
           </div>
         </div>
         <div style={{ marginTop: 40, padding: "16px 18px", borderRadius: 12, background: "#FDFCFA", display: "flex", gap: 10, alignItems: "flex-start", fontSize: 15 }}>
-          <i className="ph ph-first-aid" style={{ fontSize: 20, color: "#9B2317" }} />
+          <NIcon name="ph-first-aid" size={20} tone={"#9B2317"} />
           <span><strong style={{ fontWeight: 600 }}>Emergency information.</strong> NEYU isn’t an emergency service. If you think you’re having a medical emergency, call <a href="tel:911" style={{ color: "#9B2317", fontWeight: 600 }}>911</a>. For nurse advice in Alberta, call Health Link <a href="tel:811">811</a>.</span>
         </div>
         <div style={{ marginTop: 24, display: "flex", flexWrap: "wrap", gap: "8px 20px", fontSize: 13, color: "#5A626A" }}>
