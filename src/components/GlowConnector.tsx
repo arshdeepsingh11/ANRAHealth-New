@@ -55,7 +55,7 @@ export default function GlowConnector({
         style={{
           animation: `glowDash-${id} ${duration}s linear infinite`,
           animationDelay: `${delay}s`,
-          filter: "drop-shadow(0 0 6px rgba(140,111,184,0.75))",
+          filter: "drop-shadow(0 0 6px rgba(42,132,228,0.75))",
         }}
       />
       <style jsx>{`
