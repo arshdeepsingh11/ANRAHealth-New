@@ -1,6 +1,9 @@
-import DiagnosticPageTemplate from "@/components/DiagnosticPageTemplate";
-import { diagnosticContent } from "@/data/diagnosticContent";
+import type { Metadata } from "next";
+import { NeyuPage } from "@/components/neyu/kit";
+import DiagnosticPage from "@/components/neyu/pages/Diagnostic";
 
-export default function StressTestingPage() {
-  return <DiagnosticPageTemplate content={diagnosticContent["stress-testing"]} />;
+export const metadata: Metadata = { title: "Stress testing · NEYU Health" };
+
+export default function Page() {
+  return <NeyuPage><DiagnosticPage slug="stress-testing" /></NeyuPage>;
 }
