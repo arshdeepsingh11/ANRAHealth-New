@@ -7,6 +7,7 @@ import { REGIONS, useRegion } from "@/components/RegionContext";
 import AlbaOrb from "@/components/AlbaOrb";
 import { useAnraNav } from "@/lib/useAnraNav";
 import { useAlba } from "@/components/AlbaContext";
+import { NIcon } from "@/components/neyu/icons";
 
 // Four-point sparkle burst shown on the hovered / open item.
 function Sparkles({ violet }: { violet?: boolean }) {
@@ -89,7 +90,7 @@ export default function NavRail({ onSearch }: { onSearch: () => void }) {
                 }}
               >
                 {isActive && <span aria-hidden="true" style={{ position: "absolute", left: -3, top: 16, bottom: 16, width: 3, borderRadius: 2, background: "#3F6F7C" }} />}
-                {r.ai ? <AlbaOrb size={22} /> : <i className={(isActive || lit ? "ph-fill " : "ph ") + r.icon} style={{ fontSize: 20, color: isActive ? "#2F5A66" : lit ? "#3F6F7C" : "#3A4147", transition: "color .2s" }} />}
+                {r.ai ? <AlbaOrb size={22} /> : <NIcon name={r.icon} size={20} tone={isActive ? "#2F5A66" : lit ? "#3F6F7C" : "#3A4147"} style={{transition: "color .2s"}} />}
                 <span style={{ fontSize: 10, lineHeight: 1, fontWeight: isActive ? 600 : 500, letterSpacing: ".01em", color: r.ai ? "#163F6E" : isActive ? "#2F5A66" : "#5A626A" }}>{SHORT[r.k] || r.label}</span>
                 {lit && <Sparkles violet={r.ai} />}
               </button>
@@ -99,7 +100,7 @@ export default function NavRail({ onSearch }: { onSearch: () => void }) {
         <span aria-hidden="true" style={{ height: 1, margin: "3px 10px", background: "#E3DED5" }} />
         <button onClick={onSearch} aria-label="Search" onMouseEnter={() => { setOpen(null); setHover("search"); }} className="hv-sand"
           style={{ position: "relative", width: 58, height: 50, borderRadius: 18, border: 0, background: "transparent", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3 }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 19, color: "#3A4147" }} />
+          <NIcon name="ph-magnifying-glass" size={19} tone={"#3A4147"} />
           <span style={{ fontSize: 10, lineHeight: 1, fontWeight: 500, color: "#5A626A" }}>Search</span>
           {hover === "search" && <Sparkles />}
         </button>
