@@ -6,6 +6,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api, announceSession } from "./api";
 import { C } from "./ui";
+import { NIcon } from "@/components/neyu/icons";
 
 export default function VerifyEmail({ maskedEmail, needsCode, initialWait, devMode }: { maskedEmail: string; needsCode: boolean; initialWait: number; devMode: boolean }) {
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
@@ -76,7 +77,7 @@ export default function VerifyEmail({ maskedEmail, needsCode, initialWait, devMo
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <main style={{ width: "100%", maxWidth: 440, animation: "mhs-fadeUp 380ms cubic-bezier(.2,.7,.2,1)" }}>
           <span style={{ width: 52, height: 52, borderRadius: 16, background: C.tealWash, color: C.teal, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 18 }}>
-            <i className={done ? "ph-fill ph-seal-check" : "ph ph-envelope-simple-open"} style={{ fontSize: 26 }} />
+            <NIcon name={done ? "ph-seal-check" : "ph-envelope-simple-open"} size={26} tone="currentColor" />
           </span>
           <h1 style={{ margin: "0 0 8px", fontSize: 32, lineHeight: 1.1, fontWeight: 500, letterSpacing: "-.025em" }}>{done ? "Email verified" : "Check your email"}</h1>
           <p style={{ margin: "0 0 26px", fontSize: 16, lineHeight: 1.55, color: C.ink2 }}>
@@ -108,7 +109,7 @@ export default function VerifyEmail({ maskedEmail, needsCode, initialWait, devMo
             </div>
           )}
           <p style={{ margin: "20px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}>
-            <i className="ph ph-shield-check" style={{ fontSize: 16, marginTop: 1 }} /><span>The code expires in 10 minutes. Check your spam folder if it doesn't arrive. NEYU will never ask you for this code.</span>
+            <NIcon name="ph-shield-check" size={16} tone="currentColor" style={{marginTop: 1}} /><span>The code expires in 10 minutes. Check your spam folder if it doesn't arrive. NEYU will never ask you for this code.</span>
           </p>
           {devMode && <p style={{ margin: "12px 0 0", fontSize: 12, color: C.peachInk }}>Development: email isn't set up yet, so the code is printed in the terminal running the site.</p>}
         </main>
