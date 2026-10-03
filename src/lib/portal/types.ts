@@ -144,7 +144,7 @@ export interface BriefItemDTO { icon: string; title: string; text: string; tone:
 export interface BriefDTO {
   day: string;
   headline: string; // one warm sentence
-  message: string; // 1–3 sentences (ALBA-written when available)
+  message: string; // 1–3 sentences (Neyu-written when available)
   byAlba: boolean;
   weather: WeatherDTO | null;
   needsLocation: boolean;
