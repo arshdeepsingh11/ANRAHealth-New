@@ -152,7 +152,7 @@ body {
 /* ── Morphing futuristic headline — blur-to-sharp entrance + shifting gradient ── */
 .morph-word {
   display: inline-block;
-  background: linear-gradient(90deg, #3F6F7C, #6EA8B6, #8C6FB8, #6EA8B6, #3F6F7C);
+  background: linear-gradient(90deg, #3F6F7C, #6EA8B6, #2A84E4, #6EA8B6, #3F6F7C);
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
