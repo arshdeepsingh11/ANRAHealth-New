@@ -10,18 +10,18 @@ import { NIcon } from "@/components/neyu/icons";
 
 type Ask = (q: string) => void;
 const inp: React.CSSProperties = { height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${T.line}`, background: "#fff", fontSize: 16, width: "100%", color: T.ink };
-const lab: React.CSSProperties = { display: "grid", gap: 6, fontSize: 13.5, color: T.ink2 };
+const lab: React.CSSProperties = { display: "grid", gridTemplateRows: "minmax(2.6em,auto) auto", alignItems: "end", gap: 6, fontSize: 13.5, lineHeight: 1.3, color: T.ink2 };
 const BAND = { good: "#1F9E7A", mid: "#C98A1E", high: "#D06A34", top: "#B8433A", info: "#2273D6" };
 
 export function ToolFrame({ title, sub, icon, accent, children, source }: { title: string; sub: string; icon: string; accent: string; children: React.ReactNode; source?: string }) {
   return (
-    <section style={{ ...card, padding: "clamp(18px,2.6vw,26px)", display: "grid", gap: 16, minWidth: 0 }}>
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+    <section style={{ ...card, padding: "clamp(18px,2.6vw,26px)", display: "flex", flexDirection: "column", gap: 16, minWidth: 0, height: "100%", boxSizing: "border-box" }}>
+      <div style={{ display: "flex", gap: 12, alignItems: "center", minHeight: 46 }}>
         <Icon name={icon} box={42} size={21} />
         <div><h3 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>{title}</h3><p style={{ margin: "2px 0 0", fontSize: 13.5, color: T.muted }}>{sub}</p></div>
       </div>
       {children}
-      <p style={{ margin: 0, fontSize: 12, color: T.faint, display: "flex", gap: 6 }}><NIcon name="ph-info" size={18} tone={"currentColor"} style={{ marginTop: 2 }} />Education, not a diagnosis.{source ? ` Based on ${source}.` : ""}</p>
+      <p style={{ margin: "auto 0 0", fontSize: 12, color: T.faint, display: "flex", gap: 6 }}><NIcon name="ph-info" size={18} tone={"currentColor"} style={{ marginTop: 2 }} />Education, not a diagnosis.{source ? ` Based on ${source}.` : ""}</p>
     </section>
   );
 }
