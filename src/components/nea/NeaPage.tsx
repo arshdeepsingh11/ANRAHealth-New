@@ -14,7 +14,7 @@ import { Overview, Results, Packages, Visit, OpenPill, type Tab } from "./sectio
 
 const TABS: { v: Tab; label: string; icon: string }[] = [
   { v: "overview", label: "Overview", icon: "ph-house-simple" },
-  { v: "studio", label: "ALBA Studio", icon: "ph-sparkle" },
+  { v: "studio", label: "Neyu Studio", icon: "ph-sparkle" },
   { v: "treatments", label: "Treatments", icon: "ph-first-aid-kit" },
   { v: "results", label: "Results & data", icon: "ph-chart-line-up" },
   { v: "packages", label: "Packages", icon: "ph-package" },
@@ -88,7 +88,7 @@ export default function NeaPage() {
             return (
               <button key={t.v} onClick={() => setTab(t.v)} aria-current={on ? "page" : undefined}
                 style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 7, height: 40, padding: "0 16px", borderRadius: 999, border: 0, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap", transition: "all .25s",
-                  background: on ? (ai ? "linear-gradient(120deg,#6A5096,#8C6FB8 50%,#B9786A)" : T.ink) : "transparent", color: on ? "#fff" : ai ? T.violet : T.ink2, boxShadow: on ? "0 8px 20px -10px rgba(20,24,27,.6)" : "none" }}>
+                  background: on ? (ai ? "linear-gradient(120deg,#1D5FA8,#2A84E4 50%,#3CC79E)" : T.ink) : "transparent", color: on ? "#fff" : ai ? T.violet : T.ink2, boxShadow: on ? "0 8px 20px -10px rgba(20,24,27,.6)" : "none" }}>
                 <i className={(on ? "ph-fill " : "ph ") + t.icon} />{t.label}
               </button>
             );
