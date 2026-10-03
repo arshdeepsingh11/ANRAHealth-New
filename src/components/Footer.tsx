@@ -20,23 +20,28 @@ export default function Footer() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 32 }}>
           <div style={{ gridColumn: "span 2", minWidth: 0 }}>
             <NeyuLogo height={38} />
-            <p style={{ margin: "10px 0 0", color: "#3A4147", maxWidth: 320 }}>Advanced cardiac &amp; internal medicine care. Calgary, Alberta.</p>
+            <p style={{ margin: "10px 0 0", color: "#3A4147", maxWidth: 320 }}>Your Health, Connected. Listen · Connect · Flourish.<br />Calgary, Alberta.</p>
             <p style={{ margin: "16px 0 0", fontSize: 15, color: "#3A4147" }}><a href={`tel:${CLINIC_PHONE}`}>{CLINIC_PHONE}</a> · <a href={`mailto:${CLINIC_EMAIL}`}>{CLINIC_EMAIL}</a></p>
           </div>
           <div>
             <div style={head}>Explore</div>
             <div style={col}>
-              {L("Care", { label: "Care", href: PAGE_HREF.hub })}
-              {L("Precision Health", { label: "Precision Health", href: PAGE_HREF.genomics })}
-              {L("Packages", { label: "Packages", href: PAGE_HREF.packages })}
-              {L("Longevity", { label: "Longevity", href: PAGE_HREF.risk })}
-              {L("ALBA", { label: "ALBA", alba: true })}
+              {L("Care", { label: "Care", href: PAGE_HREF.care })}
+              {L("Diagnostics", { label: "Diagnostics", href: PAGE_HREF.diagnostics })}
+              {L("Prevention", { label: "Prevention", href: PAGE_HREF.prevention })}
+              {L("Longevity", { label: "Longevity", href: PAGE_HREF.longevity })}
+              {L("Meet Neyu", { label: "Meet Neyu", href: PAGE_HREF.neyu })}
+              {L("All services", { label: "All services", href: PAGE_HREF.explore })}
               {L("About", { label: "About", href: "/about" })}
             </div>
           </div>
           <div>
             <div style={head}>Patients</div>
             <div style={col}>
+              {L("Virtual Care", { label: "Virtual Care", href: PAGE_HREF.virtual })}
+              {L("Hypertension Clinic", { label: "Hypertension Clinic", href: PAGE_HREF.htn })}
+              {L("Packages", { label: "Packages", href: PAGE_HREF.packages })}
+              {L("Membership", { label: "Membership", href: PAGE_HREF.membership })}
               {L("Referral Centre", { label: "Referral Centre", href: PAGE_HREF.referral })}
               {L("Patient Resources", { label: "Patient Resources", href: PAGE_HREF.resources })}
               {L("Find a physician", { label: "Find a physician", href: PAGE_HREF.matcher })}
