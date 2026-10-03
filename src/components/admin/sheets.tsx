@@ -194,11 +194,11 @@ export function AiSheet({ id, onClose }: { id: string; onClose: () => void }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div><div style={{ fontSize: 12.5, fontWeight: 500, color: T.faint, marginBottom: 4 }}>Patient-provided description</div><p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.5 }}>{x.desc}</p></div>
               <div style={{ background: T.lavWash, borderRadius: 16, padding: "14px 16px", display: "grid", gridTemplateColumns: "auto 1fr", gap: "6px 16px", fontSize: 14, color: T.lavInk }}>
-                <span style={{ fontWeight: 500 }}>ALBA urgency</span><span>{x.urgency}</span>
+                <span style={{ fontWeight: 500 }}>Neyu urgency</span><span>{x.urgency}</span>
                 <span style={{ fontWeight: 500 }}>Recommended specialty</span><span>{x.specialty}</span>
                 <span style={{ fontWeight: 500 }}>Emergency flag</span><span>{x.emergency ? "Yes" : "No"}</span>
               </div>
-              {x.summary && <div><div style={{ fontSize: 12.5, fontWeight: 500, color: T.faint, marginBottom: 4 }}>ALBA summary shown to the person</div><p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.5, color: T.ink2 }}>{x.summary}</p></div>}
+              {x.summary && <div><div style={{ fontSize: 12.5, fontWeight: 500, color: T.faint, marginBottom: 4 }}>Neyu summary shown to the person</div><p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.5, color: T.ink2 }}>{x.summary}</p></div>}
             </div>
           )}
           {x.kind === "alba" && (
@@ -207,7 +207,7 @@ export function AiSheet({ id, onClose }: { id: string; onClose: () => void }) {
               {(x.messages || []).map((m, i) => m.from === "patient"
                 ? <div key={i} style={{ alignSelf: "flex-end", maxWidth: "82%", background: T.side, borderRadius: "18px 18px 6px 18px", padding: "10px 14px", fontSize: 14.5, whiteSpace: "pre-wrap" }}><div style={{ fontSize: 11.5, color: T.faint, marginBottom: 2 }}>{x.isVisitor ? "Visitor" : "Patient"}</div>{m.text}</div>
                 : m.from === "alba"
-                  ? <div key={i} style={{ alignSelf: "flex-start", maxWidth: "86%", display: "flex", gap: 8 }}><Orb size={22} style={{ marginTop: 4 }} /><div style={{ background: T.lavWash, color: T.ink, borderRadius: "18px 18px 18px 6px", padding: "10px 14px", fontSize: 14.5, whiteSpace: "pre-wrap" }}><div style={{ fontSize: 11.5, color: T.lavInk, fontWeight: 500, marginBottom: 2 }}>ALBA · AI</div>{m.text}</div></div>
+                  ? <div key={i} style={{ alignSelf: "flex-start", maxWidth: "86%", display: "flex", gap: 8 }}><Orb size={22} style={{ marginTop: 4 }} /><div style={{ background: T.lavWash, color: T.ink, borderRadius: "18px 18px 18px 6px", padding: "10px 14px", fontSize: 14.5, whiteSpace: "pre-wrap" }}><div style={{ fontSize: 11.5, color: T.lavInk, fontWeight: 500, marginBottom: 2 }}>Neyu · AI</div>{m.text}</div></div>
                   : <div key={i} style={{ alignSelf: "center", fontSize: 12.5, color: T.lavInk, display: "flex", gap: 6, alignItems: "center", padding: "4px 10px", border: "1px dashed rgba(95,74,138,.3)", borderRadius: 999 }}><i className="ph ph-gear-six" />System · {m.text}</div>)}
             </div>
           )}
