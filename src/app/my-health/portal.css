@@ -1,5 +1,5 @@
 /* My Health Space — a page inside the website (site nav rail, mobile nav,
-   footer and ALBA stay). Styles inline styles can't express: keyframes,
+   footer and Neyu stay). Styles inline styles can't express: keyframes,
    hover, responsive spacing. Everything is scoped under .mhs. */
 
 .mhs { color: #1D2327; font-family: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif; -webkit-font-smoothing: antialiased; font-size: 16px; line-height: normal; }
@@ -39,7 +39,7 @@
 @media (hover: hover) {
   .mhs .h-nav:hover { background: rgba(63,111,124,.07) !important; }
   .mhs .h-albabtn:hover { background: #E7E0F2 !important; }
-  .mhs .h-lav:hover { background: #EFEAF6 !important; }
+  .mhs .h-lav:hover { background: #E6F3F8 !important; }
   .mhs .h-tealborder:hover { border-color: rgba(63,111,124,.35) !important; }
   .mhs .h-primary:hover { background: #325A65 !important; }
   .mhs .h-secondary:hover { background: #D5E6EA !important; }
