@@ -63,7 +63,8 @@ export default function Navbar() {
     pathname === "/lab-results" ||
     pathname.startsWith("/admin") ||
     pathname === "/genomics" ||
-    pathname === "/explain-diagnosis";
+    pathname === "/explain-diagnosis" ||
+    ["/care", "/prevention", "/neyu", "/virtual-care", "/hypertension-clinic", "/packages", "/membership", "/at-home", "/explore", "/longevity-lab"].some((p) => pathname.startsWith(p));
 
   const navItems = [
     { label: "About", to: "/about" },
