@@ -145,3 +145,10 @@
 @media (min-width: 860px) { .neyu-main { --neyu-pr: max(40px, calc(100px - max(0px, (100vw - 1200px) / 2))); } }
 @media (prefers-reduced-motion: reduce) { .neyu-page * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
 @media (max-width: 420px) { .neyu-hide-xs { display: none; } }
+/* NEYU v2 — quiet interactions */
+.neyu-prompt { transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
+@media (hover: hover) { .neyu-prompt:hover { transform: translateY(-2px); border-color: rgba(31,167,180,.45) !important; box-shadow: 0 18px 36px -26px rgba(34,115,214,.55); background: #fff !important; } }
+.neyu-chip { transition: border-color .2s ease, background .2s ease; }
+@media (hover: hover) { .neyu-chip:hover { border-color: rgba(31,167,180,.5) !important; } }
+.neyu-prompt:focus-visible, .neyu-chip:focus-visible, .sx-card:focus-visible { outline: 2px solid #1FA7B4; outline-offset: 3px; }
+.neyu-noscroll::-webkit-scrollbar { display: none; }
