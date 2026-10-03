@@ -27,9 +27,9 @@ export default function PrecisionFunnel() {
         <anra-particles tone="dark" density="14000" style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.7 }} />
         <div style={{ position: "relative", maxWidth: 1200, margin: "0 auto", padding: "clamp(56px,8vw,112px) clamp(20px,4vw,40px)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,360px),1fr))", gap: "clamp(32px,5vw,72px)", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#C9B8E6" }}>Precision health</div>
+            <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#A9D8F0" }}>Precision health</div>
             <h2 style={{ margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500, color: "#F7F5F1" }}>
-              From population averages to <anra-morph words="your blood.|your DNA.|your history.|you." gradient="linear-gradient(90deg,#C9B8E6,#A9C9D1 60%,#F3C3B2)" />
+              From population averages to <anra-morph words="your blood.|your DNA.|your history.|you." gradient="linear-gradient(90deg,#A9D8F0,#A9C9D1 60%,#F3C3B2)" />
             </h2>
             <div role="tablist" aria-label="Layers of information" style={{ marginTop: 28, display: "grid", gap: 8 }}>
               {PREC_LAYERS.map(([label, sub], i) => {
