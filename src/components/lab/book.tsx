@@ -19,7 +19,7 @@ function Left({ p, n }: { p: Paper; n: number }) {
       <div style={{ height: 1, background: "linear-gradient(90deg,#D9C9A8,transparent)" }} />
       <span style={kicker}>The study</span>
       <p style={{ margin: 0 }}>{p.design}</p>
-      <a href={p.url} target="_blank" rel="noopener" style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: "#6A5096", textDecoration: "none", marginTop: 6 }}>Read the paper ↗</a>
+      <a href={p.url} target="_blank" rel="noopener" style={{ fontFamily: "var(--font-dm-sans), system-ui, sans-serif", fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: "#1D5FA8", textDecoration: "none", marginTop: 6 }}>Read the paper ↗</a>
     </div>
   );
 }
