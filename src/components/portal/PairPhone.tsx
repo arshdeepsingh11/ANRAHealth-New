@@ -6,7 +6,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import NeyuLogo from "@/components/brand/NeyuLogo";
 
-const C = { ink: "#14181B", ink2: "#3A4147", muted: "#5A626A", line: "#E3DED5", card: "#FFFFFF", teal: "#3F6F7C", tealSoft: "#E8F2F4", good: "#2E7D5B", goodSoft: "#EAF4EE", warn: "#8B4B37", warnSoft: "#FBEDE6", violet: "#6A5096" };
+const C = { ink: "#14181B", ink2: "#3A4147", muted: "#5A626A", line: "#E3DED5", card: "#FFFFFF", teal: "#3F6F7C", tealSoft: "#E8F2F4", good: "#2E7D5B", goodSoft: "#EAF4EE", warn: "#8B4B37", warnSoft: "#FBEDE6", violet: "#1D5FA8" };
 type Claim = { syncLink: string; shortcutUrl: string | null; device: string; local: boolean };
 type Status = { connected: boolean; lastAttemptAt: string | null; stored: number; metrics: string[]; rejected: { field: string; reason: string }[] };
 
@@ -99,7 +99,7 @@ export default function PairPhone({ code }: { code: string }) {
           <Step n={2} title="Add the NEYU Sync shortcut" done={added}>
             {claim.shortcutUrl ? (
               <>
-                <a href={claim.shortcutUrl} onClick={() => setAdded(true)} style={{ ...btn, background: "linear-gradient(120deg,#3F6F7C,#6A5096)" }}><i className="ph ph-plus-circle" />Add NEYU Sync</a>
+                <a href={claim.shortcutUrl} onClick={() => setAdded(true)} style={{ ...btn, background: "linear-gradient(120deg,#3F6F7C,#1D5FA8)" }}><i className="ph ph-plus-circle" />Add NEYU Sync</a>
                 <ol style={{ margin: 0, paddingLeft: 20, display: "grid", gap: 6 }}>
                   <li style={li}>Tap <b>Add Shortcut</b>.</li>
                   <li style={li}>When it asks for your <b>NEYU sync link</b>, tap the box and <b>Paste</b>.</li>
