@@ -1,4 +1,4 @@
-// Small Gemini helper shared by ALBA features (portal chat, daily brief,
+// Small Gemini helper shared by Neyu features (portal chat, daily brief,
 // monthly story). Returns null when the key is missing or the call fails, so
 // callers always have a rules-based fallback.
 
