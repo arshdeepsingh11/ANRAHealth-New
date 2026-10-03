@@ -1,33 +1,41 @@
 "use client";
 
-// Shared tokens + small components for the Nea pages.
+// Shared tokens + small components for the specialty, partner and Longevity Lab
+// pages — now on the NEYU system (navy ink, green→teal→blue, hairline cards,
+// one icon family) so every page reads as one calm, Japanese-minimal product.
 import React, { useEffect, useRef, useState } from "react";
+import { NIcon } from "@/components/neyu/icons";
 import { NEA } from "@/data/nea";
 
 export const T = {
-  ink: "#14181B", ink2: "#3A4147", muted: "#5A626A", faint: "#8A9197", line: "#E3DED5", line2: "#EFECE6",
-  paper: "#FBFAF7", card: "#FFFFFF", nea: NEA.color, deep: "#8A4F43", soft: NEA.colorSoft, teal: "#3F6F7C",
-  violet: "#1D5FA8", ai: "#2A84E4", good: "#2E7D5B",
+  ink: "#0E1B2C", ink2: "#33465A", muted: "#5E6B78", faint: "#8A96A3", line: "#E2E6E8", line2: "#EEF1F2",
+  paper: "#F7F6F2", card: "#FFFFFF", nea: "#1FA7B4", deep: "#1D5FA8", soft: "#EAF6F4", teal: "#1FA7B4",
+  violet: "#1D5FA8", ai: "#2273D6", good: "#2FBF94",
 };
-// Categorical order (validated: CVD + normal-vision separation pass on #fcfcfb).
-export const SERIES = ["#B4583F", "#2A78D6", "#1BAF7A", "#E0A100", "#C2477E", "#1D5FA8", "#008300", "#E87BA4"];
+// Categorical order — NEYU palette, ordered for colour-blind separation.
+export const SERIES = ["#1FA7B4", "#2273D6", "#2FBF94", "#D9902F", "#7A8CE0", "#1D5FA8", "#58C98C", "#C7563C"];
 
 export const wrap: React.CSSProperties = { maxWidth: 1180, margin: "0 auto", padding: "0 clamp(16px,4vw,40px)" };
 export const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.muted };
 export const h2: React.CSSProperties = { margin: "10px 0 0", fontSize: "clamp(28px,3.8vw,46px)", lineHeight: 1.05, letterSpacing: "-.035em", fontWeight: 500 };
-export const card: React.CSSProperties = { background: T.card, border: `1px solid ${T.line}`, borderRadius: 22, boxShadow: "0 1px 2px rgba(20,24,27,.04), 0 18px 40px -30px rgba(20,24,27,.35)" };
+export const card: React.CSSProperties = { background: T.card, border: `1px solid ${T.line}`, borderRadius: 24, boxShadow: "0 1px 2px rgba(14,27,44,.04), 0 30px 60px -44px rgba(14,27,44,.35)" };
 export const glass: React.CSSProperties = { background: "rgba(255,255,255,.72)", backdropFilter: "blur(18px) saturate(1.4)", WebkitBackdropFilter: "blur(18px) saturate(1.4)", border: "1px solid rgba(255,255,255,.8)", boxShadow: "0 20px 50px -30px rgba(20,24,27,.35)" };
-export const btnInk: React.CSSProperties = { height: 48, padding: "0 20px", borderRadius: 14, background: T.ink, color: "#F7F5F1", border: 0, fontSize: 13.5, letterSpacing: ".06em", textTransform: "uppercase", fontWeight: 500, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10, textDecoration: "none", cursor: "pointer", whiteSpace: "nowrap" };
+export const btnInk: React.CSSProperties = { height: 48, padding: "0 22px", borderRadius: 999, background: T.ink, color: "#FFFFFF", border: 0, fontSize: 14, letterSpacing: ".03em", fontWeight: 500, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10, textDecoration: "none", cursor: "pointer", whiteSpace: "nowrap" };
 export const btnGhost: React.CSSProperties = { ...btnInk, background: "transparent", color: T.ink, border: `1px solid ${T.ink}` };
-export const chip = (on: boolean): React.CSSProperties => ({ whiteSpace: "nowrap", minHeight: 40, padding: "0 15px", borderRadius: 999, border: `1px solid ${on ? T.ink : "#D6D0C5"}`, background: on ? T.ink : "rgba(255,255,255,.6)", color: on ? "#F7F5F1" : T.ink, fontSize: 14, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 });
-export const aiText: React.CSSProperties = { background: "linear-gradient(90deg,#2A84E4,#3CC79E,#6EA8B6,#2A84E4)", backgroundSize: "300% 100%", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", animation: "aiText 6s linear infinite" };
+export const chip = (on: boolean): React.CSSProperties => ({ whiteSpace: "nowrap", minHeight: 40, padding: "0 15px", borderRadius: 999, border: `1px solid ${on ? T.ink : T.line}`, background: on ? T.ink : "rgba(255,255,255,.85)", color: on ? "#FFFFFF" : T.ink2, fontSize: 14, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 });
+export const aiText: React.CSSProperties = { background: "linear-gradient(90deg,#2FBF94,#1FA7B4,#2273D6,#2FBF94)", backgroundSize: "300% 100%", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", animation: "aiText 6s linear infinite" };
 
 export function Book({ label = "Book at Nea", ghost, small, href = NEA.book }: { label?: string; ghost?: boolean; small?: boolean; href?: string }) {
-  return <a href={href} target="_blank" rel="noopener" style={{ ...(ghost ? btnGhost : btnInk), ...(small ? { height: 40, padding: "0 14px", fontSize: 12 } : {}) }}>{label}<i className="ph ph-arrow-up-right" /></a>;
+  return <a href={href} target="_blank" rel="noopener" style={{ ...(ghost ? btnGhost : btnInk), ...(small ? { height: 40, padding: "0 14px", fontSize: 13 } : {}) }}>{label}<NIcon name="external" size={16} tone="currentColor" /></a>;
 }
 
-export function Icon({ name, size = 22, bg = T.soft, color = T.deep, box = 44 }: { name: string; size?: number; bg?: string; color?: string; box?: number }) {
-  return <span style={{ width: box, height: box, borderRadius: box * 0.32, background: bg, color, display: "grid", placeItems: "center", flex: "none" }}><i className={"ph " + name} style={{ fontSize: size }} /></span>;
+/** Icon tile — hairline square with a NEYU line icon (bg/color kept for API compatibility). */
+export function Icon({ name, size = 22, box = 44, dark }: { name: string; size?: number; bg?: string; color?: string; box?: number; dark?: boolean }) {
+  return (
+    <span aria-hidden="true" style={{ width: box, height: box, borderRadius: Math.round(box * 0.3), display: "grid", placeItems: "center", flex: "none", position: "relative", background: dark ? "rgba(255,255,255,.06)" : "linear-gradient(160deg,#FFFFFF,#F4F8F8)", border: `1px solid ${dark ? "rgba(255,255,255,.16)" : "rgba(14,27,44,.09)"}`, boxShadow: dark ? "none" : "inset 0 1px 0 #fff, 0 6px 14px -12px rgba(14,27,44,.25)" }}>
+      <NIcon name={name} size={Math.max(16, Math.min(size, box * 0.52))} tone={dark ? "#BDEFE0" : "grad"} />
+    </span>
+  );
 }
 
 /** Fires once when the element scrolls into view. */
@@ -64,7 +72,7 @@ export function Stat({ value, label, icon, tone = T.deep, children }: { value: R
   return (
     <div style={{ ...card, padding: "18px 18px 16px", display: "grid", gap: 6, position: "relative", overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", right: -30, top: -30, width: 110, height: 110, borderRadius: "50%", background: `radial-gradient(circle, ${tone}22, transparent 70%)` }} />
-      <i className={"ph " + icon} style={{ fontSize: 20, color: tone }} />
+      <NIcon name={icon} size={22} tone="grad" />
       <div style={{ fontSize: "clamp(28px,3.2vw,38px)", letterSpacing: "-.03em", fontWeight: 500, lineHeight: 1 }}>{value}</div>
       <div style={{ fontSize: 13.5, color: T.muted, lineHeight: 1.35 }}>{label}</div>
       {children}
@@ -78,7 +86,7 @@ export function Segmented<V extends string>({ value, options, onChange, label }:
     <div role="tablist" aria-label={label} style={{ display: "inline-flex", gap: 4, padding: 4, borderRadius: 14, background: T.line2, maxWidth: "100%", overflowX: "auto" }}>
       {options.map((o) => (
         <button key={o.v} role="tab" aria-selected={value === o.v} onClick={() => onChange(o.v)} style={{ border: 0, cursor: "pointer", minHeight: 36, padding: "0 14px", borderRadius: 10, fontSize: 13.5, whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6, background: value === o.v ? "#fff" : "transparent", color: value === o.v ? T.ink : T.muted, boxShadow: value === o.v ? "0 1px 3px rgba(20,24,27,.12)" : "none", transition: "all .2s" }}>
-          {o.icon && <i className={"ph " + o.icon} />}{o.label}
+          {o.icon && <NIcon name={o.icon} size={16} tone="currentColor" />}{o.label}
         </button>
       ))}
     </div>
@@ -94,7 +102,7 @@ export function ChartCard({ title, sub, table, children, right }: { title: strin
         <div><h3 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>{title}</h3>{sub && <p style={{ margin: "4px 0 0", fontSize: 13.5, color: T.muted }}>{sub}</p>}</div>
         <div style={{ display: "flex", gap: 6, alignItems: "center", flex: "none" }}>
           {right}
-          {table && <button onClick={() => setAsTable((x) => !x)} aria-pressed={asTable} title={asTable ? "Show chart" : "Show as table"} style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${T.line}`, background: asTable ? T.ink : "#fff", color: asTable ? "#fff" : T.muted, cursor: "pointer", display: "grid", placeItems: "center" }}><i className={"ph " + (asTable ? "ph-chart-bar" : "ph-table")} /></button>}
+          {table && <button onClick={() => setAsTable((x) => !x)} aria-pressed={asTable} title={asTable ? "Show chart" : "Show as table"} style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${T.line}`, background: asTable ? T.ink : "#fff", color: asTable ? "#fff" : T.muted, cursor: "pointer", display: "grid", placeItems: "center" }}><NIcon name={asTable ? "bars" : "layers"} size={16} tone="currentColor" /></button>}
         </div>
       </div>
       {asTable && table ? (
@@ -122,7 +130,7 @@ export function useTip() {
     setTip({ x: Math.min(Math.max(x, 70), hr.width - 70), y, html });
   };
   const node = tip ? (
-    <div role="tooltip" style={{ position: "absolute", left: tip.x, top: tip.y - 12, transform: "translate(-50%,-100%)", pointerEvents: "none", zIndex: 5, background: T.ink, color: "#F7F5F1", padding: "8px 11px", borderRadius: 10, fontSize: 12.5, lineHeight: 1.4, whiteSpace: "nowrap", boxShadow: "0 10px 24px -10px rgba(0,0,0,.5)" }}>{tip.html}</div>
+    <div role="tooltip" style={{ position: "absolute", left: tip.x, top: tip.y - 12, transform: "translate(-50%,-100%)", pointerEvents: "none", zIndex: 5, background: T.ink, color: "#FFFFFF", padding: "8px 11px", borderRadius: 10, fontSize: 12.5, lineHeight: 1.4, whiteSpace: "nowrap", boxShadow: "0 10px 24px -10px rgba(0,0,0,.5)" }}>{tip.html}</div>
   ) : null;
   return { show, hide: () => setTip(null), node };
 }
@@ -135,7 +143,7 @@ export function Thinking({ label = "Neyu is analysing" }: { label?: string }) {
         <span style={{ display: "inline-flex", gap: 4 }}>{[0, 1, 2].map((i) => <span key={i} style={{ width: 6, height: 6, borderRadius: 3, background: T.ai, animation: `pulseSoft 1s ${i * 0.18}s infinite` }} />)}</span>
         {label}…
       </div>
-      {[92, 76, 58].map((w, i) => <span key={i} style={{ height: 10, width: w + "%", borderRadius: 5, background: "linear-gradient(90deg,#EFE9F7,#F7EFEB,#EFE9F7)", backgroundSize: "200% 100%", animation: "shimmerText 1.4s linear infinite" }} />)}
+      {[92, 76, 58].map((w, i) => <span key={i} style={{ height: 10, width: w + "%", borderRadius: 5, background: "linear-gradient(90deg,#EAF3F2,#F3F7F8,#EAF3F2)", backgroundSize: "200% 100%", animation: "shimmerText 1.4s linear infinite" }} />)}
     </div>
   );
 }
