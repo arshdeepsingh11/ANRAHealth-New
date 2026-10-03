@@ -7,6 +7,7 @@ import { usePortal } from "../context";
 import { EP, useResource } from "../api";
 import { C, screenAnim, PeriodPicker, EmptyCard, Loading, btnPrimary } from "../ui";
 import Chart, { type ChartPoint } from "../Chart";
+import { NIcon } from "@/components/neyu/icons";
 
 // Period + category persist while moving between Trends and a metric.
 let savedPeriod = 30, savedCat: keyof typeof TREND_CATS = "heart";
@@ -97,7 +98,7 @@ export function Trends() {
                     <div style={{ display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 13, color: C.muted }}>Previous period</span><span style={{ fontSize: 18 }}>{t.st.prev}</span></div>
                   </div>
                   <p style={{ margin: "0 0 6px", fontSize: 15, lineHeight: 1.5, color: C.ink3, textWrap: "pretty" } as React.CSSProperties}>{t.st.text}</p>
-                  <button onClick={() => go("trend", { k: t.k })} style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: 6, height: 40, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.teal, cursor: "pointer" }}>Explore {t.m.short}<i className="ph ph-arrow-right" /></button>
+                  <button onClick={() => go("trend", { k: t.k })} style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: 6, height: 40, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.teal, cursor: "pointer" }}>Explore {t.m.short}<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
                 </article>
               ))}
             </div>
@@ -106,7 +107,7 @@ export function Trends() {
             <div style={{ display: "flex", flexDirection: "column", marginTop: 20, borderRadius: 20, background: C.card, border: `1px solid ${C.line}` }}>
               {data.rows[cat].map((r, i) => (
                 <div key={r.name} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 20px", borderTop: i ? `1px solid ${C.line}` : "none" }}>
-                  <i className={r.icon} style={{ fontSize: 20, color: C.teal }} />
+                  <NIcon name={String(r.icon).replace(/^ph(-fill|-bold)? /, "")} size={20} tone={C.teal} />
                   <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 15 }}>{r.name}</span><span style={{ fontSize: 13, color: C.muted }}>{r.sub}</span></div>
                   <span style={{ fontSize: 15, color: C.ink3 }}>{r.value}</span>
                 </div>
@@ -165,7 +166,7 @@ export function TrendDetail({ k }: { k: MetricKey }) {
         <div><h3 style={{ margin: "0 0 6px", fontSize: 16, fontWeight: 500 }}>Why might I care?</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: C.ink2 }}>{m.why}</p></div>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: "28px 0 16px" }}>
-        <button onClick={() => openSheet({ t: "alba", ask: `Help me understand my ${m.short} trend.` })} className="h-albabtn" style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 18px", border: "none", borderRadius: 12, background: C.lav, color: C.lavDeep, fontSize: 15, fontWeight: 500, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask Neyu about this</button>
+        <button onClick={() => openSheet({ t: "alba", ask: `Help me understand my ${m.short} trend.` })} className="h-albabtn" style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 18px", border: "none", borderRadius: 12, background: C.lav, color: C.lavDeep, fontSize: 15, fontWeight: 500, cursor: "pointer" }}><NIcon name="ph-sparkle" size="1em" tone="currentColor" />Ask Neyu about this</button>
         <button onClick={addToVisit} className="h-outline" style={{ height: 44, padding: "0 18px", border: "1px solid rgba(63,111,124,.3)", borderRadius: 12, background: "none", color: C.teal, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>Add to visit questions</button>
       </div>
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: C.muted }}>Wearable readings can be affected by fit, movement and device accuracy. They help show patterns but can't diagnose a condition.</p>
