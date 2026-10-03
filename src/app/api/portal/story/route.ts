@@ -1,4 +1,4 @@
-// GET /api/portal/story?month=YYYY-MM — monthly health story (ALBA when available).
+// GET /api/portal/story?month=YYYY-MM — monthly health story (Neyu when available).
 import { getStory } from "@backend/story";
 import { audit } from "@backend/audit";
 import { withPatient } from "@backend/apiHelpers";
