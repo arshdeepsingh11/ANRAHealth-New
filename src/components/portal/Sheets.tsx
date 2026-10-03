@@ -11,6 +11,7 @@ import { C, Switch, Loading, longDateTz } from "./ui";
 import { toggleProtocol } from "./screens/Protocol";
 import { relTime } from "./screens/Devices";
 import { ConnectSheet, ImportSheet, ReadingSheet, BpSheet, LocationSheet, ShareSheet, InviteSheet, ChallengeSheet } from "./UniverseSheets";
+import { NIcon } from "@/components/neyu/icons";
 
 const TITLES: Record<string, [string, string]> = { alba: ["Neyu · AI companion", "Ask Neyu"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"],
   connect: ["Connect", "How to connect"], import: ["Add data", "Import a file"], reading: ["Add data", "Enter a reading"], bp: ["Heart", "Add a blood pressure reading"], location: ["NEYU Today", "Your city"],
@@ -29,7 +30,7 @@ export default function Sheets() {
       <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="mhs-sheet" style={{ position: "relative", display: "flex", flexDirection: "column", background: C.sheet, outline: "none" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "18px 20px 10px" }}>
           <span style={{ fontSize: 13, color: C.muted }}>{eyebrow}</span>
-          <button onClick={close} aria-label="Close" style={{ width: 36, height: 36, border: "none", borderRadius: 18, background: "#F0EEEA", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-x" style={{ fontSize: 16 }} /></button>
+          <button onClick={close} aria-label="Close" style={{ width: 36, height: 36, border: "none", borderRadius: 18, background: "#F0EEEA", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><NIcon name="ph-x" size={16} tone="currentColor" /></button>
         </div>
         <div className="mhs-scroll" style={{ padding: "0 22px 24px", flex: 1, minHeight: 0 }}>
           {sheet.t === "alba" && <AlbaSheet ask={sheet.ask} />}
@@ -94,7 +95,7 @@ function AlbaSheet({ ask }: { ask?: string }) {
 
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, color: C.lavMid, display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-sparkle" style={{ fontSize: 19 }} /></span><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>Ask Neyu</h2></div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, color: C.lavMid, display: "flex", alignItems: "center", justifyContent: "center" }}><NIcon name="ph-sparkle" size={19} tone="currentColor" /></span><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>Ask Neyu</h2></div>
       <p style={{ margin: "0 0 18px", fontSize: 14, lineHeight: 1.5, color: C.muted }}>Neyu explains your data using the sources you've allowed. It doesn't diagnose or replace your care team.</p>
       {msgs.length === 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -117,9 +118,9 @@ function AlbaSheet({ ask }: { ask?: string }) {
       </div>
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} style={{ display: "flex", gap: 8, marginTop: 20 }}>
         <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={1000} placeholder="Ask about your health data" aria-label="Ask Neyu" style={{ flex: 1, minWidth: 0, height: 46, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 12, background: C.card, fontSize: 15, outlineColor: C.lavMid }} />
-        <button type="submit" aria-label="Send" disabled={busy} style={{ width: 46, height: 46, border: "none", borderRadius: 12, background: C.lavMid, color: C.card, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-arrow-up" style={{ fontSize: 18 }} /></button>
+        <button type="submit" aria-label="Send" disabled={busy} style={{ width: 46, height: 46, border: "none", borderRadius: 12, background: C.lavMid, color: C.card, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><NIcon name="ph-arrow-up" size={18} tone="currentColor" /></button>
       </form>
-      <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.peachInk, display: "flex", gap: 6 }}><i className="ph ph-first-aid" style={{ fontSize: 14, marginTop: 1 }} />For chest pain, severe shortness of breath or any emergency, call 911. Neyu can't help in an emergency.</p>
+      <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.peachInk, display: "flex", gap: 6 }}><NIcon name="ph-first-aid" size={14} tone="currentColor" style={{marginTop: 1}} />For chest pain, severe shortness of breath or any emergency, call 911. Neyu can't help in an emergency.</p>
     </>
   );
 }
@@ -206,8 +207,8 @@ function PrepareSheet() {
       <ul style={{ listStyle: "none", margin: "0 0 12px", padding: 0, display: "flex", flexDirection: "column", gap: 8 }}>
         {data.questions.map((q) => (
           <li key={q.id} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: 12, background: "#F3F1EE", fontSize: 15, lineHeight: 1.45, animation: "mhs-fadeUp 260ms ease" }}>
-            <i className="ph ph-chat-circle" style={{ fontSize: 16, color: C.teal, marginTop: 2 }} /><span style={{ flex: 1, overflowWrap: "anywhere" }}>{q.text}</span>
-            <button onClick={() => removeQ(q.id)} aria-label="Remove question" style={{ border: "none", background: "none", cursor: "pointer", color: C.faint, padding: "0 2px" }}><i className="ph ph-x" /></button>
+            <NIcon name="ph-chat-circle" size={16} tone={C.teal} style={{marginTop: 2}} /><span style={{ flex: 1, overflowWrap: "anywhere" }}>{q.text}</span>
+            <button onClick={() => removeQ(q.id)} aria-label="Remove question" style={{ border: "none", background: "none", cursor: "pointer", color: C.faint, padding: "0 2px" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
           </li>
         ))}
       </ul>
@@ -227,7 +228,7 @@ function Copy({ value, label }: { value: string; label: string }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <span style={{ fontSize: 12, color: C.muted }}>{label}</span>
       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <code style={{ flex: 1, minWidth: 0, padding: "10px 12px", borderRadius: 10, background: "#F0EEEA", fontSize: 13, overflowWrap: "anywhere", fontFamily: "var(--font-jetbrains-mono), ui-monospace, monospace" }}>{value}</code>
+        <code style={{ flex: 1, minWidth: 0, padding: "10px 12px", borderRadius: 10, background: "#F0EEEA", fontSize: 13, overflowWrap: "anywhere", fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>{value}</code>
         <button onClick={() => { navigator.clipboard?.writeText(value).then(() => { setOk(true); setTimeout(() => setOk(false), 1500); }); }} style={{ height: 38, padding: "0 12px", border: `1px solid ${C.line12}`, borderRadius: 10, background: C.card, fontSize: 13, cursor: "pointer", flex: "none" }}>{ok ? "Copied" : "Copy"}</button>
       </div>
     </div>
@@ -255,7 +256,7 @@ function QrPair({ id, onPaired }: { id: string; onPaired: () => void }) {
   }, [pair]);
   if (!pair) return (
     <button onClick={make} disabled={busy} style={{ width: "100%", minHeight: 52, border: "none", borderRadius: 14, background: C.teal, color: C.card, fontSize: 15.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, opacity: busy ? 0.6 : 1 }}>
-      <i className="ph ph-qr-code" style={{ fontSize: 22 }} />{busy ? "Making your code…" : "Connect with a QR code"}
+      <NIcon name="ph-qr-code" size={22} tone="currentColor" />{busy ? "Making your code…" : "Connect with a QR code"}
     </button>
   );
   const expired = left === 0;
@@ -277,7 +278,7 @@ function QrPair({ id, onPaired }: { id: string; onPaired: () => void }) {
 function SyncLog({ d }: { d: DeviceDTO }) {
   const r = d.lastResult;
   if (!d.lastAttemptAt) return d.status === "on" ? null : (
-    <p style={{ margin: 0, fontSize: 13.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-info" style={{ marginTop: 2 }} />Your iPhone hasn’t reached NEYU yet. If the shortcut ran, check it used your sync link and that this computer was on.</p>
+    <p style={{ margin: 0, fontSize: 13.5, color: C.muted, display: "flex", gap: 8 }}><NIcon name="ph-info" size="1em" tone="currentColor" style={{marginTop: 2}} />Your iPhone hasn’t reached NEYU yet. If the shortcut ran, check it used your sync link and that this computer was on.</p>
   );
   const ok = !!r?.stored;
   return (
@@ -339,7 +340,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
     <>
       <h2 style={{ margin: "0 0 4px", fontSize: 24, fontWeight: 500 }}>{d.name}</h2>
       <p style={{ margin: "0 0 20px", fontSize: 14, color: on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 6 }}>
-        <i className={on ? "ph ph-check-circle" : "ph ph-hourglass-medium"} />{on ? `Connected · Last data ${relTime(d.lastSyncAt)}` : d.lastAttemptAt ? "Phone reached NEYU · no data stored yet" : "Waiting for your first sync"}
+        <NIcon name={on ? "ph-check-circle" : "ph-hourglass-medium"} size="1em" tone="currentColor" />{on ? `Connected · Last data ${relTime(d.lastSyncAt)}` : d.lastAttemptAt ? "Phone reached NEYU · no data stored yet" : "Waiting for your first sync"}
       </p>
       {d.lastError && <p role="alert" style={{ margin: "-8px 0 18px", padding: "10px 12px", borderRadius: 10, background: C.peach, color: C.peachInk, fontSize: 14 }}>{d.lastError}</p>}
 
