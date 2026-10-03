@@ -9,7 +9,7 @@ export const C = {
   page: "#F6F4F1", side: "#F3F0EC", card: "#FFFDFB", sheet: "#FAF8F5",
   ink: "#1D2327", ink2: "#454C52", ink3: "#3A4146", muted: "#5B6369", faint: "#737A80",
   teal: "#3F6F7C", tealDark: "#2F5A66", tealMid: "#3B6874", tealLight: "#6EA8B6", tealWash: "#E8F2F4", tealChip: "#E1EDF0",
-  lav: "#F0ECF7", lavInk: "#5F4A8A", lavMid: "#8C6FB8", lavDeep: "#4E3C75",
+  lav: "#F0ECF7", lavInk: "#5F4A8A", lavMid: "#2A84E4", lavDeep: "#4E3C75",
   peach: "#FBEEE8", peachInk: "#8B4B37",
   line: "rgba(29,35,39,.06)", line2: "rgba(29,35,39,.07)", line12: "rgba(29,35,39,.12)",
 };
