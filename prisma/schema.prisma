@@ -664,3 +664,25 @@ model DevicePairing {
 
   @@index([patientId])
 }
+
+// Neyu version: requests from the new service pages (virtual care, Virtual
+// Hypertension Clinic, packages / executive health, membership, at-home
+// collection). Nothing is booked or charged online; staff follow up.
+model ServiceRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  service   String   // virtual-care | hypertension-clinic | package | membership | at-home
+  choice    String?  // visit type / package / tier / tests
+  name      String
+  email     String
+  phone     String?
+  postal    String?
+  message   String?
+  page      String?
+  sessionId String?
+  status    String   @default("new") // new | contacted | booked | closed
+
+  @@index([createdAt])
+  @@index([service])
+}
+
