@@ -87,7 +87,7 @@ export async function logSymptomCheck(params: {
   });
 }
 
-// Starts a new ALBA conversation and returns its ID, so subsequent
+// Starts a new Neyu conversation and returns its ID, so subsequent
 // messages in the same chat can be attached to it.
 export async function startAlbaConversation(params: {
   sessionId: string;
