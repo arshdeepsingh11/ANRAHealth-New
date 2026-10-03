@@ -52,13 +52,13 @@ function Panel({ title, sub, children }: { title: string; sub?: string; children
 }
 function Cta({ f, accent, line, onAsk, ask }: { f: FeatureId; accent: string; line: string; onAsk: Ask; ask: string }) {
   return (
-    <section style={{ borderRadius: 24, padding: "clamp(18px,3vw,28px)", background: `linear-gradient(135deg, ${accent}12, #6A509612)`, border: `1px solid ${accent}2A`, display: "grid", gap: 16 }}>
+    <section style={{ borderRadius: 24, padding: "clamp(18px,3vw,28px)", background: `linear-gradient(135deg, ${accent}12, #1D5FA812)`, border: `1px solid ${accent}2A`, display: "grid", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 14, flexWrap: "wrap", alignItems: "end" }}>
         <div style={{ maxWidth: 620 }}><div style={{ ...eyebrow, color: accent }}>Your next step</div><p style={{ margin: "6px 0 0", fontSize: 17, lineHeight: 1.55 }}>{line}</p></div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book an NEYU consultation<i className="ph ph-arrow-right" /></a><button onClick={() => onAsk(ask)} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask ALBA</button></div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book an NEYU consultation<i className="ph ph-arrow-right" /></a><button onClick={() => onAsk(ask)} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask Neyu</button></div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,240px),1fr))", gap: 12 }}>{FEATURE_TESTS[f].map((id) => <TestCard key={id} id={id} accent={accent} />)}</div>
-      <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs. Results are interpreted clinically at NEYU, together with your history.</p>
+      <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>Neyu educates; it does not diagnose. Testing is fulfilled by BioAro Labs. Results are interpreted clinically at NEYU, together with your history.</p>
     </section>
   );
 }
@@ -81,7 +81,7 @@ export function Responsiveness({ onAsk }: { onAsk: Ask }) {
         <Panel title="Average effect by type" sub="Mean reduction in epigenetic age measures (larger = more change)"><HBars rows={EFFECT_BY_TYPE} max={0.1} color={A} fmt={(v) => "−" + v.toFixed(3)} /><p style={{ margin: 0, fontSize: 13, color: T.muted }}>Medications changed clocks more on average; diet changes were the most consistent.</p></Panel>
         <Panel title="Which clocks respond" sub="Pooled mean change across all interventions"><HBars rows={EFFECT_BY_CLOCK} max={0.1} color="#2A78D6" fmt={(v) => "−" + v.toFixed(3)} /><p style={{ margin: 0, fontSize: 13, color: T.muted }}>Newer ‘generation 2+’ clocks moved consistently; first-generation clocks (Horvath, Hannum) only sporadically.</p></Panel>
       </div>
-      <Panel title="Interventions with the strongest reported signals" sub="Tap the ones that apply to you — ALBA will explain what they mean for you">
+      <Panel title="Interventions with the strongest reported signals" sub="Tap the ones that apply to you — Neyu will explain what they mean for you">
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{types.map((t) => <button key={t} onClick={() => setType(t)} aria-pressed={type === t} style={{ ...chip(type === t), minHeight: 34, fontSize: 13 }}>{t}</button>)}</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,250px),1fr))", gap: 10 }}>
           {list.map((x) => { const on = mine.includes(x.name); return (
@@ -92,7 +92,7 @@ export function Responsiveness({ onAsk }: { onAsk: Ask }) {
             </button>
           ); })}
         </div>
-        {mine.length > 0 && <button onClick={() => onAsk(`I'm doing or considering: ${mine.join(", ")}. What does the 2026 Nature Medicine research say about these and biological aging, and how could I measure my starting point?`)} style={{ ...btnInk, justifySelf: "start", background: `linear-gradient(120deg, ${A}, #6A5096)` }}><i className="ph ph-sparkle" />ALBA: what does this mean for me?</button>}
+        {mine.length > 0 && <button onClick={() => onAsk(`I'm doing or considering: ${mine.join(", ")}. What does the 2026 Nature Medicine research say about these and biological aging, and how could I measure my starting point?`)} style={{ ...btnInk, justifySelf: "start", background: `linear-gradient(120deg, ${A}, #1D5FA8)` }}><i className="ph ph-sparkle" />Neyu: what does this mean for me?</button>}
         <p style={{ margin: 0, fontSize: 12.5, color: T.muted }}>Medications and procedures are clinical decisions for your physician — never a reason to start anything on your own.</p>
       </Panel>
       <Panel title="How NEYU and BioAro fit in" sub="Honest framing">
@@ -139,7 +139,7 @@ export function StressMap({ onAsk }: { onAsk: Ask }) {
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 8 }}>{FRAIL.map(([k, t, q], i) => <label key={k} style={{ display: "grid", gridTemplateColumns: "36px 1fr auto", gap: 12, alignItems: "center", padding: "10px 12px", borderRadius: 14, border: `1px solid ${f[i] ? A : T.line}`, background: f[i] ? A + "0D" : "#fff", cursor: "pointer" }}><b style={{ width: 36, height: 36, borderRadius: 10, display: "grid", placeItems: "center", background: A + "18", color: A }}>{k}</b><span style={{ fontSize: 14.5 }}><b style={{ fontWeight: 500 }}>{t}.</b> {q}</span><input type="checkbox" checked={f[i]} onChange={() => { const n = [...f]; n[i] = !n[i]; setF(n); }} style={{ width: 20, height: 20, accentColor: A }} /></label>)}</div>
         <div style={{ padding: "12px 14px", borderRadius: 14, background: score >= 3 ? "#FBEDEE" : score ? "#FBF4E4" : "#EAF4EE", display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
           <span style={{ fontSize: 15 }}><b style={{ fontWeight: 600 }}>{score}/5 · {score >= 3 ? "Frail range" : score ? "Pre-frail range" : "Robust"}</b> — {score >= 3 ? "please discuss with a physician." : score ? "a good moment to check your reserve." : "keep building strength and activity."}</span>
-          <button onClick={() => onAsk(`My FRAIL score is ${score} out of 5. What does that mean, and how do GDF-15 and telomere tests relate to it?`)} style={{ ...btnGhost, height: 38, fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain with ALBA</button>
+          <button onClick={() => onAsk(`My FRAIL score is ${score} out of 5. What does that mean, and how do GDF-15 and telomere tests relate to it?`)} style={{ ...btnGhost, height: 38, fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain with Neyu</button>
         </div>
       </Panel>
       <Cta f="stress" accent={A} onAsk={onAsk} ask="Why measure GDF-15 and telomere length together?" line="Test GDF-15 and telomere length together for a two-sided view of cellular stress and aging — then review both with an NEYU physician." />
@@ -209,7 +209,7 @@ export function PaceVsAge({ onAsk }: { onAsk: Ask }) {
 
 // ── 4. Pharmacogenomics Longevity Safety Check ───────────────────────────
 export function PgxSafety({ onAsk }: { onAsk: Ask }) {
-  const A = "#4A3AA7";
+  const A = "#1D5FA8";
   const [picked, setPicked] = useState<string[]>([]);
   const [others, setOthers] = useState(0);
   const genes = useMemo(() => { const m = new Map<string, string[]>(); PGX_DRUGS.filter((d) => picked.includes(d.drug)).forEach((d) => d.genes.forEach((g) => m.set(g, [...(m.get(g) || []), d.drug]))); return m; }, [picked]);
@@ -239,13 +239,13 @@ export function PgxSafety({ onAsk }: { onAsk: Ask }) {
                   <text x={x} y={y + 4} textAnchor="middle" fontSize="10.5" fontWeight="600" fill={on ? "#fff" : T.muted}>{g}</text>
                   {on && <text x={x} y={y + 44} textAnchor="middle" fontSize="9.5" fill={A}>{genes.get(g)!.length} drug{genes.get(g)!.length > 1 ? "s" : ""}</text>}</g>
               ); })}
-              <circle cx="120" cy="120" r="30" fill={genes.size ? "#F1EDFB" : T.paper} stroke={T.line} /><text x="120" y="117" textAnchor="middle" fontSize="22" fontWeight="500" fill={T.ink}>{genes.size}</text><text x="120" y="133" textAnchor="middle" fontSize="9" fill={T.muted}>genes</text>
+              <circle cx="120" cy="120" r="30" fill={genes.size ? "#E8F5FA" : T.paper} stroke={T.line} /><text x="120" y="117" textAnchor="middle" fontSize="22" fontWeight="500" fill={T.ink}>{genes.size}</text><text x="120" y="133" textAnchor="middle" fontSize="9" fill={T.muted}>genes</text>
             </svg>
           </Panel>
           <Panel title="Polypharmacy meter" sub="5 or more regular medicines is a common definition of polypharmacy">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gap: 3 }}>{Array.from({ length: 12 }, (_, i) => <span key={i} style={{ height: 22, borderRadius: 5, background: i < total ? (i >= 4 ? "#D0612E" : A) : T.line2, transition: "background .3s" }} />)}</div>
             <span style={{ fontSize: 14.5 }}><b style={{ fontWeight: 600 }}>{total}</b> regular medicine{total === 1 ? "" : "s"}{total >= 5 ? " — polypharmacy range, where drug–gene and drug–drug effects add up." : "."}</span>
-            {(picked.length > 0 || total >= 5) && <button onClick={() => onAsk(`I take ${picked.join(", ") || "several medicines"}${others ? ` plus ${others} others` : ""}. How could pharmacogenomic testing help keep my medicines safe? (I won't change anything without my doctor.)`)} style={{ ...btnGhost, height: 38, fontSize: 12, border: 0, color: T.violet, justifySelf: "start" }}><i className="ph ph-sparkle" />ALBA: what could PGx show?</button>}
+            {(picked.length > 0 || total >= 5) && <button onClick={() => onAsk(`I take ${picked.join(", ") || "several medicines"}${others ? ` plus ${others} others` : ""}. How could pharmacogenomic testing help keep my medicines safe? (I won't change anything without my doctor.)`)} style={{ ...btnGhost, height: 38, fontSize: 12, border: 0, color: T.violet, justifySelf: "start" }}><i className="ph ph-sparkle" />Neyu: what could PGx show?</button>}
           </Panel>
         </div>
       </div>
@@ -258,7 +258,7 @@ export function PgxSafety({ onAsk }: { onAsk: Ask }) {
 
 // ── 5. Longevity Genetics Pathway Visualizer ─────────────────────────────
 export function GeneticsPathways({ onAsk }: { onAsk: Ask }) {
-  const A = "#6A5096";
+  const A = "#1D5FA8";
   const [sel, setSel] = useState<string | null>(PATHWAYS[0].id);
   const p = PATHWAYS.find((x) => x.id === sel);
   const [ref, seen] = useInView<HTMLDivElement>();
@@ -271,7 +271,7 @@ export function GeneticsPathways({ onAsk }: { onAsk: Ask }) {
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", padding: "0 14px 14px" }}>{PATHWAYS.map((x) => <button key={x.id} onClick={() => setSel(x.id)} aria-pressed={sel === x.id} style={{ minHeight: 32, padding: "0 12px", borderRadius: 999, border: `1px solid ${sel === x.id ? x.color : "rgba(255,255,255,.2)"}`, background: sel === x.id ? x.color : "rgba(255,255,255,.06)", color: "#fff", fontSize: 12.5, cursor: "pointer", display: "inline-flex", gap: 6, alignItems: "center" }}><span style={{ width: 8, height: 8, borderRadius: 4, background: x.color, border: "1px solid #fff" }} />{x.name}</button>)}</div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 12, alignContent: "start" }}>
-          {p && <div key={p.id} style={{ ...card, padding: 20, display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 8, borderColor: p.color + "66", animation: "fadeUp .3s" }}><span style={{ ...eyebrow, color: p.color }}>Pathway</span><b style={{ fontWeight: 500, fontSize: 21 }}>{p.name}</b><p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>{p.text}</p><span style={{ fontSize: 12.5, color: T.faint }}>Source: {p.src}</span><button onClick={() => onAsk(`Explain the ${p.name} pathway and longevity in simple terms. What could whole genome sequencing tell me about it?`)} style={{ ...btnGhost, height: 36, fontSize: 12, border: 0, color: T.violet, padding: 0, justifySelf: "start" }}><i className="ph ph-sparkle" />Ask ALBA</button></div>}
+          {p && <div key={p.id} style={{ ...card, padding: 20, display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 8, borderColor: p.color + "66", animation: "fadeUp .3s" }}><span style={{ ...eyebrow, color: p.color }}>Pathway</span><b style={{ fontWeight: 500, fontSize: 21 }}>{p.name}</b><p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: T.ink2 }}>{p.text}</p><span style={{ fontSize: 12.5, color: T.faint }}>Source: {p.src}</span><button onClick={() => onAsk(`Explain the ${p.name} pathway and longevity in simple terms. What could whole genome sequencing tell me about it?`)} style={{ ...btnGhost, height: 36, fontSize: 12, border: 0, color: T.violet, padding: 0, justifySelf: "start" }}><i className="ph ph-sparkle" />Ask Neyu</button></div>}
           <Panel title="Damaging-variant burden" sub="Rare loss-of-function variants, relative to controls">
             <div ref={ref} style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 10 }}>
               {[["Controls", 100, 100], ["Centenarians", 78, 89]].map(([l, a, b]) => (
