@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { NEA, NEA_TREATMENTS, NEA_CATS, NEA_META, NEA_REL, NEA_AXES, neaTreatmentUrl, type NeaTreatment, type NeaCat, type NeaAxis } from "@/data/nea";
 import { T, card, btnInk, btnGhost, chip, eyebrow, Book, Icon, Segmented } from "./ui";
+import { NIcon } from "@/components/neyu/icons";
 
 const fmtRange = (r?: [number, number], unit = "") => (!r ? "—" : r[1] === 0 ? "None" : r[0] === r[1] ? `${r[1]}${unit}` : `${r[0]}–${r[1]}${unit}`);
 
@@ -22,7 +23,7 @@ function Sheet({ label, onClose, children, width = 620 }: { label: string; onClo
     </div>
   );
 }
-const CloseBtn = ({ onClose }: { onClose: () => void }) => <button onClick={onClose} aria-label="Close" style={{ width: 40, height: 40, border: 0, background: T.line2, borderRadius: 12, display: "grid", placeItems: "center", cursor: "pointer", flex: "none" }}><i className="ph ph-x" /></button>;
+const CloseBtn = ({ onClose }: { onClose: () => void }) => <button onClick={onClose} aria-label="Close" style={{ width: 40, height: 40, border: 0, background: T.line2, borderRadius: 12, display: "grid", placeItems: "center", cursor: "pointer", flex: "none" }}><NIcon name="ph-x" size={18} tone={"currentColor"} /></button>;
 
 function FocusBars({ id }: { id: string }) {
   const rel = NEA_REL[id] || {};
@@ -60,7 +61,7 @@ export function Detail({ t, onClose, onAsk }: { t: NeaTreatment; onClose: () => 
         </dl>
       )}
       <ul style={{ margin: "16px 0 0", paddingLeft: 20, display: "grid", gap: 8, fontSize: 15.5, lineHeight: 1.55, color: T.ink2, listStyle: "disc" }}>{t.details.map((d) => <li key={d}>{d}</li>)}</ul>
-      {t.tech && <p style={{ margin: "14px 0 0", fontSize: 14, color: T.muted, display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-cpu" />{t.tech}</p>}
+      {t.tech && <p style={{ margin: "14px 0 0", fontSize: 14, color: T.muted, display: "flex", gap: 8, alignItems: "center" }}><NIcon name="ph-cpu" size={18} tone={"currentColor"} />{t.tech}</p>}
       {(NEA_REL[t.id] && Object.keys(NEA_REL[t.id]).length > 0) && <div style={{ marginTop: 18 }}><div style={{ ...eyebrow, marginBottom: 10 }}>What it focuses on</div><FocusBars id={t.id} /></div>}
       {m && (
         <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 8 }}>
@@ -73,8 +74,8 @@ export function Detail({ t, onClose, onAsk }: { t: NeaTreatment; onClose: () => 
       )}
       <div style={{ marginTop: 22, display: "flex", gap: 10, flexWrap: "wrap" }}>
         <Book />
-        <a href={neaTreatmentUrl(t.id)} target="_blank" rel="noopener" style={btnGhost}>On Nea’s site<i className="ph ph-arrow-up-right" /></a>
-        {onAsk && <button onClick={() => { onClose(); onAsk(`Tell me about ${t.name} — how does it work, how many sessions, and what should I expect?`); }} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask Neyu</button>}
+        <a href={neaTreatmentUrl(t.id)} target="_blank" rel="noopener" style={btnGhost}>On Nea’s site<NIcon name="ph-arrow-up-right" size={18} tone={"currentColor"} /></a>
+        {onAsk && <button onClick={() => { onClose(); onAsk(`Tell me about ${t.name} — how does it work, how many sessions, and what should I expect?`); }} style={{ ...btnGhost, border: 0, color: T.violet }}><NIcon name="ph-sparkle" size={18} tone={"currentColor"} />Ask Neyu</button>}
       </div>
       <p style={{ margin: "14px 0 0", fontSize: 13, color: T.muted }}>Starts with a free 15-minute consultation. Pricing is set with Nea. Information from neaprecisionskin.com — not medical advice.</p>
     </Sheet>
@@ -134,7 +135,7 @@ export default function Treatments({ cat, setCat, open }: { cat: NeaCat | "All";
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
         <label style={{ position: "relative", flex: "1 1 280px", maxWidth: 420 }}>
-          <i className="ph ph-magnifying-glass" style={{ position: "absolute", left: 14, top: 15, color: T.muted }} />
+          <NIcon name="ph-magnifying-glass" size={18} tone={T.muted} style={{ position: "absolute", left: 14, top: 15, }} />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by name, concern or laser" aria-label="Search treatments" style={{ width: "100%", height: 46, padding: "0 14px 0 40px", borderRadius: 14, border: `1px solid ${T.line}`, background: "#fff", fontSize: 15 }} />
         </label>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -158,7 +159,7 @@ export default function Treatments({ cat, setCat, open }: { cat: NeaCat | "All";
               <h3 style={{ margin: 0, fontSize: 19, lineHeight: 1.2, letterSpacing: "-.015em", fontWeight: 500 }}>{t.name}</h3>
               <p style={{ margin: 0, fontSize: 14.5, color: T.ink2, lineHeight: 1.5 }}>{t.summary}</p>
               <div style={{ display: "grid", gap: 10, paddingTop: 12, borderTop: `1px solid ${T.line2}` }}>
-                {NEA_META[t.id]?.downtime && <span style={{ fontSize: 12.5, color: NEA_META[t.id]!.downtime![1] === 0 ? T.good : T.muted, display: "inline-flex", gap: 6, alignItems: "center" }}><i className="ph ph-timer" />Downtime: {fmtRange(NEA_META[t.id]!.downtime, " days")}</span>}
+                {NEA_META[t.id]?.downtime && <span style={{ fontSize: 12.5, color: NEA_META[t.id]!.downtime![1] === 0 ? T.good : T.muted, display: "inline-flex", gap: 6, alignItems: "center" }}><NIcon name="ph-timer" size={18} tone={"currentColor"} />Downtime: {fmtRange(NEA_META[t.id]!.downtime, " days")}</span>}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <CmpBox id={t.id} />
                   <a href={NEA.book} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} style={{ fontSize: 12.5, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: T.deep, textDecoration: "none" }}>Book →</a>
@@ -173,7 +174,7 @@ export default function Treatments({ cat, setCat, open }: { cat: NeaCat | "All";
             <div key={t.id} id={t.id} onClick={() => open(t)} tabIndex={0} onKeyDown={(e) => e.key === "Enter" && open(t)} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 14, alignItems: "center", padding: "14px 18px", borderTop: i ? `1px solid ${T.line2}` : 0, cursor: "pointer" }} className="nea-row">
               <Icon name={t.icon} box={38} size={19} />
               <span style={{ minWidth: 0 }}><b style={{ fontWeight: 500, fontSize: 15.5 }}>{t.name}</b><span style={{ display: "block", fontSize: 13.5, color: T.muted, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.cat} · {t.summary}</span></span>
-              <span style={{ display: "flex", gap: 14, alignItems: "center" }}><CmpBox id={t.id} /><i className="ph ph-caret-right" style={{ color: T.muted }} /></span>
+              <span style={{ display: "flex", gap: 14, alignItems: "center" }}><CmpBox id={t.id} /><NIcon name="ph-caret-right" size={18} tone={T.muted} /></span>
             </div>
           ))}
         </div>
@@ -183,7 +184,7 @@ export default function Treatments({ cat, setCat, open }: { cat: NeaCat | "All";
       {cmp.length > 0 && (
         <div className="anra-chrome" style={{ position: "fixed", left: "50%", bottom: 18, transform: "translateX(-50%)", zIndex: 70, width: "min(640px,calc(100% - 24px))", display: "flex", gap: 10, alignItems: "center", padding: 10, borderRadius: 18, background: "rgba(20,24,27,.92)", color: "#F7F5F1", boxShadow: "0 20px 50px -20px rgba(0,0,0,.6)", animation: "fadeUp .25s" }}>
           <div style={{ display: "flex", gap: 6, flex: 1, minWidth: 0, overflowX: "auto" }}>
-            {cmp.map((id) => { const t = NEA_TREATMENTS.find((x) => x.id === id)!; return <span key={id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: "rgba(255,255,255,.12)", fontSize: 13, whiteSpace: "nowrap" }}>{t.name}<button onClick={() => toggle(id)} aria-label={`Remove ${t.name}`} style={{ border: 0, background: "none", color: "#fff", cursor: "pointer", padding: 0 }}><i className="ph ph-x" /></button></span>; })}
+            {cmp.map((id) => { const t = NEA_TREATMENTS.find((x) => x.id === id)!; return <span key={id} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 10, background: "rgba(255,255,255,.12)", fontSize: 13, whiteSpace: "nowrap" }}>{t.name}<button onClick={() => toggle(id)} aria-label={`Remove ${t.name}`} style={{ border: 0, background: "none", color: "#fff", cursor: "pointer", padding: 0 }}><NIcon name="ph-x" size={18} tone={"currentColor"} /></button></span>; })}
           </div>
           <button onClick={() => setShowCmp(true)} disabled={cmp.length < 2} style={{ ...btnInk, background: "#fff", color: T.ink, height: 42, opacity: cmp.length < 2 ? 0.5 : 1 }}>{cmp.length < 2 ? "Pick 1 more" : `Compare ${cmp.length}`}</button>
         </div>
