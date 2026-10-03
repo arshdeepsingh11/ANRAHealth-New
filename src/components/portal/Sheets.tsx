@@ -1,6 +1,6 @@
 "use client";
 
-// Bottom sheet (mobile) / centred dialog (desktop): ALBA, protocol step,
+// Bottom sheet (mobile) / centred dialog (desktop): Neyu, protocol step,
 // visit preparation, device management + Apple Watch setup, history detail.
 
 import React, { useEffect, useRef, useState } from "react";
@@ -12,7 +12,7 @@ import { toggleProtocol } from "./screens/Protocol";
 import { relTime } from "./screens/Devices";
 import { ConnectSheet, ImportSheet, ReadingSheet, BpSheet, LocationSheet, ShareSheet, InviteSheet, ChallengeSheet } from "./UniverseSheets";
 
-const TITLES: Record<string, [string, string]> = { alba: ["ALBA · AI companion", "Ask ALBA"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"],
+const TITLES: Record<string, [string, string]> = { alba: ["Neyu · AI companion", "Ask Neyu"], protocol: ["My Protocol", "Protocol detail"], prepare: ["Appointment", "Prepare for visit"], manage: ["Connected device", "Manage device"], conversation: ["History", "AI conversation"],
   connect: ["Connect", "How to connect"], import: ["Add data", "Import a file"], reading: ["Add data", "Enter a reading"], bp: ["Heart", "Add a blood pressure reading"], location: ["NEYU Today", "Your city"],
   share: ["Share with my doctor", "Create a share link"], invite: ["Family care", "Invite a family member"], challenge: ["Challenges", "Challenge"] };
 
@@ -51,7 +51,7 @@ export default function Sheets() {
   );
 }
 
-// ── ALBA ────────────────────────────────────────────────────────────────
+// ── Neyu ────────────────────────────────────────────────────────────────
 type Msg = { role: "user" | "alba"; text: string; src?: string; action?: string };
 // Kept across open/close within the session so the conversation continues.
 const albaMem: { msgs: Msg[]; conversationId: string } = { msgs: [], conversationId: "" };
@@ -94,11 +94,11 @@ function AlbaSheet({ ask }: { ask?: string }) {
 
   return (
     <>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, color: C.lavMid, display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-sparkle" style={{ fontSize: 19 }} /></span><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>Ask ALBA</h2></div>
-      <p style={{ margin: "0 0 18px", fontSize: 14, lineHeight: 1.5, color: C.muted }}>ALBA explains your data using the sources you've allowed. It doesn't diagnose or replace your care team.</p>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, color: C.lavMid, display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-sparkle" style={{ fontSize: 19 }} /></span><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>Ask Neyu</h2></div>
+      <p style={{ margin: "0 0 18px", fontSize: 14, lineHeight: 1.5, color: C.muted }}>Neyu explains your data using the sources you've allowed. It doesn't diagnose or replace your care team.</p>
       {msgs.length === 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {prompts.map((p) => <button key={p} onClick={() => send(p)} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", border: "1px solid rgba(140,111,184,.22)", borderRadius: 14, background: C.card, cursor: "pointer", textAlign: "left", fontSize: 15 }}>“{p}”</button>)}
+          {prompts.map((p) => <button key={p} onClick={() => send(p)} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", border: "1px solid rgba(42,132,228,.22)", borderRadius: 14, background: C.card, cursor: "pointer", textAlign: "left", fontSize: 15 }}>“{p}”</button>)}
         </div>
       )}
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }} aria-live="polite">
@@ -116,10 +116,10 @@ function AlbaSheet({ ask }: { ask?: string }) {
         <div ref={endRef} />
       </div>
       <form onSubmit={(e) => { e.preventDefault(); send(input); }} style={{ display: "flex", gap: 8, marginTop: 20 }}>
-        <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={1000} placeholder="Ask about your health data" aria-label="Ask ALBA" style={{ flex: 1, minWidth: 0, height: 46, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 12, background: C.card, fontSize: 15, outlineColor: C.lavMid }} />
+        <input value={input} onChange={(e) => setInput(e.target.value)} maxLength={1000} placeholder="Ask about your health data" aria-label="Ask Neyu" style={{ flex: 1, minWidth: 0, height: 46, padding: "0 14px", border: `1px solid ${C.line12}`, borderRadius: 12, background: C.card, fontSize: 15, outlineColor: C.lavMid }} />
         <button type="submit" aria-label="Send" disabled={busy} style={{ width: 46, height: 46, border: "none", borderRadius: 12, background: C.lavMid, color: C.card, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-arrow-up" style={{ fontSize: 18 }} /></button>
       </form>
-      <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.peachInk, display: "flex", gap: 6 }}><i className="ph ph-first-aid" style={{ fontSize: 14, marginTop: 1 }} />For chest pain, severe shortness of breath or any emergency, call 911. ALBA can't help in an emergency.</p>
+      <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.peachInk, display: "flex", gap: 6 }}><i className="ph ph-first-aid" style={{ fontSize: 14, marginTop: 1 }} />For chest pain, severe shortness of breath or any emergency, call 911. Neyu can't help in an emergency.</p>
     </>
   );
 }
@@ -393,7 +393,7 @@ function ManageSheet({ id, token: initialToken }: { id: string; token?: string }
   );
 }
 
-// ── History detail (symptom check, ALBA conversation, assessment…) ──────
+// ── History detail (symptom check, Neyu conversation, assessment…) ──────
 function ConversationSheet({ type, id }: { type: string; id: string }) {
   const { data, error, reload } = useResource<HistoryDetailDTO>(`/api/portal/history/detail?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}`);
   if (!data) return <Loading error={error} retry={reload} />;
