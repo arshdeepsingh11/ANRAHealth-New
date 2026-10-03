@@ -1,4 +1,4 @@
-// POST /api/nea/ask — { question, history? } → ALBA answers questions about
+// POST /api/nea/ask — { question, history? } → Neyu answers questions about
 // Nea Precision Skin using ONLY Nea's published information. Emergencies and
 // crisis language are caught before any AI call. Without an AI key, answers
 // come from Nea's FAQ and treatment descriptions (keyword match).
@@ -51,13 +51,13 @@ export async function POST(req: Request) {
   if (detectCrisisKeywords(question)) return NextResponse.json({ emergency: CRISIS_MESSAGE });
   if (detectEmergencyKeywords(question) || EXTRA.test(question)) return NextResponse.json({ emergency: EMERGENCY });
 
-  const system = `You are ALBA, NEYU Health's assistant, answering questions about the partner clinic Nea Precision Skin in Calgary.
+  const system = `You are Neyu, NEYU Health's assistant, answering questions about the partner clinic Nea Precision Skin in Calgary.
 Use ONLY the facts below. If the answer isn't there, say Nea's team can answer at the free 15-minute consultation.
 Rules: never diagnose; never promise results; never invent prices, doses or statistics; keep it under 110 words, warm and plain.
 Reply with ONLY JSON: {"answer":"...","cites":["<treatment id>", ...]} — cite up to 3 treatment ids you referred to.
 
 ${KNOWLEDGE}`;
-  const convo = history.map((h) => `${h.role === "alba" ? "ALBA" : "Person"}: ${h.text}`).join("\n");
+  const convo = history.map((h) => `${h.role === "alba" ? "Neyu" : "Person"}: ${h.text}`).join("\n");
   const raw = await gemini(system, (convo ? convo + "\n" : "") + "Person: " + question, { maxTokens: 400, temperature: 0.3 });
   if (raw) {
     try {
