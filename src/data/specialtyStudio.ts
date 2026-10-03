@@ -39,7 +39,7 @@ const ICON: Record<string, string> = { "cardiology-consultation": "ph-stethoscop
 
 export const STUDIO: Record<string, StudioConfig> = {
   cardiology: {
-    slug: "cardiology", label: "Cardiology", icon: "ph-heartbeat", accent: ["#A5485A", "#E08A84"],
+    slug: "cardiology", label: "Cardiology", icon: "heart", accent: ["#1FA7B4", "#2273D6"],
     morph: ["your heart.", "your rhythm.", "your pressure.", "your future."],
     tagline: "Advanced heart care in Calgary — home of Alberta’s first onsite exercise stress echocardiogram program.",
     overview: ["NEYU Health combines specialist physicians, advanced diagnostics, genomics, artificial intelligence and preventive medicine to deliver personalized heart care for every stage of life.", "From a first consultation to stress echo, Holter and ambulatory blood-pressure monitoring, testing and follow-up happen under one roof."],
@@ -53,7 +53,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What is an exercise stress echo?", "How do I prepare for a Holter monitor?", "What does high blood pressure do to the heart?", "Which heart tests does NEYU offer?"],
   },
   "heart-failure-clinic": {
-    slug: "heart-failure-clinic", label: sc["heart-failure-clinic"].label, icon: "ph-heart-break", accent: ["#7E3350", "#D9798F"],
+    slug: "heart-failure-clinic", label: sc["heart-failure-clinic"].label, icon: "heartPulse", accent: ["#1FA7B4", "#2273D6"],
     morph: ["every day.", "your energy.", "your breath.", "staying home."],
     tagline: sc["heart-failure-clinic"].tagline, overview: sc["heart-failure-clinic"].overview,
     care: conditionCare(sc["heart-failure-clinic"].conditionsTreated, "ph-heart-break"), conditions: sc["heart-failure-clinic"].conditionsTreated, whenToSee: sc["heart-failure-clinic"].whenToSee,
@@ -62,7 +62,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What is heart failure with preserved ejection fraction?", "Why track my weight every day?", "What do the NYHA classes mean?", "How is heart failure followed at NEYU?"],
   },
   "internal-medicine": {
-    slug: "internal-medicine", label: sc["internal-medicine"].label, icon: "ph-stethoscope", accent: ["#2F6F80", "#6EB5C4"],
+    slug: "internal-medicine", label: sc["internal-medicine"].label, icon: "stethoscope", accent: ["#1FA7B4", "#2273D6"],
     morph: ["the whole picture.", "complex care.", "clear answers.", "you."],
     tagline: sc["internal-medicine"].tagline, overview: sc["internal-medicine"].overview,
     care: conditionCare(sc["internal-medicine"].conditionsTreated, "ph-stethoscope"), conditions: sc["internal-medicine"].conditionsTreated, whenToSee: sc["internal-medicine"].whenToSee,
@@ -71,7 +71,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What does an internist do?", "What is a pre-operative assessment?", "How are blood pressure and diabetes connected?", "When should I see internal medicine?"],
   },
   endocrinology: {
-    slug: "endocrinology", label: sc.endocrinology.label, icon: "ph-drop-half", accent: ["#9A5A0E", "#E0A100"],
+    slug: "endocrinology", label: sc.endocrinology.label, icon: "thyroid", accent: ["#1FA7B4", "#2273D6"],
     morph: ["your hormones.", "your sugar.", "your thyroid.", "your balance."],
     tagline: sc.endocrinology.tagline, overview: sc.endocrinology.overview,
     care: conditionCare(sc.endocrinology.conditionsTreated, "ph-drop-half"), conditions: sc.endocrinology.conditionsTreated, whenToSee: sc.endocrinology.whenToSee,
@@ -80,7 +80,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What does my HbA1c mean?", "What is prediabetes?", "What are common signs of thyroid problems?", "Which hormone tests are available?"],
   },
   "geriatric-medicine": {
-    slug: "geriatric-medicine", label: sc["geriatric-medicine"].label, icon: "ph-users", accent: ["#5B3F99", "#A88BDB"],
+    slug: "geriatric-medicine", label: sc["geriatric-medicine"].label, icon: "elder", accent: ["#1FA7B4", "#2273D6"],
     morph: ["independence.", "your memory.", "steady steps.", "every year."],
     tagline: sc["geriatric-medicine"].tagline, overview: sc["geriatric-medicine"].overview,
     care: conditionCare(sc["geriatric-medicine"].conditionsTreated, "ph-users"), conditions: sc["geriatric-medicine"].conditionsTreated, whenToSee: sc["geriatric-medicine"].whenToSee,
@@ -89,7 +89,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["How can falls be prevented?", "What is a comprehensive geriatric assessment?", "What memory changes are normal with age?", "What is polypharmacy?"],
   },
   "pediatric-rheumatology": {
-    slug: "pediatric-rheumatology", label: sc["pediatric-rheumatology"].label, icon: "ph-baby", accent: ["#2E7D5B", "#7CC49A"],
+    slug: "pediatric-rheumatology", label: sc["pediatric-rheumatology"].label, icon: "child", accent: ["#1FA7B4", "#2273D6"],
     morph: ["your child.", "their joints.", "playtime.", "growing up."],
     tagline: sc["pediatric-rheumatology"].tagline, overview: sc["pediatric-rheumatology"].overview,
     care: conditionCare(sc["pediatric-rheumatology"].conditionsTreated, "ph-baby"), conditions: sc["pediatric-rheumatology"].conditionsTreated, whenToSee: sc["pediatric-rheumatology"].whenToSee,
@@ -98,7 +98,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What is juvenile idiopathic arthritis?", "When should a child's joint pain be checked?", "What happens at a pediatric rheumatology visit?", "Can kids outgrow arthritis?"],
   },
   nutrition: {
-    slug: "nutrition", label: sc.nutrition.label, icon: "ph-carrot", accent: ["#4E7D2E", "#9CC47C"],
+    slug: "nutrition", label: sc.nutrition.label, icon: "apple", accent: ["#1FA7B4", "#2273D6"],
     morph: ["your plate.", "your energy.", "your gut.", "your goals."],
     tagline: sc.nutrition.tagline, overview: sc.nutrition.overview,
     care: conditionCare(sc.nutrition.conditionsTreated, "ph-carrot"), conditions: sc.nutrition.conditionsTreated, whenToSee: sc.nutrition.whenToSee,
@@ -107,7 +107,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["How much fibre should I eat?", "What does a balanced plate look like?", "What is a gut microbiome test?", "How can I lower cholesterol with food?"],
   },
   "precision-medicine": {
-    slug: "precision-medicine", label: sc["precision-medicine"].label, icon: "ph-dna", accent: ["#1D5FA8", "#2A84E4"],
+    slug: "precision-medicine", label: sc["precision-medicine"].label, icon: "dna", accent: ["#1FA7B4", "#2273D6"],
     morph: ["your DNA.", "your biology.", "your risk.", "you."],
     tagline: sc["precision-medicine"].tagline, overview: sc["precision-medicine"].overview,
     care: conditionCare(sc["precision-medicine"].conditionsTreated, "ph-dna"), conditions: sc["precision-medicine"].conditionsTreated, whenToSee: sc["precision-medicine"].whenToSee,
@@ -116,7 +116,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["What is pharmacogenomics?", "Genome vs exome sequencing — what's the difference?", "What can a DNA test tell me about heart risk?", "How are genetic results used in care?"],
   },
   "respiratory-medicine": {
-    slug: "respiratory-medicine", label: "Respiratory Medicine", icon: "ph-wind", accent: ["#2D5F9A", "#7FA9E0"],
+    slug: "respiratory-medicine", label: "Respiratory Medicine", icon: "lungs", accent: ["#1FA7B4", "#2273D6"],
     morph: ["every breath.", "better sleep.", "your lungs.", "living better."],
     tagline: "Sleep well. Breathe easy. Live better — with the Advanced Respiratory Care Network.",
     overview: [ARC.about, ARC.promise],
