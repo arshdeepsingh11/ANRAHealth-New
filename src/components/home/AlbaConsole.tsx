@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
 import { useAlba } from "@/components/AlbaContext";
 import { ALBA_SUGGESTIONS } from "@/data/homeContent";
+import { NIcon } from "@/components/neyu/icons";
 
 // Home 04: inline Neyu console. Shares the same conversation as the floating
 // Neyu panel (last four messages shown here).
@@ -50,7 +51,7 @@ export default function AlbaConsole({ mobile }: { mobile: boolean }) {
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", background: "#FDFCFA", border: "1px solid #C3E3F2", borderRadius: 14, padding: "6px 6px 6px 14px" }}>
             <input aria-label="Message Neyu" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") submit(); }} placeholder="Ask Neyu…" style={{ flex: 1, minWidth: 0, border: 0, outline: "none", background: "transparent", fontSize: 16, padding: "10px 0" }} />
-            <button onClick={submit} aria-label="Send" className="hv-purple" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: "#2A84E4", color: "#FDFCFA", display: "grid", placeItems: "center", fontSize: 18 }}><i className="ph ph-arrow-up" /></button>
+            <button onClick={submit} aria-label="Send" className="hv-purple" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: "#2A84E4", color: "#FDFCFA", display: "grid", placeItems: "center", fontSize: 18 }}><NIcon name="ph-arrow-up" size="1em" tone="currentColor" /></button>
           </div>
           <div style={{ fontSize: 12, color: "#5A626A" }}>Neyu explains; it doesn’t diagnose. In an emergency call 911.</div>
         </div>
