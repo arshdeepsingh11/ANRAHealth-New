@@ -333,7 +333,7 @@ export function InviteSheet() {
   );
   return (
     <form onSubmit={send}>
-      <H sub="They'll see a read-only summary: daily signals, home blood pressure, protocol and next visit. Not your lab details, history or ALBA chats. You can remove them any time.">Invite a family member</H>
+      <H sub="They'll see a read-only summary: daily signals, home blood pressure, protocol and next visit. Not your lab details, history or Neyu chats. You can remove them any time.">Invite a family member</H>
       <Err msg={err} />
       <label style={{ ...lab, marginBottom: 14 }}>Their email<input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="off" style={input} /></label>
       <label style={{ ...lab, marginBottom: 20 }}>They are my…<select value={relation} onChange={(e) => setRelation(e.target.value)} style={input}>{["Son / daughter", "Spouse / partner", "Parent", "Sibling", "Caregiver", "Friend"].map((r) => <option key={r}>{r}</option>)}</select></label>
