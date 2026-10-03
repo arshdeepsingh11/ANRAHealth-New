@@ -8,6 +8,7 @@ import AlbaOrb from "@/components/AlbaOrb";
 import { LAB_TESTS, money } from "@/data/bioaroCatalog";
 import { CONSULT_HREF } from "@/data/longevityScience";
 import { T, card, btnInk, btnGhost, chip, aiText, Thinking, TypeOut, useInView } from "@/components/nea/ui";
+import { NIcon } from "@/components/neyu/icons";
 
 // ── Question model ───────────────────────────────────────────────────────
 type Q =
@@ -296,7 +297,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
   const pct = Math.round(((res ? K.steps.length : step) / K.steps.length) * 100);
 
   return (
-    <section id={"assess-" + kind} style={{ position: "relative", borderRadius: 28, padding: "clamp(18px,3vw,32px)", background: "linear-gradient(160deg,#FFFFFF 0%,#F7F3FC 55%,#EEF5F6 100%)", border: `1px solid ${T.line}`, boxShadow: "0 30px 70px -45px rgba(20,24,27,.5)", display: "grid", gap: 20, overflow: "hidden" }}>
+    <section id={"assess-" + kind} style={{ position: "relative", borderRadius: 28, padding: "clamp(18px,3vw,32px)", background: "linear-gradient(160deg,#FFFFFF 0%,#F4FAF8 55%,#EEF4FA 100%)", border: `1px solid ${T.line}`, boxShadow: "0 30px 70px -45px rgba(20,24,27,.5)", display: "grid", gap: 20, overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", right: -80, top: -80, width: 260, height: 260, borderRadius: "50%", background: `radial-gradient(circle, ${accent}22, transparent 70%)` }} />
       <header style={{ position: "relative", display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
         <AlbaOrb size={42} glow />
@@ -314,7 +315,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
       {!res ? (
         <div key={step} style={{ position: "relative", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 18, animation: "fadeUp .35s ease" }}>
           <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-            <span style={{ width: 44, height: 44, borderRadius: 14, display: "grid", placeItems: "center", background: accent + "18", color: accent }}><i className={"ph " + cur.icon} style={{ fontSize: 22 }} /></span>
+            <span style={{ width: 44, height: 44, borderRadius: 14, display: "grid", placeItems: "center", background: accent + "18", color: accent }}><NIcon name={cur.icon} size={22} tone={"currentColor"} /></span>
             <div><b style={{ fontWeight: 500, fontSize: 19 }}>{cur.title}</b><div style={{ fontSize: 13.5, color: T.muted }}>{cur.sub}</div></div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 16 }}>
@@ -323,7 +324,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
                 <label htmlFor={"q-" + q.k} style={{ fontSize: 14.5, color: T.ink }}>{q.label}{q.optional && <span style={{ color: T.faint }}> · optional</span>}</label>
                 {q.t === "num" && <div style={{ position: "relative" }}><input id={"q-" + q.k} inputMode="decimal" value={(a[q.k] as string) ?? ""} placeholder={q.ph} onChange={(e) => set(q.k, e.target.value.replace(/[^\d.]/g, "").slice(0, 6))} style={{ width: "100%", height: 50, padding: "0 70px 0 14px", borderRadius: 14, border: `1px solid ${T.line}`, background: "#fff", fontSize: 17 }} />{q.unit && <span style={{ position: "absolute", right: 14, top: 15, fontSize: 13, color: T.faint }}>{q.unit}</span>}</div>}
                 {q.t === "one" && <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{q.opts.map((o) => <button key={o} onClick={() => set(q.k, o)} aria-pressed={a[q.k] === o} style={{ ...chip(a[q.k] === o), minHeight: 40, fontSize: 14, whiteSpace: "normal", textAlign: "left", padding: "8px 14px", ...(a[q.k] === o ? { background: accent, borderColor: accent } : {}) }}>{o}</button>)}</div>}
-                {q.t === "many" && <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{[...q.opts, ...(q.none ? [q.none] : [])].map((o) => { const cur2 = (a[q.k] as string[]) || []; const on = cur2.includes(o); return <button key={o} onClick={() => set(q.k, o === q.none ? [o] : on ? cur2.filter((x) => x !== o) : [...cur2.filter((x) => x !== q.none), o])} aria-pressed={on} style={{ ...chip(on), minHeight: 40, fontSize: 14, whiteSpace: "normal", textAlign: "left", padding: "8px 14px", ...(on ? { background: accent, borderColor: accent } : {}) }}>{on && <i className="ph ph-check" />}{o}</button>; })}</div>}
+                {q.t === "many" && <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{[...q.opts, ...(q.none ? [q.none] : [])].map((o) => { const cur2 = (a[q.k] as string[]) || []; const on = cur2.includes(o); return <button key={o} onClick={() => set(q.k, o === q.none ? [o] : on ? cur2.filter((x) => x !== o) : [...cur2.filter((x) => x !== q.none), o])} aria-pressed={on} style={{ ...chip(on), minHeight: 40, fontSize: 14, whiteSpace: "normal", textAlign: "left", padding: "8px 14px", ...(on ? { background: accent, borderColor: accent } : {}) }}>{on && <NIcon name="ph-check" size={18} tone={"currentColor"} />}{o}</button>; })}</div>}
                 {q.t === "scale" && <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 6 }}><div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 6 }}>{[1, 2, 3, 4, 5].map((v) => <button key={v} onClick={() => set(q.k, v)} aria-pressed={a[q.k] === v} style={{ height: 44, borderRadius: 12, border: `1px solid ${a[q.k] === v ? accent : T.line}`, background: a[q.k] === v ? accent : "#fff", color: a[q.k] === v ? "#fff" : T.ink, fontSize: 16, cursor: "pointer", transition: "all .2s" }}>{v}</button>)}</div><div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: T.faint }}><span>{q.lo}</span><span>{q.hi}</span></div></div>}
                 {q.t === "text" && <input id={"q-" + q.k} value={(a[q.k] as string) ?? ""} placeholder={q.ph} maxLength={300} onChange={(e) => set(q.k, e.target.value)} style={{ width: "100%", height: 50, padding: "0 14px", borderRadius: 14, border: `1px solid ${T.line}`, background: "#fff", fontSize: 16 }} />}
                 {q.hint && <span style={{ fontSize: 12.5, color: T.faint }}>{q.hint}</span>}
@@ -332,8 +333,8 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
           </div>
           {err && <p role="alert" style={{ margin: 0, color: "#8B2F1C", fontSize: 14 }}>{err}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "space-between", flexWrap: "wrap" }}>
-            <button onClick={() => step > 0 && setStep(step - 1)} disabled={step === 0} style={{ ...btnGhost, opacity: step === 0 ? 0.35 : 1 }}><i className="ph ph-arrow-left" />Back</button>
-            <button onClick={next} style={{ ...btnInk, background: `linear-gradient(120deg, ${accent}, #1D5FA8)` }}>{step < K.steps.length - 1 ? <>Continue<i className="ph ph-arrow-right" /></> : <>Analyse with Neyu<i className="ph ph-sparkle" /></>}</button>
+            <button onClick={() => step > 0 && setStep(step - 1)} disabled={step === 0} style={{ ...btnGhost, opacity: step === 0 ? 0.35 : 1 }}><NIcon name="ph-arrow-left" size={18} tone={"currentColor"} />Back</button>
+            <button onClick={next} style={{ ...btnInk, background: `linear-gradient(120deg, ${accent}, #1D5FA8)` }}>{step < K.steps.length - 1 ? <>Continue<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></> : <>Analyse with Neyu<NIcon name="ph-sparkle" size={18} tone={"currentColor"} /></>}</button>
           </div>
           <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Your answers stay in this browser and are only sent to Neyu to write your summary. Education, not a diagnosis.</p>
         </div>
@@ -348,7 +349,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
             </div>
           </div>
           {kind === "genomics" && res.c.extra?.length ? <div style={{ ...card, padding: 16 }}><div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.muted, marginBottom: 10 }}>Test fit</div><Bars rows={res.c.extra} /></div> : null}
-          {!!res.c.flags?.length && res.c.flags.map((f) => <p key={f} role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBF1E4", color: "#7A4B12", fontSize: 14.5, display: "flex", gap: 8 }}><i className="ph ph-warning" style={{ marginTop: 3 }} />{f}</p>)}
+          {!!res.c.flags?.length && res.c.flags.map((f) => <p key={f} role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBF1E4", color: "#7A4B12", fontSize: 14.5, display: "flex", gap: 8 }}><NIcon name="ph-warning" size={18} tone={"currentColor"} style={{ marginTop: 3 }} />{f}</p>)}
           <div style={{ ...card, padding: "18px 18px", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 12, background: "linear-gradient(180deg,#fff,#FBF9FD)" }}>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}><AlbaOrb size={28} motion={res.loading} /><b style={{ fontWeight: 500 }}>Neyu’s read</b>{res.ai?.byAlba && <span style={{ fontSize: 12, color: T.violet }}>· written by AI</span>}</div>
             {res.loading ? <Thinking label="Neyu is reading your answers" /> : (
@@ -368,7 +369,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
               </div>
               <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderRadius: 18, background: `linear-gradient(120deg, ${accent}14, #1D5FA814)` }}>
                 <span style={{ fontSize: 15.5, maxWidth: 560 }}>{res.ai?.next || "Book an NEYU consultation — a physician reviews your answers and any results with you."}</span>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book a consultation<i className="ph ph-arrow-right" /></a><button onClick={restart} style={btnGhost}><i className="ph ph-arrow-counter-clockwise" />Retake</button></div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book a consultation<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a><button onClick={restart} style={btnGhost}><NIcon name="ph-arrow-counter-clockwise" size={18} tone={"currentColor"} />Retake</button></div>
               </div>
               <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Neyu educates; it does not diagnose. Testing is fulfilled by BioAro Labs; results are interpreted clinically at NEYU.</p>
             </>
