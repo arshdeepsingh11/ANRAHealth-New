@@ -3,7 +3,7 @@
 // Shared, tabbed specialty page (Cardiology, Heart Failure, Internal Medicine,
 // Endocrinology, Geriatric, Pediatric Rheumatology, Nutrition, Precision
 // Medicine, Respiratory). Same design language as the Nea page: futuristic
-// hero (video kept where the page had one), live stats, ALBA, interactive
+// hero (video kept where the page had one), live stats, Neyu, interactive
 // tools with charts, real physicians and real BioAro test prices.
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
@@ -38,14 +38,14 @@ function Hero({ c, onAsk }: { c: StudioConfig; onAsk: (q: string) => void }) {
           <span style={{ padding: "6px 12px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".14em", textTransform: "uppercase", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", display: "inline-flex", gap: 6, alignItems: "center" }}><AlbaOrb size={14} motion={false} />AI-assisted</span>
         </div>
         <h1 style={{ margin: 0, fontSize: "clamp(36px,5.6vw,68px)", lineHeight: 1.02, letterSpacing: "-.045em", fontWeight: 500 }}>
-          {c.label}, for<br /><anra-morph words={c.morph.join("|")} gradient={`linear-gradient(90deg,#FFFFFF,${b} 50%,#C9B8E6)`} />
+          {c.label}, for<br /><anra-morph words={c.morph.join("|")} gradient={`linear-gradient(90deg,#FFFFFF,${b} 50%,#A9D8F0)`} />
         </h1>
         <p style={{ margin: 0, fontSize: "clamp(15.5px,1.5vw,18.5px)", lineHeight: 1.55, color: "rgba(247,245,241,.82)", maxWidth: 620 }}>{c.tagline}</p>
         <form onSubmit={(e) => { e.preventDefault(); if (q.trim().length > 1) onAsk(q.trim()); }} style={{ position: "relative", maxWidth: 580, borderRadius: 999 }}>
           <anra-electro radius="30" style={{ position: "absolute", inset: -6, pointerEvents: "none" }} />
           <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, padding: "6px 6px 6px 14px", borderRadius: 999, background: "rgba(255,255,255,.96)" }}>
             <AlbaOrb size={24} />
-            <input value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Ask ALBA about ${c.label}`} placeholder={`Ask ALBA — “${c.ask[0]}”`} style={{ flex: 1, minWidth: 0, height: 44, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
+            <input value={q} onChange={(e) => setQ(e.target.value)} aria-label={`Ask Neyu about ${c.label}`} placeholder={`Ask Neyu — “${c.ask[0]}”`} style={{ flex: 1, minWidth: 0, height: 44, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
             <button type="submit" style={{ ...btnInk, height: 44, borderRadius: 999, padding: "0 16px" }}>Ask<i className="ph ph-arrow-right" /></button>
           </div>
         </form>
@@ -67,7 +67,7 @@ function CareSheet({ item, onClose, onAsk, accent }: { item: CareItem; onClose: 
         <h2 style={{ margin: "14px 0 0", fontSize: 26, lineHeight: 1.12, letterSpacing: "-.02em", fontWeight: 500 }}>{item.name}</h2>
         <p style={{ margin: "12px 0 0", fontSize: 16, lineHeight: 1.6, color: T.ink2 }}>{item.desc}</p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 20 }}>
-          <button onClick={() => { onClose(); onAsk(`Tell me about ${item.name} — what is it, what should I expect, and how do I prepare?`); }} style={{ ...btnInk, background: `linear-gradient(135deg, ${accent}, #6A5096)` }}><i className="ph ph-sparkle" />Ask ALBA</button>
+          <button onClick={() => { onClose(); onAsk(`Tell me about ${item.name} — what is it, what should I expect, and how do I prepare?`); }} style={{ ...btnInk, background: `linear-gradient(135deg, ${accent}, #1D5FA8)` }}><i className="ph ph-sparkle" />Ask Neyu</button>
           <a href="/referral-centre" style={btnGhost}>Start a referral<i className="ph ph-arrow-right" /></a>
         </div>
       </div>
@@ -122,7 +122,7 @@ function PhysicianSheet({ p, onClose, accent }: { p: Physician; onClose: () => v
       <div role="dialog" aria-modal="true" aria-label={p.name} style={{ position: "fixed", zIndex: 86, left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: "min(580px,calc(100% - 24px))", maxHeight: "86vh", overflow: "auto", background: T.paper, borderRadius: 24, padding: "clamp(20px,4vw,30px)", boxShadow: "0 40px 90px -30px rgba(20,24,27,.5)", animation: "fadeUp .25s" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
           <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-            <span style={{ width: 58, height: 58, borderRadius: 29, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${accent}, #6A5096)`, color: "#fff", fontSize: 20, fontWeight: 500 }}>{initials}</span>
+            <span style={{ width: 58, height: 58, borderRadius: 29, display: "grid", placeItems: "center", background: `linear-gradient(135deg, ${accent}, #1D5FA8)`, color: "#fff", fontSize: 20, fontWeight: 500 }}>{initials}</span>
             <div><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>{p.name}</h2><p style={{ margin: "2px 0 0", fontSize: 14, color: accent }}>{p.title}</p></div>
           </div>
           <button onClick={onClose} aria-label="Close" style={{ width: 40, height: 40, border: 0, borderRadius: 12, background: T.line2, cursor: "pointer", flex: "none" }}><i className="ph ph-x" /></button>
@@ -147,7 +147,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
   const team = useMemo(() => physicians.filter((p) => !docs.includes(p)), [docs]);
   const TABS: { v: Tab; label: string; icon: string }[] = [
     { v: "overview", label: "Overview", icon: "ph-house-simple" },
-    { v: "alba", label: "Ask ALBA", icon: "ph-sparkle" },
+    { v: "alba", label: "Ask Neyu", icon: "ph-sparkle" },
     { v: "care", label: c.partner ? "Services" : "Care & tests", icon: "ph-first-aid-kit" },
     { v: "tools", label: "Tools & insights", icon: "ph-chart-line-up" },
     { v: "physicians" as Tab, label: "Physicians", icon: "ph-user-circle" },
@@ -194,7 +194,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
         <nav aria-label={`${c.label} sections`} className="sx-tabs" style={{ display: "flex", gap: 4, padding: 5, borderRadius: 999, maxWidth: "100%", overflowX: "auto", scrollbarWidth: "none", background: "rgba(255,255,255,.8)", backdropFilter: "blur(18px) saturate(1.5)", WebkitBackdropFilter: "blur(18px) saturate(1.5)", border: `1px solid ${T.line}`, boxShadow: "0 14px 34px -22px rgba(20,24,27,.45)" }}>
           {TABS.map((t) => {
             const on = tab === t.v, ai = t.v === "alba";
-            return <button key={t.v} onClick={() => setTab(t.v)} aria-current={on ? "page" : undefined} style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 7, height: 40, padding: "0 16px", borderRadius: 999, border: 0, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap", transition: "all .25s", background: on ? (ai ? "linear-gradient(120deg,#6A5096,#8C6FB8 50%," + a + ")" : T.ink) : "transparent", color: on ? "#fff" : ai ? T.violet : T.ink2 }}><i className={(on ? "ph-fill " : "ph ") + t.icon} />{t.label}</button>;
+            return <button key={t.v} onClick={() => setTab(t.v)} aria-current={on ? "page" : undefined} style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 7, height: 40, padding: "0 16px", borderRadius: 999, border: 0, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap", transition: "all .25s", background: on ? (ai ? "linear-gradient(120deg,#1D5FA8,#2A84E4 50%," + a + ")" : T.ink) : "transparent", color: on ? "#fff" : ai ? T.violet : T.ink2 }}><i className={(on ? "ph-fill " : "ph ") + t.icon} />{t.label}</button>;
           })}
         </nav>
       </div>
@@ -219,7 +219,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
             <div style={{ ...card, padding: "clamp(20px,3vw,28px)", display: "grid", gap: 14, alignContent: "start" }}>
               <div style={eyebrow}>{slug === "cardiology" ? "Symptoms we assess" : "What we look after"}</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{c.conditions.map((x) => <button key={x} onClick={() => ask(`What is ${x.split(" (")[0].toLowerCase()} and when should I see a specialist?`)} style={{ ...chip(false), minHeight: 36, fontSize: 13.5, textAlign: "left", whiteSpace: "normal", padding: "6px 14px" }}>{x.split(" (")[0]}<i className="ph ph-sparkle" style={{ color: T.ai }} /></button>)}</div>
-              <p style={{ margin: 0, fontSize: 12.5, color: T.faint }}>Tap any topic and ALBA explains it.</p>
+              <p style={{ margin: 0, fontSize: 12.5, color: T.faint }}>Tap any topic and Neyu explains it.</p>
             </div>
           </section>
           <section style={{ ...card, padding: "clamp(20px,3vw,28px)" }}>
@@ -236,7 +236,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
             </ol>
           </section>
           <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 12 }}>
-            {[["ph-sparkle", "Ask ALBA", `Questions about ${c.label.toLowerCase()}, answered.`, "alba"], ["ph-chart-line-up", "Screening tools", "Instant, visual self-checks.", "tools"], ["ph-first-aid-kit", c.partner ? "Services" : "Care & tests", "What we offer, with real prices.", "care"]].map(([ic, t, d, go]) => (
+            {[["ph-sparkle", "Ask Neyu", `Questions about ${c.label.toLowerCase()}, answered.`, "alba"], ["ph-chart-line-up", "Screening tools", "Instant, visual self-checks.", "tools"], ["ph-first-aid-kit", c.partner ? "Services" : "Care & tests", "What we offer, with real prices.", "care"]].map(([ic, t, d, go]) => (
               <button key={t} onClick={() => setTab(go as Tab)} className="sx-card" style={{ ...card, padding: 18, textAlign: "left", cursor: "pointer", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 14, alignItems: "center" }}>
                 <Icon name={ic} bg={a + "18"} color={a} /><span><b style={{ display: "block", fontWeight: 500, fontSize: 16 }}>{t}</b><span style={{ fontSize: 13.5, color: T.muted }}>{d}</span></span><i className="ph ph-arrow-right" style={{ color: T.muted }} />
               </button>
@@ -248,7 +248,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
           <section style={{ display: "grid", gap: 16 }}>
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
               <AlbaOrb size={48} glow />
-              <div><div style={{ ...eyebrow, color: T.violet }}>ALBA · {c.label}</div><h2 style={{ ...h2, margin: "4px 0 0", fontSize: "clamp(26px,3.4vw,40px)" }}>Ask anything. <span style={aiText}>Get clarity.</span></h2></div>
+              <div><div style={{ ...eyebrow, color: T.violet }}>Neyu · {c.label}</div><h2 style={{ ...h2, margin: "4px 0 0", fontSize: "clamp(26px,3.4vw,40px)" }}>Ask anything. <span style={aiText}>Get clarity.</span></h2></div>
             </div>
             <AskPanel page={page} label={c.label} suggestions={c.ask} seed={seed} clearSeed={() => setSeed("")} accent={a} />
           </section>
@@ -276,7 +276,7 @@ export default function SpecialtyExperience({ slug }: { slug: string }) {
         {tab === "tools" && <>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,440px),1fr))", gap: 16, alignItems: "start" }}>
             {c.tools.map((k) => {
-              if (k === "symptoms-cardio" || k === "symptoms-resp") return <ToolFrame key={k} title="AI symptom check" sub="Describe what you notice — ALBA suggests an urgency level" icon="ph-sparkle" accent={a}><SymptomChecker specialty={k === "symptoms-cardio" ? "cardiology" : "respiratory"} /></ToolFrame>;
+              if (k === "symptoms-cardio" || k === "symptoms-resp") return <ToolFrame key={k} title="AI symptom check" sub="Describe what you notice — Neyu suggests an urgency level" icon="ph-sparkle" accent={a}><SymptomChecker specialty={k === "symptoms-cardio" ? "cardiology" : "respiratory"} /></ToolFrame>;
               if (k === "tests") return <ChartCard key={k} title="Genomic test explorer" sub="Compare BioAro genomic tests by price"><TestsChart slugs={c.tests} accent={a} /></ChartCard>;
               const Tool = (tools as Record<string, React.ComponentType<{ accent: string; onAsk: (q: string) => void }>>)[k];
               return Tool ? <Tool key={k} accent={a} onAsk={ask} /> : null;
