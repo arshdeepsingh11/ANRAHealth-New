@@ -1,4 +1,4 @@
-// POST /api/assess — { kind, answers, computed } → an ALBA write-up for the
+// POST /api/assess — { kind, answers, computed } → an Neyu write-up for the
 // Longevity, Genomics and Longevity Lab assessments. Scores are computed on
 // the client from published guidelines; the AI only explains them and picks
 // relevant BioAro tests from the real catalog. Without AI, a rules-based
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
   const suggested: string[] = Array.isArray(computed.tests) ? computed.tests.filter((s: unknown) => typeof s === "string").slice(0, 6) : [];
   const catalog = LAB_TESTS.map((t) => `- ${t.id.replace(/^labs-/, "")}: ${t.name} (${t.cat}, ${money(t.price)}) — ${t.why}`).join("\n");
-  const system = `You are ALBA, NEYU Health's AI health educator (Calgary). You explain ${FOCUS[kind]} in warm, plain, accurate language.
+  const system = `You are Neyu, NEYU Health's AI health educator (Calgary). You explain ${FOCUS[kind]} in warm, plain, accurate language.
 Rules: never diagnose, never give a risk percentage, never recommend starting, stopping or dosing medication. Base comments on mainstream evidence (Canadian guidelines where relevant). Scores given to you were computed from published guideline thresholds — explain them, don't recompute.
 Choose 1-3 BioAro Labs tests ONLY from this catalog (use the slug before the colon). Prefer the pre-ranked suggestions when they fit:
 ${catalog}
