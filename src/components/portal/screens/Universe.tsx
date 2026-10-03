@@ -9,6 +9,7 @@ import { MOOD_LABELS, STRESS_LABELS } from "@/lib/portal/universe";
 import { usePortal } from "../context";
 import { EP, api, prime, invalidate, load, useResource } from "../api";
 import { C, H1, screenAnim, Loading, EmptyCard, btnPrimary, btnSecondary, btnOutline, btnLink, longDateTz } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 const card: React.CSSProperties = { padding: "20px 22px", borderRadius: 20, background: C.card, border: `1px solid ${C.line}` };
 const h2: React.CSSProperties = { margin: "0 0 4px", fontSize: 18, fontWeight: 500 };
@@ -19,7 +20,7 @@ const TONE: Record<string, { bg: string; ink: string }> = {
   high: { bg: C.peach, ink: C.peachInk }, urgent: { bg: "#F9DED6", ink: "#8B2F1C" },
 };
 export const Emergency = () => (
-  <p style={{ margin: "32px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-first-aid" style={{ fontSize: 16, color: C.peachInk, marginTop: 1 }} /><span>Wellness information, not a diagnosis. If you think you may be having a medical emergency, call 911.</span></p>
+  <p style={{ margin: "32px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><NIcon name="ph-first-aid" size={16} tone={C.peachInk} style={{marginTop: 1}} /><span>Wellness information, not a diagnosis. If you think you may be having a medical emergency, call 911.</span></p>
 );
 
 // ── Heart ───────────────────────────────────────────────────────────────
@@ -59,12 +60,12 @@ export function Heart() {
     <div style={{ ...screenAnim, maxWidth: 980 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16, flexWrap: "wrap", marginBottom: 22 }}>
         <div><H1 sub="Home blood pressure and your heart signals, in one place." mb={0}>Heart</H1></div>
-        <button onClick={() => openSheet({ t: "bp" })} className="h-primary" style={{ ...btnPrimary, display: "flex", alignItems: "center", gap: 8 }}><i className="ph ph-plus" />Add a reading</button>
+        <button onClick={() => openSheet({ t: "bp" })} className="h-primary" style={{ ...btnPrimary, display: "flex", alignItems: "center", gap: 8 }}><NIcon name="ph-plus" size="1em" tone="currentColor" />Add a reading</button>
       </div>
       <div style={grid(340)}>
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           <section style={{ ...card, background: tone.bg, border: "none" }} aria-live="polite">
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, color: tone.ink, marginBottom: 8 }}><i className={h.status.level === "urgent" ? "ph ph-warning" : "ph ph-drop"} style={{ fontSize: 17 }} />Home blood pressure</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, color: tone.ink, marginBottom: 8 }}><NIcon name={h.status.level === "urgent" ? "ph-warning" : "ph-drop"} size={17} tone="currentColor" />Home blood pressure</div>
             <h2 style={{ margin: "0 0 8px", fontSize: 24, fontWeight: 500, letterSpacing: "-.01em" }}>{h.status.title}</h2>
             <p style={{ margin: "0 0 16px", fontSize: 15, lineHeight: 1.55, color: C.ink2 }}>{h.status.text}</p>
             <div style={{ display: "flex", gap: 28, flexWrap: "wrap" }}>
@@ -75,7 +76,7 @@ export function Heart() {
           </section>
           {h.readiness && (
             <section style={{ ...card, background: C.lav, border: "none" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-calendar-check" style={{ fontSize: 16 }} />Visit readiness</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-calendar-check" size={16} tone="currentColor" />Visit readiness</div>
               <p style={{ margin: "0 0 12px", fontSize: 15, lineHeight: 1.55 }}>{h.readiness.text}</p>
               <div style={{ height: 8, borderRadius: 4, background: "rgba(95,74,138,.15)", overflow: "hidden" }}><div style={{ height: "100%", width: `${Math.min(100, (h.readiness.have / h.readiness.want) * 100)}%`, background: C.lavMid, transition: "width 400ms" }} /></div>
             </section>
@@ -86,7 +87,7 @@ export function Heart() {
             <BpChart daily={h.daily} />
           </section>
           <section style={card}>
-            <button onClick={() => setShowHow((x) => !x)} aria-expanded={showHow} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0, border: "none", background: "none", cursor: "pointer", fontSize: 16, fontWeight: 500, color: C.ink, textAlign: "left" }}>How to measure at home<i className={showHow ? "ph ph-caret-up" : "ph ph-caret-down"} /></button>
+            <button onClick={() => setShowHow((x) => !x)} aria-expanded={showHow} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0, border: "none", background: "none", cursor: "pointer", fontSize: 16, fontWeight: 500, color: C.ink, textAlign: "left" }}>How to measure at home<NIcon name={showHow ? "ph-caret-up" : "ph-caret-down"} size="1em" tone="currentColor" /></button>
             {showHow && (
               <ol style={{ margin: "12px 0 0", paddingLeft: 20, display: "flex", flexDirection: "column", gap: 7, fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>
                 <li>Use a validated upper-arm cuff that fits your arm.</li>
@@ -101,12 +102,12 @@ export function Heart() {
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           {h.withings !== "on" && (
             <section style={{ ...card, display: "flex", gap: 14, alignItems: "flex-start" }}>
-              <span style={{ width: 40, height: 40, borderRadius: 12, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal, flex: "none" }}><i className="ph ph-heartbeat" style={{ fontSize: 21 }} /></span>
+              <span style={{ width: 40, height: 40, borderRadius: 12, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal, flex: "none" }}><NIcon name="ph-heartbeat" size={21} tone="currentColor" /></span>
               <div style={{ flex: 1 }}>
                 <h2 style={{ ...h2, fontSize: 16 }}>Any home BP monitor works</h2>
                 <p style={{ ...sub, marginBottom: 10 }}>Type your readings in, import them from Apple Health, or connect a Withings monitor once and readings arrive automatically.</p>
                 <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-                  <button onClick={() => openSheet({ t: "connect", id: "withings" })} style={btnLink}>Connect Withings<i className="ph ph-arrow-right" /></button>
+                  <button onClick={() => openSheet({ t: "connect", id: "withings" })} style={btnLink}>Connect Withings<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
                   <button onClick={() => openSheet({ t: "import" })} style={btnLink}>Import a file</button>
                 </div>
               </div>
@@ -129,7 +130,7 @@ export function Heart() {
                       <span>{longDateTz(r.takenAt, tz, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}</span>
                       <span>{[r.pulse ? `Pulse ${r.pulse}` : null, r.source === "manual" ? "Entered by you" : r.source === "withings" ? "Withings" : r.source === "import" ? "Imported" : r.source === "apple" || r.source === "iphone" ? "Apple Health" : r.source, r.note].filter(Boolean).join(" · ")}</span>
                     </span>
-                    {(r.source === "manual" || r.source === "import") && <button onClick={() => del(r.id)} aria-label={`Remove reading ${r.sys}/${r.dia}`} style={{ width: 36, height: 36, border: "none", borderRadius: 18, background: "none", color: C.faint, cursor: "pointer" }}><i className="ph ph-trash" /></button>}
+                    {(r.source === "manual" || r.source === "import") && <button onClick={() => del(r.id)} aria-label={`Remove reading ${r.sys}/${r.dia}`} style={{ width: 36, height: 36, border: "none", borderRadius: 18, background: "none", color: C.faint, cursor: "pointer" }}><NIcon name="ph-trash" size="1em" tone="currentColor" /></button>}
                   </li>
                 ))}
               </ul>
@@ -147,7 +148,7 @@ const WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 function Counter({ icon, label, value, target, onAdd, onSub, hint }: { icon: string; label: string; value: number; target?: number; onAdd: () => void; onSub: () => void; hint?: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 64, borderTop: `1px solid ${C.line}` }}>
-      <i className={icon} style={{ fontSize: 22, color: C.teal }} />
+      <NIcon name={String(icon).replace(/^ph(-fill|-bold)? /, "")} size={22} tone={C.teal} />
       <span style={{ flex: 1, display: "flex", flexDirection: "column" }}><span style={{ fontSize: 15 }}>{label}</span><span style={{ fontSize: 13, color: hint ? C.peachInk : C.muted }}>{hint || (target ? `${value} of ${target}` : value ? `${value} today` : "None today")}</span></span>
       <button onClick={onSub} disabled={!value} aria-label={`Remove one ${label.toLowerCase()}`} style={{ width: 40, height: 40, borderRadius: 20, border: `1px solid ${C.line12}`, background: "none", cursor: value ? "pointer" : "default", opacity: value ? 1 : 0.4, fontSize: 18 }}>−</button>
       <span style={{ minWidth: 22, textAlign: "center", fontSize: 18, fontVariantNumeric: "tabular-nums" }}>{value}</span>
@@ -162,7 +163,7 @@ function Scale({ label, value, labels, icons, onPick }: { label: string; value: 
       <div role="radiogroup" aria-label={label} style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 6 }}>
         {[1, 2, 3, 4, 5].map((v) => (
           <button key={v} role="radio" aria-checked={value === v} onClick={() => onPick(v)} style={{ height: 52, borderRadius: 12, border: `1px solid ${value === v ? "transparent" : C.line12}`, background: value === v ? C.tealChip : "transparent", color: value === v ? C.tealDark : C.ink2, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, fontSize: 11.5 }}>
-            {icons ? <i className={icons[v - 1]} style={{ fontSize: 20 }} /> : <span style={{ fontSize: 16 }}>{v}</span>}{labels[v]}
+            {icons ? <NIcon name={String(icons[v - 1]).replace(/^ph(-fill|-bold)? /, "")} size={20} tone={"currentColor"} /> : <span style={{ fontSize: 16 }}>{v}</span>}{labels[v]}
           </button>
         ))}
       </div>
@@ -198,7 +199,7 @@ export function Lifestyle() {
         <div style={{ display: "flex", flexDirection: "column", gap: 20, minWidth: 0 }}>
           {l.sleepCoach ? (
             <section style={{ ...card, background: C.lav, border: "none" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-moon-stars" style={{ fontSize: 16 }} />Sleep coaching</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-moon-stars" size={16} tone="currentColor" />Sleep coaching</div>
               <h2 style={{ ...h2, fontSize: 20, marginBottom: 10 }}>{l.sleepCoach.title}</h2>
               <div style={{ display: "flex", gap: 24, flexWrap: "wrap", marginBottom: 12 }}>
                 {l.sleepCoach.avgSleep && <div><div style={{ fontSize: 12.5, color: C.muted }}>2-week average</div><div style={{ fontSize: 20 }}>{l.sleepCoach.avgSleep}</div></div>}
@@ -209,7 +210,7 @@ export function Lifestyle() {
             </section>
           ) : (
             <section style={{ ...card, background: C.lav, border: "none" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-moon-stars" style={{ fontSize: 16 }} />Sleep coaching</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-moon-stars" size={16} tone="currentColor" />Sleep coaching</div>
               <p style={{ margin: 0, fontSize: 15, lineHeight: 1.55 }}>Connect a device that tracks sleep (iPhone Sleep Schedule, Apple Watch, Oura or WHOOP) and your personal sleep coaching starts after 3 nights.</p>
             </section>
           )}
@@ -230,10 +231,10 @@ export function Lifestyle() {
             {t.meals.length ? t.meals.map((m) => (
               <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, borderTop: `1px solid ${C.line}` }}>
                 <span style={{ fontSize: 13, color: C.muted, minWidth: 64 }}>{longDateTz(m.at, tz, { hour: "numeric", minute: "2-digit" })}</span><span style={{ flex: 1, fontSize: 14.5 }}>{m.text}</span>
-                <button onClick={() => delMeal(m.id)} aria-label={`Remove ${m.text}`} style={{ width: 32, height: 32, border: "none", background: "none", color: C.faint, cursor: "pointer" }}><i className="ph ph-x" /></button>
+                <button onClick={() => delMeal(m.id)} aria-label={`Remove ${m.text}`} style={{ width: 32, height: 32, border: "none", background: "none", color: C.faint, cursor: "pointer" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
               </div>
             )) : <p style={sub}>No meals logged today.</p>}
-            <a href="/longevity" style={{ ...btnLink, marginTop: 8, textDecoration: "none" }}><i className="ph ph-bowl-food" />Get a personal nutrition plan with Nea Precision Nutrition</a>
+            <a href="/longevity" style={{ ...btnLink, marginTop: 8, textDecoration: "none" }}><NIcon name="ph-bowl-food" size="1em" tone="currentColor" />Get a personal nutrition plan with Nea Precision Nutrition</a>
           </section>
           <section style={card}>
             <h2 style={h2}>Your week</h2>
@@ -271,7 +272,7 @@ export function Family() {
       <H1 sub="Let family help care for you, and share your data with a doctor — always your choice, always revocable.">Family &amp; sharing</H1>
       {f.invites.map((i) => (
         <section key={i.id} style={{ ...card, background: C.tealWash, border: "none", marginBottom: 16, display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
-          <i className="ph ph-envelope-open" style={{ fontSize: 24, color: C.teal }} />
+          <NIcon name="ph-envelope-open" size={24} tone={C.teal} />
           <span style={{ flex: 1, minWidth: 200, fontSize: 15 }}><b style={{ fontWeight: 500 }}>{i.from}</b> invited you to see their health summary.</span>
           <button onClick={() => famAct(EP.family, "PATCH", { id: i.id }, "Invite accepted")} className="h-primary" style={btnPrimary}>Accept</button>
           <button onClick={() => famAct(`${EP.family}?id=${i.id}`, "DELETE", undefined, "Invite declined")} style={btnOutline}>Decline</button>
@@ -284,7 +285,7 @@ export function Family() {
             <p style={{ ...sub, marginBottom: 12 }}>A family member sees a simple summary: daily signals, home blood pressure, protocol and next visit. They can't change anything. Great for looking after parents — each person keeps their own account.</p>
             {f.caregivers.length ? f.caregivers.map((c) => (
               <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 58, borderTop: `1px solid ${C.line}` }}>
-                <i className="ph ph-user-circle" style={{ fontSize: 26, color: C.tealLight }} />
+                <NIcon name="ph-user-circle" size={26} tone={C.tealLight} />
                 <span style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}><span style={{ fontSize: 15, overflow: "hidden", textOverflow: "ellipsis" }}>{c.name || c.email}</span><span style={{ fontSize: 13, color: C.muted }}>{c.relation} · {c.status === "active" ? `Can view since ${c.since}` : "Invite sent — waiting"}</span></span>
                 <button onClick={() => famAct(`${EP.family}?id=${c.id}`, "DELETE", undefined, c.status === "active" ? "Access removed" : "Invite cancelled")} style={{ ...btnOutline, height: 36, fontSize: 13.5 }}>{c.status === "active" ? "Remove" : "Cancel"}</button>
               </div>
@@ -296,9 +297,9 @@ export function Family() {
               <h2 style={h2}>People you care for</h2>
               {f.caringFor.map((c) => (
                 <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 58, borderTop: `1px solid ${C.line}` }}>
-                  <i className="ph ph-heart" style={{ fontSize: 24, color: C.teal }} />
+                  <NIcon name="ph-heart" size={24} tone={C.teal} />
                   <button onClick={() => go("careview", { id: c.id })} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start", border: "none", background: "none", padding: 0, cursor: "pointer", textAlign: "left" }}><span style={{ fontSize: 15, color: C.ink }}>{c.name}</span><span style={{ fontSize: 13, color: C.muted }}>{c.relation} · since {c.since}</span></button>
-                  <button onClick={() => go("careview", { id: c.id })} style={btnLink}>View<i className="ph ph-arrow-right" /></button>
+                  <button onClick={() => go("careview", { id: c.id })} style={btnLink}>View<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
                 </div>
               ))}
             </section>
@@ -309,7 +310,7 @@ export function Family() {
           <p style={{ ...sub, marginBottom: 12 }}>Create a private link for any clinician — you choose what they see and for how long. Every view is counted.</p>
           {active.length ? active.map((l) => (
             <div key={l.id} style={{ display: "flex", alignItems: "center", gap: 12, minHeight: 62, borderTop: `1px solid ${C.line}` }}>
-              <i className="ph ph-link" style={{ fontSize: 22, color: C.teal }} />
+              <NIcon name="ph-link" size={22} tone={C.teal} />
               <span style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}><span style={{ fontSize: 15 }}>{l.label}</span><span style={{ fontSize: 13, color: C.muted }}>{l.scope.map((s) => SCOPE_LABEL[s] || s).join(", ")} · until {longDateTz(l.expiresAt, tz, { month: "short", day: "numeric" })} · {l.views} view{l.views === 1 ? "" : "s"}</span></span>
               <button onClick={() => revokeLink(l.id)} style={{ ...btnOutline, height: 36, fontSize: 13.5 }}>Turn off</button>
             </div>
@@ -328,7 +329,7 @@ export function CareView({ id }: { id: string }) {
   return (
     <div style={{ ...screenAnim, maxWidth: 820 }}>
       <H1 sub={`${s.relation} · read-only summary · last data ${s.updated}`}>{s.name}</H1>
-      {s.alerts.map((a) => <div key={a} role="status" style={{ ...card, background: C.peach, border: "none", marginBottom: 12, display: "flex", gap: 10, fontSize: 15 }}><i className="ph ph-warning" style={{ color: C.peachInk, fontSize: 18 }} />{a}</div>)}
+      {s.alerts.map((a) => <div key={a} role="status" style={{ ...card, background: C.peach, border: "none", marginBottom: 12, display: "flex", gap: 10, fontSize: 15 }}><NIcon name="ph-warning" size={18} tone={C.peachInk} />{a}</div>)}
       <div style={grid(300)}>
         <section style={card}>
           <h2 style={h2}>Daily signals</h2>
@@ -372,7 +373,7 @@ export function Rewards() {
           <section style={{ ...card, background: "linear-gradient(160deg,#E8F2F4 0%,#FFFDFB 70%)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
               <div><div style={{ fontSize: 13, color: C.muted }}>Your points</div><div style={{ fontSize: 44, letterSpacing: "-.03em", lineHeight: 1.1 }}>{r.balance.toLocaleString("en-US")}</div><div style={{ fontSize: 13, color: C.muted }}>{r.earnedTotal.toLocaleString("en-US")} earned in total</div></div>
-              <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: C.muted }}>Check-in streak</div><div style={{ fontSize: 32, display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}><i className="ph-fill ph-fire" style={{ color: "#D9822B", fontSize: 26 }} />{r.streak}</div><div style={{ fontSize: 13, color: C.muted }}>day{r.streak === 1 ? "" : "s"}</div></div>
+              <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: C.muted }}>Check-in streak</div><div style={{ fontSize: 32, display: "flex", alignItems: "center", gap: 6, justifyContent: "flex-end" }}><NIcon name="ph-fire" size={26} tone={"#D9822B"} />{r.streak}</div><div style={{ fontSize: 13, color: C.muted }}>day{r.streak === 1 ? "" : "s"}</div></div>
             </div>
             {code && (
               <div role="status" style={{ marginTop: 16, padding: 14, borderRadius: 14, background: C.card, border: `1px dashed ${C.tealLight}`, display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
@@ -427,9 +428,9 @@ export function Rewards() {
             ))}
           </section>
           <section style={{ ...card, background: C.lav, border: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-buildings" style={{ fontSize: 16 }} />For companies</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-buildings" size={16} tone="currentColor" />For companies</div>
             <p style={{ margin: "0 0 10px", fontSize: 15, lineHeight: 1.55 }}>Run a team wellness challenge with NEYU — private leaderboards, heart-health education and BioAro testing for your people.</p>
-            <a href="/contact" style={{ ...btnLink, color: C.lavInk, textDecoration: "none" }}>Talk to us<i className="ph ph-arrow-right" /></a>
+            <a href="/contact" style={{ ...btnLink, color: C.lavInk, textDecoration: "none" }}>Talk to us<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></a>
           </section>
         </div>
       </div>
@@ -450,7 +451,7 @@ export function Story() {
         {s.months.map((m) => <button key={m} onClick={() => setMonth(m)} aria-pressed={m === s.month} style={{ flex: "none", height: 34, padding: "0 12px", borderRadius: 17, border: `1px solid ${m === s.month ? "transparent" : C.line12}`, background: m === s.month ? C.tealChip : "transparent", color: m === s.month ? C.tealDark : C.ink2, fontSize: 13.5, cursor: "pointer" }}>{lbl(m)}</button>)}
       </div>
       <section style={{ padding: "30px 28px", borderRadius: 24, background: "linear-gradient(165deg,#F0ECF7 0%,#FFFDFB 65%)", border: "1px solid rgba(29,35,39,.05)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 10 }}><i className="ph ph-book-open-text" style={{ fontSize: 16 }} />{s.label}{s.byAlba && <span style={{ marginLeft: 6, padding: "2px 8px", borderRadius: 10, background: "rgba(42,132,228,.15)", fontSize: 11.5 }}>Written by Neyu</span>}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 10 }}><NIcon name="ph-book-open-text" size={16} tone="currentColor" />{s.label}{s.byAlba && <span style={{ marginLeft: 6, padding: "2px 8px", borderRadius: 10, background: "rgba(42,132,228,.15)", fontSize: 11.5 }}>Written by Neyu</span>}</div>
         <h1 style={{ margin: "0 0 14px", fontSize: 30, lineHeight: 1.15, fontWeight: 500, letterSpacing: "-.02em" }}>{s.title}</h1>
         {s.paragraphs.map((p, i) => <p key={i} style={{ margin: "0 0 12px", fontSize: 16.5, lineHeight: 1.65, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{p}</p>)}
       </section>
