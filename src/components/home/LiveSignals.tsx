@@ -6,7 +6,7 @@ import AnraEl from "@/components/AnraEl";
 import { useAlba } from "@/components/AlbaContext";
 import { SIGNAL_TABS, signalNote } from "@/data/homeContent";
 
-const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#6A5096", fontWeight: 600 };
+const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#1D5FA8", fontWeight: 600 };
 const h2: React.CSSProperties = { margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 };
 
 // Home 02: "See the signal. Understand it." — tabs + sliders + live chart.
@@ -27,7 +27,7 @@ export default function LiveSignals() {
         <div>
           <div style={eyebrow}>Health intelligence · live</div>
           <h2 style={h2}>See the signal.<br />Understand it.</h2>
-          <p style={{ margin: "18px 0 0", fontSize: 18, color: "#3A4147", maxWidth: 440 }}>Move the sliders and watch how ALBA reads a value in context. Every number means more next to the others.</p>
+          <p style={{ margin: "18px 0 0", fontSize: 18, color: "#3A4147", maxWidth: 440 }}>Move the sliders and watch how Neyu reads a value in context. Every number means more next to the others.</p>
           {/* Segmented control — the selected signal is raised, with a live dot. */}
           <div role="tablist" aria-label="Signals" className="anra-seg" style={{ marginTop: 24 }}>
             {SIGNAL_TABS.map(([k, l]) => {
@@ -41,7 +41,7 @@ export default function LiveSignals() {
             })}
           </div>
           <p style={{ margin: "10px 0 0", fontSize: 13, color: "#5A626A", display: "flex", alignItems: "center", gap: 6 }}>
-            <i className="ph ph-hand-pointing" style={{ fontSize: 15, color: "#3F6F7C" }} />Tap a signal{tab === "ldl" || tab === "activity" ? ", then drag the slider" : ""} — the chart and ALBA’s reading update live.
+            <i className="ph ph-hand-pointing" style={{ fontSize: 15, color: "#3F6F7C" }} />Tap a signal{tab === "ldl" || tab === "activity" ? ", then drag the slider" : ""} — the chart and Neyu’s reading update live.
           </p>
           {tab === "ldl" && (
             <label style={{ marginTop: 22, display: "grid", gap: 8, maxWidth: 420 }}>
@@ -63,9 +63,9 @@ export default function LiveSignals() {
           <div style={{ marginTop: 14, display: "flex", gap: 12, alignItems: "flex-start", padding: "4px 4px 2px" }}>
             <AlbaOrb size={26} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#6A5096", fontWeight: 600 }}>ALBA reads</div>
+              <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#1D5FA8", fontWeight: 600 }}>Neyu reads</div>
               <p style={{ margin: "4px 0 0", fontSize: 15.5, color: "#2A2F33" }}>{note}</p>
-              <button onClick={() => openAlba("Explain this in plain language: " + note)} style={{ marginTop: 6, border: 0, background: "none", padding: "4px 0", color: "#6A5096", fontWeight: 600, fontSize: 14 }}>Ask a follow-up →</button>
+              <button onClick={() => openAlba("Explain this in plain language: " + note)} style={{ marginTop: 6, border: 0, background: "none", padding: "4px 0", color: "#1D5FA8", fontWeight: 600, fontSize: 14 }}>Ask a follow-up →</button>
             </div>
           </div>
         </div>
