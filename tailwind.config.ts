@@ -101,7 +101,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-dm-sans)", "sans-serif"],
         display: ["var(--font-dm-sans)", "sans-serif"],
-        mono: ["var(--font-jetbrains-mono)", "monospace"],
+        mono: ["var(--font-dm-sans)", "sans-serif"],
       },
       borderRadius: {
         xl2: "1.25rem",
