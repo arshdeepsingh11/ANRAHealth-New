@@ -1,6 +1,9 @@
-import DiagnosticPageTemplate from "@/components/DiagnosticPageTemplate";
-import { diagnosticContent } from "@/data/diagnosticContent";
+import type { Metadata } from "next";
+import { NeyuPage } from "@/components/neyu/kit";
+import DiagnosticPage from "@/components/neyu/pages/Diagnostic";
 
-export default function CardiacImagingPage() {
-  return <DiagnosticPageTemplate content={diagnosticContent["cardiac-imaging"]} />;
+export const metadata: Metadata = { title: "Cardiac imaging · NEYU Health" };
+
+export default function Page() {
+  return <NeyuPage><DiagnosticPage slug="cardiac-imaging" /></NeyuPage>;
 }
