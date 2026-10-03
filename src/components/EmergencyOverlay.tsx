@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useAlba } from "@/components/AlbaContext";
 
 // Full-screen safety screen. Shown whenever the emergency safety net fires
-// (ALBA, the homepage concierge, or the server's emergency response).
+// (Neyu, the homepage concierge, or the server's emergency response).
 export default function EmergencyOverlay() {
   const { emergency, closeEmergency } = useAlba();
 
