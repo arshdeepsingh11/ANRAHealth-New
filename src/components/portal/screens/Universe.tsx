@@ -450,7 +450,7 @@ export function Story() {
         {s.months.map((m) => <button key={m} onClick={() => setMonth(m)} aria-pressed={m === s.month} style={{ flex: "none", height: 34, padding: "0 12px", borderRadius: 17, border: `1px solid ${m === s.month ? "transparent" : C.line12}`, background: m === s.month ? C.tealChip : "transparent", color: m === s.month ? C.tealDark : C.ink2, fontSize: 13.5, cursor: "pointer" }}>{lbl(m)}</button>)}
       </div>
       <section style={{ padding: "30px 28px", borderRadius: 24, background: "linear-gradient(165deg,#F0ECF7 0%,#FFFDFB 65%)", border: "1px solid rgba(29,35,39,.05)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 10 }}><i className="ph ph-book-open-text" style={{ fontSize: 16 }} />{s.label}{s.byAlba && <span style={{ marginLeft: 6, padding: "2px 8px", borderRadius: 10, background: "rgba(140,111,184,.15)", fontSize: 11.5 }}>Written by ALBA</span>}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 10 }}><i className="ph ph-book-open-text" style={{ fontSize: 16 }} />{s.label}{s.byAlba && <span style={{ marginLeft: 6, padding: "2px 8px", borderRadius: 10, background: "rgba(42,132,228,.15)", fontSize: 11.5 }}>Written by Neyu</span>}</div>
         <h1 style={{ margin: "0 0 14px", fontSize: 30, lineHeight: 1.15, fontWeight: 500, letterSpacing: "-.02em" }}>{s.title}</h1>
         {s.paragraphs.map((p, i) => <p key={i} style={{ margin: "0 0 12px", fontSize: 16.5, lineHeight: 1.65, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{p}</p>)}
       </section>
