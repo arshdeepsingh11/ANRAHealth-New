@@ -5,22 +5,23 @@
 // Thresholds are published, widely used guideline values — labelled as
 // education, never a diagnosis.
 import React, { useMemo, useState } from "react";
-import { T, card, btnGhost, chip, useInView } from "@/components/nea/ui";
+import { T, card, btnGhost, chip, useInView, Icon } from "@/components/nea/ui";
+import { NIcon } from "@/components/neyu/icons";
 
 type Ask = (q: string) => void;
 const inp: React.CSSProperties = { height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${T.line}`, background: "#fff", fontSize: 16, width: "100%", color: T.ink };
 const lab: React.CSSProperties = { display: "grid", gap: 6, fontSize: 13.5, color: T.ink2 };
-const BAND = { good: "#2E7D5B", mid: "#C98500", high: "#D0612E", top: "#B42F3A", info: "#2A78D6" };
+const BAND = { good: "#1F9E7A", mid: "#C98A1E", high: "#D06A34", top: "#B8433A", info: "#2273D6" };
 
 export function ToolFrame({ title, sub, icon, accent, children, source }: { title: string; sub: string; icon: string; accent: string; children: React.ReactNode; source?: string }) {
   return (
     <section style={{ ...card, padding: "clamp(18px,2.6vw,26px)", display: "grid", gap: 16, minWidth: 0 }}>
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <span style={{ width: 42, height: 42, borderRadius: 13, display: "grid", placeItems: "center", background: accent + "1A", color: accent, flex: "none" }}><i className={"ph " + icon} style={{ fontSize: 21 }} /></span>
+        <Icon name={icon} box={42} size={21} />
         <div><h3 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>{title}</h3><p style={{ margin: "2px 0 0", fontSize: 13.5, color: T.muted }}>{sub}</p></div>
       </div>
       {children}
-      <p style={{ margin: 0, fontSize: 12, color: T.faint, display: "flex", gap: 6 }}><i className="ph ph-info" style={{ marginTop: 2 }} />Education, not a diagnosis.{source ? ` Based on ${source}.` : ""}</p>
+      <p style={{ margin: 0, fontSize: 12, color: T.faint, display: "flex", gap: 6 }}><NIcon name="ph-info" size={18} tone={"currentColor"} style={{ marginTop: 2 }} />Education, not a diagnosis.{source ? ` Based on ${source}.` : ""}</p>
     </section>
   );
 }
@@ -30,7 +31,7 @@ function Result({ tone, title, text, onAsk, q }: { tone: keyof typeof BAND; titl
     <div aria-live="polite" style={{ padding: "14px 16px", borderRadius: 14, background: BAND[tone] + "14", border: `1px solid ${BAND[tone]}33`, display: "grid", gap: 6, animation: "fadeUp .3s" }}>
       <b style={{ fontWeight: 600, color: BAND[tone], fontSize: 15.5 }}>{title}</b>
       <span style={{ fontSize: 14.5, color: T.ink2, lineHeight: 1.5 }}>{text}</span>
-      {onAsk && q && <button onClick={() => onAsk(q)} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, padding: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain this with Neyu</button>}
+      {onAsk && q && <button onClick={() => onAsk(q)} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, padding: 0, color: T.violet }}><NIcon name="ph-sparkle" size={18} tone={"currentColor"} />Explain this with Neyu</button>}
     </div>
   );
 }
