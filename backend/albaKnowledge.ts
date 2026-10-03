@@ -1,4 +1,4 @@
-// ALBA's knowledge: everything NEYU and its partners publish, indexed for
+// Neyu's knowledge: everything NEYU and its partners publish, indexed for
 // fast keyword retrieval. Each question only sends the most relevant pieces
 // to the model (small prompt = fast first word), and the same index answers
 // on its own when the AI is unavailable.
@@ -10,15 +10,17 @@ import { LAB_TESTS, WELLNESS, money } from "@/data/bioaroCatalog";
 import { NEA, NEA_TREATMENTS, NEA_PACKAGES, NEA_FAQ } from "@/data/nea";
 import { ARC, RESP_ITEMS, RESP_STEPS } from "@/data/respiratory";
 import { PAPERS, PGX_DRUGS, PATHWAYS } from "@/data/longevityScience";
+import { SERVICES, PACKAGES, MEMBERSHIP, PILLARS, pkgLabTotal } from "@/data/neyu";
 
 export interface Doc { id: string; title: string; text: string; href?: string; kind: string; words: Set<string> }
 
 const STOP = new Set("a an the and or of to in on for with is are was be it i my me you your we our can do does what how when why who which this that at as by from about have has had not no yes should could would will there their them they its into than then so if any some more most very also just like get".split(" "));
 // Plain words people use → the words our content uses.
 const SYN: Record<string, string[]> = {
+  virtually: ["virtual", "video"], video: ["virtual"], telehealth: ["virtual", "video"], online: ["virtual"], subscription: ["membership"], subscribe: ["membership"], executive: ["package", "executive"], checkup: ["package"], collection: ["at-home", "home"], home: ["at-home"],
   cardiologist: ["cardiology", "cardiac", "heart"], cardiologists: ["cardiology", "cardiac"], endocrinologist: ["endocrinology"], geriatrician: ["geriatric"], rheumatologist: ["rheumatology"], dermatologist: ["skin", "nea"], pulmonologist: ["respiratory", "pulmonary"], respirologist: ["respiratory"], dietitian: ["nutrition"], internist: ["internal", "medicine"],
   heart: ["cardiac", "cardiology", "cardiovascular"], chest: ["cardiac", "angina"], palpitations: ["arrhythmia", "rhythm", "holter"],
-  bp: ["blood", "pressure", "hypertension"], hypertension: ["pressure"], cholesterol: ["lipid", "ldl", "apob"], lipids: ["cholesterol"],
+  bp: ["blood", "pressure", "hypertension"], hypertension: ["pressure", "blood"], cholesterol: ["lipid", "ldl", "apob"], lipids: ["cholesterol"],
   sugar: ["glucose", "diabetes", "a1c"], diabetes: ["glucose", "endocrinology", "a1c", "insulin"], thyroid: ["endocrinology", "hormone", "tsh"],
   breathing: ["respiratory", "lung", "pulmonary", "breath"], breath: ["respiratory", "lung", "pulmonary"], lungs: ["respiratory", "pulmonary"],
   asthma: ["respiratory", "pulmonary", "lung"], copd: ["respiratory", "pulmonary", "lung"], snoring: ["sleep", "apnea", "nightlase"], sleep: ["apnea", "cpap", "melatonin", "sleepo"],
@@ -53,6 +55,13 @@ export function index(): Doc[] {
   if (INDEX) return INDEX;
   const d: Doc[] = [];
   d.push(mk("about", "About NEYU Health", "NEYU Health", `A cardiology and internal medicine clinic in Calgary, Alberta, founded by Dr. Anmol Singh Kapoor. Locations: ${locations.map((l) => `${l.name}, ${l.address}`).join("; ")}. Phone ${brand.phone}. Email ${brand.email}. Hours: ${brand.hours}.`, "/about"));
+  SERVICES.forEach((x) => d.push(mk("svc-new-" + x.k, "NEYU service", x.title, `${x.text} Request it on the ${x.title} page (${x.href}). Nothing is booked or charged online; the NEYU team follows up.`, x.href)));
+  PACKAGES.forEach((p) => d.push(mk("pkg-" + p.id, "NEYU private health package", p.title + " package", `${p.tag}. For: ${p.for} In clinic: ${p.clinic.join(", ")}. Advanced labs (BioAro list prices): ${p.labs.map((l) => `${l.name} ${money(l.price)}`).join(", ")} — lab component ${money(pkgLabTotal(p))}. Clinic services are quoted by the NEYU team. ${p.neyu}`, "/packages#" + p.id)));
+  d.push(mk("membership", "NEYU service", "NEYU Membership tiers", MEMBERSHIP.map((m) => `${m.title} (${m.tag}): ${m.features.join(", ")}`).join(". ") + ". Pricing is shared on request.", "/membership"));
+  d.push(mk("htn-program", "NEYU service", "Virtual Hypertension Clinic program", "Enroll, then measure at home: two readings morning and evening for 7 days with a validated cuff. Hypertension Canada uses 135/85 as the home threshold. Neyu explains readings between visits; a NEYU physician reviews averages and adjusts the plan. A home reading at or above 180/110 needs prompt medical attention; with chest pain, shortness of breath, weakness or confusion call 911.", "/hypertension-clinic"));
+  d.push(mk("virtual-howto", "NEYU service", "How NEYU virtual care works", "Request a visit (new concern, follow-up, results review, medication review or blood-pressure check-in), Neyu gathers symptoms and questions first, then a secure video visit with a NEYU physician; the plan lands in My Health Space. Not for emergencies. Exams, imaging, stress testing and procedures need an in-person visit. Most specialist visits in Alberta need a referral.", "/virtual-care"));
+  PILLARS.forEach((p) => d.push(mk("pillar-" + p.k, "NEYU pillar", p.title, `${p.tag}. ${p.text}`, p.href)));
+  d.push(mk("neyu-brand", "NEYU page", "Your Health, Connected — the NEYU approach", "NEYU connects the pieces of your health — medical records, diagnostics, biology (genomics, biomarkers, microbiome), lifestyle and environment — so you can understand what matters and what to do next. Pillars: Care, Diagnostics, Prevention, Longevity. Philosophy: Listen. Connect. Flourish. Neyu is the AI companion.", "/neyu"));
   locations.forEach((l, i) => d.push(mk("loc-" + i, "NEYU location", `${l.name} (clinic location)`, `${l.name}: ${l.address}. Phone ${l.phone}. Fax ${l.fax}.`, "/contact")));
   d.push(mk("referral", "NEYU page", "Referral Centre — how to get a referral", "Most NEYU specialist visits need a referral from your family practice or a walk-in clinic. They can send it to NEYU, or use the Referral Centre on the site, which can auto-fill a referral from a photo and create a referral letter PDF.", "/referral-centre"));
   RESP_ITEMS.forEach((it, i) => d.push(mk("resp-" + i, "Respiratory service (Advanced Respiratory Care Network)", it.name, `${it.desc} Offered through our partner Advanced Respiratory Care Network (${ARC.phone}).`, "/specialties/respiratory-medicine")));
@@ -112,7 +121,7 @@ export function knowledgeFor(question: string, page = "") {
   return { docs, text: `${CORE}\n\nRELEVANT REFERENCE:\n${docs.map((d) => `[${d.kind}] ${d.title}: ${d.text}`).join("\n").slice(0, 7000)}` };
 }
 
-export const ALBA_RULES = `You are ALBA, the AI health companion of NEYU Health in Calgary, Alberta.
+export const ALBA_RULES = `You are Neyu, the AI health companion of NEYU Health in Calgary, Alberta.
 You are medically educated. Explain conditions, symptoms, tests, lab values, risk factors, prevention, lifestyle and treatment options in clear, accurate, plain language, based on mainstream evidence (Canadian guidelines where relevant). You also know NEYU's specialties, physicians and locations, and our partners' catalogs: BioAro Labs tests, BioAro Drugs wellness products, Nea Precision Skin treatments and the Advanced Respiratory Care Network.
 Rules:
 1. Never diagnose the person or tell them what they have. Never prescribe, dose, or tell anyone to start, stop or change a medication. Supplements are not treatments.
@@ -120,7 +129,8 @@ Rules:
 3. When relevant, point to the right NEYU specialty, test or partner service by its exact name; give prices or facts ONLY as written in the reference. Never invent physicians, prices, wait times or services.
 4. Plain text only, no markdown or lists symbols. Keep it under 120 words unless they ask for more detail. End with one helpful next step when it fits.
 5. For personal medical decisions, suggest discussing with their doctor or booking with NEYU.
-6. The clinic's name is NEYU Health (say "NEYU"). Never call it ANRA. Only if the person asks about ANRA or ANRA Health, explain that ANRA Health is now called NEYU Health — same clinic, physicians and locations. "Nea" is a different company (Nea Precision Skin, a partner); never confuse NEYU with Nea.`;
+6. You are Neyu, the AI companion named after the clinic. The clinic's name is NEYU Health (say "NEYU"). Never call it ANRA. Only if the person asks about ANRA or ANRA Health, explain that ANRA Health is now called NEYU Health — same clinic, physicians and locations. "Nea" is a different company (Nea Precision Skin, a partner); never confuse NEYU with Nea.
+7. Membership and clinic-service prices are not published: say the NEYU team shares pricing on request. Lab test prices may be quoted only from the reference. Requests for virtual visits, packages, membership, at-home collection and the hypertension clinic are made on those pages; nothing is booked or charged online.`;
 
 /** Answer without the AI model, from the index alone. */
 export function localAnswer(question: string, page = ""): { text: string; href?: string } {
