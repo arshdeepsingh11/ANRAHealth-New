@@ -7,6 +7,7 @@ import { useAlba } from "@/components/AlbaContext";
 import AlbaOrb from "@/components/AlbaOrb";
 import { useAnraNav } from "@/lib/useAnraNav";
 import NeyuLogo from "@/components/brand/NeyuLogo";
+import { NIcon } from "@/components/neyu/icons";
 
 const tab: React.CSSProperties = { height: 56, border: 0, background: "none", display: "grid", placeItems: "center", gap: 2, fontSize: 11, color: "#3A4147" };
 
@@ -23,11 +24,11 @@ export default function MobileNav({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="anra-chrome">
       <nav aria-label="Primary" style={{ position: "fixed", left: 10, right: 10, bottom: "calc(10px + env(safe-area-inset-bottom))", zIndex: 60, height: 64, borderRadius: 22, background: "rgba(251,250,247,.9)", backdropFilter: "blur(18px)", WebkitBackdropFilter: "blur(18px)", border: "1px solid #E3DED5", boxShadow: "0 20px 40px -20px rgba(20,24,27,.4)", display: "grid", gridTemplateColumns: "repeat(5,1fr)", alignItems: "center" }}>
-        <button onClick={() => setMenu((m) => !m)} aria-label="Menu" aria-expanded={menu} style={tab}><i className={menu ? "ph ph-x" : "ph ph-list"} style={{ fontSize: 22, color: "#14181B" }} />Menu</button>
-        <button onClick={() => { setMenu(false); onSearch(); }} aria-label="Search" style={tab}><i className="ph ph-magnifying-glass" style={{ fontSize: 22, color: "#14181B" }} />Search</button>
+        <button onClick={() => setMenu((m) => !m)} aria-label="Menu" aria-expanded={menu} style={tab}><NIcon name={menu ? "ph-x" : "ph-list"} size={22} tone={"#14181B"} />Menu</button>
+        <button onClick={() => { setMenu(false); onSearch(); }} aria-label="Search" style={tab}><NIcon name="ph-magnifying-glass" size={22} tone={"#14181B"} />Search</button>
         <button ref={(el) => { if (el && el.offsetParent !== null) registerAlbaNode(el); }} onClick={() => { setMenu(false); openAlba(); }} aria-label="Ask Neyu" style={{ ...tab, color: "#163F6E", fontWeight: 600 }}><AlbaOrb size={26} />Neyu</button>
-        <button onClick={() => pick({ label: "Referral", href: PAGE_HREF.referral })} aria-label="Referral" style={tab}><i className="ph ph-file-text" style={{ fontSize: 22, color: "#14181B" }} />Referral</button>
-        <button onClick={() => pick({ label: "Clinics", href: PAGE_HREF.locations })} aria-label="Locations" style={tab}><i className="ph ph-map-pin" style={{ fontSize: 22, color: "#14181B" }} />Clinics</button>
+        <button onClick={() => pick({ label: "Referral", href: PAGE_HREF.referral })} aria-label="Referral" style={tab}><NIcon name="ph-file-text" size={22} tone={"#14181B"} />Referral</button>
+        <button onClick={() => pick({ label: "Clinics", href: PAGE_HREF.locations })} aria-label="Locations" style={tab}><NIcon name="ph-map-pin" size={22} tone={"#14181B"} />Clinics</button>
       </nav>
 
       {menu && (
@@ -41,7 +42,7 @@ export default function MobileNav({ onSearch }: { onSearch: () => void }) {
               return (
                 <div key={r.k} style={{ borderBottom: "1px solid #E3DED5" }}>
                   <button onClick={() => setSec(open ? null : r.k)} aria-expanded={open} style={{ width: "100%", background: "none", border: 0, padding: "16px 0", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 19, letterSpacing: "-.01em", minHeight: 54 }}>
-                    {r.label}<i className={open ? "ph ph-minus" : "ph ph-plus"} style={{ fontSize: 18, color: "#5A626A" }} />
+                    {r.label}<NIcon name={open ? "ph-minus" : "ph-plus"} size={18} tone={"#5A626A"} />
                   </button>
                   {open && (
                     <div style={{ padding: "0 0 12px", display: "grid" }}>
