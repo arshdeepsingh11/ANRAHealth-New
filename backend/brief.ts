@@ -1,6 +1,6 @@
 // NEYU Today — the daily brief. Location-aware (ECCC weather + AQHI),
 // built from the patient's own data by clear rules, then (when a Gemini key
-// is set) rewritten by ALBA into a short, warm message. Cached per day in
+// is set) rewritten by Neyu into a short, warm message. Cached per day in
 // GeneratedNote; rules are recomputed on every load, the AI text only when
 // the facts change (at most every 3 hours).
 
@@ -161,14 +161,14 @@ export async function getBrief(p: P, opts: { ai?: boolean } = {}): Promise<Brief
   if (!ruleParts.length) ruleParts.push(items.length ? "Here's what matters for your health today." : "Connect a device or log a check-in and your brief fills in from tomorrow.");
   let message = ruleParts.join(" "), byAlba = false;
 
-  // ALBA wording (cached per day; refreshed when facts change, max every 3 h)
+  // Neyu wording (cached per day; refreshed when facts change, max every 3 h)
   const factKey = createHash("sha1").update(facts.join("|") + (advice?.text || "")).digest("hex").slice(0, 16);
   const cached = await prisma.generatedNote.findUnique({ where: { patientId_kind_period: { patientId: p.id, kind: "brief", period: today } } });
   const body = parseJSON<{ message?: string; factKey?: string; byAlba?: boolean }>(cached?.body, {});
   const fresh = cached && (body.factKey === factKey || now.getTime() - cached.createdAt.getTime() < 3 * 3600_000);
   if (fresh && body.message && body.byAlba) { message = body.message; byAlba = true; }
   else if (opts.ai !== false && facts.length && process.env.GEMINI_API_KEY) {
-    const sys = `You are ALBA, the warm health companion in NEYU Health's My Health Space (Calgary). Write the patient's morning brief: 2 short sentences, max 45 words, plain language, encouraging, specific to the facts. Mention the weather/air and one thing from their data. Never diagnose, never mention medications, no markdown, no emojis. Patient first name: ${p.firstName}.`;
+    const sys = `You are Neyu, the warm health companion in NEYU Health's My Health Space (Calgary). Write the patient's morning brief: 2 short sentences, max 45 words, plain language, encouraging, specific to the facts. Mention the weather/air and one thing from their data. Never diagnose, never mention medications, no markdown, no emojis. Patient first name: ${p.firstName}.`;
     const ai = await gemini(sys, `Facts for today:\n- ${facts.join("\n- ")}\nMovement advice: ${advice?.text || "none"}`, { maxTokens: 120 });
     if (ai && !unsafeAiText(ai) && ai.length < 400) { message = ai; byAlba = true; }
     const data = JSON.stringify({ message, factKey, byAlba });
