@@ -5,6 +5,7 @@ import AlbaOrb from "@/components/AlbaOrb";
 import AnraEl from "@/components/AnraEl";
 import { useAlba } from "@/components/AlbaContext";
 import { SIGNAL_TABS, signalNote } from "@/data/homeContent";
+import { NIcon } from "@/components/neyu/icons";
 
 const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: "#1D5FA8", fontWeight: 600 };
 const h2: React.CSSProperties = { margin: "14px 0 0", fontSize: "clamp(34px,4.6vw,56px)", lineHeight: 1, letterSpacing: "-.04em", fontWeight: 500 };
@@ -41,7 +42,7 @@ export default function LiveSignals() {
             })}
           </div>
           <p style={{ margin: "10px 0 0", fontSize: 13, color: "#5A626A", display: "flex", alignItems: "center", gap: 6 }}>
-            <i className="ph ph-hand-pointing" style={{ fontSize: 15, color: "#3F6F7C" }} />Tap a signal{tab === "ldl" || tab === "activity" ? ", then drag the slider" : ""} — the chart and Neyu’s reading update live.
+            <NIcon name="ph-hand-pointing" size={15} tone={"#3F6F7C"} />Tap a signal{tab === "ldl" || tab === "activity" ? ", then drag the slider" : ""} — the chart and Neyu’s reading update live.
           </p>
           {tab === "ldl" && (
             <label style={{ marginTop: 22, display: "grid", gap: 8, maxWidth: 420 }}>
