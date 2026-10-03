@@ -19,7 +19,7 @@ export const NEA = {
   address: "#104, 3151 27 Street NE, Calgary, AB",
   hours: "Mon–Sat 9 AM–5 PM · Sun closed",
   founder: "Raman Kapoor, RD — Chief Healthspan Officer & Founder",
-  color: "#B9786A", // warm rose-clay accent for Nea across the site
+  color: "#3CC79E", // warm rose-clay accent for Nea across the site
   colorSoft: "#F6E9E4",
 };
 
