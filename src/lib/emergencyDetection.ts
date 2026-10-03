@@ -1,7 +1,7 @@
 // Shared emergency-keyword safety net.
 // This is the single source of truth for medical-emergency detection across
 // the site — used by both the Symptom Checker (/api/symptom-check) and
-// ALBA's general chat (/api/chat). This list is non-negotiable: it is never
+// Neyu's general chat (/api/chat). This list is non-negotiable: it is never
 // removed or weakened, only ever expanded with more coverage over time.
 //
 // If a match is found, the caller MUST short-circuit and return a fixed
