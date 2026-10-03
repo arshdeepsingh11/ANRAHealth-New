@@ -47,7 +47,7 @@ export default function Overview({ openInbox }: { openInbox: (tab: string) => vo
               </div>
               <div style={{ display: "flex", gap: 18, fontSize: 13, color: T.ink2, flexWrap: "wrap" }}>
                 <span><span style={{ display: "block", color: T.faint }}>Time</span>{e.time}</span>
-                <span><span style={{ display: "block", color: T.faint }}>Source</span>ALBA symptom checker</span>
+                <span><span style={{ display: "block", color: T.faint }}>Source</span>Neyu symptom checker</span>
                 <span><span style={{ display: "block", color: T.faint }}>Status</span>{e.status}</span>
               </div>
               <span style={{ height: 34, padding: "0 14px", borderRadius: 10, background: T.peachInk, color: T.card, fontSize: 13.5, fontWeight: 500, display: "inline-flex", alignItems: "center", gap: 6 }}>Review<i className="ph ph-arrow-right" /></span>
