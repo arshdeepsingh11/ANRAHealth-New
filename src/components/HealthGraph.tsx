@@ -28,11 +28,11 @@ const CHIP_COUNT_LABEL: Record<string, string> = {
   diagnostics: "Diagnostics",
 };
 
-// Longevity and ALBA don't have a multi-item children list (tapping the card
+// Longevity and Neyu don't have a multi-item children list (tapping the card
 // redirects/opens chat directly), so they get their own static quick-action
 // chips instead, to stay visually consistent with the other category cards.
 const LONGEVITY_CHIPS = ["Health Risk Assessment", "Nutrition Plan", "Longevity Score"];
-const ALBA_CHIPS = ["Symptom Check", "Ask ALBA", "Book a Visit"];
+const ALBA_CHIPS = ["Symptom Check", "Ask Neyu", "Book a Visit"];
 
 function polar(angleDeg: number, radiusPct: number) {
   const rad = (angleDeg * Math.PI) / 180;
@@ -160,7 +160,7 @@ export default function HealthGraph() {
               className="absolute rounded-full"
               style={{
                 width: "44%", height: "44%",
-                background: "radial-gradient(circle, rgba(110,168,182,0.30) 0%, rgba(140,111,184,0.14) 45%, transparent 70%)",
+                background: "radial-gradient(circle, rgba(110,168,182,0.30) 0%, rgba(42,132,228,0.14) 45%, transparent 70%)",
                 filter: "blur(20px)",
               }}
             />
@@ -196,7 +196,7 @@ export default function HealthGraph() {
               left: "50%", top: "50%", transform: "translate(-50%,-50%)",
               width: "32%", height: "32%",
               background: "radial-gradient(circle at 36% 28%, #ffffff 0%, #EDE4F7 52%, #C8A8E9 100%)",
-              boxShadow: "0 0 0 1px rgba(110,168,182,0.35), 0 0 60px rgba(140,111,184,0.30), 0 20px 50px rgba(101,113,102,0.18)",
+              boxShadow: "0 0 0 1px rgba(110,168,182,0.35), 0 0 60px rgba(42,132,228,0.30), 0 20px 50px rgba(101,113,102,0.18)",
             }}
           >
             <span className="w-7 h-px bg-gold-500 mb-2.5" />
@@ -354,7 +354,7 @@ export default function HealthGraph() {
               style={{
                 left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: "29%", height: "29%",
                 background: "radial-gradient(circle at 36% 28%, #ffffff 0%, #EDE4F7 52%, #C8A8E9 100%)",
-                boxShadow: "0 0 0 1px rgba(110,168,182,0.30), 0 0 50px rgba(140,111,184,0.20), 0 20px 50px rgba(101,113,102,0.16)",
+                boxShadow: "0 0 0 1px rgba(110,168,182,0.30), 0 0 50px rgba(42,132,228,0.20), 0 20px 50px rgba(101,113,102,0.16)",
               }}
             >
               <NodeIcon name={node.icon} size={24} />
