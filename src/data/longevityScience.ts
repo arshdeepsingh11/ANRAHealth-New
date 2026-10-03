@@ -144,7 +144,7 @@ export const PATHWAYS = [
   { id: "matrix", name: "Tissue matrix (hyaluronan)", color: "#1BAF7A", src: "Ying 2024", text: "Hyaluronan metabolism keeps tissues hydrated and resilient; this pathway was enriched in the centenarian study." },
   { id: "protein", name: "Protein maintenance", color: "#E0A100", src: "Ying 2024", text: "Post-translational protein modification — how cells tune and repair proteins — was another enriched pathway." },
   { id: "mito", name: "Mitochondrial translation", color: "#C2477E", src: "Ying 2024", text: "Genes that build the proteins of mitochondria, the cell’s power plants, featured among longevity-linked pathways." },
-  { id: "burden", name: "Low damaging-variant burden", color: "#4A3AA7", src: "Ying 2024", text: "Beyond single pathways, centenarians carried 11–22% fewer rare loss-of-function variants overall — a ‘quieter’ genome." },
+  { id: "burden", name: "Low damaging-variant burden", color: "#1D5FA8", src: "Ying 2024", text: "Beyond single pathways, centenarians carried 11–22% fewer rare loss-of-function variants overall — a ‘quieter’ genome." },
 ];
 
 // ── Tests to recommend (BioAro Labs slugs) ───────────────────────────────
