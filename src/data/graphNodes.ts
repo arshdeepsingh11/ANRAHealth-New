@@ -67,7 +67,7 @@ export const graphNodes: GraphNode[] = [
   {
     id: "alba",
     label: "AI Health Companion",
-    sub: "ALBA",
+    sub: "Neyu",
     icon: "BrainCircuit",
     angle: -165,
     standalone: true,
