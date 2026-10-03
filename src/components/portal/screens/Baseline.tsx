@@ -11,6 +11,7 @@ import { NEA } from "@/data/nea";
 import { usePortal } from "../context";
 import { EP, api, prime, useResource } from "../api";
 import { C, screenAnim, Loading } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 const W = "#FFFFFF";
 const grad = (s: ProfileSection) => `linear-gradient(135deg, ${s.gradient[0]}, ${s.gradient[1]})`;
@@ -31,7 +32,7 @@ export function Ring({ pct, size = 64, stroke = 7, color = C.teal, track = "#EDE
 }
 
 function Squircle({ s, size = 44 }: { s: ProfileSection; size?: number }) {
-  return <span style={{ width: size, height: size, borderRadius: size * 0.3, background: grad(s), display: "grid", placeItems: "center", color: W, flex: "none", boxShadow: `0 8px 18px -10px ${s.gradient[0]}` }}><i className={"ph-fill " + s.icon} style={{ fontSize: size * 0.48 }} /></span>;
+  return <span style={{ width: size, height: size, borderRadius: size * 0.3, background: grad(s), display: "grid", placeItems: "center", color: W, flex: "none", boxShadow: `0 8px 18px -10px ${s.gradient[0]}` }}><NIcon name={s.icon} size="1em" tone="currentColor" style={{fontSize: size * 0.48}} /></span>;
 }
 
 /** Today card: overall completion + one tile per section. */
@@ -75,7 +76,7 @@ function ListField({ f, value, save }: { f: ProfileField; value: string[]; save:
   return (
     <div style={{ display: "grid", gap: 8, width: "100%" }}>
       {value.length > 0 && <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{value.map((x, i) => (
-        <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 6px 6px 12px", borderRadius: 999, background: "#F1EEF6", fontSize: 14 }}>{x}<button onClick={() => save(value.filter((_, j) => j !== i))} aria-label={`Remove ${x}`} style={{ width: 24, height: 24, borderRadius: 12, border: "none", background: "rgba(29,35,39,.08)", cursor: "pointer", display: "grid", placeItems: "center" }}><i className="ph ph-x" style={{ fontSize: 12 }} /></button></span>
+        <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 6px 6px 12px", borderRadius: 999, background: "#F1EEF6", fontSize: 14 }}>{x}<button onClick={() => save(value.filter((_, j) => j !== i))} aria-label={`Remove ${x}`} style={{ width: 24, height: 24, borderRadius: 12, border: "none", background: "rgba(29,35,39,.08)", cursor: "pointer", display: "grid", placeItems: "center" }}><NIcon name="ph-x" size={12} tone="currentColor" /></button></span>
       ))}</div>}
       <form onSubmit={(e) => { e.preventDefault(); push(); }} style={{ display: "flex", gap: 8 }}>
         <input value={add} onChange={(e) => setAdd(e.target.value)} placeholder={f.placeholder || "Add"} aria-label={`Add ${f.label}`} maxLength={120} style={{ ...inputStyle, flex: 1 }} />
@@ -141,7 +142,7 @@ export default function Baseline({ id }: { id?: string }) {
           const on = x.id === sec, xs = p.sections.find((y) => y.id === x.id)!;
           return (
             <button key={x.id} role="tab" aria-selected={on} onClick={() => pick(x.id)} style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 14px 0 8px", borderRadius: 14, border: on ? "none" : "1px solid rgba(29,35,39,.08)", background: on ? grad(x) : W, color: on ? W : C.ink, fontSize: 14.5, fontWeight: 500, cursor: "pointer", boxShadow: on ? `0 10px 20px -12px ${x.gradient[0]}` : "none", transition: "all .25s" }}>
-              <span style={{ width: 28, height: 28, borderRadius: 9, background: on ? "rgba(255,255,255,.22)" : grad(x), display: "grid", placeItems: "center", color: W }}><i className={"ph-fill " + x.icon} style={{ fontSize: 15 }} /></span>
+              <span style={{ width: 28, height: 28, borderRadius: 9, background: on ? "rgba(255,255,255,.22)" : grad(x), display: "grid", placeItems: "center", color: W }}><NIcon name={x.icon} size={15} tone="currentColor" /></span>
               {x.short}<span style={{ fontSize: 12, opacity: .75, fontVariantNumeric: "tabular-nums" }}>{xs.filled}/{xs.total}</span>
             </button>
           );
@@ -152,7 +153,7 @@ export default function Baseline({ id }: { id?: string }) {
       <section key={s.id} style={{ borderRadius: 26, padding: "24px 24px 22px", background: grad(s), color: W, position: "relative", overflow: "hidden", animation: "mhs-fadeUp 360ms cubic-bezier(.2,.7,.2,1)" }}>
         <div aria-hidden style={{ position: "absolute", right: -40, top: -60, width: 220, height: 220, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,255,255,.28), transparent 70%)" }} />
         <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-          <span style={{ width: 54, height: 54, borderRadius: 17, background: "rgba(255,255,255,.2)", display: "grid", placeItems: "center" }}><i className={"ph-fill " + s.icon} style={{ fontSize: 28 }} /></span>
+          <span style={{ width: 54, height: 54, borderRadius: 17, background: "rgba(255,255,255,.2)", display: "grid", placeItems: "center" }}><NIcon name={s.icon} size={28} tone="currentColor" /></span>
           <div style={{ flex: 1, minWidth: 200 }}><h2 style={{ margin: 0, fontSize: 26, fontWeight: 500, letterSpacing: "-.02em" }}>{s.title}</h2><p style={{ margin: "4px 0 0", fontSize: 15, opacity: .9 }}>{s.blurb}</p></div>
           <Ring pct={pct} size={60} stroke={7} color="#FFFFFF|#FFFFFF" track="rgba(255,255,255,.28)" label={<span style={{ color: W }}>{pct}%</span>} />
         </div>
@@ -173,7 +174,7 @@ export default function Baseline({ id }: { id?: string }) {
               <button key={k} onClick={() => go(k === "city" || k === "weather" || k === "aqhi" || k === "uv" ? "today" : k === "mood" || k === "stress" || k === "water" || k === "caffeine" || k === "alcohol" ? "lifestyle" : k === "bp" ? "heart" : k === "labs" ? "results" : k === "age" ? "profile" : "devices")}
                 style={{ padding: "14px 16px", borderRadius: 18, border: "1.5px dashed rgba(29,35,39,.14)", background: "transparent", textAlign: "left", cursor: "pointer" }}>
                 <div style={{ fontSize: 12.5, color: C.muted }}>{AUTO_LABEL[k] || k}</div>
-                <div style={{ fontSize: 14, color: C.teal, marginTop: 6, display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-plus-circle" />{AUTO_HOW[k] || "Connect a device"}</div>
+                <div style={{ fontSize: 14, color: C.teal, marginTop: 6, display: "flex", gap: 6, alignItems: "center" }}><NIcon name="ph-plus-circle" size="1em" tone="currentColor" />{AUTO_HOW[k] || "Connect a device"}</div>
               </button>
             ); })}
           </div>
@@ -223,7 +224,7 @@ export default function Baseline({ id }: { id?: string }) {
         </section>
       )}
 
-      <p style={{ margin: "22px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-lock-simple" style={{ fontSize: 16, marginTop: 1 }} /><span>Only you and your NEYU care team can see this. Every question is optional, and you can clear any answer at any time. We never ask for income, political views or browsing history.</span></p>
+      <p style={{ margin: "22px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><NIcon name="ph-lock-simple" size={16} tone="currentColor" style={{marginTop: 1}} /><span>Only you and your NEYU care team can see this. Every question is optional, and you can clear any answer at any time. We never ask for income, political views or browsing history.</span></p>
     </div>
   );
 }
