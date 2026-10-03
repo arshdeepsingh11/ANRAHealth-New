@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
 import { isEmergency } from "@/data/homeContent";
 import { T, card, btnInk, chip, Thinking } from "@/components/nea/ui";
+import { NIcon } from "@/components/neyu/icons";
 
 type Msg = { role: "user" | "alba"; text: string; alert?: boolean };
 const EMERGENCY = "This may be a medical emergency. Call 911 or go to the nearest emergency department now.";
@@ -66,7 +67,7 @@ export default function AskPanel({ page, label, suggestions, seed, clearSeed, ac
         {msgs.map((m, i) => m.role === "user" ? (
           <div key={i} style={{ justifySelf: "end", maxWidth: "85%", padding: "10px 14px", borderRadius: "16px 16px 4px 16px", background: T.ink, color: "#F7F5F1", fontSize: 15, lineHeight: 1.5 }}>{m.text}</div>
         ) : m.alert ? (
-          <p key={i} role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBE7E1", color: "#8B2F1C", fontSize: 15, display: "flex", gap: 10 }}><i className="ph-fill ph-warning-circle" style={{ fontSize: 20, flex: "none" }} />{m.text}</p>
+          <p key={i} role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBE7E1", color: "#8B2F1C", fontSize: 15, display: "flex", gap: 10 }}><NIcon name="ph-warning-circle" size={20} tone={"currentColor"} style={{ flex: "none" }} />{m.text}</p>
         ) : (
           <div key={i} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 10, maxWidth: "94%" }}>
             <AlbaOrb size={26} motion={i === msgs.length - 1 && busy} />
@@ -80,7 +81,7 @@ export default function AskPanel({ page, label, suggestions, seed, clearSeed, ac
         <anra-electro radius="18" style={{ position: "absolute", inset: -5, pointerEvents: "none" }} />
         <div style={{ position: "relative", display: "flex", gap: 8, padding: 6, borderRadius: 18, background: "#fff", border: "1px solid #D6EEF6" }}>
           <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={1000} aria-label={`Ask Neyu about ${label}`} placeholder={`Ask about ${label.toLowerCase()}…`} style={{ flex: 1, minWidth: 0, height: 46, padding: "0 12px", border: 0, outline: "none", fontSize: 16, background: "transparent" }} />
-          <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 46, height: 46, padding: 0, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #1D5FA8)`, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><i className="ph ph-paper-plane-tilt" style={{ fontSize: 18 }} /></button>
+          <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 46, height: 46, padding: 0, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #1D5FA8)`, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><NIcon name="ph-paper-plane-tilt" size={18} tone={"currentColor"} /></button>
         </div>
       </form>
       <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Not medical advice. In an emergency call 911.</p>
