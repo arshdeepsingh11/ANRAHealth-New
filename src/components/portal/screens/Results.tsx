@@ -7,6 +7,7 @@ import { usePortal } from "../context";
 import { EP, useResource } from "../api";
 import { C, screenAnim, Chips, EmptyCard, Loading, longDateTz } from "../ui";
 import Chart from "../Chart";
+import { NIcon } from "@/components/neyu/icons";
 
 const RCATS = ["All", "Heart Health", "Metabolic Health", "Inflammation", "Nutrition", "Hormones", "Genomics", "Other"];
 let savedCat = "All";
@@ -56,10 +57,10 @@ export function Results() {
                   <span style={{ fontSize: 16, fontWeight: 500 }}>{r.name}</span>
                   <span style={{ display: "flex", alignItems: "baseline", gap: 5, margin: "6px 0 4px" }}><span style={{ fontSize: 34, fontWeight: 300, letterSpacing: "-.02em" }}>{pend ? "In progress" : valueStr(r)}</span>{!pend && <span style={{ fontSize: 14, color: C.muted }}>{r.unit}</span>}</span>
                   <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 14, color: pend ? C.tealDark : s.color }}>
-                    <i className={pend ? "ph ph-hourglass-medium" : s.icon} style={{ fontSize: 15 }} />
+                    <NIcon name={pend ? "ph-hourglass-medium" : s.icon} size={15} tone="currentColor" />
                     {pend ? (r.expectedAt ? `Expected ${longDateTz(r.expectedAt, tz, { month: "long", day: "numeric" })}` : "In progress") : s.text}
                   </span>
-                  <span style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12, fontSize: 14, fontWeight: 500, color: C.teal }}>{pend ? "What to expect" : "Understand this result"}<i className="ph ph-arrow-right" /></span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 12, fontSize: 14, fontWeight: 500, color: C.teal }}>{pend ? "What to expect" : "Understand this result"}<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></span>
                 </button>
               );
             })}
@@ -102,7 +103,7 @@ export function ResultDetail({ id }: { id: string }) {
       <h1 style={{ margin: "4px 0 2px", fontSize: 30, fontWeight: 500, letterSpacing: "-.02em" }}>{r.name}</h1>
       {r.fullName && <span style={{ fontSize: 14, color: C.muted }}>{r.fullName}</span>}
       <div style={{ display: "flex", alignItems: "baseline", gap: 8, margin: "20px 0 6px" }}><span style={{ fontSize: 56, fontWeight: 300, letterSpacing: "-.035em", lineHeight: 1 }}>{valueStr(r)}</span><span style={{ fontSize: 17, color: C.muted }}>{r.unit}</span></div>
-      <p style={{ margin: "0 0 22px", fontSize: 16, color: s.color, display: "flex", alignItems: "center", gap: 8 }}><i className={s.icon} />{s.long}</p>
+      <p style={{ margin: "0 0 22px", fontSize: 16, color: s.color, display: "flex", alignItems: "center", gap: 8 }}><NIcon name={s.icon} size="1em" tone="currentColor" />{s.long}</p>
 
       <div style={{ padding: 20, borderRadius: 20, background: C.card, border: `1px solid ${C.line}`, marginBottom: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: C.muted, marginBottom: 12 }}><span>Reference range</span><span>{rangeText(r)}</span></div>
@@ -143,7 +144,7 @@ function RetestBanner() {
   if (!list.length) return null;
   return (
     <section style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", borderRadius: 18, background: C.lav, marginBottom: 22 }}>
-      <i className="ph ph-calendar-plus" style={{ fontSize: 22, color: C.lavMid, marginTop: 1 }} />
+      <NIcon name="ph-calendar-plus" size={22} tone={C.lavMid} style={{marginTop: 1}} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={{ fontSize: 15, fontWeight: 500 }}>{list.length === 1 ? "A retest is due" : `${list.length} retests are due`}</span>
         {list.slice(0, 4).map((r) => <span key={r.code} style={{ fontSize: 14, color: C.ink2 }}>{r.name} — {r.overdue ? "overdue since" : "due"} {r.due} (last {r.last})</span>)}
@@ -158,7 +159,7 @@ function LabInsight({ code }: { code: string }) {
   const hasWear = data.rows.some((r) => r.cells.some((c) => c !== "—"));
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-      {data.retest && <div style={{ display: "flex", gap: 10, alignItems: "center", padding: "12px 14px", borderRadius: 14, background: data.retest.overdue ? C.peach : "#EFECE8", fontSize: 14.5 }}><i className="ph ph-calendar-check" style={{ fontSize: 18, color: data.retest.overdue ? C.peachInk : C.teal }} />Suggested retest: {data.retest.overdue ? "overdue since " : ""}{data.retest.due} (about every {data.retest.months} months)</div>}
+      {data.retest && <div style={{ display: "flex", gap: 10, alignItems: "center", padding: "12px 14px", borderRadius: 14, background: data.retest.overdue ? C.peach : "#EFECE8", fontSize: 14.5 }}><NIcon name="ph-calendar-check" size={18} tone={data.retest.overdue ? C.peachInk : C.teal} />Suggested retest: {data.retest.overdue ? "overdue since " : ""}{data.retest.due} (about every {data.retest.months} months)</div>}
       {hasWear && (
         <div>
           <h3 style={{ margin: "0 0 4px", fontSize: 17, fontWeight: 500 }}>Alongside your wearable data</h3>
