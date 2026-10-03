@@ -4,6 +4,7 @@ import React from "react";
 import { useAnraNav } from "@/lib/useAnraNav";
 import { PAGE_HREF } from "@/data/homeContent";
 import NeyuLogo from "@/components/brand/NeyuLogo";
+import { NIcon } from "@/components/neyu/icons";
 
 export const GALLERY_EVENT = "anra-gallery";
 
@@ -84,7 +85,7 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
             <a href="/specialties/skin-health" style={{ display: "grid", gridTemplateColumns: "14px 1fr auto", gap: 14, padding: "16px 0", borderBottom: "1px solid #E3DED5", color: "inherit", textDecoration: "none", alignItems: "start" }}>
               <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#3CC79E", marginTop: 7 }} />
               <div><div style={{ fontWeight: 500, fontSize: 18 }}>Nea Precision Skin</div><div style={{ color: "#5A626A", fontSize: 15 }}>Medical aesthetics, Fotona laser and skin health. Calgary.</div></div>
-              <i className="ph ph-arrow-up-right" style={{ color: "#8A4F43", marginTop: 6 }} />
+              <NIcon name="ph-arrow-up-right" size="1em" tone={"#8A4F43"} style={{marginTop: 6}} />
             </a>
           </div>
           <button onClick={() => go({ label: "Explore testing", href: PAGE_HREF.catalog })} className="hv-deep" style={{ marginTop: 22, height: 48, padding: "0 20px", border: 0, borderRadius: 12, background: "#3F6F7C", color: "#FDFCFA", fontSize: 14, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 500 }}>Explore testing</button>
