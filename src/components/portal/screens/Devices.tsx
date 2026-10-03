@@ -5,6 +5,7 @@ import type { DeviceDTO, TodayDTO } from "@/lib/portal/types";
 import { usePortal } from "../context";
 import { EP, invalidate, useResource } from "../api";
 import { C, screenAnim, Loading } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 export const relTime = (iso: string | null) => {
   if (!iso) return "never";
@@ -65,10 +66,10 @@ export default function Devices() {
           return (
             <article key={d.id} style={{ padding: 20, borderRadius: 20, background: C.card, border: `1px solid ${on ? (warn ? "rgba(139,75,55,.3)" : "rgba(110,168,182,.45)") : C.line}`, display: "flex", flexDirection: "column", gap: 12, transition: "border-color 300ms" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ width: 40, height: 40, borderRadius: 12, background: "#F0EEEA", display: "flex", alignItems: "center", justifyContent: "center", color: C.ink3, flex: "none" }}><i className={d.icon} style={{ fontSize: 21 }} /></span>
+                <span style={{ width: 40, height: 40, borderRadius: 12, background: "#F0EEEA", display: "flex", alignItems: "center", justifyContent: "center", color: C.ink3, flex: "none" }}><NIcon name={d.icon} size={21} tone="currentColor" /></span>
                 <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
                   <span style={{ fontSize: 16, fontWeight: 500 }}>{d.name}{d.beta && <span style={{ marginLeft: 6, fontSize: 11, padding: "1px 7px", borderRadius: 9, background: C.lav, color: C.lavInk, verticalAlign: "middle" }}>Beta</span>}</span>
-                  <span style={{ fontSize: 13, color: warn ? C.peachInk : on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 5 }}><i className={warn ? "ph ph-warning" : on ? "ph ph-check-circle" : pending ? "ph ph-hourglass-medium" : wait ? "ph ph-bell-ringing" : "ph ph-plugs"} style={{ fontSize: 14, flex: "none" }} />{statusText}</span>
+                  <span style={{ fontSize: 13, color: warn ? C.peachInk : on ? C.tealDark : C.muted, display: "flex", alignItems: "center", gap: 5 }}><NIcon name={warn ? "ph-warning" : on ? "ph-check-circle" : pending ? "ph-hourglass-medium" : wait ? "ph-bell-ringing" : "ph-plugs"} size={14} tone="currentColor" style={{flex: "none"}} />{statusText}</span>
                 </div>
               </div>
               {pending && <div style={{ height: 3, borderRadius: 2, background: "#EAE7E2", overflow: "hidden" }}><div style={{ height: "100%", width: "40%", background: C.tealLight, animation: "mhs-pulse 1.4s ease-in-out infinite" }} /></div>}
@@ -88,13 +89,13 @@ export default function Devices() {
           { icon: "ph ph-scales", title: "Enter a reading", text: "Weight, blood glucose, steps or sleep from anything that isn't connected.", cta: "Enter", run: () => openSheet({ t: "reading" }) },
         ].map((x) => (
           <article key={x.title} style={{ padding: 20, borderRadius: 20, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ width: 40, height: 40, borderRadius: 12, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><i className={x.icon} style={{ fontSize: 21 }} /></span><span style={{ fontSize: 16, fontWeight: 500 }}>{x.title}</span></div>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}><span style={{ width: 40, height: 40, borderRadius: 12, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><NIcon name={x.icon} size={21} tone="currentColor" /></span><span style={{ fontSize: 16, fontWeight: 500 }}>{x.title}</span></div>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.5, color: C.ink3 }}>{x.text}</p>
             <button onClick={x.run} className="h-ghost" style={{ marginTop: "auto", alignSelf: "flex-start", height: 40, padding: "0 16px", border: `1px solid ${C.line12}`, borderRadius: 10, background: "none", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>{x.cta}</button>
           </article>
         ))}
       </div>
-      <p style={{ margin: "24px 0 0", fontSize: 14, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><i className="ph ph-lock-simple" style={{ fontSize: 16, marginTop: 2 }} /><span>You choose what each source shares, and you can disconnect at any time. <a href="#" onClick={(e) => { e.preventDefault(); go("privacy"); }}>Manage data access</a></span></p>
+      <p style={{ margin: "24px 0 0", fontSize: 14, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8 }}><NIcon name="ph-lock-simple" size={16} tone="currentColor" style={{marginTop: 2}} /><span>You choose what each source shares, and you can disconnect at any time. <a href="#" onClick={(e) => { e.preventDefault(); go("privacy"); }}>Manage data access</a></span></p>
     </div>
   );
 }
