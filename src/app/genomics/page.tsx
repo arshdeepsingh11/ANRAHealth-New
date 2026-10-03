@@ -22,7 +22,7 @@ function LabLink() {
     <Link href="/longevity-lab" className="glass rounded-3xl p-6 md:p-8 flex flex-wrap items-center justify-between gap-4 card-hover">
       <span>
         <span className="block text-xs font-semibold uppercase tracking-wide text-gold-600 mb-1">New · NEYU Longevity Lab</span>
-        <span className="block text-base font-semibold text-graphite-900">Explore longevity genes, pharmacogenomics and pace of aging — in 3D, with ALBA.</span>
+        <span className="block text-base font-semibold text-graphite-900">Explore longevity genes, pharmacogenomics and pace of aging — in 3D, with Neyu.</span>
       </span>
       <span className="gold-gloss inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">Open the Lab <ArrowRight size={14} /></span>
     </Link>
@@ -136,9 +136,9 @@ export default function GenomicsPage() {
             <div className="text-center max-w-2xl mx-auto">
               <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-2">AI-guided · about 2 minutes</p>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-graphite-900">Find the test that fits you</h2>
-              <p className="text-sm text-graphite-600 mt-2">Age, sex, family history, medicines and goals — ALBA ranks BioAro Labs tests for you, with real prices. Nothing is stored.</p>
+              <p className="text-sm text-graphite-600 mt-2">Age, sex, family history, medicines and goals — Neyu ranks BioAro Labs tests for you, with real prices. Nothing is stored.</p>
             </div>
-            <Assessment kind="genomics" accent="#4A3AA7" />
+            <Assessment kind="genomics" accent="#1D5FA8" />
             <LabLink />
           </div>
         )}
