@@ -6,6 +6,7 @@ import { LAB_TESTS, WELLNESS } from "@/data/bioaroCatalog";
 import { NEA_TREATMENTS } from "@/data/nea";
 import { useRegion } from "@/components/RegionContext";
 import { useAnraNav } from "@/lib/useAnraNav";
+import { NIcon } from "@/components/neyu/icons";
 
 // Site search (care, tools, BioAro tests and products). Opened from the
 // desktop rail or the mobile tab bar.
@@ -43,9 +44,9 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
       <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 80, background: "rgba(20,24,27,.28)" }} />
       <div role="dialog" aria-label="Search" style={{ position: "fixed", zIndex: 81, top: "clamp(0px,8vh,96px)", left: "50%", transform: "translateX(-50%)", width: "min(680px,100%)", background: "#FBFAF7", borderRadius: 20, boxShadow: "0 40px 80px -30px rgba(20,24,27,.45)", overflow: "hidden", animation: "fadeUp .25s ease" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px 14px 20px", borderBottom: "1px solid #E3DED5" }}>
-          <i className="ph ph-magnifying-glass" style={{ fontSize: 20, color: "#5A626A" }} />
+          <NIcon name="ph-magnifying-glass" size={20} tone={"#5A626A"} />
           <input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search care, tests, tools…" aria-label="Search" style={{ flex: 1, minWidth: 0, border: 0, outline: "none", background: "transparent", fontSize: 19, padding: "8px 0" }} />
-          <button onClick={onClose} aria-label="Close search" style={{ width: 40, height: 40, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center" }}><i className="ph ph-x" /></button>
+          <button onClick={onClose} aria-label="Close search" style={{ width: 40, height: 40, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
         </div>
         <div style={{ padding: "10px 12px 16px", maxHeight: "60vh", overflow: "auto" }}>
           <div style={{ padding: "8px 8px 6px", fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#5A626A" }}>{s ? "Results" : "Suggested"}</div>
