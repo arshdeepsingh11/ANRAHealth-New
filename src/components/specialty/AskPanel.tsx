@@ -1,6 +1,6 @@
 "use client";
 
-// Inline ALBA for a specialty page — streams answers from /api/chat with the
+// Inline Neyu for a specialty page — streams answers from /api/chat with the
 // page as context. Emergencies are caught on the client and the server.
 import React, { useEffect, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
@@ -59,7 +59,7 @@ export default function AskPanel({ page, label, suggestions, seed, clearSeed, ac
         {msgs.length === 0 && (
           <div style={{ display: "grid", justifyItems: "center", gap: 10, textAlign: "center", padding: "22px 8px" }}>
             <AlbaOrb size={46} glow />
-            <p style={{ margin: 0, fontSize: 16.5 }}>Ask ALBA anything about {label.toLowerCase()} — conditions, tests, results or what to expect.</p>
+            <p style={{ margin: 0, fontSize: 16.5 }}>Ask Neyu anything about {label.toLowerCase()} — conditions, tests, results or what to expect.</p>
             <p style={{ margin: 0, fontSize: 13, color: T.muted }}>Medical education from NEYU’s AI. It never diagnoses.</p>
           </div>
         )}
@@ -73,14 +73,14 @@ export default function AskPanel({ page, label, suggestions, seed, clearSeed, ac
             <div style={{ padding: "10px 14px", borderRadius: "4px 16px 16px 16px", background: "#fff", border: "1px solid #E9E1F3", fontSize: 15, lineHeight: 1.6, whiteSpace: "pre-wrap", color: T.ink2 }}>{m.text}</div>
           </div>
         ))}
-        {busy && <div style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 10 }}><AlbaOrb size={26} /><Thinking label="ALBA is thinking" /></div>}
+        {busy && <div style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 10 }}><AlbaOrb size={26} /><Thinking label="Neyu is thinking" /></div>}
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{suggestions.map((s) => <button key={s} onClick={() => send(s)} style={{ ...chip(false), minHeight: 34, fontSize: 13 }}>{s}</button>)}</div>
       <form onSubmit={(e) => { e.preventDefault(); send(q); }} style={{ position: "relative", borderRadius: 18 }}>
         <anra-electro radius="18" style={{ position: "absolute", inset: -5, pointerEvents: "none" }} />
-        <div style={{ position: "relative", display: "flex", gap: 8, padding: 6, borderRadius: 18, background: "#fff", border: "1px solid #E4DCF1" }}>
-          <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={1000} aria-label={`Ask ALBA about ${label}`} placeholder={`Ask about ${label.toLowerCase()}…`} style={{ flex: 1, minWidth: 0, height: 46, padding: "0 12px", border: 0, outline: "none", fontSize: 16, background: "transparent" }} />
-          <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 46, height: 46, padding: 0, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #6A5096)`, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><i className="ph ph-paper-plane-tilt" style={{ fontSize: 18 }} /></button>
+        <div style={{ position: "relative", display: "flex", gap: 8, padding: 6, borderRadius: 18, background: "#fff", border: "1px solid #D6EEF6" }}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={1000} aria-label={`Ask Neyu about ${label}`} placeholder={`Ask about ${label.toLowerCase()}…`} style={{ flex: 1, minWidth: 0, height: 46, padding: "0 12px", border: 0, outline: "none", fontSize: 16, background: "transparent" }} />
+          <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 46, height: 46, padding: 0, borderRadius: 12, background: `linear-gradient(135deg, ${accent}, #1D5FA8)`, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><i className="ph ph-paper-plane-tilt" style={{ fontSize: 18 }} /></button>
         </div>
       </form>
       <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Not medical advice. In an emergency call 911.</p>
