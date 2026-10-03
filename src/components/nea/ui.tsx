@@ -7,10 +7,10 @@ import { NEA } from "@/data/nea";
 export const T = {
   ink: "#14181B", ink2: "#3A4147", muted: "#5A626A", faint: "#8A9197", line: "#E3DED5", line2: "#EFECE6",
   paper: "#FBFAF7", card: "#FFFFFF", nea: NEA.color, deep: "#8A4F43", soft: NEA.colorSoft, teal: "#3F6F7C",
-  violet: "#6A5096", ai: "#8C6FB8", good: "#2E7D5B",
+  violet: "#1D5FA8", ai: "#2A84E4", good: "#2E7D5B",
 };
 // Categorical order (validated: CVD + normal-vision separation pass on #fcfcfb).
-export const SERIES = ["#B4583F", "#2A78D6", "#1BAF7A", "#E0A100", "#C2477E", "#4A3AA7", "#008300", "#E87BA4"];
+export const SERIES = ["#B4583F", "#2A78D6", "#1BAF7A", "#E0A100", "#C2477E", "#1D5FA8", "#008300", "#E87BA4"];
 
 export const wrap: React.CSSProperties = { maxWidth: 1180, margin: "0 auto", padding: "0 clamp(16px,4vw,40px)" };
 export const eyebrow: React.CSSProperties = { fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.muted };
@@ -20,7 +20,7 @@ export const glass: React.CSSProperties = { background: "rgba(255,255,255,.72)",
 export const btnInk: React.CSSProperties = { height: 48, padding: "0 20px", borderRadius: 14, background: T.ink, color: "#F7F5F1", border: 0, fontSize: 13.5, letterSpacing: ".06em", textTransform: "uppercase", fontWeight: 500, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 10, textDecoration: "none", cursor: "pointer", whiteSpace: "nowrap" };
 export const btnGhost: React.CSSProperties = { ...btnInk, background: "transparent", color: T.ink, border: `1px solid ${T.ink}` };
 export const chip = (on: boolean): React.CSSProperties => ({ whiteSpace: "nowrap", minHeight: 40, padding: "0 15px", borderRadius: 999, border: `1px solid ${on ? T.ink : "#D6D0C5"}`, background: on ? T.ink : "rgba(255,255,255,.6)", color: on ? "#F7F5F1" : T.ink, fontSize: 14, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 });
-export const aiText: React.CSSProperties = { background: "linear-gradient(90deg,#8C6FB8,#B9786A,#6EA8B6,#8C6FB8)", backgroundSize: "300% 100%", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", animation: "aiText 6s linear infinite" };
+export const aiText: React.CSSProperties = { background: "linear-gradient(90deg,#2A84E4,#3CC79E,#6EA8B6,#2A84E4)", backgroundSize: "300% 100%", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", animation: "aiText 6s linear infinite" };
 
 export function Book({ label = "Book at Nea", ghost, small, href = NEA.book }: { label?: string; ghost?: boolean; small?: boolean; href?: string }) {
   return <a href={href} target="_blank" rel="noopener" style={{ ...(ghost ? btnGhost : btnInk), ...(small ? { height: 40, padding: "0 14px", fontSize: 12 } : {}) }}>{label}<i className="ph ph-arrow-up-right" /></a>;
@@ -127,8 +127,8 @@ export function useTip() {
   return { show, hide: () => setTip(null), node };
 }
 
-/** ALBA "thinking" shimmer lines while a request runs. */
-export function Thinking({ label = "ALBA is analysing" }: { label?: string }) {
+/** Neyu "thinking" shimmer lines while a request runs. */
+export function Thinking({ label = "Neyu is analysing" }: { label?: string }) {
   return (
     <div aria-live="polite" style={{ display: "grid", gap: 10, padding: "6px 0" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, color: T.violet }}>
