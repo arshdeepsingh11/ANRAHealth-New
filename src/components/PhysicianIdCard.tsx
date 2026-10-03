@@ -108,7 +108,7 @@ export default function PhysicianIdCard({ p, index = 0, onOpen }: { p: Physician
             <span style={{ width: 34, height: 6, borderRadius: 3, background: "#14181B" }} />
           </div>
           {/* Header */}
-          <div style={{ position: "relative", height: 88, background: "linear-gradient(120deg,#3F6F7C 0%,#6EA8B6 45%,#8C6FB8 100%)", display: "grid", placeItems: "center" }}>
+          <div style={{ position: "relative", height: 88, background: "linear-gradient(120deg,#3F6F7C 0%,#6EA8B6 45%,#2A84E4 100%)", display: "grid", placeItems: "center" }}>
             <span aria-hidden="true" style={{ position: "absolute", left: 12, top: 12, width: 22, height: 17, borderRadius: 4, background: "linear-gradient(135deg,#F3C3B2,#E7A98F)", boxShadow: "inset 0 0 0 1px rgba(122,62,42,.25)" }} />
             <span aria-hidden="true" style={{ position: "absolute", right: 10, top: 9, opacity: 0.9 }}><NeyuLogo height={18} tone="light" mono /></span>
             <span style={{ width: 58, height: 58, borderRadius: "50%", background: "rgba(255,255,255,.22)", border: "2px solid rgba(255,255,255,.7)", display: "grid", placeItems: "center", color: "#FFFFFF", fontWeight: 600, fontSize: 20, letterSpacing: ".04em", backdropFilter: "blur(4px)" }}>
@@ -133,7 +133,7 @@ export default function PhysicianIdCard({ p, index = 0, onOpen }: { p: Physician
                 <span key={d} style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#E9F1F3", color: "#2F5561" }}>{d}</span>
               ))}
             </div>
-            <div style={{ marginTop: 12, fontSize: 12, fontWeight: 600, color: "#6A5096" }}>View profile →</div>
+            <div style={{ marginTop: 12, fontSize: 12, fontWeight: 600, color: "#1D5FA8" }}>View profile →</div>
           </div>
         </div>
       </div>
