@@ -5,6 +5,7 @@
 
 import React from "react";
 import { passwordChecks, passwordScore, SCORE_LABELS } from "@/lib/portal/password";
+import { NIcon } from "@/components/neyu/icons";
 
 const COLORS = ["#C8826A", "#C8826A", "#D9A441", "#6EA8B6", "#3F6F7C"];
 
@@ -33,7 +34,7 @@ export default function PasswordStrength({ password, email = "" }: { password: s
         <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))", gap: "4px 12px" }}>
           {items.map(([ok, label, required]) => (
             <li key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: ok ? "#2F5A66" : required ? "#8B4B37" : "#737A80" }}>
-              <i className={ok ? "ph-fill ph-check-circle" : required ? "ph ph-x-circle" : "ph ph-circle"} style={{ fontSize: 14 }} />
+              <NIcon name={ok ? "ph-check-circle" : required ? "ph-x-circle" : "ph-circle"} size={14} tone="currentColor" />
               {label}{!required && !ok ? " (optional)" : ""}
             </li>
           ))}
