@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { VENDOR_NAME, money, type CatalogItem } from "@/data/bioaroCatalog";
 import { useRegion } from "@/components/RegionContext";
+import { NIcon } from "@/components/neyu/icons";
 
 // Detail sheet for a BioAro test/product (centred dialog on desktop,
 // bottom sheet on mobile).
@@ -27,7 +28,7 @@ export default function CatalogDetailSheet({ item, mobile, onClose, onGet }: { i
       <div role="dialog" aria-label={item.name} style={{ position: "fixed", zIndex: 86, inset: mobile ? "auto 0 0 0" : "50% auto auto 50%", transform: mobile ? "none" : "translate(-50%,-50%)", width: mobile ? "100%" : 560, maxHeight: "90vh", overflow: "auto", background: "#FBFAF7", borderRadius: mobile ? "20px 20px 0 0" : 20, padding: "clamp(24px,4vw,36px)", boxShadow: "0 40px 80px -30px rgba(20,24,27,.45)", animation: "fadeUp .25s ease" }}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
           <span style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#5A626A" }}>{item.cat} · {VENDOR_NAME[item.vendor]}</span>
-          <button onClick={onClose} aria-label="Close" style={{ width: 40, height: 40, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center", flex: "none" }}><i className="ph ph-x" /></button>
+          <button onClick={onClose} aria-label="Close" style={{ width: 40, height: 40, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center", flex: "none" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
         </div>
         <h2 style={{ margin: "4px 0 0", fontSize: "clamp(28px,4vw,36px)", lineHeight: 1.08, letterSpacing: "-.03em", fontWeight: 500 }}>{item.name}</h2>
         <p style={{ margin: "12px 0 0", fontSize: 17, color: "#3A4147" }}>{item.why}</p>
@@ -42,10 +43,10 @@ export default function CatalogDetailSheet({ item, mobile, onClose, onGet }: { i
           <span style={{ fontSize: nea ? 22 : 30, letterSpacing: "-.025em", fontWeight: 500 }}>{money(item.price)}</span>
           {available ? (
             <button onClick={() => onGet(item)} className="hv-ink" style={{ height: 52, padding: "0 22px", border: "1px solid #14181B", borderRadius: 12, background: "#14181B", color: "#F7F5F1", fontSize: 14, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 500, display: "flex", gap: 10, alignItems: "center" }}>
-              {nea ? "Book at Nea" : item.vendor === "labs" ? "Get this test" : "Get this product"}<i className="ph ph-arrow-up-right" />
+              {nea ? "Book at Nea" : item.vendor === "labs" ? "Get this test" : "Get this product"}<NIcon name="ph-arrow-up-right" size="1em" tone="currentColor" />
             </button>
           ) : (
-            <span style={{ fontSize: 14, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Not available in your region</span>
+            <span style={{ fontSize: 14, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><NIcon name="ph-globe-hemisphere-west" size="1em" tone="currentColor" />Not available in your region</span>
           )}
         </div>
         <div style={{ marginTop: 10, fontSize: 13, color: "#5A626A" }}>{note}</div>
