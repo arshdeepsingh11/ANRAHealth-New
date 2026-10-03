@@ -5,6 +5,7 @@ import type { HistoryItemDTO } from "@/lib/portal/types";
 import { usePortal } from "../context";
 import { EP, useResource } from "../api";
 import { C, screenAnim, Chips, Loading, shortDate, longDateTz } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 const HF = [["all", "All"], ["visits", "Visits"], ["results", "Results"], ["ai", "AI conversations"], ["symptom", "Symptom checks"], ["assessments", "Assessments"], ["referrals", "Referrals"], ["protocols", "Protocols"]] as const;
 type F = (typeof HF)[number][0];
@@ -53,7 +54,7 @@ export default function History() {
                 <span style={{ display: "flex", flexDirection: "column", alignItems: "center" }}><span style={{ width: 1, height: 18, background: "rgba(110,168,182,.3)" }} /><span style={{ width: 9, height: 9, borderRadius: 5, background: h.ai ? C.lavMid : C.tealLight, flex: "none" }} /><span style={{ flex: 1, width: 1, background: "rgba(110,168,182,.3)" }} /></span>
                 <div style={{ padding: "10px 0 12px", minWidth: 0 }}>
                   <button onClick={() => open(h)} className="h-hist" style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 3, padding: "10px 14px", border: h.ai ? "1px solid rgba(42,132,228,.18)" : "1px solid transparent", borderRadius: 16, background: h.ai ? "#F7F4FB" : "transparent", cursor: "pointer", textAlign: "left" }}>
-                    <span style={{ fontSize: 12, color: C.muted, display: "flex", alignItems: "center", gap: 6 }}><i className={h.icon} style={{ fontSize: 14, color: h.ai ? C.lavMid : C.teal }} />{h.type}</span>
+                    <span style={{ fontSize: 12, color: C.muted, display: "flex", alignItems: "center", gap: 6 }}><NIcon name={String(h.icon).replace(/^ph(-fill|-bold)? /, "")} size={14} tone={h.ai ? C.lavMid : C.teal} />{h.type}</span>
                     <span style={{ fontSize: 16, overflowWrap: "anywhere" }}>{h.title}</span>
                     <span style={{ fontSize: 14, color: C.muted, overflowWrap: "anywhere" }}>{h.sub}</span>
                     {h.ai && <span style={{ display: "flex", gap: 16, marginTop: 6, fontSize: 13, color: C.muted }}><span>Status: Completed</span><span style={{ color: C.lavInk, fontWeight: 500 }}>{h.ref.type === "alba" ? "View conversation →" : "View summary →"}</span></span>}
