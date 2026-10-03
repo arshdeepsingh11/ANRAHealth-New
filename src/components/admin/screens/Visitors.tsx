@@ -90,7 +90,7 @@ export function VisitorRecord({ id, tab }: { id: string; tab: string }) {
       ))}
       {tab === "ai" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {v.ais.length === 0 && emptyCard("No AI activity", "This visitor hasn't used ALBA or any AI tools.")}
+          {v.ais.length === 0 && emptyCard("No AI activity", "This visitor hasn't used Neyu or any AI tools.")}
           {v.ais.map((x) => { const d = decAI(x); return (
             <button key={x.key} onClick={() => a.openAI(x.key)} className="h-lift" style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 18px", borderRadius: 18, background: T.card, border: `1px solid ${T.line}`, textAlign: "left", cursor: "pointer", width: "100%" }}>
               <span style={{ width: 36, height: 36, borderRadius: 11, background: T.lavWash, color: T.lavInk, display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}><i className={d.icon} /></span>
