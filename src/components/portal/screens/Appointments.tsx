@@ -6,6 +6,7 @@ import { dayKey, daysBetween } from "@/lib/portal/metrics";
 import { usePortal } from "../context";
 import { EP, api, prime, useResource } from "../api";
 import { C, screenAnim, EmptyCard, Loading, longDateTz, shortDate, btnLink } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 export const daysAwayLabel = (iso: string, tz: string) => {
   const d = daysBetween(dayKey(new Date(), tz), dayKey(new Date(iso), tz));
@@ -55,7 +56,7 @@ export function Appointments() {
       ) : (
         <div style={{ marginBottom: 32 }}>
           <EmptyCard icon="ph ph-calendar-blank" title="No upcoming visits" text="When the clinic books your next appointment, it will appear here with everything you need to prepare." maxWidth="none"
-            action={data.questions.length ? <button onClick={() => openSheet({ t: "prepare" })} style={{ ...btnLink, marginTop: 4 }}>Your questions for next time ({data.questions.length})<i className="ph ph-arrow-right" /></button> : undefined} />
+            action={data.questions.length ? <button onClick={() => openSheet({ t: "prepare" })} style={{ ...btnLink, marginTop: 4 }}>Your questions for next time ({data.questions.length})<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button> : undefined} />
         </div>
       )}
       <h2 style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 500, color: C.muted }}>Past</h2>
@@ -95,14 +96,14 @@ export function Referrals() {
                 {r.steps.map((s, i) => (
                   <li key={s.label} style={{ display: "grid", gridTemplateColumns: "24px minmax(0,1fr)", gap: 14 }}>
                     <span style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <span style={{ width: 24, height: 24, borderRadius: 12, background: s.done ? C.tealChip : "transparent", border: s.done ? "none" : "1.5px dashed #B9B4AC", color: C.tealDark, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{s.done && <i className="ph ph-check" style={{ fontSize: 13 }} />}</span>
+                      <span style={{ width: 24, height: 24, borderRadius: 12, background: s.done ? C.tealChip : "transparent", border: s.done ? "none" : "1.5px dashed #B9B4AC", color: C.tealDark, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>{s.done && <NIcon name="ph-check" size={13} tone="currentColor" />}</span>
                       <span style={{ flex: 1, width: 1, background: i < r.steps.length - 1 ? "rgba(110,168,182,.4)" : "transparent", minHeight: 18 }} />
                     </span>
                     <span style={{ display: "flex", flexDirection: "column", gap: 2, paddingBottom: 18 }}><span style={{ fontSize: 15, color: s.done ? C.ink : C.muted }}>{s.label}</span><span style={{ fontSize: 13, color: C.muted }}>{s.date}</span></span>
                   </li>
                 ))}
               </ol>
-              {r.appointmentId && <button onClick={() => go("appointments")} style={btnLink}>View appointment<i className="ph ph-arrow-right" /></button>}
+              {r.appointmentId && <button onClick={() => go("appointments")} style={btnLink}>View appointment<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>}
             </article>
           ))}
         </div>
