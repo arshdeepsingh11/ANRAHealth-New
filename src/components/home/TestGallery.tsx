@@ -7,6 +7,7 @@ import { GALLERY_LABS, GALLERY_DRUGS, GALLERY_NEA, VENDOR_NAME, VENDOR_COLOR, mo
 import CatalogDetailSheet from "@/components/home/CatalogDetailSheet";
 import LeaveModal from "@/components/home/LeaveModal";
 import { GALLERY_EVENT } from "@/components/home/Ecosystem";
+import { NIcon } from "@/components/neyu/icons";
 
 // Home 05b: "Explore advanced testing." — 3D carousel of real BioAro Labs
 // tests / BioAro Drugs products. Auto-advances; pauses on hover or when the
@@ -56,7 +57,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
         </div>
       </div>
       {vendor === "drugs" && someUnavailable && (
-        <p style={{ margin: "14px 0 0", fontSize: 14, color: "#5A626A", display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Some BioAro Drugs products aren’t sold in your region. They’re shown for information.</p>
+        <p style={{ margin: "14px 0 0", fontSize: 14, color: "#5A626A", display: "flex", gap: 8, alignItems: "center" }}><NIcon name="ph-globe-hemisphere-west" size="1em" tone="currentColor" />Some BioAro Drugs products aren’t sold in your region. They’re shown for information.</p>
       )}
 
       <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}
@@ -92,7 +93,7 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
                     <span style={{ fontSize: t.price ? 26 : 20, letterSpacing: "-.02em", fontWeight: 500 }}>{money(t.price)}</span>
                     <span style={{ fontSize: 13, letterSpacing: ".08em", textTransform: "uppercase", fontWeight: 600, color: t.vendor === "nea" ? "#8A4F43" : "#2F5561" }}>{t.vendor === "nea" ? "Book →" : "Explore →"}</span>
                   </div>
-                  {!available && <div style={{ fontSize: 13, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-globe-hemisphere-west" />Not available in your region</div>}
+                  {!available && <div style={{ fontSize: 13, color: "#7A4B12", display: "flex", gap: 6, alignItems: "center" }}><NIcon name="ph-globe-hemisphere-west" size="1em" tone="currentColor" />Not available in your region</div>}
                 </div>
               </div>
             </article>
@@ -101,11 +102,11 @@ export default function TestGallery({ mobile }: { mobile: boolean }) {
       </div>
 
       <div style={{ marginTop: 8, display: "flex", justifyContent: "center", alignItems: "center", gap: 16 }}>
-        <button onClick={() => { setIdx(Math.max(0, gi - 1)); setPaused(true); }} aria-label="Previous" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><i className="ph ph-arrow-left" /></button>
+        <button onClick={() => { setIdx(Math.max(0, gi - 1)); setPaused(true); }} aria-label="Previous" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><NIcon name="ph-arrow-left" size="1em" tone="currentColor" /></button>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           {list.map((_, i) => <button key={i} onClick={() => setIdx(i)} aria-label={"Show item " + (i + 1)} style={{ width: i === gi ? 22 : 7, height: 7, borderRadius: 4, border: 0, padding: 0, background: i === gi ? "#3F6F7C" : "#D6D0C5", transition: "width .4s,background .4s" }} />)}
         </div>
-        <button onClick={() => { setIdx(Math.min(list.length - 1, gi + 1)); setPaused(true); }} aria-label="Next" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><i className="ph ph-arrow-right" /></button>
+        <button onClick={() => { setIdx(Math.min(list.length - 1, gi + 1)); setPaused(true); }} aria-label="Next" className="hv-bdTeal" style={{ width: 44, height: 44, borderRadius: "50%", border: "1px solid #D6D0C5", background: "#FDFCFA", display: "grid", placeItems: "center" }}><NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
       </div>
       <p style={{ margin: "16px 0 0", textAlign: "center", fontSize: 13, color: "#5A626A" }}>{vendor === "nea" ? <>Treatments are provided and booked by Nea Precision Skin, Calgary NE. <a href="/specialties/skin-health" style={{ color: "#8A4F43" }}>See all Nea treatments</a></> : "NEYU doesn’t sell tests. Ordering and payment are handled by BioAro."}</p>
 
