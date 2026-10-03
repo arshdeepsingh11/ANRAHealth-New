@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-// Skip the first-visit intro video + ALBA spotlight so tests reach the page itself.
+// Skip the first-visit intro video + Neyu spotlight so tests reach the page itself.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     sessionStorage.setItem("anra_video_seen", "1");
@@ -54,10 +54,10 @@ test("Referral Centre form loads and PDF button exists", async ({ page }) => {
   await expect(page.getByRole("button", { name: /Download Referral PDF/i })).toBeVisible();
 });
 
-test("ALBA opens and shows greeting", async ({ page }) => {
+test("Neyu opens and shows greeting", async ({ page }) => {
   await page.goto("/");
-  await page.getByLabel("Open ALBA").click();
-  const panel = page.getByRole("dialog", { name: "ALBA" });
+  await page.getByLabel("Open Neyu").click();
+  const panel = page.getByRole("dialog", { name: "Neyu" });
   await expect(panel).toBeVisible();
   await expect(panel.getByText("Your health companion.")).toBeVisible();
 });
