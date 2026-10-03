@@ -11,6 +11,7 @@ import React, { useEffect, useRef } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
 import { useAlba } from "@/components/AlbaContext";
 import { LAB_TESTS, money } from "@/data/bioaroCatalog";
+import { NIcon } from "@/components/neyu/icons";
 
 type Card =
   | { kind: "quote"; text: string; who: string; role: string }
@@ -54,7 +55,7 @@ function CardView({ c, onAsk }: { c: Card; onAsk: (q: string) => void }) {
   if (c.kind === "quote")
     return (
       <figure style={{ ...base, margin: 0 }}>
-        <i className="ph-fill ph-quotes" style={{ fontSize: 26, color: "#6EA8B6" }} />
+        <NIcon name="ph-quotes" size={26} tone={"#6EA8B6"} />
         <blockquote style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: "#1D2327", flex: 1 }}>{c.text}</blockquote>
         <figcaption style={{ display: "flex", flexDirection: "column", gap: 1 }}>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{c.who}</span>
@@ -70,19 +71,19 @@ function CardView({ c, onAsk }: { c: Card; onAsk: (q: string) => void }) {
           <span style={{ fontSize: 12, letterSpacing: ".14em", fontWeight: 700, color: "#163F6E" }}>ASK Neyu · AI</span>
         </span>
         <span style={{ fontSize: 18, lineHeight: 1.4, color: "#1D2327", flex: 1 }}>“{c.ask}”</span>
-        <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, color: "#5F4A8A" }}>{c.note}<i className="ph ph-arrow-up-right" style={{ fontSize: 16 }} /></span>
+        <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, color: "#5F4A8A" }}>{c.note}<NIcon name="ph-arrow-up-right" size={16} tone="currentColor" /></span>
       </button>
     );
   if (c.kind === "test")
     return (
       <a href={c.url} target="_blank" rel="noopener noreferrer" className="anra-motion-test" style={{ ...base, textDecoration: "none", color: "inherit" }}>
         <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, letterSpacing: ".12em", fontWeight: 700, color: "#2F5A66" }}><i className="ph-fill ph-flask" style={{ fontSize: 16 }} />BIOARO LABS</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, letterSpacing: ".12em", fontWeight: 700, color: "#2F5A66" }}><NIcon name="ph-flask" size={16} tone="currentColor" />BIOARO LABS</span>
           <span style={{ fontSize: 15, fontWeight: 600, color: "#1D2327" }}>{c.price}</span>
         </span>
         <span style={{ fontSize: 18, lineHeight: 1.3, fontWeight: 500, color: "#1D2327" }}>{c.name}</span>
         <span style={{ fontSize: 14, lineHeight: 1.5, color: "#454C52", flex: 1 }}>{c.why}</span>
-        <span style={{ fontSize: 13, fontWeight: 500, color: "#3F6F7C", display: "flex", alignItems: "center", gap: 6 }}>View test<i className="ph ph-arrow-right" /></span>
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#3F6F7C", display: "flex", alignItems: "center", gap: 6 }}>View test<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></span>
       </a>
     );
   return (
