@@ -11,7 +11,7 @@ import { PILLARS, OS, JOURNEY, LAYERS5, SERVICES, PHILOSOPHY, PILLARS3 } from "@
 import { N, Section, AiBadge, LiveChart, NeyuReads, StepRail, btn, cardN, gradText, IconTile, CapCard, FlowLines } from "./kit";
 import { NIcon } from "./icons";
 import { NChart } from "./charts";
-import { PillNav } from "./fx";
+import { PillNav, BeamFlow } from "./fx";
 import { useInView } from "@/components/nea/ui";
 
 // ── 05 From reactive care to proactive health ────────────────
@@ -241,15 +241,16 @@ export function Philosophy() {
 export function FinalCta() {
   const { openAlba } = useAlba();
   return (
-    <section data-screen-label="Neyu 12 Final" style={{ position: "relative", overflow: "hidden", padding: "clamp(72px,10vw,140px) clamp(16px,4vw,40px)", textAlign: "center", background: "radial-gradient(800px 400px at 50% 0%, rgba(42,132,228,.12), transparent 70%)" }}>
-      <FlowLines opacity={0.7} />
+    <section data-screen-label="Neyu 12 Final" style={{ position: "relative", overflow: "hidden", padding: "clamp(72px,10vw,140px) clamp(16px,4vw,40px)", textAlign: "center", background: "#06111C", color: "#EAF2F6" }}>
+      <BeamFlow style={{ position: "absolute", inset: 0, opacity: 0.95 }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "radial-gradient(60% 55% at 50% 50%, rgba(6,17,28,.55), transparent 75%)", pointerEvents: "none" }} />
       <div style={{ position: "relative", display: "grid", justifyItems: "center", gap: 18 }}>
         <AlbaOrb size={64} glow />
-        <h2 style={{ margin: 0, fontSize: "clamp(40px,6vw,80px)", lineHeight: 1, letterSpacing: "-.045em", fontWeight: 500, color: N.ink }}>Know more about<br /><span style={gradText}>your health.</span></h2>
-        <p style={{ margin: 0, fontSize: 19, color: N.ink2 }}>Connect the pieces. Understand the whole.</p>
+        <h2 style={{ margin: 0, fontSize: "clamp(40px,6vw,80px)", lineHeight: 1, letterSpacing: "-.045em", fontWeight: 500, color: "#FFFFFF" }}>Know more about<br /><span style={gradText}>your health.</span></h2>
+        <p style={{ margin: 0, fontSize: 19, color: "rgba(234,242,246,.8)" }}>Connect the pieces. Understand the whole.</p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
           <a href="/my-health/sign-up" style={btn("grad")}>Get started<NIcon name="arrow" size={16} tone="light" /></a>
-          <button onClick={() => openAlba()} style={btn("ghost")}><AlbaOrb size={20} motion={false} />Ask Neyu</button>
+          <button onClick={() => openAlba()} style={{ ...btn("ghost"), background: "rgba(255,255,255,.08)", color: "#fff", borderColor: "rgba(255,255,255,.35)" }}><AlbaOrb size={20} motion={false} />Ask Neyu</button>
         </div>
         <AiBadge label="Listen · Connect · Flourish" />
       </div>
