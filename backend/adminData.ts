@@ -259,7 +259,7 @@ export async function analytics(range: string | null, from?: string | null, to?:
     bySpec: bars([...spec.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)),
     byUrg: bars([...urg.entries()].sort((a, b) => b[1] - a[1])),
     topPages: bars(pages.map((p) => [p.path, p._count.path])),
-    aiUse: bars([["ALBA conversations", mf.cur.al], ["Symptom checks", mf.cur.sc], ["Assessments", mf.cur.la], ["Lab explainers", mf.cur.lc]]),
+    aiUse: bars([["Neyu conversations", mf.cur.al], ["Symptom checks", mf.cur.sc], ["Assessments", mf.cur.la], ["Lab explainers", mf.cur.lc]]),
     outbound: outRows.map((o) => ({ label: o.label, domain: o.domain, why: o.why, v: fmtNum(o.v), w: (o.v / outMax) * 100 + "%", pct: outTotal ? Math.round((o.v / outTotal) * 100) + "%" : "0%" })),
     outTotalL: fmtNum(outTotal), outPctL: mf.cur.visitors ? Math.round((outTotal / mf.cur.visitors) * 100) + "% of visitors" : "—",
   };
@@ -279,7 +279,7 @@ export async function activityFeed(take = 6): Promise<ActivityItem[]> {
   const items: ActivityItem[] = [
     ...refs.map((r) => ({ at: r.createdAt.getTime(), time: fmtDay(r.createdAt) === "Today" ? fmtTime(r.createdAt) : fmtDay(r.createdAt), title: "Referral received", who: `${r.patientName || "(no name)"} · ${shortCode("R", r.id)}`, icon: "ph-arrow-square-in", go: { ref: r.id } })),
     ...devs.map((d) => ({ at: d.connectedAt!.getTime(), time: fmtDay(d.connectedAt!) === "Today" ? fmtTime(d.connectedAt!) : fmtDay(d.connectedAt!), title: `Patient connected ${providerName(d.provider)}`, who: fullName(d.patient), icon: "ph-watch", go: { s: "patient" as const, id: d.patient.id, tab: "devices" } })),
-    ...convs.map((c) => ({ at: c.createdAt.getTime(), time: fmtDay(c.createdAt) === "Today" ? fmtTime(c.createdAt) : fmtDay(c.createdAt), title: "ALBA conversation", who: c.patient ? fullName(c.patient) : `Visitor ${vmap.get(c.sessionId) || ""}`.trim(), icon: "ph-chat-circle-dots", go: { ai: "alba:" + c.id } })),
+    ...convs.map((c) => ({ at: c.createdAt.getTime(), time: fmtDay(c.createdAt) === "Today" ? fmtTime(c.createdAt) : fmtDay(c.createdAt), title: "Neyu conversation", who: c.patient ? fullName(c.patient) : `Visitor ${vmap.get(c.sessionId) || ""}`.trim(), icon: "ph-chat-circle-dots", go: { ai: "alba:" + c.id } })),
     ...labs.map((l) => ({ at: l.createdAt.getTime(), time: fmtDay(l.createdAt) === "Today" ? fmtTime(l.createdAt) : fmtDay(l.createdAt), title: l.status === "pending" ? "Pending lab added" : "Lab result added", who: fullName(l.patient), icon: "ph-flask", go: { s: "patient" as const, id: l.patient.id, tab: "labs" } })),
     ...res.map((a) => ({ at: a.rescheduleRequestedAt!.getTime(), time: fmtDay(a.rescheduleRequestedAt!) === "Today" ? fmtTime(a.rescheduleRequestedAt!) : fmtDay(a.rescheduleRequestedAt!), title: "Appointment reschedule requested", who: fullName(a.patient), icon: "ph-calendar-x", go: { s: "patient" as const, id: a.patient.id, tab: "appointments" } })),
     ...pts.map((p) => ({ at: p.createdAt.getTime(), time: fmtDay(p.createdAt) === "Today" ? fmtTime(p.createdAt) : fmtDay(p.createdAt), title: "New My Health Space account", who: fullName(p), icon: "ph-user-plus", go: { s: "patient" as const, id: p.id } })),
@@ -418,11 +418,11 @@ export async function patient360(id: string): Promise<Patient360DTO | null> {
   add(p.createdAt, p.emailVerifiedAt ? "Signed up and verified" : "Signed up · verification pending", "My Health Space", "ph-user-check", "teal",
     p.visitors.length ? `Visitor ${p.visitors.map((v) => v.id).join(", ")} history merged into this record` : "Account created");
   p.visitors.forEach((v) => add(v.firstSeenAt, "First visit to the website", "Website", "ph-globe", "neutral", `Landed on ${v.landingPath || "/"} · visitor ${v.id}`));
-  symptoms.forEach((s) => add(s.createdAt, s.emergency ? "Emergency-flagged symptom check" : "Symptom check", "ALBA", s.emergency ? "ph-warning-circle" : "ph-stethoscope", s.emergency ? "urgent" : "ai",
+  symptoms.forEach((s) => add(s.createdAt, s.emergency ? "Emergency-flagged symptom check" : "Symptom check", "Neyu", s.emergency ? "ph-warning-circle" : "ph-stethoscope", s.emergency ? "urgent" : "ai",
     s.emergency ? (s.reviewedAt ? "Reviewed by staff" : "Patient was shown emergency guidance. Not yet reviewed.") : "Details are in AI & Assessments"));
-  convs.forEach((c) => add(c.createdAt, "ALBA conversation", "ALBA", "ph-chat-circle-dots", "ai", "Details are in AI & Assessments"));
-  assessments.forEach((a) => add(a.createdAt, "Longevity assessment completed", "ALBA", "ph-clipboard-text", "ai", pre(a.createdAt) ? "Completed anonymously before sign-up" : "Details are in AI & Assessments"));
-  labChecks.forEach((l) => add(l.createdAt, "Lab explainer used", "ALBA", "ph-flask", "ai", "Details are in AI & Assessments"));
+  convs.forEach((c) => add(c.createdAt, "Neyu conversation", "Neyu", "ph-chat-circle-dots", "ai", "Details are in AI & Assessments"));
+  assessments.forEach((a) => add(a.createdAt, "Longevity assessment completed", "Neyu", "ph-clipboard-text", "ai", pre(a.createdAt) ? "Completed anonymously before sign-up" : "Details are in AI & Assessments"));
+  labChecks.forEach((l) => add(l.createdAt, "Lab explainer used", "Neyu", "ph-flask", "ai", "Details are in AI & Assessments"));
   const labGroups = new Map<string, { at: Date; source: string; n: number; panels: Set<string>; pending: number }>();
   labs.forEach((l) => { const k = `${l.createdAt.toISOString().slice(0, 16)}|${l.source}`; const g = labGroups.get(k) || { at: l.createdAt, source: l.source, n: 0, panels: new Set(), pending: 0 }; g.n++; if (l.panel) g.panels.add(l.panel); if (l.status === "pending") g.pending++; labGroups.set(k, g); });
   labGroups.forEach((g) => add(g.at, g.pending === g.n ? "Pending lab ordered" : "Lab result received", g.source, "ph-flask", "teal", `${[...g.panels].join(" and ") || "Results"} · ${g.n} result${g.n > 1 ? "s" : ""}`));
@@ -525,7 +525,7 @@ async function loadAi(where: { patientId?: string; sessionId?: string | { in: st
   };
   const rows: AiRow[] = [
     ...sc.map((x) => ({ ...base("symptom", x), status: x.reviewedAt ? "Reviewed" : "New", emergency: x.emergency, line: x.description, title: "Symptom check" })),
-    ...al.map((x) => ({ ...base("alba", x), status: "Completed", emergency: false, line: x.messages[0]?.text || `Started on ${x.pageContext || "the website"}`, title: "ALBA conversation" })),
+    ...al.map((x) => ({ ...base("alba", x), status: "Completed", emergency: false, line: x.messages[0]?.text || `Started on ${x.pageContext || "the website"}`, title: "Neyu conversation" })),
     ...la.map((x) => ({ ...base("assessment", x), status: "Completed", emergency: false, line: x.summary, title: "Longevity Assessment" })),
     ...lc.map((x) => ({ ...base("lab", x), status: "Completed", emergency: false, line: x.overallSummary, title: "Lab explainer" })),
   ];
@@ -559,7 +559,7 @@ export async function aiDetail(key: string): Promise<AiDetailDTO | null> {
   };
   const where = x.patient ? "My Health Space" : "Website";
   if (kind === "symptom") return { ...base, status: x.reviewedAt ? "Reviewed" : "New", emergency: x.emergency, line: x.description, title: "Symptom check", from: `${where} · Symptom checker`, desc: x.description, urgency: x.urgency, specialty: x.recommendedDiscipline || x.specialty, summary: x.summary, reviewedBy: x.reviewedBy || undefined, reviewedAt: x.reviewedAt ? fmtShort(x.reviewedAt, true) : undefined };
-  if (kind === "alba") return { ...base, title: "ALBA conversation", line: x.messages[0]?.text || "", from: `${where} · ${x.pageContext || "Website"}`, messages: x.messages.map((m: any) => ({ from: m.role === "user" ? "patient" : m.role === "assistant" ? "alba" : "system", text: m.text })) };
+  if (kind === "alba") return { ...base, title: "Neyu conversation", line: x.messages[0]?.text || "", from: `${where} · ${x.pageContext || "Website"}`, messages: x.messages.map((m: any) => ({ from: m.role === "user" ? "patient" : m.role === "assistant" ? "alba" : "system", text: m.text })) };
   if (kind === "assessment") {
     const ans = parseJSON<Record<string, unknown>>(x.answers, {});
     const focus = parseJSON<unknown[]>(x.focusAreas, []).map((f: any) => (typeof f === "string" ? f : f?.title || f?.name || f?.area || "")).filter(Boolean);
@@ -589,7 +589,7 @@ async function toolsBySession(sessionIds: string[]) {
   ]);
   const m = new Map<string, { tools: string[]; ref: string | null }>();
   const g = (s: string) => m.get(s) || (m.set(s, { tools: [], ref: null }), m.get(s)!);
-  al.forEach((x) => g(x.sessionId).tools.push("ALBA"));
+  al.forEach((x) => g(x.sessionId).tools.push("Neyu"));
   sc.forEach((x) => g(x.sessionId).tools.push("Symptom check"));
   la.forEach((x) => g(x.sessionId).tools.push("Longevity assessment"));
   lc.forEach((x) => g(x.sessionId).tools.push("Lab explainer"));
@@ -708,3 +708,11 @@ export async function search(q: string): Promise<SearchDTO> {
     referrals: refs.map((r) => ({ id: r.id, title: `${shortCode("R", r.id)} · ${r.patientName || "(no name)"}`, sub: `${list(r.specialties).join(", ") || "Referral"} · ${r.urgency || "—"} · ${r.referringPhysician || "—"}`, meta: refStatus(r.status) })),
   };
 }
+
+// ── Service requests (Neyu version: virtual care, hypertension clinic, packages, membership, at-home) ──
+export type ServiceRequestDTO = { id: string; when: string; service: string; choice: string; name: string; email: string; phone: string; postal: string; message: string; page: string; status: string };
+export async function requestsList(take = 1000): Promise<ServiceRequestDTO[]> {
+  const rows = await prisma.serviceRequest.findMany({ orderBy: { createdAt: "desc" }, take });
+  return rows.map((r) => ({ id: r.id, when: r.createdAt.toISOString(), service: r.service, choice: r.choice || "", name: r.name, email: r.email, phone: r.phone || "", postal: r.postal || "", message: r.message || "", page: r.page || "", status: r.status }));
+}
+
