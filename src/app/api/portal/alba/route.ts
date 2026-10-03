@@ -1,6 +1,6 @@
 // POST /api/portal/alba — { message, conversationId? }
-// ALBA inside My Health Space: answers about the patient's OWN data, only
-// when "ALBA access" is on in Privacy & Data. Emergency keywords are caught
+// Neyu inside My Health Space: answers about the patient's OWN data, only
+// when "Neyu access" is on in Privacy & Data. Emergency keywords are caught
 // before any AI call (non-negotiable safety net). Every exchange is logged
 // to AlbaConversation with the patient id, so it appears in History.
 import { prisma } from "@backend/db";
@@ -144,15 +144,15 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
   const ctx = settings.albaAccess ? await buildContext(patient, { wearables: settings.shareWearables, labs: settings.shareLabs, records: settings.shareRecords }) : null;
   audit(patient.id, "patient", "read", "alba-context", ip);
 
-  const system = `You are ALBA, a calm health data companion inside NEYU Health's My Health Space (a Calgary cardiology and internal medicine clinic). The clinic is called NEYU Health (never ANRA; if asked, ANRA Health is now NEYU Health).
+  const system = `You are Neyu, a calm health data companion inside NEYU Health's My Health Space (a Calgary cardiology and internal medicine clinic). The clinic is called NEYU Health (never ANRA; if asked, ANRA Health is now NEYU Health).
 Rules: Never diagnose. Never recommend starting, stopping or changing medications or supplements. Suggest the care team when appropriate.
 Keep to 2–4 short sentences, plain language, no markdown. Only use the data below; if something isn't in it, say you don't have that data yet.
 When asked "why" (for example why sleep was worse), compare the nights and point to the most likely factors in the data (alcohol, late caffeine, stress, late or irregular bedtimes, exercise), say it's a pattern not a certainty, and suggest one small thing to try.
 The patient's first name is ${patient.firstName}.
-${ctx ? (ctx.text ? `PATIENT DATA (from sources the patient allowed):\n${ctx.text}` : "PATIENT DATA: none yet (no wearable, results or appointments).") : "The patient has turned OFF ALBA access to their data. Do not reference personal data; answer generally and mention they can turn it on in Privacy & Data."}`;
+${ctx ? (ctx.text ? `PATIENT DATA (from sources the patient allowed):\n${ctx.text}` : "PATIENT DATA: none yet (no wearable, results or appointments).") : "The patient has turned OFF Neyu access to their data. Do not reference personal data; answer generally and mention they can turn it on in Privacy & Data."}`;
 
   let text: string;
-  try { text = await gemini(system, message, history); } catch (e: any) { console.error("Portal ALBA error:", e?.message); text = FALLBACK; }
+  try { text = await gemini(system, message, history); } catch (e: any) { console.error("Portal Neyu error:", e?.message); text = FALLBACK; }
 
   let action: string | undefined;
   if (ctx?.hasSleep && /sleep/i.test(message)) action = "sleep";
