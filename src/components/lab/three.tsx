@@ -55,7 +55,7 @@ export function Helix3D({ nodes, active, onPick, height = 420, label = "3D model
       const p1 = proj(Math.cos(a) * R, y, Math.sin(a) * R, w, h, s.tilt);
       const p2 = proj(Math.cos(a + Math.PI) * R, y, Math.sin(a + Math.PI) * R, w, h, s.tilt);
       if (i % 2 === 0) items.push({ ...p1, kind: "a", i }, { ...p2, kind: "b", i });
-      if (pa && pb) items.push({ x: pa.x, y: pa.y, x2: p1.x, y2: p1.y, z: (pa.z + p1.z) / 2, f: (pa.f + p1.f) / 2, kind: "seg", i, col: "110,168,182" }, { x: pb.x, y: pb.y, x2: p2.x, y2: p2.y, z: (pb.z + p2.z) / 2, f: (pb.f + p2.f) / 2, kind: "seg", i, col: "140,111,184" });
+      if (pa && pb) items.push({ x: pa.x, y: pa.y, x2: p1.x, y2: p1.y, z: (pa.z + p1.z) / 2, f: (pa.f + p1.f) / 2, kind: "seg", i, col: "110,168,182" }, { x: pb.x, y: pb.y, x2: p2.x, y2: p2.y, z: (pb.z + p2.z) / 2, f: (pb.f + p2.f) / 2, kind: "seg", i, col: "42,132,228" });
       if (i % 3 === 0) items.push({ x: p1.x, y: p1.y, z: (p1.z + p2.z) / 2, f: (p1.f + p2.f) / 2, kind: "rung", i, x2: p2.x, y2: p2.y });
       pa = p1; pb = p2;
     }
@@ -69,7 +69,7 @@ export function Helix3D({ nodes, active, onPick, height = 420, label = "3D model
     for (const it of items) {
       const depth = Math.max(0.25, Math.min(1, (it.f - 0.7) * 2.4));
       if (it.kind === "seg") { g.strokeStyle = `rgba(${it.col},${0.2 + depth * 0.8})`; g.lineWidth = 3.2 * it.f; g.lineCap = "round"; g.beginPath(); g.moveTo(it.x, it.y); g.lineTo(it.x2!, it.y2!); g.stroke(); continue; }
-      if (it.kind === "rung") { g.strokeStyle = `rgba(140,111,184,${0.12 + depth * 0.25})`; g.lineWidth = 2 * it.f; g.beginPath(); g.moveTo(it.x, it.y); g.lineTo(it.x2!, it.y2!); g.stroke(); continue; }
+      if (it.kind === "rung") { g.strokeStyle = `rgba(42,132,228,${0.12 + depth * 0.25})`; g.lineWidth = 2 * it.f; g.beginPath(); g.moveTo(it.x, it.y); g.lineTo(it.x2!, it.y2!); g.stroke(); continue; }
       if (it.kind === "node") {
         const on = active === it.id, r = (on ? 13 : 9) * it.f, pulse = 1 + Math.sin(t * 3 + it.i) * 0.15;
         const grd = g.createRadialGradient(it.x, it.y, 0, it.x, it.y, r * 3 * pulse); grd.addColorStop(0, it.color + "AA"); grd.addColorStop(1, it.color + "00");
@@ -79,7 +79,7 @@ export function Helix3D({ nodes, active, onPick, height = 420, label = "3D model
         hits.current.push({ id: it.id!, x: it.x, y: it.y, r: Math.max(18, r * 2) });
         continue;
       }
-      const col = it.kind === "a" ? "110,168,182" : "140,111,184";
+      const col = it.kind === "a" ? "110,168,182" : "42,132,228";
       g.fillStyle = `rgba(${col},${0.25 + depth * 0.75})`; g.beginPath(); g.arc(it.x, it.y, 3.4 * it.f, 0, 7); g.fill();
     }
   }, []);
@@ -114,12 +114,12 @@ export function Chromosome3D({ telomere, stress, height = 380 }: { telomere: num
       dots.push({ ...p, r: 2.6 * p.f, cap: false, glow: true, life });
     });
     // membrane
-    g.strokeStyle = "rgba(140,111,184,.18)"; g.lineWidth = 1.5; g.setLineDash([4, 6]); g.beginPath(); g.ellipse(w / 2, h / 2, L * 1.35, L * 1.1, 0, 0, 7); g.stroke(); g.setLineDash([]);
+    g.strokeStyle = "rgba(42,132,228,.18)"; g.lineWidth = 1.5; g.setLineDash([4, 6]); g.beginPath(); g.ellipse(w / 2, h / 2, L * 1.35, L * 1.1, 0, 0, 7); g.stroke(); g.setLineDash([]);
     dots.sort((a, b) => b.z - a.z).forEach((d) => {
       const depth = Math.max(0.3, Math.min(1, (d.f - 0.7) * 2.4));
       if (d.glow) { const life = d.life ?? 0; g.fillStyle = `rgba(214,96,110,${(1 - life) * 0.85})`; g.beginPath(); g.arc(d.x, d.y, d.r, 0, 7); g.fill(); return; }
       if (d.cap) { const grd = g.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r * 1.8); grd.addColorStop(0, "rgba(46,196,160,.9)"); grd.addColorStop(1, "rgba(46,196,160,0)"); g.fillStyle = grd; g.beginPath(); g.arc(d.x, d.y, d.r * 1.8, 0, 7); g.fill(); }
-      g.fillStyle = d.cap ? `rgba(27,175,122,${0.5 + depth * 0.5})` : `rgba(106,80,150,${0.35 + depth * 0.6})`;
+      g.fillStyle = d.cap ? `rgba(27,175,122,${0.5 + depth * 0.5})` : `rgba(29,95,168,${0.35 + depth * 0.6})`;
       g.beginPath(); g.arc(d.x, d.y, d.r, 0, 7); g.fill();
     });
   }, []);
