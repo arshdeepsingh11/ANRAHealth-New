@@ -127,7 +127,7 @@ export default function PhysicianIdCard({ p, index = 0, onOpen }: { p: Physician
             <div aria-hidden="true" style={{ marginTop: 12, display: "flex", justifyContent: "center", alignItems: "flex-end", height: 28 }}>
               {bars(p.slug).map((b, i) => <span key={i} style={{ width: b.w, height: b.hgt, marginRight: b.gap, background: "#14181B", borderRadius: 1 }} />)}
             </div>
-            <div style={{ marginTop: 4, fontSize: 11, letterSpacing: ".14em", color: "#3F6F7C", fontFamily: "var(--font-jetbrains-mono), ui-monospace, monospace" }}>{code}</div>
+            <div style={{ marginTop: 4, fontSize: 11, letterSpacing: ".14em", color: "#3F6F7C", fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>{code}</div>
             <div style={{ marginTop: 10, display: "flex", justifyContent: "center", gap: 6, flexWrap: "wrap" }}>
               {p.disciplines.slice(0, 2).map((d) => (
                 <span key={d} style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", padding: "4px 10px", borderRadius: 999, background: "#E9F1F3", color: "#2F5561" }}>{d}</span>
