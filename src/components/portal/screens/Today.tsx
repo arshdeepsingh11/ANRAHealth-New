@@ -66,7 +66,7 @@ function BriefCard() {
       {w?.alerts.map((a) => <div key={a} role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: C.peach, color: C.peachInk, fontSize: 14, marginBottom: 12 }}><i className="ph ph-warning" style={{ fontSize: 17, marginTop: 1 }} />{a}</div>)}
       <h2 style={{ margin: "0 0 8px", fontSize: 24, lineHeight: 1.25, fontWeight: 500, letterSpacing: "-.015em" }}>{b.headline}</h2>
       <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.6, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{b.message}</p>
-      {b.byAlba && <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, fontSize: 12, color: C.lavInk }}><i className="ph ph-sparkle" />Written by ALBA from your data</span>}
+      {b.byAlba && <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, fontSize: 12, color: C.lavInk }}><i className="ph ph-sparkle" />Written by Neyu from your data</span>}
       {move && move.verdict && (
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 14, padding: "12px 14px", borderRadius: 14, background: move.verdict === "outside" ? "rgba(110,168,182,.16)" : move.verdict === "easy" ? "#FFF4E0" : C.peach }}>
           <i className={move.verdict === "outside" ? "ph ph-person-simple-run" : move.verdict === "easy" ? "ph ph-person-simple-walk" : "ph ph-house-line"} style={{ fontSize: 20, color: move.verdict === "outside" ? C.tealDark : move.verdict === "easy" ? "#8A5A12" : C.peachInk, marginTop: 1 }} />
@@ -90,7 +90,7 @@ function BriefCard() {
       )}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 14, alignItems: "center" }}>
         <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-book-open-text" />Your monthly story</button>
-        <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask ALBA about my week</button>
+        <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask Neyu about my week</button>
         {w && <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.faint }}>Weather: Environment and Climate Change Canada</span>}
         {!w && !b.needsLocation && <button onClick={reload} style={{ marginLeft: "auto", fontSize: 12.5, color: C.faint, border: "none", background: "none", cursor: "pointer" }}>Weather unavailable right now · retry</button>}
       </div>
@@ -262,9 +262,9 @@ export default function Today() {
               <HealthMap areas={t.areas} center={profile.firstName.slice(0, 7)} big />
             </section>
 
-            <button onClick={() => openSheet({ t: "alba", ask: "Help me understand my recent health trends." })} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: "1px solid rgba(140,111,184,.2)", borderRadius: 18, background: C.card, cursor: "pointer", textAlign: "left" }}>
+            <button onClick={() => openSheet({ t: "alba", ask: "Help me understand my recent health trends." })} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: "1px solid rgba(42,132,228,.2)", borderRadius: 18, background: C.card, cursor: "pointer", textAlign: "left" }}>
               <span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, display: "flex", alignItems: "center", justifyContent: "center", color: C.lavMid, flex: "none" }}><i className="ph ph-sparkle" style={{ fontSize: 18 }} /></span>
-              <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}><span style={{ fontSize: 14, fontWeight: 500 }}>Ask ALBA</span><span style={{ fontSize: 14, color: C.muted }}>“Help me understand my recent health trends.”</span></span>
+              <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}><span style={{ fontSize: 14, fontWeight: 500 }}>Ask Neyu</span><span style={{ fontSize: 14, color: C.muted }}>“Help me understand my recent health trends.”</span></span>
               <i className="ph ph-caret-right" style={{ color: C.faint }} />
             </button>
 
