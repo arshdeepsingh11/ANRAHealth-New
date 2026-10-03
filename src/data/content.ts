@@ -125,7 +125,7 @@ export const services: Service[] = [
     icon: "Activity",
     name: "Echocardiography",
     short: "Ultrasound imaging of the heart's structure and function.",
-    long: "Echocardiography is used to diagnose certain cardiovascular diseases. It is one of the most widely used diagnostic tests for heart disease — an echocardiogram can record the electrical activity of your heart on graph paper.",
+    long: "Echocardiography is an ultrasound of the heart. It shows the heart's size and structure, how strongly it pumps, how the valves open and close, and how blood flows through it — without radiation. It is one of the most widely used tests for heart disease.",
   },
   {
     slug: "carotid-ultrasound",
@@ -174,7 +174,7 @@ export const faqs: Faq[] = [
   },
   {
     q: "How do I prepare for a Holter monitor test?",
-    a: "You'll need to be caffeine-free for 24 hours prior to the exam — this includes coffee, pop, tea, chocolate, and decaffeinated beverages. Please don't eat or drink starting from midnight before the exam. Some medications (beta blockers, calcium channel blockers) may need to be stopped 48 hours prior — confirm with your doctor or pharmacist if unsure.",
+    a: "Shower before your appointment — the monitor can't get wet while you wear it. Wear a loose, two-piece outfit, keep a short diary of any symptoms and what you were doing, and avoid strong magnets and metal detectors. Keep taking your usual medications unless your doctor tells you otherwise. (Caffeine-free and fasting instructions apply to stress and nuclear tests, not to the Holter monitor.)",
   },
 ];
 
