@@ -7,6 +7,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { NIcon } from "@/components/neyu/icons";
 
 type Session = { signedIn: false } | { signedIn: true; verified: boolean; firstName: string; initials: string; photoUrl: string | null };
 
@@ -54,7 +55,7 @@ export default function AccountButton({ mobile }: { mobile: boolean }) {
         </>
       ) : (
         <>
-          <i className="ph ph-user-circle" style={{ fontSize: 20, color: "#3F6F7C" }} />
+          <NIcon name="ph-user-circle" size={20} tone={"#3F6F7C"} />
           Sign in
         </>
       )}
