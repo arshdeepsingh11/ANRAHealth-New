@@ -115,17 +115,23 @@ export default function ReferralCentre() {
   const [visitPrepError, setVisitPrepError] = useState<string | null>(null);
 
   const applyAutofillResult = (data: any) => {
+    // Typewriter: Neyu "types" each text field in, one after another.
+    const TXT = ["patientName", "patientPhone", "referringPhysician", "referringPhone", "referringAddress", "clinicalNotes"] as const;
+    const queue = TXT.filter((k) => typeof data[k] === "string" && data[k].trim()).map((k) => [k, String(data[k])] as const);
+    let qi = 0, ci = 0;
+    const tick = () => {
+      if (qi >= queue.length) return;
+      const [k, v] = queue[qi]; ci = Math.min(v.length, ci + (k === "clinicalNotes" ? 3 : 1));
+      setForm((f) => ({ ...f, [k]: v.slice(0, ci) }));
+      if (ci >= v.length) { qi++; ci = 0; }
+      setTimeout(tick, 22);
+    };
+    setTimeout(tick, 120);
     setForm((f) => ({
       ...f,
-      patientName: data.patientName || f.patientName,
-      patientPhone: data.patientPhone || f.patientPhone,
-      referringPhysician: data.referringPhysician || f.referringPhysician,
-      referringPhone: data.referringPhone || f.referringPhone,
-      referringAddress: data.referringAddress || f.referringAddress,
       urgency: data.urgency || f.urgency,
       specialties: Array.isArray(data.specialties) ? data.specialties.filter((s: string) => SPECIALTIES.includes(s)) : f.specialties,
       exams: Array.isArray(data.exams) ? data.exams.filter((e: string) => DIAGNOSTIC_EXAMS.includes(e)) : f.exams,
-      clinicalNotes: data.clinicalNotes || f.clinicalNotes,
     }));
   };
 
@@ -420,7 +426,8 @@ export default function ReferralCentre() {
   const fields = [form.patientName, form.patientPhone, form.referringPhysician, form.referringPhone, form.referringAddress, form.specialties.length || form.physicianSlugs.length ? "x" : "", form.exams.length || form.clinicalNotes ? "x" : ""];
   const done = fields.filter(Boolean).length, pct = Math.round((done / fields.length) * 100);
   const URG: Record<string, string> = { ASAP: "Seen as soon as possible", Urgent: "Within days", "Semi-Urgent": "Within weeks", "Phone Consult": "Physician-to-physician call" };
-  const Step = ({ n, title, children }: { n: number; title: string; children: React.ReactNode }) => (
+  // Called as a function (not <Step>), so inputs inside keep focus while typing.
+  const step = (n: number, title: string, children: React.ReactNode) => (
     <div style={{ display: "grid", gap: 12 }}>
       <span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ width: 28, height: 28, borderRadius: 14, display: "grid", placeItems: "center", fontSize: 13, fontWeight: 600, color: "#fff", background: "linear-gradient(135deg,#2FBF94,#2273D6)" }}>{n}</span><b style={{ fontWeight: 500, fontSize: 18 }}>{title}</b></span>
       {children}
@@ -460,36 +467,36 @@ export default function ReferralCentre() {
             </div>
 
             <div style={{ ...cardN, padding: "clamp(18px,3vw,28px)", display: "grid", gap: 22 }}>
-              <Step n={1} title="Patient">
+              {step(1, "Patient", <>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
                   <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Patient name<input value={form.patientName} onChange={(e) => { setForm({ ...form, patientName: e.target.value }); setFillMethod("manual"); }} style={inp} autoComplete="off" /></label>
                   <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Patient phone<input value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} style={inp} type="tel" autoComplete="off" /></label>
                 </div>
-              </Step>
-              <Step n={2} title="Referring physician">
+              </>)}
+              {step(2, "Referring physician", <>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
                   <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Name<input value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} style={inp} /></label>
                   <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Phone<input value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} style={inp} type="tel" /></label>
                 </div>
                 <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Clinic address<input value={form.referringAddress} onChange={(e) => setForm({ ...form, referringAddress: e.target.value })} style={inp} /></label>
-              </Step>
-              <Step n={3} title="Urgency">
+              </>)}
+              {step(3, "Urgency", <>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,150px),1fr))", gap: 8 }}>
                   {URGENCY_OPTIONS.map((u) => { const on = form.urgency === u; return <button key={u} onClick={() => setForm({ ...form, urgency: u })} aria-pressed={on} style={{ textAlign: "left", padding: "12px 14px", borderRadius: 16, cursor: "pointer", border: `1px solid ${on ? "rgba(31,167,180,.55)" : N.line}`, background: on ? "linear-gradient(160deg,#FFFFFF,#EEF7F6)" : "#fff", display: "grid", gap: 2 }}><b style={{ fontWeight: 600, fontSize: 14.5, color: N.ink }}>{u}</b><span style={{ fontSize: 12.5, color: N.muted }}>{URG[u]}</span></button>; })}
                 </div>
-              </Step>
-              <Step n={4} title="Consultation requested">
+              </>)}
+              {step(4, "Consultation requested", <>
                 <span style={{ fontSize: 13.5, color: N.muted }}>Specialty</span>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{SPECIALTIES.map((sp) => <button key={sp} onClick={() => setForm({ ...form, specialties: toggle(form.specialties, sp) })} aria-pressed={form.specialties.includes(sp)} style={chipS(form.specialties.includes(sp))}>{form.specialties.includes(sp) && <NIcon name="check" size={14} tone="light" />}{sp}</button>)}</div>
                 <span style={{ fontSize: 13.5, color: N.muted }}>Physician (optional)</span>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{physicians.map((p) => <button key={p.slug} onClick={() => setForm({ ...form, physicianSlugs: toggle(form.physicianSlugs, p.slug) })} aria-pressed={form.physicianSlugs.includes(p.slug)} style={chipS(form.physicianSlugs.includes(p.slug))} title={`${p.disciplines.join(", ")} · ${p.location}`}>{form.physicianSlugs.includes(p.slug) && <NIcon name="check" size={14} tone="light" />}{p.name}</button>)}</div>
-              </Step>
-              <Step n={5} title="Cardiac diagnostic examination">
+              </>)}
+              {step(5, "Cardiac diagnostic examination", <>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: 2 }}>{DIAGNOSTIC_EXAMS.map((ex) => <button key={ex} onClick={() => setForm({ ...form, exams: toggle(form.exams, ex) })} aria-pressed={form.exams.includes(ex)} style={chipS(form.exams.includes(ex))}>{form.exams.includes(ex) && <NIcon name="check" size={14} tone="light" />}{ex}</button>)}</div>
-              </Step>
-              <Step n={6} title="Clinical notes">
+              </>)}
+              {step(6, "Clinical notes", <>
                 <textarea value={form.clinicalNotes} onChange={(e) => setForm({ ...form, clinicalNotes: e.target.value })} rows={4} aria-label="Clinical notes" placeholder="History, current medications, relevant results…" style={{ ...inp, height: "auto", padding: 14, lineHeight: 1.5, resize: "vertical", fontFamily: "inherit" }} />
-              </Step>
+              </>)}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
                 <button onClick={generatePdf} disabled={generating || !form.patientName} style={{ ...btn("grad"), opacity: generating || !form.patientName ? 0.45 : 1 }}><NIcon name="upload" size={16} tone="light" style={{ transform: "rotate(180deg)" }} />{generating ? "Generating…" : "Download referral PDF"}</button>
                 <button onClick={runVisitPrep} disabled={visitPrepLoading || form.specialties.length === 0} style={{ ...btn("ghost"), opacity: visitPrepLoading || form.specialties.length === 0 ? 0.5 : 1 }}><NIcon name="calendarCheck" size={17} tone="grad" />{visitPrepLoading ? "Preparing…" : "Patient visit-prep guide"}</button>
