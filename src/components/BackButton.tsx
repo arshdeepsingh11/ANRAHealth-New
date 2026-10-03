@@ -7,6 +7,7 @@
 
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { NIcon } from "@/components/neyu/icons";
 
 const KEY = "anra_trail";
 const read = (): string[] => { try { return JSON.parse(sessionStorage.getItem(KEY) || "[]"); } catch { return []; } };
@@ -50,7 +51,7 @@ export default function BackButton({ mobile }: { mobile: boolean }) {
         color: "#14181B", fontSize: 14, fontWeight: 500, cursor: "pointer", whiteSpace: "nowrap",
       }}
     >
-      <i className={hasTrail ? "ph ph-arrow-left" : "ph ph-house"} style={{ fontSize: 18, color: "#3F6F7C" }} />
+      <NIcon name={hasTrail ? "ph-arrow-left" : "ph-house"} size={18} tone={"#3F6F7C"} />
       {label}
     </button>
   );
