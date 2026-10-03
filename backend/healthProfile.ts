@@ -67,7 +67,7 @@ export async function getHealthProfile(p: P, withWeather = true): Promise<Health
   return { data, auto, sections, overall: Math.round((fil / tot) * 100), updatedAt: row?.updatedAt?.toISOString() ?? null };
 }
 
-/** Short text summary for ALBA and care-team views. */
+/** Short text summary for Neyu and care-team views. */
 export async function profileSummary(patientId: string): Promise<string> {
   const row = await prisma.healthProfile.findUnique({ where: { patientId } });
   const d = parseJSON<ProfileData>(row?.data, {});
