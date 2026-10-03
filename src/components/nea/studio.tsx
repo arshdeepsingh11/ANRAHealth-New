@@ -9,6 +9,7 @@ import AlbaOrb from "@/components/AlbaOrb";
 import { NEA, NEA_TREATMENTS, NEA_AXES, NEA_META, NEA_REL, scoreNeaProfile, type NeaAxis, type NeaTreatment } from "@/data/nea";
 import { T, card, btnInk, btnGhost, chip, aiText, Book, Icon, Thinking, TypeOut, Segmented, useTip } from "./ui";
 import { Radar } from "./charts";
+import { NIcon } from "@/components/neyu/icons";
 
 export type Tool = "match" | "profile" | "planner" | "ask";
 export type Profile = Partial<Record<NeaAxis, number>>;
@@ -23,7 +24,7 @@ async function post<J>(url: string, body: unknown): Promise<J & { error?: string
 }
 
 function Alert({ children }: { children: React.ReactNode }) {
-  return <p role="alert" style={{ margin: 0, padding: "14px 16px", borderRadius: 14, background: "#FBE7E1", color: "#8B2F1C", fontSize: 15, display: "flex", gap: 10 }}><i className="ph-fill ph-warning-circle" style={{ fontSize: 20, flex: "none" }} />{children}</p>;
+  return <p role="alert" style={{ margin: 0, padding: "14px 16px", borderRadius: 14, background: "#FBE7E1", color: "#8B2F1C", fontSize: 15, display: "flex", gap: 10 }}><NIcon name="ph-warning-circle" size={20} tone={"currentColor"} style={{ flex: "none" }} />{children}</p>;
 }
 
 // ── 1. Skin Match ────────────────────────────────────────────────────────
@@ -44,17 +45,17 @@ function SkinMatch({ open, toAsk }: { open: (t: NeaTreatment) => void; toAsk: (q
       <form onSubmit={(e) => { e.preventDefault(); ask(q); }} style={{ position: "relative", borderRadius: 20 }}>
         <anra-electro radius="20" style={{ position: "absolute", inset: -6, pointerEvents: "none", zIndex: 0 }} />
         <div style={{ position: "relative", zIndex: 1, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", background: "#fff", border: "1px solid #D6EEF6", borderRadius: 20, padding: 8 }}>
-          <i className="ph ph-sparkle" style={{ fontSize: 20, color: T.ai, marginLeft: 10 }} />
+          <NIcon name="ph-sparkle" size={20} tone={T.ai} style={{ marginLeft: 10 }} />
           <label htmlFor="nea-q" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>Describe your skin concern</label>
           <input id="nea-q" value={q} onChange={(e) => setQ(e.target.value)} maxLength={400} placeholder="Describe it in your own words — e.g. my cheeks look hollow and I have fine lines" style={{ flex: "1 1 260px", minWidth: 0, height: 48, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
-          <button type="submit" disabled={busy || q.trim().length < 3} style={{ ...btnInk, height: 48, opacity: busy || q.trim().length < 3 ? 0.5 : 1 }}>{busy ? "Analysing" : "Match me"}<i className="ph ph-magic-wand" /></button>
+          <button type="submit" disabled={busy || q.trim().length < 3} style={{ ...btnInk, height: 48, opacity: busy || q.trim().length < 3 ? 0.5 : 1 }}>{busy ? "Analysing" : "Match me"}<NIcon name="ph-magic-wand" size={18} tone={"currentColor"} /></button>
         </div>
       </form>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{QUICK.map((x) => <button key={x} onClick={() => ask(x)} style={{ ...chip(false), minHeight: 34, fontSize: 13 }}>{x}</button>)}</div>
       {busy && (
         <div style={{ display: "grid", gridTemplateColumns: "88px 1fr", gap: 18, alignItems: "center" }}>
           <div style={{ position: "relative", width: 88, height: 104, borderRadius: 44, border: `1.5px solid ${T.ai}`, overflow: "hidden", background: "radial-gradient(circle at 50% 40%, #F4EEF8, #fff)" }}>
-            <i className="ph ph-smiley-blank" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontSize: 54, color: "#A9D8F0" }} />
+            <NIcon name="ph-smiley-blank" size={54} tone={"#A9D8F0"} style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", }} />
             <span style={{ position: "absolute", left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${T.ai},transparent)`, boxShadow: `0 0 12px ${T.ai}`, animation: "scanLine 1.6s ease-in-out infinite" }} />
           </div>
           <Thinking label="Neyu is reading your concern and checking 24 Nea treatments" />
@@ -71,7 +72,7 @@ function SkinMatch({ open, toAsk }: { open: (t: NeaTreatment) => void; toAsk: (q
                 <span style={{ fontSize: 11.5, letterSpacing: ".12em", textTransform: "uppercase", color: i === 0 ? T.violet : T.muted }}>{i === 0 ? "Best starting point" : "Also consider"}</span>
                 <div style={{ display: "flex", gap: 10, alignItems: "center" }}><Icon name={t.icon} box={38} size={19} /><b style={{ fontWeight: 500, fontSize: 16.5 }}>{t.name}</b></div>
                 <p style={{ margin: 0, fontSize: 14.5, color: T.ink2 }}>{p.why}</p>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Book small /><button onClick={() => open(t)} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}>Details</button><button onClick={() => toAsk(`Tell me more about ${t.name} — how does it work and what should I expect?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-chat-circle-dots" />Ask</button></div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><Book small /><button onClick={() => open(t)} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}>Details</button><button onClick={() => toAsk(`Tell me more about ${t.name} — how does it work and what should I expect?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><NIcon name="ph-chat-circle-dots" size={18} tone={"currentColor"} />Ask</button></div>
               </div>
             ); })}
           </div>
@@ -110,7 +111,7 @@ function SkinProfile({ profile, setProfile, maxDown, setMaxDown, open, toAsk, to
           <span style={{ fontSize: 14 }}>Downtime you can take</span>
           <Segmented label="Downtime" value={maxDown} onChange={setMaxDown} options={[{ v: "0", label: "None" }, { v: "3", label: "Up to 3 days" }, { v: "any", label: "Any" }]} />
         </div>
-        {any && <button onClick={() => { setProfile({}); setSel(null); }} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, color: T.muted, padding: 0 }}><i className="ph ph-arrow-counter-clockwise" />Reset</button>}
+        {any && <button onClick={() => { setProfile({}); setSel(null); }} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, color: T.muted, padding: 0 }}><NIcon name="ph-arrow-counter-clockwise" size={18} tone={"currentColor"} />Reset</button>}
       </div>
       <div style={{ display: "grid", gap: 14 }}>
         <div style={{ ...card, padding: 16, background: "linear-gradient(160deg,#fff,#FBF5F2)" }}>
@@ -123,7 +124,7 @@ function SkinProfile({ profile, setProfile, maxDown, setMaxDown, open, toAsk, to
             {top.map((r, i) => (
               <button key={r.t.id} onClick={() => setSel(r.t.id)} onMouseMove={(e) => tip.show(e, <>{r.t.name}: <b>{r.score}% fit</b> with your priorities</>)} onMouseLeave={tip.hide}
                 style={{ display: "grid", gridTemplateColumns: "28px 1fr 46px", gap: 10, alignItems: "center", padding: "9px 10px", borderRadius: 12, border: `1px solid ${focus?.id === r.t.id ? "#D9C8EE" : T.line2}`, background: focus?.id === r.t.id ? "#F7F2FB" : "#fff", cursor: "pointer", textAlign: "left", animation: `fadeUp .3s ${i * 0.04}s both` }}>
-                <i className={"ph " + r.t.icon} style={{ fontSize: 19, color: T.deep }} />
+                <NIcon name={r.t.icon} size={19} tone={T.deep} />
                 <span style={{ display: "grid", gap: 5 }}><span style={{ fontSize: 14.5 }}>{r.t.name}</span><span style={{ height: 5, borderRadius: 3, background: T.line2 }}><span style={{ display: "block", height: "100%", width: r.score + "%", borderRadius: 3, background: "linear-gradient(90deg,#B4583F,#C2477E)", transition: "width .5s" }} /></span></span>
                 <span style={{ fontVariantNumeric: "tabular-nums", fontSize: 14, textAlign: "right" }}>{r.score}%</span>
               </button>
@@ -134,8 +135,8 @@ function SkinProfile({ profile, setProfile, maxDown, setMaxDown, open, toAsk, to
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
                 <Book small />
                 <button onClick={() => open(focus)} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}>Details</button>
-                <button onClick={() => toPlan(top.slice(0, 3).map((x) => x.t.id))} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}><i className="ph ph-calendar-plus" />Plan these</button>
-                <button onClick={() => toAsk(`My priorities are ${NEA_AXES.filter((a) => (profile[a.id] ?? 0) > 0).map((a) => `${a.label} (${LEVELS[profile[a.id] ?? 0]})`).join(", ")}. Why might ${focus.name} fit, and what else should I ask Nea?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask Neyu why</button>
+                <button onClick={() => toPlan(top.slice(0, 3).map((x) => x.t.id))} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}><NIcon name="ph-calendar-plus" size={18} tone={"currentColor"} />Plan these</button>
+                <button onClick={() => toAsk(`My priorities are ${NEA_AXES.filter((a) => (profile[a.id] ?? 0) > 0).map((a) => `${a.label} (${LEVELS[profile[a.id] ?? 0]})`).join(", ")}. Why might ${focus.name} fit, and what else should I ask Nea?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><NIcon name="ph-sparkle" size={18} tone={"currentColor"} />Ask Neyu why</button>
               </div>
             )}
             <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Fit is how closely each treatment’s published focus matches your priorities — a guide for your consultation, not a diagnosis.</p>
@@ -177,7 +178,7 @@ function Planner({ picked, setPicked, open }: { picked: string[]; setPicked: (id
         <p style={{ margin: 0, fontSize: 13.5, color: T.muted, maxWidth: 440 }}>A wedding, a trip, a photo shoot — Neyu works backwards from Nea’s published timings to tell you when to book.</p>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {NEA_TREATMENTS.filter((t) => NEA_META[t.id]).map((t) => <button key={t.id} onClick={() => toggle(t.id)} aria-pressed={picked.includes(t.id)} style={{ ...chip(picked.includes(t.id)), minHeight: 34, fontSize: 13 }}>{picked.includes(t.id) ? <i className="ph ph-check" /> : <i className="ph ph-plus" />}{t.name}</button>)}
+        {NEA_TREATMENTS.filter((t) => NEA_META[t.id]).map((t) => <button key={t.id} onClick={() => toggle(t.id)} aria-pressed={picked.includes(t.id)} style={{ ...chip(picked.includes(t.id)), minHeight: 34, fontSize: 13 }}>{picked.includes(t.id) ? <NIcon name="ph-check" size={18} tone={"currentColor"} /> : <NIcon name="ph-plus" size={18} tone={"currentColor"} />}{t.name}</button>)}
       </div>
       {rows.length === 0 ? <p style={{ margin: 0, color: T.muted }}>Pick up to 5 treatments to build your timeline.</p> : event && (
         <div data-tiphost style={{ ...card, padding: "18px 18px 12px", position: "relative" }}>
@@ -220,7 +221,7 @@ function Planner({ picked, setPicked, open }: { picked: string[]; setPicked: (id
         const days = Math.round((consult.getTime() - today.getTime()) / DAY);
         return (
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", padding: "14px 16px", borderRadius: 16, background: days < 0 ? "#FBE7E1" : "#EAF4EE" }}>
-            <span style={{ fontSize: 15 }}><i className="ph ph-calendar-check" style={{ marginRight: 8 }} />{days < 0 ? "Your date is close — book the free consult today so Nea can adjust the plan." : <>Book your free consult by <b style={{ fontWeight: 600 }}>{fmtDate(consult)}</b> — {days} days from now.</>}</span>
+            <span style={{ fontSize: 15 }}><NIcon name="ph-calendar-check" size={18} tone={"currentColor"} style={{ marginRight: 8 }} />{days < 0 ? "Your date is close — book the free consult today so Nea can adjust the plan." : <>Book your free consult by <b style={{ fontWeight: 600 }}>{fmtDate(consult)}</b> — {days} days from now.</>}</span>
             <Book small label="Book consult" href={NEA.consult} />
           </div>
         );
@@ -247,7 +248,8 @@ function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => voi
     setBusy(false);
   };
   useEffect(() => { if (seed) { send(seed); clearSeed(); } /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [seed]);
-  useEffect(() => { end.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [msgs, busy]);
+  const first = useRef(true);
+  useEffect(() => { if (first.current) { first.current = false; return; } end.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }, [msgs, busy]);
   return (
     <div style={{ display: "grid", gap: 14 }}>
       <div style={{ ...card, padding: 16, minHeight: 280, maxHeight: 460, overflowY: "auto", display: "grid", alignContent: "start", gap: 12, background: "linear-gradient(180deg,#fff,#FBF9FD)" }}>
@@ -265,7 +267,7 @@ function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => voi
             <AlbaOrb size={26} motion={i === msgs.length - 1} />
             <div style={{ display: "grid", gap: 8 }}>
               <div style={{ padding: "10px 14px", borderRadius: "4px 16px 16px 16px", background: "#fff", border: "1px solid #E9E1F3", fontSize: 15, lineHeight: 1.55, whiteSpace: "pre-wrap", color: T.ink2 }}>{i === msgs.length - 1 ? <TypeOut text={m.text} speed={14} /> : m.text}</div>
-              {!!m.cites?.length && <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{m.cites.map((id) => { const t = byId(id); return <button key={id} onClick={() => open(t)} style={{ ...chip(false), minHeight: 30, fontSize: 12.5, borderColor: "#E0D3EF", color: T.violet }}><i className={"ph " + t.icon} />{t.name}</button>; })}<Book small label="Book" /></div>}
+              {!!m.cites?.length && <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{m.cites.map((id) => { const t = byId(id); return <button key={id} onClick={() => open(t)} style={{ ...chip(false), minHeight: 30, fontSize: 12.5, borderColor: "#E0D3EF", color: T.violet }}><NIcon name={t.icon} size={18} tone={"currentColor"} />{t.name}</button>; })}<Book small label="Book" /></div>}
               <span style={{ fontSize: 11.5, color: T.faint }}>{m.byAlba ? "Neyu · from Nea’s published info" : "From Nea’s published info"}</span>
             </div>
           </div>
@@ -276,7 +278,7 @@ function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => voi
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{SUGGEST.map((s) => <button key={s} onClick={() => send(s)} style={{ ...chip(false), minHeight: 34, fontSize: 13 }}>{s}</button>)}</div>
       <form onSubmit={(e) => { e.preventDefault(); send(q); }} style={{ display: "flex", gap: 8 }}>
         <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={500} aria-label="Ask Neyu about Nea" placeholder="Ask Neyu…" style={{ flex: 1, minWidth: 0, height: 50, padding: "0 16px", borderRadius: 16, border: "1px solid #D6EEF6", fontSize: 16, background: "#fff" }} />
-        <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 50, padding: 0, height: 50, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><i className="ph ph-paper-plane-tilt" style={{ fontSize: 18 }} /></button>
+        <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 50, padding: 0, height: 50, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><NIcon name="ph-paper-plane-tilt" size={18} tone={"currentColor"} /></button>
       </form>
       <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Not medical advice. In an emergency call 911.</p>
     </div>
