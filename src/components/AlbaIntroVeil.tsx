@@ -18,7 +18,7 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
       onComplete();
       return;
     }
-    // Mobile: ALBA is a full-width list row, not a small circle — the spotlight
+    // Mobile: Neyu is a full-width list row, not a small circle — the spotlight
     // halo + "click on me" line was designed for the desktop graph and doesn't
     // translate. Skip straight through on mobile.
     if (typeof window !== "undefined" && window.innerWidth < 768) {
@@ -46,7 +46,7 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
   const cx = albaNodeRect ? albaNodeRect.left + albaNodeRect.width / 2 : window.innerWidth / 2;
   const cy = albaNodeRect ? albaNodeRect.top + albaNodeRect.height / 2 : window.innerHeight / 2;
   const haloR = albaNodeRect ? Math.max(albaNodeRect.width, albaNodeRect.height) / 2 + 14 : 90;
-  // Caption sits to the right of the spotlight, or to the left when ALBA is
+  // Caption sits to the right of the spotlight, or to the left when Neyu is
   // near the right edge (the desktop nav rail).
   const TEXT_W = 280;
   const roomRight = cx + haloR + 20 + TEXT_W <= window.innerWidth;
@@ -58,7 +58,7 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
       className="fixed inset-0 z-[110] cursor-pointer"
       style={{ opacity: fading ? 0 : 1, transition: "opacity 0.5s ease" }}
     >
-      {/* Blurred/dimmed backdrop with a clear spotlight cut around the ALBA node */}
+      {/* Blurred/dimmed backdrop with a clear spotlight cut around the Neyu node */}
       <div
         className="absolute inset-0 backdrop-blur-md"
         style={{
@@ -73,7 +73,7 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
         className="absolute rounded-full pointer-events-none animate-pulse-glow"
         style={{
           left: cx - haloR, top: cy - haloR, width: haloR * 2, height: haloR * 2,
-          boxShadow: "0 0 40px 10px rgba(140,111,184,0.45)",
+          boxShadow: "0 0 40px 10px rgba(42,132,228,0.45)",
           border: "1px solid rgba(201,184,230,0.7)",
         }}
       />
@@ -91,7 +91,7 @@ export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }
         >
           <p
             className="font-display italic text-lg leading-snug"
-            style={{ color: "#F3EFF9", textShadow: "0 0 12px rgba(140,111,184,0.8), 0 0 2px rgba(255,255,255,0.4)" }}
+            style={{ color: "#F3EFF9", textShadow: "0 0 12px rgba(42,132,228,0.8), 0 0 2px rgba(255,255,255,0.4)" }}
           >
             <BottomUpLetters text={LINE} staggerDelay={0.026} />
           </p>
