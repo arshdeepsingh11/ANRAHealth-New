@@ -74,7 +74,7 @@ export function Detail({ t, onClose, onAsk }: { t: NeaTreatment; onClose: () => 
       <div style={{ marginTop: 22, display: "flex", gap: 10, flexWrap: "wrap" }}>
         <Book />
         <a href={neaTreatmentUrl(t.id)} target="_blank" rel="noopener" style={btnGhost}>On Nea’s site<i className="ph ph-arrow-up-right" /></a>
-        {onAsk && <button onClick={() => { onClose(); onAsk(`Tell me about ${t.name} — how does it work, how many sessions, and what should I expect?`); }} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask ALBA</button>}
+        {onAsk && <button onClick={() => { onClose(); onAsk(`Tell me about ${t.name} — how does it work, how many sessions, and what should I expect?`); }} style={{ ...btnGhost, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask Neyu</button>}
       </div>
       <p style={{ margin: "14px 0 0", fontSize: 13, color: T.muted }}>Starts with a free 15-minute consultation. Pricing is set with Nea. Information from neaprecisionskin.com — not medical advice.</p>
     </Sheet>
@@ -178,7 +178,7 @@ export default function Treatments({ cat, setCat, open }: { cat: NeaCat | "All";
           ))}
         </div>
       )}
-      {!list.length && <p style={{ color: T.muted, marginTop: 16 }}>No treatments match. Try ALBA Skin Match — describe it in your own words.</p>}
+      {!list.length && <p style={{ color: T.muted, marginTop: 16 }}>No treatments match. Try Neyu Skin Match — describe it in your own words.</p>}
 
       {cmp.length > 0 && (
         <div className="anra-chrome" style={{ position: "fixed", left: "50%", bottom: 18, transform: "translateX(-50%)", zIndex: 70, width: "min(640px,calc(100% - 24px))", display: "flex", gap: 10, alignItems: "center", padding: 10, borderRadius: 18, background: "rgba(20,24,27,.92)", color: "#F7F5F1", boxShadow: "0 20px 50px -20px rgba(0,0,0,.6)", animation: "fadeUp .25s" }}>
