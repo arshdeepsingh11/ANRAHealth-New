@@ -452,3 +452,51 @@ export function useDock(axis: "x" | "y" = "y", max = 1.45, reach = 120) {
   const onLeave = () => ref.current?.querySelectorAll<HTMLElement>("[data-dock]").forEach((el) => { el.style.transform = "scale(1)"; });
   return { ref, onPointerMove: onMove, onPointerLeave: onLeave };
 }
+
+// ─────────────────────────────────────────────────────────────
+// 3D Showcase Cylinder — cards around a rotating cylinder. Pauses on hover,
+// drag/swipe to spin, click a card to bring it to the front and zoom its details.
+export function Cylinder3D<T>({ items, render, detail, cardW = 220, cardH = 250, height = 420, label }: { items: T[]; render: (item: T, front: boolean) => React.ReactNode; detail?: (item: T) => React.ReactNode; cardW?: number; cardH?: number; height?: number; label: string }) {
+  const host = useRef<HTMLDivElement>(null), ring = useRef<HTMLDivElement>(null);
+  const vis = useVisible(host);
+  const st = useRef({ a: 0, v: 0.12, hover: false, drag: false, x: 0, target: null as number | null });
+  const [front, setFront] = useState(0), [open, setOpen] = useState<number | null>(null), [w, setW] = useState(900);
+  const n = Math.max(items.length, 1), step = 360 / n;
+  const scale = Math.min(1, w / 760);
+  const R = Math.max(cardW * 0.9, ((cardW + 18) * n) / (2 * Math.PI)) * scale;
+  useEffect(() => { const el = host.current; if (!el || typeof ResizeObserver === "undefined") return; const ro = new ResizeObserver(([e]) => setW(e.contentRect.width)); ro.observe(el); return () => ro.disconnect(); }, []);
+  useEffect(() => { st.current.a = 0; st.current.target = null; setOpen(null); }, [items.length]);
+  useEffect(() => {
+    if (!vis) return; let raf = 0, last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now; const s = st.current;
+      if (s.target != null) { let d = ((s.target - s.a + 540) % 360) - 180; s.a += d * Math.min(1, dt * 6); if (Math.abs(d) < 0.2) { s.a = s.target; s.target = null; } }
+      else if (!s.hover && !s.drag && open == null && !prefersReduced()) s.a -= 9 * dt;
+      if (ring.current) ring.current.style.transform = `translateZ(${-R}px) rotateY(${s.a}deg)`;
+      const f = ((Math.round(-s.a / step) % n) + n) % n; setFront((p) => (p === f ? p : f));
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop); return () => cancelAnimationFrame(raf);
+  }, [vis, R, step, n, open]);
+  const pick = (i: number) => { st.current.target = -i * step; setOpen(i); };
+  return (
+    <div style={{ display: "grid", gap: 16 }}>
+      <div ref={host} role="region" aria-roledescription="carousel" aria-label={label}
+        onMouseEnter={() => (st.current.hover = true)} onMouseLeave={() => { st.current.hover = false; st.current.drag = false; }}
+        onPointerDown={(e) => { st.current.drag = true; st.current.x = e.clientX; }} onPointerMove={(e) => { const s = st.current; if (!s.drag) return; s.a += (e.clientX - s.x) * 0.25; s.x = e.clientX; }} onPointerUp={() => (st.current.drag = false)}
+        style={{ position: "relative", height, perspective: 1600, touchAction: "pan-y", userSelect: "none", overflow: "hidden", maskImage: "linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)", WebkitMaskImage: "linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)" }}>
+        <div aria-hidden style={{ position: "absolute", left: "50%", bottom: 18, width: "70%", height: 40, transform: "translateX(-50%)", background: "radial-gradient(closest-side, rgba(31,167,180,.22), transparent)", filter: "blur(6px)" }} />
+        <div ref={ring} style={{ position: "absolute", left: "50%", top: "50%", width: 0, height: 0, transformStyle: "preserve-3d" }}>
+          {items.map((it, i) => (
+            <div key={i} onClick={() => pick(i)} style={{ position: "absolute", width: cardW * scale, height: cardH * scale, left: (-cardW * scale) / 2, top: (-cardH * scale) / 2, transform: `rotateY(${i * step}deg) translateZ(${R}px)`, backfaceVisibility: "hidden", cursor: "pointer", transition: "filter .3s", filter: i === front ? "none" : "saturate(.85)" }}>
+              <div style={{ width: cardW, height: cardH, transform: `scale(${scale * (i === front ? 1.06 : 1)})`, transformOrigin: "0 0", transition: "transform .4s cubic-bezier(.2,.8,.2,1)" }}>{render(it, i === front)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {detail && open != null && items[open] && (
+        <div key={open} style={{ animation: "fadeUp .3s ease" }}>{detail(items[open])}<button onClick={() => setOpen(null)} style={{ marginTop: 10, border: 0, background: "none", color: "#2273D6", cursor: "pointer", fontSize: 14 }}>Close details · resume rotation</button></div>
+      )}
+    </div>
+  );
+}
