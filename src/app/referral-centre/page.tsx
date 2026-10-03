@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Download, Sparkles, Loader2, Camera, ClipboardCheck, CheckCircle2 } from "lucide-react";
+import AlbaOrb from "@/components/AlbaOrb";
+import { N, NeyuPage, Section, Kicker, NeyuReads, IconTile, cardN, btn, gradText, FlowLines, wrapN } from "@/components/neyu/kit";
+import { NIcon } from "@/components/neyu/icons";
+import { SignalConvergence } from "@/components/neyu/fx";
 import { physicians } from "@/data/physicians";
 import { locations } from "@/data/content";
 
@@ -402,7 +405,7 @@ export default function ReferralCentre() {
       doc.setFontSize(9);
       doc.setTextColor(...GOLD_LIGHT);
       doc.text("Please fax completed form - we will call the patient to book", margin, pageHeight - footerH / 2 + 3);
-      doc.text("www.anrahealth.ca", pageWidth - margin, pageHeight - footerH / 2 + 3, { align: "right" });
+      doc.text("www.anrahealth.com", pageWidth - margin, pageHeight - footerH / 2 + 3, { align: "right" });
 
       logSubmission();
 
@@ -412,194 +415,123 @@ export default function ReferralCentre() {
     }
   };
 
+  const inp: React.CSSProperties = { height: 50, padding: "0 14px", borderRadius: 14, border: `1px solid ${N.line}`, background: "#fff", fontSize: 16, color: N.ink, width: "100%", boxSizing: "border-box" };
+  const chipS = (on: boolean): React.CSSProperties => ({ minHeight: 38, padding: "6px 14px", borderRadius: 999, cursor: "pointer", fontSize: 13.5, textAlign: "left", border: `1px solid ${on ? "transparent" : N.line}`, background: on ? N.ink : "#fff", color: on ? "#fff" : N.ink2, display: "inline-flex", alignItems: "center", gap: 6, transition: "all .2s" });
+  const fields = [form.patientName, form.patientPhone, form.referringPhysician, form.referringPhone, form.referringAddress, form.specialties.length || form.physicianSlugs.length ? "x" : "", form.exams.length || form.clinicalNotes ? "x" : ""];
+  const done = fields.filter(Boolean).length, pct = Math.round((done / fields.length) * 100);
+  const URG: Record<string, string> = { ASAP: "Seen as soon as possible", Urgent: "Within days", "Semi-Urgent": "Within weeks", "Phone Consult": "Physician-to-physician call" };
+  const Step = ({ n, title, children }: { n: number; title: string; children: React.ReactNode }) => (
+    <div style={{ display: "grid", gap: 12 }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 10 }}><span style={{ width: 28, height: 28, borderRadius: 14, display: "grid", placeItems: "center", fontSize: 13, fontWeight: 600, color: "#fff", background: "linear-gradient(135deg,#2FBF94,#2273D6)" }}>{n}</span><b style={{ fontWeight: 500, fontSize: 18 }}>{title}</b></span>
+      {children}
+    </div>
+  );
   return (
-    <div style={{ minHeight: "100vh" }}>
-      <div className="text-center pt-16 md:pt-24 pb-8 px-6">
-        <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gold-600 font-display italic">NEYU Health</p>
-        <h1 className="text-3xl md:text-4xl font-display font-bold text-graphite-900">Referral Centre</h1>
-      </div>
-
-      <div className="max-w-3xl mx-auto px-6 pb-16 space-y-6">
-        {/* Automatic referral — AI pre-fill from free text OR scanned photo */}
-        <div className="glass rounded-3xl p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={16} className="text-gold-600" />
-            <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">Automatic Referral</p>
+    <NeyuPage>
+      <section style={{ position: "relative", overflow: "hidden", padding: "clamp(32px,6vw,80px) 0 clamp(24px,4vw,48px)", background: "radial-gradient(900px 480px at 90% 0%, rgba(34,115,214,.09), transparent 60%), radial-gradient(800px 500px at 0% 30%, rgba(47,191,148,.09), transparent 60%)" }}>
+        <FlowLines opacity={0.45} />
+        <div style={{ ...wrapN, position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: "clamp(24px,4vw,56px)", alignItems: "center" }}>
+          <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
+            <Kicker label="For physicians · Referral Centre" badge="AI auto-fill" />
+            <h1 style={{ margin: 0, fontSize: "clamp(40px,6vw,74px)", lineHeight: 1, letterSpacing: "-.045em", fontWeight: 500, color: N.ink }}>Refer a patient <span style={gradText}>in seconds.</span></h1>
+            <p style={{ margin: 0, fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.6, color: N.ink2, maxWidth: 620 }}>Describe the patient in plain words or scan a referral — Neyu fills the NEYU referral form. Review it, download the PDF and fax it to either clinic. We call the patient to book.</p>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
+              {locations.map((l) => <div key={l.tag} style={{ ...cardN, padding: "12px 14px", display: "grid", gap: 4 }}><b style={{ fontWeight: 500, fontSize: 15 }}>{l.name}</b><span style={{ fontSize: 13.5, color: N.ink2, display: "flex", gap: 6, alignItems: "center" }}><NIcon name="doc" size={15} tone="grad" />Fax {l.fax}</span><span style={{ fontSize: 13.5, color: N.ink2, display: "flex", gap: 6, alignItems: "center" }}><NIcon name="phone" size={15} tone="grad" />{l.phone}</span></div>)}
+            </div>
           </div>
-          <textarea
-            value={freeText}
-            onChange={(e) => setFreeText(e.target.value)}
-            rows={3}
-            placeholder="Describe the patient and reason for referral in plain text — e.g. 'Chuks, chest pain for two weeks, needs urgent cardiology consult and an ECG.'"
-            className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3"
-          />
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              onClick={runAutofill}
-              disabled={freeText.trim().length < 10 || autofilling}
-              className="gold-gloss px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
-            >
-              {autofilling ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-              {autofilling ? "Filling form…" : "Auto-fill from text"}
-            </button>
-
-            <span className="text-xs text-graphite-400">or</span>
-
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={scanning}
-              className="border border-pearl-300 text-graphite-600 px-5 py-2.5 rounded-full text-sm font-semibold disabled:opacity-40 flex items-center gap-2"
-            >
-              {scanning ? <Loader2 size={14} className="animate-spin" /> : <Camera size={14} className="text-gold-600" />}
-              {scanning ? "Reading photo…" : "Scan a referral photo"}
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              capture="environment"
-              onChange={handleScanFile}
-              className="hidden"
-            />
-          </div>
-          {scannedFileName && !scanning && !error && (
-            <p className="text-xs text-graphite-400 mt-2">Scanned: {scannedFileName} — form updated below.</p>
-          )}
-          {error && <p className="text-sm text-red-600 mt-3">{error}</p>}
+          <div style={{ ...cardN, padding: 14 }}><SignalConvergence height={340} labels={["Patient", "Reason", "Urgency", "Specialty", "Tests", "Notes"]} hub="Referral" /></div>
         </div>
+      </section>
 
-        {/* Manual referral form */}
-        <div className="glass rounded-3xl p-6 space-y-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">Manual Referral</p>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            <input placeholder="Patient Name" value={form.patientName} onChange={(e) => { setForm({ ...form, patientName: e.target.value }); setFillMethod("manual"); }} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Patient Phone" value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Name" value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Phone" value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500" />
-            <input placeholder="Referring Physician Address" value={form.referringAddress} onChange={(e) => setForm({ ...form, referringAddress: e.target.value })} className="px-4 py-2.5 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 sm:col-span-2" />
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-graphite-500 mb-2">Urgency</p>
-            <div className="flex flex-wrap gap-2">
-              {URGENCY_OPTIONS.map((u) => (
-                <button key={u} onClick={() => setForm({ ...form, urgency: u })} className={`px-4 py-1.5 rounded-full text-xs font-semibold ${form.urgency === u ? "gold-gloss" : "border border-pearl-300 text-graphite-600"}`}>
-                  {u}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-graphite-500 mb-2">Consultation Requested — Specialty</p>
-            <div className="flex flex-wrap gap-2">
-              {SPECIALTIES.map((s) => (
-                <button key={s} onClick={() => setForm({ ...form, specialties: toggle(form.specialties, s) })} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${form.specialties.includes(s) ? "gold-gloss" : "border border-pearl-300 text-graphite-600"}`}>
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-graphite-500 mb-2">Consultation Requested — Physician</p>
-            <div className="flex flex-wrap gap-2">
-              {physicians.map((p) => (
-                <button key={p.slug} onClick={() => setForm({ ...form, physicianSlugs: toggle(form.physicianSlugs, p.slug) })} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${form.physicianSlugs.includes(p.slug) ? "gold-gloss" : "border border-pearl-300 text-graphite-600"}`}>
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs font-semibold text-graphite-500 mb-2">Diagnostic Examination</p>
-            <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
-              {DIAGNOSTIC_EXAMS.map((e) => (
-                <button key={e} onClick={() => setForm({ ...form, exams: toggle(form.exams, e) })} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${form.exams.includes(e) ? "gold-gloss" : "border border-pearl-300 text-graphite-600"}`}>
-                  {e}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <textarea
-            placeholder="Clinical notes…"
-            value={form.clinicalNotes}
-            onChange={(e) => setForm({ ...form, clinicalNotes: e.target.value })}
-            rows={3}
-            className="w-full px-4 py-3 rounded-xl border border-pearl-300 bg-white text-graphite-900 text-sm outline-none focus:ring-2 focus:ring-gold-500 resize-none"
-          />
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={generatePdf}
-              disabled={generating || !form.patientName}
-              className="gold-gloss px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
-            >
-              {generating ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-              {generating ? "Generating…" : "Download Referral PDF"}
-            </button>
-
-            <button
-              onClick={runVisitPrep}
-              disabled={visitPrepLoading || form.specialties.length === 0}
-              className="border border-pearl-300 text-graphite-600 px-6 py-3 rounded-full text-sm font-semibold flex items-center gap-2 disabled:opacity-40"
-            >
-              {visitPrepLoading ? <Loader2 size={14} className="animate-spin" /> : <ClipboardCheck size={14} className="text-gold-600" />}
-              {visitPrepLoading ? "Preparing…" : "Get My Visit Prep Guide"}
-            </button>
-          </div>
-          <p className="text-xs text-graphite-400">Email/fax sending isn't configured yet — download and send the PDF manually for now.</p>
-          {form.specialties.length === 0 && (
-            <p className="text-xs text-graphite-400">Select at least one specialty above to get a visit prep guide.</p>
-          )}
-          {visitPrepError && <p className="text-sm text-red-600">{visitPrepError}</p>}
-        </div>
-
-        {/* AI Visit-Prep Summary result */}
-        {visitPrep && (
-          <div className="glass rounded-3xl p-6 space-y-5">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck size={16} className="text-gold-600" />
-              <p className="text-sm font-semibold uppercase tracking-wide text-gold-600">What to Expect at Your Appointment</p>
+      <Section tone="white" label="Referral form">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,520px),1fr))", gap: 20, alignItems: "start" }}>
+          <div style={{ display: "grid", gap: 18, minWidth: 0 }}>
+            <div style={{ ...cardN, padding: "clamp(18px,3vw,28px)", display: "grid", gap: 12, background: "linear-gradient(160deg,#FFFFFF,#F1F9F7)", borderColor: "rgba(47,191,148,.3)" }}>
+              <span style={{ display: "flex", gap: 10, alignItems: "center" }}><AlbaOrb size={26} /><b style={{ fontWeight: 500, fontSize: 18 }}>Automatic referral</b></span>
+              <textarea value={freeText} onChange={(e) => setFreeText(e.target.value)} rows={3} aria-label="Describe the patient and reason for referral" placeholder="Describe the patient and reason for referral in plain text — e.g. 'Chuks, chest pain for two weeks, needs urgent cardiology consult and an ECG.'" style={{ ...inp, height: "auto", padding: 14, lineHeight: 1.5, resize: "vertical", fontFamily: "inherit" }} />
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
+                <button onClick={runAutofill} disabled={freeText.trim().length < 10 || autofilling} style={{ ...btn("grad"), opacity: freeText.trim().length < 10 || autofilling ? 0.45 : 1 }}><NIcon name="spark" size={16} tone="light" />{autofilling ? "Neyu is filling the form…" : "Auto-fill from text"}</button>
+                <span style={{ fontSize: 13, color: N.faint }}>or</span>
+                <button onClick={() => fileInputRef.current?.click()} disabled={scanning} style={btn("ghost")}><NIcon name="camera" size={17} tone="grad" />{scanning ? "Reading photo…" : "Scan a referral photo"}</button>
+                <input ref={fileInputRef} type="file" accept="image/*" capture="environment" onChange={handleScanFile} hidden />
+              </div>
+              {scannedFileName && !scanning && !error && <p style={{ margin: 0, fontSize: 13, color: N.muted }}>Scanned: {scannedFileName} — form updated below.</p>}
+              {error && <p role="alert" style={{ margin: 0, fontSize: 14.5, color: "#A93A2C" }}>{error}</p>}
             </div>
 
-            <p className="text-sm leading-relaxed text-graphite-800">{visitPrep.whatToExpect}</p>
-
-            {visitPrep.estimatedDuration && (
-              <p className="text-xs text-graphite-500">Estimated visit length: <span className="font-semibold text-graphite-700">{visitPrep.estimatedDuration}</span></p>
-            )}
-
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-2">What to Bring</p>
-              <ul className="space-y-1.5">
-                {visitPrep.whatToBring.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-graphite-700">
-                    <CheckCircle2 size={14} className="text-gold-500 mt-0.5 shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
+            <div style={{ ...cardN, padding: "clamp(18px,3vw,28px)", display: "grid", gap: 22 }}>
+              <Step n={1} title="Patient">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
+                  <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Patient name<input value={form.patientName} onChange={(e) => { setForm({ ...form, patientName: e.target.value }); setFillMethod("manual"); }} style={inp} autoComplete="off" /></label>
+                  <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Patient phone<input value={form.patientPhone} onChange={(e) => setForm({ ...form, patientPhone: e.target.value })} style={inp} type="tel" autoComplete="off" /></label>
+                </div>
+              </Step>
+              <Step n={2} title="Referring physician">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
+                  <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Name<input value={form.referringPhysician} onChange={(e) => setForm({ ...form, referringPhysician: e.target.value })} style={inp} /></label>
+                  <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Phone<input value={form.referringPhone} onChange={(e) => setForm({ ...form, referringPhone: e.target.value })} style={inp} type="tel" /></label>
+                </div>
+                <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Clinic address<input value={form.referringAddress} onChange={(e) => setForm({ ...form, referringAddress: e.target.value })} style={inp} /></label>
+              </Step>
+              <Step n={3} title="Urgency">
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,150px),1fr))", gap: 8 }}>
+                  {URGENCY_OPTIONS.map((u) => { const on = form.urgency === u; return <button key={u} onClick={() => setForm({ ...form, urgency: u })} aria-pressed={on} style={{ textAlign: "left", padding: "12px 14px", borderRadius: 16, cursor: "pointer", border: `1px solid ${on ? "rgba(31,167,180,.55)" : N.line}`, background: on ? "linear-gradient(160deg,#FFFFFF,#EEF7F6)" : "#fff", display: "grid", gap: 2 }}><b style={{ fontWeight: 600, fontSize: 14.5, color: N.ink }}>{u}</b><span style={{ fontSize: 12.5, color: N.muted }}>{URG[u]}</span></button>; })}
+                </div>
+              </Step>
+              <Step n={4} title="Consultation requested">
+                <span style={{ fontSize: 13.5, color: N.muted }}>Specialty</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{SPECIALTIES.map((sp) => <button key={sp} onClick={() => setForm({ ...form, specialties: toggle(form.specialties, sp) })} aria-pressed={form.specialties.includes(sp)} style={chipS(form.specialties.includes(sp))}>{form.specialties.includes(sp) && <NIcon name="check" size={14} tone="light" />}{sp}</button>)}</div>
+                <span style={{ fontSize: 13.5, color: N.muted }}>Physician (optional)</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{physicians.map((p) => <button key={p.slug} onClick={() => setForm({ ...form, physicianSlugs: toggle(form.physicianSlugs, p.slug) })} aria-pressed={form.physicianSlugs.includes(p.slug)} style={chipS(form.physicianSlugs.includes(p.slug))} title={`${p.disciplines.join(", ")} · ${p.location}`}>{form.physicianSlugs.includes(p.slug) && <NIcon name="check" size={14} tone="light" />}{p.name}</button>)}</div>
+              </Step>
+              <Step n={5} title="Cardiac diagnostic examination">
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, padding: 2 }}>{DIAGNOSTIC_EXAMS.map((ex) => <button key={ex} onClick={() => setForm({ ...form, exams: toggle(form.exams, ex) })} aria-pressed={form.exams.includes(ex)} style={chipS(form.exams.includes(ex))}>{form.exams.includes(ex) && <NIcon name="check" size={14} tone="light" />}{ex}</button>)}</div>
+              </Step>
+              <Step n={6} title="Clinical notes">
+                <textarea value={form.clinicalNotes} onChange={(e) => setForm({ ...form, clinicalNotes: e.target.value })} rows={4} aria-label="Clinical notes" placeholder="History, current medications, relevant results…" style={{ ...inp, height: "auto", padding: 14, lineHeight: 1.5, resize: "vertical", fontFamily: "inherit" }} />
+              </Step>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                <button onClick={generatePdf} disabled={generating || !form.patientName} style={{ ...btn("grad"), opacity: generating || !form.patientName ? 0.45 : 1 }}><NIcon name="upload" size={16} tone="light" style={{ transform: "rotate(180deg)" }} />{generating ? "Generating…" : "Download referral PDF"}</button>
+                <button onClick={runVisitPrep} disabled={visitPrepLoading || form.specialties.length === 0} style={{ ...btn("ghost"), opacity: visitPrepLoading || form.specialties.length === 0 ? 0.5 : 1 }}><NIcon name="calendarCheck" size={17} tone="grad" />{visitPrepLoading ? "Preparing…" : "Patient visit-prep guide"}</button>
+              </div>
+              <p style={{ margin: 0, fontSize: 12.5, color: N.faint }}>Email/fax sending isn't configured yet — download the PDF and fax it to the clinic. {form.specialties.length === 0 ? "Select a specialty to create a visit-prep guide." : ""}</p>
+              {visitPrepError && <p role="alert" style={{ margin: 0, fontSize: 14.5, color: "#A93A2C" }}>{visitPrepError}</p>}
             </div>
 
-            {visitPrep.prepTips.length > 0 && (
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-gold-600 mb-2">Preparation Tips</p>
-                <ul className="space-y-1.5">
-                  {visitPrep.prepTips.map((tip) => (
-                    <li key={tip} className="flex items-start gap-2 text-sm text-graphite-700">
-                      <CheckCircle2 size={14} className="text-gold-500 mt-0.5 shrink-0" /> {tip}
-                    </li>
-                  ))}
-                </ul>
+            {visitPrep && (
+              <div style={{ ...cardN, padding: "clamp(18px,3vw,28px)", display: "grid", gap: 14, animation: "fadeUp .3s ease" }}>
+                <span style={{ display: "flex", gap: 10, alignItems: "center" }}><IconTile icon="calendarCheck" active /><b style={{ fontWeight: 500, fontSize: 19 }}>What to expect at the appointment</b></span>
+                <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: N.ink2 }}>{visitPrep.whatToExpect}</p>
+                {visitPrep.estimatedDuration && <span style={{ fontSize: 14, color: N.muted, display: "flex", gap: 6, alignItems: "center" }}><NIcon name="clock" size={15} tone="grad" />Estimated visit length: <b style={{ color: N.ink, fontWeight: 600 }}>{visitPrep.estimatedDuration}</b></span>}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: 14 }}>
+                  {[["What to bring", visitPrep.whatToBring], ["Preparation tips", visitPrep.prepTips]].map(([t, list]) => (list as string[]).length > 0 && <div key={t as string} style={{ display: "grid", gap: 8 }}><span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{t as string}</span>{(list as string[]).map((x) => <span key={x} style={{ display: "flex", gap: 8, fontSize: 14.5, lineHeight: 1.5, color: N.ink2 }}><NIcon name="check" size={16} tone="#1F9E7A" style={{ marginTop: 2 }} />{x}</span>)}</div>)}
+                </div>
+                <p style={{ margin: 0, fontSize: 12.5, color: N.faint }}>General guidance to help the patient prepare — the care team gives specific instructions when booking.</p>
               </div>
             )}
-
-            <p className="text-xs text-graphite-400 pt-2 border-t border-pearl-200">This is general guidance to help you prepare — your care team will give any specific instructions when you book.</p>
           </div>
-        )}
-      </div>
-    </div>
+
+          <aside style={{ position: "sticky", top: 90, display: "grid", gap: 14 }}>
+            <div style={{ ...cardN, padding: 20, display: "grid", gap: 12 }}>
+              <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}><b style={{ fontWeight: 500, fontSize: 17 }}>Referral preview</b><span style={{ fontSize: 13, color: N.muted }}>{pct}% complete</span></span>
+              <div style={{ height: 6, borderRadius: 3, background: N.line2 }}><div style={{ height: "100%", width: pct + "%", borderRadius: 3, background: "linear-gradient(90deg,#2FBF94,#2273D6)", transition: "width .5s" }} /></div>
+              <div style={{ borderRadius: 16, border: `1px solid ${N.line}`, padding: 14, display: "grid", gap: 8, background: "#FCFDFD", fontSize: 13.5, color: N.ink2 }}>
+                <span style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: N.muted }}><span>NEYU HEALTH · REFERRAL</span><span>{new Date().toLocaleDateString("en-CA")}</span></span>
+                <span><b style={{ color: N.ink, fontWeight: 600 }}>Patient:</b> {form.patientName || "—"} {form.patientPhone && `· ${form.patientPhone}`}</span>
+                <span><b style={{ color: N.ink, fontWeight: 600 }}>From:</b> {form.referringPhysician || "—"}</span>
+                <span><b style={{ color: N.ink, fontWeight: 600 }}>Urgency:</b> {form.urgency}</span>
+                <span><b style={{ color: N.ink, fontWeight: 600 }}>Consult:</b> {[...form.specialties, ...physicians.filter((p) => form.physicianSlugs.includes(p.slug)).map((p) => p.name)].join(", ") || "—"}</span>
+                <span><b style={{ color: N.ink, fontWeight: 600 }}>Exams:</b> {form.exams.join(", ") || "—"}</span>
+              </div>
+            </div>
+            <div style={{ ...cardN, padding: 20, display: "grid", gap: 10 }}>
+              <b style={{ fontWeight: 500, fontSize: 17 }}>What happens next</b>
+              {[["referral", "You fax the referral to either clinic."], ["phone", "The clinic calls the patient to book."], ["stethoscope", "The specialist sees the patient and runs any tests onsite."], ["doc", "Findings and the plan are shared back with you."]].map(([ic, t], i) => <span key={t} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14.5, lineHeight: 1.5, color: N.ink2 }}><IconTile icon={ic} size={32} /><span><span style={{ fontSize: 12, color: N.faint }}>0{i + 1} · </span>{t}</span></span>)}
+            </div>
+            <NeyuReads text="Neyu never sends anything on its own. Patient details stay on this page until you download the PDF." />
+          </aside>
+        </div>
+      </Section>
+    </NeyuPage>
   );
 }
