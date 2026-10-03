@@ -1,4 +1,4 @@
-// Next.js Route Handler — /api/chat, powers the ALBA widget.
+// Next.js Route Handler — /api/chat, powers the Neyu widget.
 // Context-aware (pageContext) and now logs every conversation + message
 // to the database. A conversationId is created on the first message and
 // reused for the rest of that chat session.
@@ -23,8 +23,18 @@ function pageContextLabel(pathname: string | undefined): string {
   if (pathname.startsWith("/my-health")) return "My Health Space, the patient portal";
   if (pathname.startsWith("/genomics")) return "the Genomics page (BioAro Labs testing)";
   if (pathname.startsWith("/referral-centre")) return "the Referral Centre page";
+  if (pathname.startsWith("/care")) return "the Care hub (specialists, virtual care, hypertension clinic, referrals)";
+  if (pathname.startsWith("/diagnostics") && pathname === "/diagnostics") return "the Diagnostics hub (lab testing, imaging, monitoring, genomics)";
+  if (pathname.startsWith("/prevention")) return "the Prevention hub (risk assessment, packages, executive health)";
+  if (pathname.startsWith("/virtual-care")) return "the Virtual Care page (video visits with NEYU physicians)";
+  if (pathname.startsWith("/hypertension-clinic")) return "the Virtual Hypertension Clinic page (home BP program)";
+  if (pathname.startsWith("/packages")) return "the Private Health Packages & Executive Health page";
+  if (pathname.startsWith("/membership")) return "the NEYU Membership page";
+  if (pathname.startsWith("/at-home")) return "the At-home Blood Collection page";
+  if (pathname.startsWith("/neyu")) return "the Meet Neyu page (about you, Neyu, the AI companion)";
+  if (pathname.startsWith("/explore")) return "the Explore all services directory";
   if (pathname.startsWith("/longevity-lab")) return "the NEYU Longevity Lab (research explainers: intervention responsiveness, GDF-15 + telomeres, pace of aging, pharmacogenomics, longevity genetics)";
-  if (pathname.startsWith("/longevity")) return "the Longevity & Health Risk Assessment page";
+  if (pathname.startsWith("/longevity")) return "the Longevity hub (healthy-aging check, Longevity Lab, nutrition plan, longevity score)";
   if (pathname.startsWith("/lab-results")) return "the Lab Result Explainer page";
   if (pathname.startsWith("/resources")) return "the Patient Resources page";
   if (pathname.startsWith("/contact")) return "the Contact page";
@@ -56,7 +66,7 @@ export async function POST(req: NextRequest) {
   while (hist.length && hist[hist.length - 1]?.role === "user") hist.pop();
   const page = typeof pageContext === "string" ? pageContext : "/";
 
-  // Logging runs alongside the AI call — it never delays or blocks ALBA.
+  // Logging runs alongside the AI call — it never delays or blocks Neyu.
   const logP: Promise<string | undefined> = (async () => {
     try {
       const sessionId = await getOrCreateSessionId();
@@ -64,12 +74,12 @@ export async function POST(req: NextRequest) {
       await logAlbaMessage({ conversationId: id, role: "user", text });
       return id;
     } catch (logErr) {
-      console.error("Failed to log ALBA user message:", logErr);
+      console.error("Failed to log Neyu user message:", logErr);
       return incomingConversationId;
     }
   })();
   const conversationIdSoon = () => Promise.race([logP, new Promise<string | undefined>((r) => setTimeout(() => r(incomingConversationId), 400))]);
-  const logReply = (reply: string) => logP.then((id) => id && logAlbaMessage({ conversationId: id, role: "assistant", text: reply })).catch((e) => console.error("Failed to log ALBA reply:", e));
+  const logReply = (reply: string) => logP.then((id) => id && logAlbaMessage({ conversationId: id, role: "assistant", text: reply })).catch((e) => console.error("Failed to log Neyu reply:", e));
 
   // Emergency/crisis safety net — checked BEFORE the AI, never overridden by it.
   if (detectCrisisKeywords(text) || detectEmergencyKeywords(text)) {
