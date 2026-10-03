@@ -143,6 +143,16 @@ export async function runAction(b: any, c: Ctx): Promise<Result> {
     }
 
     // ── Referrals ──
+    // ── Service requests (new NEYU services) ──
+    case "request.status": {
+      const r = await prisma.serviceRequest.findUnique({ where: { id: str(b.id, 60) } });
+      if (!r) throw new HttpError(404, "Request not found.");
+      const status = ["new", "contacted", "booked", "closed"].includes(b.status) ? (b.status as string) : null;
+      if (!status) throw new HttpError(400, "Unknown status.");
+      await prisma.serviceRequest.update({ where: { id: r.id }, data: { status } });
+      await log({ kind: "Change", action: "Updated service request", resource: "Request · " + r.service, subjectType: "request", subjectId: r.id, subject: r.name, before: "Status: " + r.status, after: "Status: " + status });
+      return { ok: true };
+    }
     case "referral.status": {
       const r = await prisma.referralSubmission.findUnique({ where: { id: str(b.id, 60) } });
       if (!r) throw new HttpError(404, "Referral not found.");
