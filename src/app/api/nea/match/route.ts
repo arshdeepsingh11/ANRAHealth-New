@@ -1,5 +1,5 @@
 // POST /api/nea/match — { concern } → up to 3 Nea treatments that fit.
-// ALBA (Gemini) picks from Nea's real treatment list only; if AI is
+// Neyu (Gemini) picks from Nea's real treatment list only; if AI is
 // unavailable, a keyword match is used. Never diagnoses; emergencies are
 // caught before any AI call.
 import { NextResponse } from "next/server";
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
   if (detectEmergencyKeywords(concern) || EXTRA.test(concern)) return NextResponse.json({ emergency: EMERGENCY, picks: [] });
 
   const list = NEA_TREATMENTS.map((t) => `${t.id}: ${t.name} — ${t.summary}`).join("\n");
-  const system = `You are ALBA, the assistant on NEYU Health's page for its partner clinic Nea Precision Skin (Calgary).
+  const system = `You are Neyu, the assistant on NEYU Health's page for its partner clinic Nea Precision Skin (Calgary).
 Given a person's skin, hair, body or wellness concern, choose 1 to 3 treatments ONLY from this list (use the exact id):
 ${list}
 Rules: never diagnose, never promise results, never mention prices or medications/doses. Friendly, plain language.
