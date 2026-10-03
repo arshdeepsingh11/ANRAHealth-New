@@ -11,6 +11,7 @@ import { T, wrap, Book } from "./ui";
 import Studio, { type Tool, type Profile } from "./studio";
 import Treatments, { Detail } from "./treatments";
 import { Overview, Results, Packages, Visit, OpenPill, type Tab } from "./sections";
+import { NIcon } from "@/components/neyu/icons";
 
 const TABS: { v: Tab; label: string; icon: string }[] = [
   { v: "overview", label: "Overview", icon: "ph-house-simple" },
@@ -74,8 +75,8 @@ export default function NeaPage() {
         <h1 style={{ margin: "10px 0 0", fontSize: "clamp(36px,5vw,60px)", lineHeight: 1.02, letterSpacing: "-.04em", fontWeight: 500 }}>Nea Precision Skin</h1>
         <div style={{ marginTop: 14, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
           <OpenPill />
-          <span style={{ fontSize: 13.5, color: T.muted, display: "inline-flex", gap: 6, alignItems: "center" }}><i className="ph ph-map-pin" style={{ color: T.nea }} />Calgary NE</span>
-          <a href={NEA.tel} style={{ fontSize: 13.5, color: T.muted, display: "inline-flex", gap: 6, alignItems: "center", textDecoration: "none" }}><i className="ph ph-phone" style={{ color: T.nea }} />{NEA.phone}</a>
+          <span style={{ fontSize: 13.5, color: T.muted, display: "inline-flex", gap: 6, alignItems: "center" }}><NIcon name="ph-map-pin" size={18} tone={T.nea} />Calgary NE</span>
+          <a href={NEA.tel} style={{ fontSize: 13.5, color: T.muted, display: "inline-flex", gap: 6, alignItems: "center", textDecoration: "none" }}><NIcon name="ph-phone" size={18} tone={T.nea} />{NEA.phone}</a>
         </div>
       </header>
 
@@ -89,7 +90,7 @@ export default function NeaPage() {
               <button key={t.v} onClick={() => setTab(t.v)} aria-current={on ? "page" : undefined}
                 style={{ flex: "none", display: "inline-flex", alignItems: "center", gap: 7, height: 40, padding: "0 16px", borderRadius: 999, border: 0, cursor: "pointer", fontSize: 14, whiteSpace: "nowrap", transition: "all .25s",
                   background: on ? (ai ? "linear-gradient(120deg,#1D5FA8,#2A84E4 50%,#3CC79E)" : T.ink) : "transparent", color: on ? "#fff" : ai ? T.violet : T.ink2, boxShadow: on ? "0 8px 20px -10px rgba(20,24,27,.6)" : "none" }}>
-                <i className={(on ? "ph-fill " : "ph ") + t.icon} />{t.label}
+                <NIcon name={t.icon} size={16} tone="currentColor" />{t.label}
               </button>
             );
           })}
