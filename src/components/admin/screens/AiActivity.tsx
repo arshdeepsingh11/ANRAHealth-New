@@ -6,7 +6,7 @@ import { useAdmin, useView } from "../context";
 import { T, S, chip, Chip, TestTag, Orb, Empty, Failed, BlockSkeleton } from "../ui";
 
 const ICON: Record<string, string> = { symptom: "ph-stethoscope", alba: "ph-chat-circle-dots", assessment: "ph-clipboard-text", lab: "ph-flask" };
-const KIND_L: Record<string, string> = { symptom: "Symptom check", alba: "ALBA conversation", assessment: "Assessment", lab: "Lab explainer" };
+const KIND_L: Record<string, string> = { symptom: "Symptom check", alba: "Neyu conversation", assessment: "Assessment", lab: "Lab explainer" };
 
 export function decAI(a: AiRow) {
   const em = a.emergency && a.status === "New";
@@ -25,13 +25,13 @@ export default function AiActivity() {
   const all = data?.rows || [];
   const list = all.filter((x) => (kind === "all" || x.kind === kind) && (!emOnly || x.emergency))
     .sort((x, y) => Number(y.emergency && y.status === "New") - Number(x.emergency && x.status === "New") || x.mins - y.mins);
-  const kinds: [string, string][] = [["all", "All"], ["alba", "ALBA"], ["symptom", "Symptom Checks"], ["assessment", "Assessments"], ["lab", "Lab Explainers"]];
+  const kinds: [string, string][] = [["all", "All"], ["alba", "Neyu"], ["symptom", "Symptom Checks"], ["assessment", "Assessments"], ["lab", "Lab Explainers"]];
 
   return (
     <section data-screen-label="11 AI Activity" style={{ display: "flex", flexDirection: "column", gap: 18, animation: "anraFade 260ms ease-out" }}>
       <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
         <Orb size={40} anim />
-        <div><h1 style={S.h1}>AI Activity</h1><p style={{ margin: 0, color: T.ink2 }}>ALBA conversations, symptom checks, assessments and lab explainers. Opening an item is logged.</p></div>
+        <div><h1 style={S.h1}>AI Activity</h1><p style={{ margin: 0, color: T.ink2 }}>Neyu conversations, symptom checks, assessments and lab explainers. Opening an item is logged.</p></div>
       </div>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
         {kinds.map(([k, l]) => {
@@ -43,7 +43,7 @@ export default function AiActivity() {
       </div>
       {loading && <BlockSkeleton />}
       {error && !data && <Failed what="AI activity" onRetry={reload} />}
-      {data && list.length === 0 && <Empty title="No AI activity" sub={all.length ? "Nothing matches these filters." : "ALBA conversations, symptom checks, assessments and lab explainers appear here."} />}
+      {data && list.length === 0 && <Empty title="No AI activity" sub={all.length ? "Nothing matches these filters." : "Neyu conversations, symptom checks, assessments and lab explainers appear here."} />}
       {list.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {list.map((x) => { const d = decAI(x); return (
