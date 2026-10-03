@@ -4,6 +4,7 @@
 // approved design (colours, radii, type scale).
 
 import React from "react";
+import { NIcon } from "@/components/neyu/icons";
 
 export const C = {
   page: "#F6F4F1", side: "#F3F0EC", card: "#FFFDFB", sheet: "#FAF8F5",
@@ -86,7 +87,7 @@ export function PeriodPicker({ value, onChange }: { value: number; onChange: (v:
 export function EmptyCard({ icon, title, text, action, maxWidth = 560 }: { icon: string; title: string; text: string; action?: React.ReactNode; maxWidth?: number | string }) {
   return (
     <div style={{ padding: "40px 28px", borderRadius: 24, background: C.card, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start", maxWidth }}>
-      <i className={icon} style={{ fontSize: 28, color: C.tealLight }} />
+      <NIcon name={icon.replace(/^ph(-fill|-bold)? /, "")} size={28} tone={C.tealLight} />
       <h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>{title}</h2>
       <p style={{ margin: 0, fontSize: 15, lineHeight: 1.55, color: C.muted }}>{text}</p>
       {action}
@@ -116,7 +117,7 @@ export function Loading({ error, retry }: { error?: string; retry?: () => void }
   if (error)
     return (
       <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", borderRadius: 16, background: C.peach, maxWidth: 560 }}>
-        <i className="ph ph-cloud-slash" style={{ fontSize: 22, color: C.peachInk, marginTop: 1 }} />
+        <NIcon name="ph-cloud-slash" size={22} tone={C.peachInk} style={{marginTop: 1}} />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}><span style={{ fontSize: 15, fontWeight: 500 }}>We couldn't load this right now.</span><span style={{ fontSize: 14, color: C.muted }}>{error}</span></div>
         {retry && <button onClick={retry} style={{ height: 36, padding: "0 14px", border: "1px solid rgba(139,75,55,.25)", borderRadius: 10, background: C.card, fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>Try again</button>}
       </div>
