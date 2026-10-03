@@ -5,6 +5,7 @@
 // this page shows live when NEYU receives it.
 import React, { useEffect, useRef, useState } from "react";
 import NeyuLogo from "@/components/brand/NeyuLogo";
+import { NIcon } from "@/components/neyu/icons";
 
 const C = { ink: "#14181B", ink2: "#3A4147", muted: "#5A626A", line: "#E3DED5", card: "#FFFFFF", teal: "#3F6F7C", tealSoft: "#E8F2F4", good: "#2E7D5B", goodSoft: "#EAF4EE", warn: "#8B4B37", warnSoft: "#FBEDE6", violet: "#1D5FA8" };
 type Claim = { syncLink: string; shortcutUrl: string | null; device: string; local: boolean };
@@ -23,7 +24,7 @@ function Step({ n, title, done, children }: { n: number; title: string; done?: b
   return (
     <section style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 20, padding: 18, display: "grid", gap: 12 }}>
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <span style={{ width: 30, height: 30, borderRadius: 15, display: "grid", placeItems: "center", fontSize: 14, fontWeight: 600, flex: "none", background: done ? C.good : C.ink, color: "#fff" }}>{done ? <i className="ph ph-check" /> : n}</span>
+        <span style={{ width: 30, height: 30, borderRadius: 15, display: "grid", placeItems: "center", fontSize: 14, fontWeight: 600, flex: "none", background: done ? C.good : C.ink, color: "#fff" }}>{done ? <NIcon name="ph-check" size="1em" tone="currentColor" /> : n}</span>
         <h2 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>{title}</h2>
       </div>
       {children}
@@ -78,20 +79,20 @@ export default function PairPhone({ code }: { code: string }) {
       {!claim ? (
         <section style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 20, padding: 20, display: "grid", gap: 14 }}>
           <p style={{ margin: 0, ...li }}>This takes about a minute. You’ll copy one link, add one shortcut, and allow Health access.</p>
-          <button onClick={start} disabled={busy} style={{ ...btn, opacity: busy ? 0.6 : 1 }}>{busy ? "Connecting…" : "Start"}<i className="ph ph-arrow-right" /></button>
+          <button onClick={start} disabled={busy} style={{ ...btn, opacity: busy ? 0.6 : 1 }}>{busy ? "Connecting…" : "Start"}<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
           {err && <p role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 12, background: C.warnSoft, color: C.warn, fontSize: 15 }}>{err}</p>}
         </section>
       ) : (
         <>
           {claim.local && (
             <p style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: C.warnSoft, color: C.warn, fontSize: 14, lineHeight: 1.5, display: "flex", gap: 10 }}>
-              <i className="ph ph-wifi-high" style={{ fontSize: 18, flex: "none" }} />Test mode: NEYU is running on your computer, so syncing only works while it’s on and your iPhone is on the same Wi-Fi.
+              <NIcon name="ph-wifi-high" size={18} tone="currentColor" style={{flex: "none"}} />Test mode: NEYU is running on your computer, so syncing only works while it’s on and your iPhone is on the same Wi-Fi.
             </p>
           )}
           <Step n={1} title="Copy your private sync link" done={!!copied}>
             <input ref={input} readOnly value={claim.syncLink} onFocus={(e) => e.currentTarget.select()} aria-label="Your private sync link"
-              style={{ width: "100%", height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${C.line}`, background: "#F6F4F0", fontSize: 13, fontFamily: "ui-monospace, monospace", color: C.ink }} />
-            <button onClick={copy} style={btn}><i className={copied ? "ph ph-check" : "ph ph-copy"} />{copied ? "Copied" : "Copy link"}</button>
+              style={{ width: "100%", height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${C.line}`, background: "#F6F4F0", fontSize: 13, fontFamily: "var(--font-dm-sans), system-ui, sans-serif", color: C.ink }} />
+            <button onClick={copy} style={btn}><NIcon name={copied ? "ph-check" : "ph-copy"} size="1em" tone="currentColor" />{copied ? "Copied" : "Copy link"}</button>
             {copied === false && <p style={{ margin: 0, fontSize: 14, color: C.warn }}>Tap the link above, then tap Copy.</p>}
             <p style={{ margin: 0, fontSize: 13, color: C.muted }}>Shown once. Anyone with this link can add data to your record — don’t share it.</p>
           </Step>
@@ -99,7 +100,7 @@ export default function PairPhone({ code }: { code: string }) {
           <Step n={2} title="Add the NEYU Sync shortcut" done={added}>
             {claim.shortcutUrl ? (
               <>
-                <a href={claim.shortcutUrl} onClick={() => setAdded(true)} style={{ ...btn, background: "linear-gradient(120deg,#3F6F7C,#1D5FA8)" }}><i className="ph ph-plus-circle" />Add NEYU Sync</a>
+                <a href={claim.shortcutUrl} onClick={() => setAdded(true)} style={{ ...btn, background: "linear-gradient(120deg,#3F6F7C,#1D5FA8)" }}><NIcon name="ph-plus-circle" size="1em" tone="currentColor" />Add NEYU Sync</a>
                 <ol style={{ margin: 0, paddingLeft: 20, display: "grid", gap: 6 }}>
                   <li style={li}>Tap <b>Add Shortcut</b>.</li>
                   <li style={li}>When it asks for your <b>NEYU sync link</b>, tap the box and <b>Paste</b>.</li>
@@ -121,13 +122,13 @@ export default function PairPhone({ code }: { code: string }) {
           <Step n={3} title="Run it once" done={!!got?.stored}>
             <p style={{ margin: 0, ...li }}>In Shortcuts, tap <b>NEYU Sync</b>. When iPhone asks, tap <b>Allow</b> for Health data and <b>Allow</b> to send to NEYU.</p>
             <div aria-live="polite" style={{ padding: "14px 16px", borderRadius: 14, background: got?.stored ? C.goodSoft : got ? C.warnSoft : C.tealSoft, display: "grid", gap: 6 }}>
-              {!got && <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 15, color: C.teal }}><i className="ph ph-circle-notch" style={{ animation: "spin 1s linear infinite" }} />Waiting for your iPhone…</span>}
+              {!got && <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 15, color: C.teal }}><NIcon name="ph-circle-notch" size="1em" tone="currentColor" style={{animation: "spin 1s linear infinite"}} />Waiting for your iPhone…</span>}
               {got && got.stored > 0 && <>
-                <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 16, color: C.good, fontWeight: 500 }}><i className="ph-fill ph-check-circle" style={{ fontSize: 22 }} />NEYU received your data</span>
+                <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 16, color: C.good, fontWeight: 500 }}><NIcon name="ph-check-circle" size={22} tone="currentColor" />NEYU received your data</span>
                 <span style={{ fontSize: 14, color: C.ink2 }}>{got.metrics.join(" · ")}</span>
               </>}
               {got && got.stored === 0 && <>
-                <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 15, color: C.warn, fontWeight: 500 }}><i className="ph ph-info" style={{ fontSize: 20 }} />Your iPhone reached NEYU, but sent no data</span>
+                <span style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 15, color: C.warn, fontWeight: 500 }}><NIcon name="ph-info" size={20} tone="currentColor" />Your iPhone reached NEYU, but sent no data</span>
                 <span style={{ fontSize: 14, color: C.ink2 }}>{got.rejected.length ? got.rejected.slice(0, 3).map((r) => `${r.field}: ${r.reason}`).join(" · ") : "Apple Health had no samples for today yet — walk a little and run it again."}</span>
               </>}
             </div>
