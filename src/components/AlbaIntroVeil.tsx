@@ -5,7 +5,7 @@ import { useAlba } from "@/components/AlbaContext";
 import { BottomUpLetters } from "@/components/smoothui/bottom-up-letters";
 
 const INTRO_KEY = "anra_alba_intro_seen";
-const LINE = "Hey, I am Alba. Click on me and I will guide you through our whole journey.";
+const LINE = "Hey, I am Neyu. Click on me and I will guide you through your whole NEYU journey.";
 
 export default function AlbaIntroVeil({ onComplete }: { onComplete: () => void }) {
   const { albaNodeRect } = useAlba();
