@@ -9,6 +9,8 @@ import AnraEl from "@/components/AnraEl";
 import { useAlba } from "@/components/AlbaContext";
 import { isEmergency } from "@/data/homeContent";
 import { CountUp, useInView } from "@/components/nea/ui";
+import { NIcon, SvgIcon } from "./icons";
+import { NChart } from "./charts";
 
 export const N = {
   ink: "#0E1B2C", ink2: "#33465A", muted: "#5E6B78", faint: "#8A96A3",
@@ -51,20 +53,25 @@ export function Section({ id, eyebrow, title, lead, children, center, tone = "pa
   );
 }
 
+/** Eyebrow + "Neyu · AI" badge on one baseline (they never sit at different heights). */
+export function Kicker({ label, badge = "Neyu · AI", dark }: { label: React.ReactNode; badge?: string; dark?: boolean }) {
+  return <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", minHeight: 28 }}><span style={{ ...eyebrowN, color: dark ? "#7EE0C0" : N.teal, lineHeight: 1 }}>{label}</span>{badge && <AiBadge label={badge} dark={dark} />}</div>;
+}
+
 /** "Neyu · AI" badge — marks every AI touchpoint. */
 export function AiBadge({ label = "Neyu · AI", dark }: { label?: string; dark?: boolean }) {
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 11px 5px 6px", borderRadius: 999, fontSize: 11.5, letterSpacing: ".12em", textTransform: "uppercase", fontWeight: 600, color: dark ? "#BDEFE0" : N.deep, background: dark ? "rgba(255,255,255,.08)" : "rgba(42,132,228,.08)", border: `1px solid ${dark ? "rgba(255,255,255,.16)" : "rgba(42,132,228,.18)"}` }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "5px 11px 5px 6px", borderRadius: 999, fontSize: 11.5, lineHeight: 1, verticalAlign: "middle", letterSpacing: ".12em", textTransform: "uppercase", fontWeight: 600, color: dark ? "#BDEFE0" : N.deep, background: dark ? "rgba(255,255,255,.08)" : "rgba(42,132,228,.08)", border: `1px solid ${dark ? "rgba(255,255,255,.16)" : "rgba(42,132,228,.18)"}` }}>
       <AlbaOrb size={16} motion={false} />{label}
     </span>
   );
 }
 
-/** Live chart from the site's motion engine (ecg, bp, ldl, glucose, activity, trend, dna, bars, resp, flow, echo, hr, signal). */
-export function LiveChart({ mode, param = 50, height = 220, label }: { mode: string; param?: number; height?: number | string; label?: string }) {
+/** NEYU chart in a quiet card (ecg, bp, ldl, glucose, activity, trend, dna, echo, bars, aqhi, hr, timeline, signal, sleepbp, microbiome, hrv…). */
+export function LiveChart({ mode, param, height = 220, label, dark }: { mode: string; param?: number; height?: number | string; label?: string; dark?: boolean }) {
   return (
-    <div role="img" aria-label={label || `${mode} chart (illustrative)`} style={{ position: "relative", height, borderRadius: 16, background: "#FFFFFF", overflow: "hidden", border: `1px solid ${N.line2}` }}>
-      <AnraEl tag="anra-chart" attrs={{ mode, param, color: "#1D8FA8" }} style={{ position: "absolute", inset: "10px 12px" }} />
+    <div style={{ position: "relative", height, borderRadius: 16, background: dark ? "rgba(255,255,255,.03)" : "#FFFFFF", border: `1px solid ${dark ? "rgba(255,255,255,.1)" : N.line2}`, padding: "12px 14px", boxSizing: "border-box", minWidth: 0 }}>
+      <NChart mode={mode} param={param} height="100%" dark={dark} label={label} />
     </div>
   );
 }
@@ -97,45 +104,76 @@ export function FlowLines({ opacity = 0.55, dark }: { opacity?: number; dark?: b
 }
 
 export type NetNode = { id: string; label: string; sub?: string; x: number; y: number; icon?: string; color?: string; r?: number };
-/** Live node network (SVG): pulses travel along every connection; nodes are buttons. viewBox 1000×600. */
-export function NodeNet({ nodes, edges, active, onPick, height = 460, center, dark, ariaLabel }: { nodes: NetNode[]; edges: [string, string][]; active?: string | null; onPick?: (id: string) => void; height?: number | string; center?: string; dark?: boolean; ariaLabel: string }) {
+/** Live node network (SVG, viewBox 1000×600): orbit rings round the centre, hairline links,
+ *  signals travelling along the active links, and every node a button with a NEYU icon. */
+export function NodeNet({ nodes, edges, active, onPick, height = 460, center, dark, ariaLabel, viewBox = "0 0 1000 600" }: { nodes: NetNode[]; edges: [string, string][]; active?: string | null; onPick?: (id: string) => void; height?: number | string; center?: string; dark?: boolean; ariaLabel: string; viewBox?: string }) {
   const id = useId().replace(/:/g, "");
-  const at = (k: string) => nodes.find((n) => n.id === k)!;
   const [ref, seen] = useInView<HTMLDivElement>(0.15);
   // On narrow screens the 1000-unit viewBox shrinks everything — scale nodes and labels back up.
   const [k, setK] = useState(1);
-  useEffect(() => { const el = ref.current; if (!el || typeof ResizeObserver === "undefined") return; const ro = new ResizeObserver(([e]) => setK(Math.min(2.1, Math.max(1, 640 / Math.max(1, e.contentRect.width))))); ro.observe(el); return () => ro.disconnect(); }, [ref]);
+  const [sy, setSy] = useState(1);
+  const [vx, vy, vw, vh] = viewBox.split(" ").map(Number);
+  useEffect(() => { const el = ref.current; if (!el || typeof ResizeObserver === "undefined") return; const ro = new ResizeObserver(([e]) => { const w = Math.max(1, e.contentRect.width), h = Math.max(1, e.contentRect.height); setK(Math.min(3, Math.max(1, (0.86 * vw) / w))); setSy(Math.min(1.7, Math.max(1, (h / w) / (vh / vw)))); }); ro.observe(el); return () => ro.disconnect(); }, [ref, vw, vh]);
   const narrow = k > 1.35;
+  // When the card is taller than the drawing, spread the nodes vertically so the network fills it.
+  const cy = vy + vh / 2;
+  const nodesS = sy === 1 ? nodes : nodes.map((n) => ({ ...n, y: cy + (n.y - cy) * sy }));
+  const at = (q: string) => nodesS.find((n) => n.id === q)!;
+  const padB = narrow ? 30 * k : 10;
+  const vbS = `${vx} ${cy - (vh * sy) / 2} ${vw} ${vh * sy + padB}`;
+  const C0 = center ? at(center) : null;
+  const ink = dark ? "#EAF2F6" : N.ink;
   return (
     <div ref={ref} style={{ position: "relative", height, width: "100%" }}>
-      <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="group" aria-label={ariaLabel} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
+      <svg viewBox={vbS} preserveAspectRatio="xMidYMid meet" role="group" aria-label={ariaLabel} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
         <defs>
-          <linearGradient id={`${id}e`} x1="0" x2="1"><stop offset="0" stopColor="#3CC79E" /><stop offset="1" stopColor="#2A84E4" /></linearGradient>
-          <radialGradient id={`${id}g`}><stop offset="0" stopColor="#3CC79E" stopOpacity=".35" /><stop offset="1" stopColor="#2A84E4" stopOpacity="0" /></radialGradient>
+          <linearGradient id={`${id}e`} x1="0" x2="1" y1="0" y2="1"><stop offset="0" stopColor="#2FBF94" /><stop offset=".55" stopColor="#1FA7B4" /><stop offset="1" stopColor="#2273D6" /></linearGradient>
+          <radialGradient id={`${id}g`}><stop offset="0" stopColor="#1FA7B4" stopOpacity=".28" /><stop offset="1" stopColor="#2273D6" stopOpacity="0" /></radialGradient>
+          <radialGradient id={`${id}s`} cx=".35" cy=".3" r=".8"><stop offset="0" stopColor="#FFFFFF" stopOpacity=".55" /><stop offset=".35" stopColor="#FFFFFF" stopOpacity="0" /></radialGradient>
+          <pattern id={`${id}p`} width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r="1.2" fill={dark ? "rgba(255,255,255,.07)" : "rgba(14,27,44,.06)"} /></pattern>
         </defs>
+        <rect x={vx - 40} y={cy - (vh * sy) / 2 - 20} width={vw + 80} height={vh * sy + 40} fill={`url(#${id}p)`} />
+        {C0 && [150, 250].map((r, i) => (
+          <g key={r} transform={`translate(${C0.x} ${C0.y})`}>
+            <circle r={r} fill="none" stroke={dark ? "rgba(255,255,255,.08)" : "rgba(14,27,44,.07)"} strokeDasharray={i ? "2 10" : "1 7"}>
+              <animateTransform attributeName="transform" type="rotate" from="0" to={i ? "-360" : "360"} dur={i ? "90s" : "60s"} repeatCount="indefinite" />
+            </circle>
+          </g>
+        ))}
         {edges.map(([a, b], i) => {
           const A = at(a), B = at(b); if (!A || !B) return null;
-          const lit = active && (active === a || active === b);
-          const mx = (A.x + B.x) / 2 + (A.y - B.y) * 0.12, my = (A.y + B.y) / 2 + (B.x - A.x) * 0.12;
+          const lit = !!active && (active === a || active === b);
+          const mx = (A.x + B.x) / 2 + (A.y - B.y) * 0.1, my = (A.y + B.y) / 2 + (B.x - A.x) * 0.1;
           const d = `M${A.x} ${A.y} Q${mx} ${my} ${B.x} ${B.y}`;
           return (
             <g key={i}>
-              <path d={d} fill="none" stroke={lit ? `url(#${id}e)` : dark ? "rgba(255,255,255,.14)" : "rgba(14,27,44,.12)"} strokeWidth={lit ? 2.4 : 1.2} style={{ transition: "stroke .3s", strokeDasharray: seen ? "none" : "4 6" }} />
-              {seen && <circle r={(lit ? 4.5 : 3) * k} fill={lit ? "#2A84E4" : "#28B8BE"} opacity={0.9}><animateMotion dur={`${3 + (i % 5) * 0.7}s`} repeatCount="indefinite" path={d} begin={`${(i % 7) * 0.4}s`} /></circle>}
+              <path d={d} fill="none" stroke={lit ? `url(#${id}e)` : dark ? "rgba(255,255,255,.12)" : "rgba(14,27,44,.10)"} strokeWidth={lit ? 2.2 : 1} style={{ transition: "stroke .3s" }} />
+              {seen && lit && <circle r={4 * Math.min(k, 1.6)} fill="#2273D6"><animateMotion dur={`${2.2 + (i % 4) * 0.5}s`} repeatCount="indefinite" path={d} /></circle>}
+              {seen && !lit && i % 3 === 0 && <circle r={2.2 * Math.min(k, 1.6)} fill={dark ? "rgba(126,224,192,.7)" : "rgba(31,167,180,.55)"}><animateMotion dur={`${5 + (i % 5)}s`} repeatCount="indefinite" path={d} begin={`${(i % 7) * 0.6}s`} /></circle>}
             </g>
           );
         })}
-        {nodes.map((n) => {
-          const on = active === n.id, isC = center === n.id, r = (n.r || (isC ? 54 : 34)) * (narrow ? Math.min(k, 1.7) : 1), fs = isC ? 17 * Math.min(k, 1.45) : 15 * k, ic = 26 * Math.min(k, 1.8);
+        {nodesS.map((n) => {
+          const on = active === n.id, isC = center === n.id, r = (n.r || (isC ? 58 : 34)) * (narrow ? Math.min(k, 1.75) : 1), ic = 24 * Math.min(k, 1.85);
+          // Labels stay ~12–13px on screen at any card width; the hub label shrinks to fit inside its circle.
+          const fs = isC ? Math.min(17 * Math.min(k, 1.6), (r * 1.62) / Math.max(4, n.label.length * 0.56)) : 15 * k;
           return (
-            <g key={n.id} transform={`translate(${n.x} ${n.y})`} style={{ cursor: onPick ? "pointer" : "default" }} onClick={() => onPick?.(n.id)}
+            <g key={n.id} transform={`translate(${n.x} ${n.y})`} style={{ cursor: onPick ? "pointer" : "default", outline: "none" }} onClick={() => onPick?.(n.id)}
               role={onPick ? "button" : undefined} tabIndex={onPick ? 0 : undefined} aria-label={onPick ? `${n.label}${n.sub ? " — " + n.sub : ""}` : undefined} aria-pressed={onPick ? on : undefined}
               onKeyDown={(e) => { if (onPick && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onPick(n.id); } }}>
-              {(on || isC) && <circle r={r * 1.9} fill={`url(#${id}g)`}><animate attributeName="r" values={`${r * 1.6};${r * 2.1};${r * 1.6}`} dur="3s" repeatCount="indefinite" /></circle>}
-              <circle r={r} fill={isC ? `url(#${id}e)` : dark ? "rgba(255,255,255,.06)" : "#FFFFFF"} stroke={on ? "#2A84E4" : isC ? "none" : dark ? "rgba(255,255,255,.22)" : "rgba(14,27,44,.14)"} strokeWidth={on ? 2.5 : 1.2} style={{ transition: "all .3s", filter: "drop-shadow(0 10px 18px rgba(14,27,44,.12))" }} />
-              {n.icon && <foreignObject x={-ic / 2 - 1} y={isC ? -ic - 4 : -ic / 2 - 1} width={ic + 2} height={ic + 2} style={{ pointerEvents: "none" }}><i className={(on || isC ? "ph-fill " : "ph ") + n.icon} style={{ fontSize: ic, color: isC ? "#FFFFFF" : on ? "#2A84E4" : n.color || (dark ? "#BDEFE0" : "#1D8FA8"), display: "block", lineHeight: `${ic + 2}px`, textAlign: "center" }} /></foreignObject>}
-              <text y={isC ? fs * 1.3 : r + fs * 1.45} textAnchor="middle" fontSize={fs} fontWeight={on || isC ? 600 : 500} fill={isC ? "#FFFFFF" : dark ? "#EAF2F6" : N.ink} style={{ pointerEvents: "none", fontFamily: "inherit" }}>{n.label}</text>
-              {n.sub && !isC && !narrow && <text y={r + 40} textAnchor="middle" fontSize={12.5} fill={dark ? "rgba(234,242,246,.62)" : N.muted} style={{ pointerEvents: "none", fontFamily: "inherit" }}>{n.sub}</text>}
+              {(on || isC) && <circle r={r * 1.8} fill={`url(#${id}g)`}><animate attributeName="r" values={`${r * 1.5};${r * 2};${r * 1.5}`} dur="3.2s" repeatCount="indefinite" /></circle>}
+              {isC && <ellipse rx={r * 1.32} ry={r * 0.42} fill="none" stroke="rgba(31,167,180,.45)" strokeWidth={1.2}><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14s" repeatCount="indefinite" /></ellipse>}
+              {isC && <ellipse rx={r * 1.25} ry={r * 0.5} fill="none" stroke="rgba(34,115,214,.3)" strokeWidth={1}><animateTransform attributeName="transform" type="rotate" from="70" to="-290" dur="20s" repeatCount="indefinite" /></ellipse>}
+              <circle r={r} fill={isC ? `url(#${id}e)` : dark ? "rgba(13,27,40,.9)" : "#FFFFFF"} stroke={on ? `url(#${id}e)` : isC ? "none" : dark ? "rgba(255,255,255,.2)" : "rgba(14,27,44,.12)"} strokeWidth={on ? 2.4 : 1} style={{ transition: "all .3s", filter: dark ? "none" : "drop-shadow(0 10px 16px rgba(14,27,44,.10))" }} />
+              {isC && <circle r={r} fill={`url(#${id}s)`} />}
+              {on && !isC && <circle r={r + 7} fill="none" stroke="rgba(34,115,214,.35)" strokeWidth={1} strokeDasharray="3 5"><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" /></circle>}
+              {n.icon && !isC && <SvgIcon name={n.icon} x={0} y={0} size={ic} color={on ? `url(#${id}e)` : dark ? "#BDEFE0" : "#14324A"} stroke={on ? 1.8 : 1.5} />}
+              {(() => { // On narrow cards a long label breaks onto two lines instead of colliding with its neighbours.
+                const two = !isC && narrow && n.label.length > 11 && n.label.includes(" ");
+                const words = n.label.split(" "), mid = Math.ceil(words.length / 2), lines = two ? [words.slice(0, mid).join(" "), words.slice(mid).join(" ")] : [n.label];
+                return <text y={isC ? fs * 0.36 : r + fs * 1.35} textAnchor="middle" fontSize={fs} fontWeight={on || isC ? 600 : 500} fill={isC ? "#FFFFFF" : ink} style={{ pointerEvents: "none", fontFamily: "inherit", letterSpacing: isC ? ".02em" : 0 }}>{lines.map((l, j) => <tspan key={j} x={0} dy={j ? fs * 1.12 : 0}>{l}</tspan>)}</text>;
+              })()}
+              {n.sub && !isC && !narrow && <text y={r + fs * 1.35 + 18} textAnchor="middle" fontSize={12} fill={dark ? "rgba(234,242,246,.62)" : N.muted} style={{ pointerEvents: "none", fontFamily: "inherit" }}>{n.sub}</text>}
             </g>
           );
         })}
@@ -151,9 +189,9 @@ export function StepRail({ steps, active, onPick, dark }: { steps: { t: string; 
       {steps.map((s, i) => {
         const on = i === active, done = i < active;
         return (
-          <button key={s.t} onClick={() => onPick?.(i)} aria-pressed={on} style={{ textAlign: "left", cursor: onPick ? "pointer" : "default", padding: 18, borderRadius: 20, border: `1px solid ${on ? "rgba(42,132,228,.5)" : dark ? "rgba(255,255,255,.12)" : N.line}`, background: on ? (dark ? "rgba(42,132,228,.18)" : "linear-gradient(160deg,#FFFFFF,#EEF7FC)") : dark ? "rgba(255,255,255,.04)" : "#FFFFFF", color: dark ? "#EAF2F6" : N.ink, display: "grid", gap: 8, transition: "all .25s", boxShadow: on ? "0 24px 40px -30px rgba(42,132,228,.8)" : "none" }}>
+          <button key={s.t} onClick={() => onPick?.(i)} aria-pressed={on} style={{ textAlign: "left", cursor: onPick ? "pointer" : "default", padding: 18, borderRadius: 20, border: `1px solid ${on ? "rgba(42,132,228,.5)" : dark ? "rgba(255,255,255,.12)" : N.line}`, background: on ? (dark ? "rgba(42,132,228,.18)" : "linear-gradient(160deg,#FFFFFF,#EEF7FC)") : dark ? "rgba(255,255,255,.04)" : "#FFFFFF", color: dark ? "#EAF2F6" : N.ink, display: "grid", gap: 8, alignContent: "start", transition: "all .25s", boxShadow: on ? "0 24px 40px -30px rgba(42,132,228,.8)" : "none" }}>
             <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ width: 34, height: 34, borderRadius: 12, display: "grid", placeItems: "center", background: on || done ? N.grad : dark ? "rgba(255,255,255,.08)" : N.line2, color: on || done ? "#fff" : dark ? "#BDEFE0" : N.deep }}><i className={"ph " + s.icon} style={{ fontSize: 18 }} /></span>
+              <IconTile icon={s.icon} size={38} active={on || done} dark={dark} />
               <span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: dark ? "rgba(234,242,246,.6)" : N.faint }}>0{i + 1}</span>
             </span>
             <b style={{ fontWeight: 500, fontSize: 19, letterSpacing: "-.01em" }}>{s.t}</b>
@@ -201,19 +239,22 @@ export function AskNeyu({ page, placeholder = "What would you like to understand
         <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, padding: big ? "8px 8px 8px 16px" : "6px 6px 6px 14px", borderRadius: 999, background: "rgba(255,255,255,.97)", border: `1px solid ${N.line}`, boxShadow: "0 20px 50px -30px rgba(14,27,44,.45)" }}>
           <AlbaOrb size={big ? 30 : 24} />
           <input size={1} value={v} onChange={(e) => setV(e.target.value)} aria-label="Ask Neyu" placeholder={placeholder} style={{ flex: 1, minWidth: 0, width: 0, height: big ? 50 : 44, border: 0, outline: "none", background: "transparent", fontSize: big ? 17 : 16, color: N.ink }} />
-          <button type="submit" aria-label="Ask Neyu" style={{ ...btn("grad"), height: big ? 50 : 44, padding: "0 18px" }}><span className="neyu-hide-xs">Ask Neyu</span><i className="ph ph-arrow-right" /></button>
+          <button type="submit" aria-label="Ask Neyu" style={{ ...btn("grad"), height: big ? 50 : 44, padding: "0 18px" }}><span className="neyu-hide-xs">Ask Neyu</span><NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></button>
         </div>
       </form>
-      {suggestions.length > 0 && !s.q && (
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: big ? "center" : "flex-start" }}>
-          {suggestions.map((x) => <button key={x} onClick={() => go(x)} style={{ minHeight: 38, padding: "0 14px", borderRadius: 999, border: `1px solid ${dark ? "rgba(255,255,255,.2)" : N.line}`, background: dark ? "rgba(255,255,255,.06)" : "rgba(255,255,255,.8)", color: dark ? "#EAF2F6" : N.ink2, fontSize: 14, cursor: "pointer" }}>{x}</button>)}
-        </div>
+      {suggestions.length > 0 && !s.q && (big
+        ? <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 10, textAlign: "left" }}>
+            {suggestions.map((x) => <PromptCard key={x} text={x} dark={dark} onClick={() => go(x)} />)}
+          </div>
+        : <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-start" }}>
+            {suggestions.map((x) => <button key={x} onClick={() => go(x)} className="neyu-chip" style={{ minHeight: 38, padding: "0 14px 0 10px", borderRadius: 999, border: `1px solid ${dark ? "rgba(255,255,255,.2)" : N.line}`, background: dark ? "rgba(255,255,255,.06)" : "rgba(255,255,255,.85)", color: dark ? "#EAF2F6" : N.ink2, fontSize: 14, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 7 }}><NIcon name="spark" size={14} tone={dark ? "#7EE0C0" : "grad"} />{x}</button>)}
+          </div>
       )}
       {s.q && (
         <div aria-live="polite" style={{ ...cardN, padding: 18, textAlign: "left", display: "grid", gap: 10, background: s.alert ? "#FBE9E4" : "rgba(255,255,255,.97)", animation: "fadeUp .3s ease" }}>
           <div style={{ display: "flex", justifyContent: "space-between", gap: 10, alignItems: "center" }}>
             <AiBadge label={s.alert ? "Safety first" : "Neyu"} />
-            <button onClick={() => s.reset()} aria-label="Clear answer" style={{ border: 0, background: "none", color: N.muted, cursor: "pointer", fontSize: 18 }}><i className="ph ph-x" /></button>
+            <button onClick={() => s.reset()} aria-label="Clear answer" style={{ border: 0, background: "none", color: N.muted, cursor: "pointer", fontSize: 18 }}><NIcon name="ph-x" size={18} tone={"currentColor"} /></button>
           </div>
           <p style={{ margin: 0, fontSize: 14, color: N.muted }}>“{s.q}”</p>
           {s.busy ? <span style={{ display: "flex", gap: 8, alignItems: "center", color: N.muted, fontSize: 14.5 }}><AlbaOrb size={20} />Neyu is connecting the pieces…</span>
@@ -223,6 +264,37 @@ export function AskNeyu({ page, placeholder = "What would you like to understand
         </div>
       )}
     </div>
+  );
+}
+
+/** Pick a fitting icon for a suggested question. */
+export function iconFor(q: string) {
+  const t = q.toLowerCase();
+  if (/blood pressure|hypertension|bp\b|\d{3}\/\d{2}/.test(t)) return "gauge";
+  if (/ldl|cholesterol|lipid/.test(t)) return "drop";
+  if (/kidney/.test(t)) return "kidney";
+  if (/heart|cardio|echo|ecg|palpitat/.test(t)) return "heartPulse";
+  if (/virtual|video|online/.test(t)) return "video";
+  if (/executive|package/.test(t)) return "briefcase";
+  if (/member|plan|family/.test(t)) return "membership";
+  if (/gene|dna|genom|pharmaco/.test(t)) return "dna";
+  if (/sleep/.test(t)) return "moon";
+  if (/test|lab|result|crp|a1c|biomarker/.test(t)) return "flask";
+  if (/home|collect/.test(t)) return "homeDrop";
+  if (/age|aging|longev/.test(t)) return "hourglass";
+  if (/doctor|physician|specialist|referr/.test(t)) return "doctor";
+  return "spark";
+}
+
+/** A suggested question as a calm prompt card: icon, question, arrow. */
+export function PromptCard({ text, onClick, dark }: { text: string; onClick: () => void; dark?: boolean }) {
+  return (
+    <button onClick={onClick} className="neyu-prompt" style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 18, cursor: "pointer", textAlign: "left", minWidth: 0,
+      border: `1px solid ${dark ? "rgba(255,255,255,.16)" : "rgba(14,27,44,.09)"}`, background: dark ? "rgba(255,255,255,.05)" : "rgba(255,255,255,.78)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: dark ? "#EAF2F6" : N.ink }}>
+      <IconTile icon={iconFor(text)} size={34} dark={dark} />
+      <span style={{ flex: 1, minWidth: 0, fontSize: 14.5, lineHeight: 1.4 }}>{text}</span>
+      <NIcon name="arrow" size={16} tone={dark ? "#7EE0C0" : N.teal} />
+    </button>
   );
 }
 
@@ -244,20 +316,31 @@ export function NeyuReads({ title = "Neyu reads", text, ask, dark }: { title?: s
   );
 }
 
-/** Icon tile used in capability cards. */
-export function IconTile({ icon, size = 46 }: { icon: string; size?: number }) {
-  return <span style={{ width: size, height: size, borderRadius: size * 0.32, display: "grid", placeItems: "center", background: N.grad, color: "#fff", flex: "none", boxShadow: "0 14px 26px -16px rgba(42,132,228,.8)" }}><i className={"ph " + icon} style={{ fontSize: size * 0.48 }} /></span>;
+/** Icon tile: a quiet hairline square with a NEYU line icon (gradient when active). */
+export function IconTile({ icon, size = 46, active, dark }: { icon: string; size?: number; active?: boolean; dark?: boolean }) {
+  return (
+    <span aria-hidden="true" style={{ width: size, height: size, borderRadius: Math.round(size * 0.3), display: "grid", placeItems: "center", flex: "none", position: "relative",
+      background: active ? "linear-gradient(150deg,#FFFFFF 0%,#EAF7F3 55%,#E6F0FB 100%)" : dark ? "rgba(255,255,255,.05)" : "linear-gradient(160deg,#FFFFFF,#F5F8F9)",
+      border: `1px solid ${active ? "rgba(31,167,180,.45)" : dark ? "rgba(255,255,255,.14)" : "rgba(14,27,44,.09)"}`,
+      boxShadow: active ? "0 10px 22px -14px rgba(34,115,214,.6), inset 0 1px 0 #fff" : dark ? "none" : "inset 0 1px 0 #fff, 0 6px 14px -12px rgba(14,27,44,.25)" }}>
+      <NIcon name={icon} size={Math.round(size * 0.5)} tone={dark && !active ? "#BDEFE0" : "grad"} stroke={size > 40 ? 1.5 : 1.6} />
+      <span style={{ position: "absolute", top: Math.round(size * 0.14), right: Math.round(size * 0.14), width: 4, height: 4, borderRadius: 2, background: active ? "#2273D6" : "rgba(31,167,180,.55)" }} />
+    </span>
+  );
 }
 
-/** Linked capability card. */
+/** Linked capability card: icon, a small eyebrow, title, text — nothing overlaps at any width. */
 export function CapCard({ icon, title, text, href, meta, chart, onClick }: { icon: string; title: string; text: string; href?: string; meta?: string; chart?: { mode: string; param?: number }; onClick?: () => void }) {
   const inner = (
     <>
-      <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}><IconTile icon={icon} />{meta && <span style={{ fontSize: 12, color: N.faint, letterSpacing: ".08em", textTransform: "uppercase" }}>{meta}</span>}</span>
+      <span style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <IconTile icon={icon} />
+        {meta && <span style={{ minWidth: 0, fontSize: 11.5, color: N.muted, letterSpacing: ".14em", textTransform: "uppercase", lineHeight: 1.35 }}>{meta}</span>}
+      </span>
       <b style={{ fontWeight: 500, fontSize: 20, letterSpacing: "-.015em", color: N.ink }}>{title}</b>
       <span style={{ fontSize: 15, lineHeight: 1.55, color: N.ink2 }}>{text}</span>
-      {chart && <LiveChart mode={chart.mode} param={chart.param} height={120} />}
-      <span style={{ fontSize: 14, color: N.deep, fontWeight: 600, marginTop: "auto" }}>Explore →</span>
+      {chart && <LiveChart mode={chart.mode} param={chart.param} height={130} />}
+      <span style={{ fontSize: 14, color: N.deep, fontWeight: 600, marginTop: "auto", display: "inline-flex", alignItems: "center", gap: 6 }}>Explore<NIcon name="arrow" size={16} tone={N.deep} /></span>
     </>
   );
   const st: React.CSSProperties = { ...cardN, padding: 22, display: "flex", flexDirection: "column", gap: 12, textDecoration: "none", textAlign: "left", cursor: "pointer", minWidth: 0 };
@@ -265,7 +348,7 @@ export function CapCard({ icon, title, text, href, meta, chart, onClick }: { ico
 }
 
 /** Service request (virtual visit, package, membership, at-home collection…). Posts to /api/requests. */
-export function RequestForm({ service, title = "Request", options, cta = "Send request", note }: { service: string; title?: string; options?: { label: string; values: string[] }; cta?: string; note?: string }) {
+export function RequestForm({ service, title = "Request", options, cta = "Send request", note, done }: { service: string; title?: string; options?: { label: string; values: string[] }; cta?: string; note?: string; done?: string }) {
   const [f, setF] = useState({ name: "", email: "", phone: "", choice: options?.values[0] || "", message: "", postal: "" });
   const [state, setState] = useState<"idle" | "busy" | "done" | "err">("idle");
   const [err, setErr] = useState("");
@@ -285,9 +368,9 @@ export function RequestForm({ service, title = "Request", options, cta = "Send r
   const inp: React.CSSProperties = { width: "100%", height: 50, padding: "0 14px", borderRadius: 14, border: `1px solid ${N.line}`, background: "#fff", fontSize: 16, color: N.ink, boxSizing: "border-box" };
   if (state === "done") return (
     <div role="status" style={{ ...cardN, padding: 26, display: "grid", gap: 10, justifyItems: "start" }}>
-      <IconTile icon="ph-check" />
-      <b style={{ fontWeight: 500, fontSize: 22 }}>Request received</b>
-      <p style={{ margin: 0, color: N.ink2, fontSize: 15.5, lineHeight: 1.55 }}>The NEYU team will contact you at {f.email}{f.phone ? ` or ${f.phone}` : ""} to confirm the details. Nothing is booked or charged until you confirm.</p>
+      <IconTile icon="check" active />
+      <b style={{ fontWeight: 500, fontSize: 22 }}>{done ? "Message received" : "Request received"}</b>
+      <p style={{ margin: 0, color: N.ink2, fontSize: 15.5, lineHeight: 1.55 }}>{done || <>The NEYU team will contact you at {f.email}{f.phone ? ` or ${f.phone}` : ""} to confirm the details. Nothing is booked or charged until you confirm.</>}</p>
     </div>
   );
   return (
@@ -303,7 +386,7 @@ export function RequestForm({ service, title = "Request", options, cta = "Send r
       <label style={{ display: "grid", gap: 6, fontSize: 14, color: N.ink2 }}>Anything we should know? (optional)<textarea value={f.message} onChange={set("message")} rows={3} maxLength={1000} style={{ ...inp, height: "auto", padding: 12, resize: "vertical" }} /></label>
       {err && <p role="alert" style={{ margin: 0, color: "#8B2F1C", fontSize: 14.5 }}>{err}</p>}
       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-        <button type="submit" disabled={state === "busy"} style={{ ...btn("grad"), opacity: state === "busy" ? 0.6 : 1 }}>{state === "busy" ? "Sending…" : cta}<i className="ph ph-arrow-right" /></button>
+        <button type="submit" disabled={state === "busy"} style={{ ...btn("grad"), opacity: state === "busy" ? 0.6 : 1 }}>{state === "busy" ? "Sending…" : cta}<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></button>
         <span style={{ fontSize: 12.5, color: N.faint }}>{note || "No payment is taken online. The team confirms everything with you first."}</span>
       </div>
     </form>
@@ -317,7 +400,7 @@ export function PillarHero({ kicker, title, lead, page, suggestions, visual, sta
       <FlowLines />
       <div style={{ ...wrapN, position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: "clamp(28px,4vw,56px)", alignItems: "center" }}>
         <div style={{ display: "grid", gap: 18, minWidth: 0, gridTemplateColumns: "minmax(0,1fr)" }}>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><span style={eyebrowN}>{kicker}</span><AiBadge /></div>
+          <Kicker label={kicker} />
           <h1 style={{ margin: 0, fontSize: "clamp(40px,6vw,76px)", lineHeight: 1, letterSpacing: "-.045em", fontWeight: 500, color: N.ink }}>{title}</h1>
           <p style={{ ...leadN, margin: 0 }}>{lead}</p>
           <AskNeyu page={page} suggestions={suggestions} />
@@ -341,7 +424,7 @@ export function CtaBand({ title, text, primary, secondary }: { title: string; te
           <p style={{ margin: "12px 0 0", fontSize: 17, lineHeight: 1.6, color: "rgba(234,242,246,.78)" }}>{text}</p>
         </div>
         <div style={{ position: "relative", display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <a href={primary.href} style={{ ...btn("grad") }}>{primary.label}<i className="ph ph-arrow-right" /></a>
+          <a href={primary.href} style={{ ...btn("grad") }}>{primary.label}<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a>
           {secondary && (secondary.alba !== undefined
             ? <button onClick={() => openAlba(secondary.alba || undefined)} style={{ ...btn("ghost"), color: "#fff", borderColor: "rgba(255,255,255,.5)" }}><AlbaOrb size={20} motion={false} />{secondary.label}</button>
             : <a href={secondary.href} style={{ ...btn("ghost"), color: "#fff", borderColor: "rgba(255,255,255,.5)" }}>{secondary.label}</a>)}
