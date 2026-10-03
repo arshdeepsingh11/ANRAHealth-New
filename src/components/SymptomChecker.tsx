@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Sparkles, PhoneCall } from "lucide-react";
+import AlbaOrb from "@/components/AlbaOrb";
+import { NIcon } from "@/components/neyu/icons";
 
 // Client-side emergency keyword check — instant, no API delay. First-line
 // safety net; server independently checks again before returning any result.
@@ -25,10 +26,10 @@ function hasEmergencyKeywords(text: string) {
 }
 
 const URGENCY_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-  routine: { label: "Routine", color: "#9E801F", bg: "#EFEBDC" },
-  soon: { label: "Book Soon", color: "#8D7A4B", bg: "#F0E1B2" },
-  urgent: { label: "Urgent", color: "#D65A5A", bg: "#FBEDED" },
-  emergency: { label: "Emergency", color: "#FFFFFF", bg: "#D65A5A" },
+  routine: { label: "Routine", color: "#1B7F63", bg: "#E4F5EF" },
+  soon: { label: "Book soon", color: "#8A5A12", bg: "#FBF0DC" },
+  urgent: { label: "Urgent", color: "#A93A2C", bg: "#FBE9E4" },
+  emergency: { label: "Emergency", color: "#FFFFFF", bg: "#B8433A" },
 };
 
 type Specialty = "cardiology" | "respiratory";
@@ -107,74 +108,52 @@ export default function SymptomChecker({ specialty = "cardiology" }: SymptomChec
 
   const urgencyStyle = result ? URGENCY_LABELS[result.urgency] || URGENCY_LABELS.routine : null;
 
+  const ink = "#0E1B2C", ink2 = "#33465A", muted = "#5E6B78", line = "#E2E6E8";
+  const pill = (primary: boolean): React.CSSProperties => ({ height: 48, padding: "0 22px", borderRadius: 999, border: primary ? 0 : `1px solid ${line}`, background: primary ? "linear-gradient(120deg,#2FBF94 0%,#1FA7B4 45%,#2273D6 100%)" : "#fff", color: primary ? "#fff" : ink2, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8 });
   return (
-    <div className="glass rounded-3xl p-6 md:p-8">
-      <div className="flex items-center gap-2 mb-1">
-        <Sparkles size={18} className="text-gold-600" />
-        <p className="text-sm font-semibold tracking-wide uppercase text-gold-600">AI Symptom Checker</p>
+    <div style={{ background: "#fff", border: `1px solid ${line}`, borderRadius: 26, padding: "clamp(18px,3vw,30px)", display: "grid", gap: 14, boxShadow: "0 30px 60px -44px rgba(14,27,44,.35)", color: ink }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <AlbaOrb size={26} />
+        <span style={{ fontSize: 12, letterSpacing: ".18em", textTransform: "uppercase", color: "#1FA7B4", fontWeight: 600 }}>Neyu · AI symptom check</span>
       </div>
-      <h2 className="text-xl md:text-2xl font-bold mb-2 text-graphite-900">Tell us how you're feeling</h2>
-      <p className="text-sm text-graphite-500 mb-6">
-        This tool provides general guidance only and is not a medical diagnosis. If you're experiencing a medical emergency, call 911 immediately.
-      </p>
+      <h2 style={{ margin: 0, fontSize: "clamp(22px,2.6vw,28px)", fontWeight: 500, letterSpacing: "-.02em" }}>Tell Neyu how you’re feeling</h2>
+      <p style={{ margin: 0, fontSize: 14.5, color: muted, lineHeight: 1.55 }}>General guidance only — not a medical diagnosis. If you’re experiencing a medical emergency, call 911 immediately.</p>
 
-      <textarea
-        value={description}
-        onChange={handleChange}
-        placeholder={config.placeholder}
-        rows={4}
-        className="w-full px-4 py-3 rounded-xl border border-pearl-300 text-sm bg-[#e8e4d5] focus:outline-none focus:ring-2 focus:ring-gold-500 resize-none mb-3 text-black"
-      />
+      <textarea value={description} onChange={handleChange} placeholder={config.placeholder} rows={4} aria-label="Describe your symptoms"
+        style={{ width: "100%", boxSizing: "border-box", padding: "14px 16px", borderRadius: 18, border: `1px solid ${line}`, background: "#FAFBFB", fontSize: 16, lineHeight: 1.5, color: ink, resize: "vertical", fontFamily: "inherit", outline: "none" }} />
 
       {instantEmergency && !result && (
-        <div className="flex items-start gap-2 mb-4 p-3 rounded-xl bg-red-50 border border-red-300">
-          <AlertTriangle size={16} className="text-red-600 shrink-0 mt-0.5" />
-          <p className="text-sm font-semibold text-red-600">
-            This may describe an emergency. If so, call 911 now.
-          </p>
+        <div role="alert" style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: 14, background: "#FBE9E4", border: "1px solid #F0B9AC" }}>
+          <NIcon name="alert" size={18} tone="#A93A2C" style={{ marginTop: 1 }} />
+          <p style={{ margin: 0, fontSize: 14.5, fontWeight: 600, color: "#A93A2C" }}>This may describe an emergency. If so, call 911 now.</p>
         </div>
       )}
 
-      <div className="flex flex-wrap gap-3">
-        <button
-          onClick={handleSubmit}
-          disabled={description.trim().length < 3 || loading}
-          className="gold-gloss px-6 py-3 rounded-full text-sm font-semibold transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
-        >
-          {loading ? "Checking…" : "Check My Symptoms"}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+        <button onClick={handleSubmit} disabled={description.trim().length < 3 || loading} style={{ ...pill(true), opacity: description.trim().length < 3 || loading ? 0.45 : 1 }}>
+          <NIcon name="spark" size={16} tone="light" />{loading ? "Neyu is reading…" : "Check my symptoms"}
         </button>
-        {result && (
-          <button onClick={reset} className="px-5 py-3 rounded-full text-sm font-semibold border border-pearl-300 text-graphite-600 hover:bg-pearl-50">
-            Check Something Else
-          </button>
-        )}
+        {result && <button onClick={reset} style={pill(false)}>Check something else</button>}
       </div>
 
-      {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
+      {error && <p role="alert" style={{ margin: 0, fontSize: 14.5, color: "#A93A2C" }}>{error}</p>}
 
       {result && (
-        <div className="mt-6 pt-6 border-t border-pearl-200">
+        <div aria-live="polite" style={{ animation: "fadeUp .3s ease" }}>
           {result.emergency ? (
-            <div className="rounded-2xl p-6 flex items-start gap-4 bg-red-600">
-              <PhoneCall size={28} className="text-white shrink-0 mt-0.5" />
-              <div>
-                <p className="text-lg font-bold text-white mb-1">Call 911</p>
-                <p className="text-sm text-white/90">{result.summary}</p>
-              </div>
+            <div style={{ borderRadius: 20, padding: 20, display: "flex", gap: 14, alignItems: "flex-start", background: "#B8433A", color: "#fff" }}>
+              <NIcon name="phone" size={28} tone="light" />
+              <div><p style={{ margin: "0 0 4px", fontSize: 19, fontWeight: 600 }}>Call 911</p><p style={{ margin: 0, fontSize: 15, opacity: 0.92 }}>{result.summary}</p></div>
             </div>
           ) : (
-            <div className="rounded-2xl p-6 bg-pearl-50">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ color: urgencyStyle!.color, background: urgencyStyle!.bg }}>
-                  {urgencyStyle!.label}
-                </span>
-                <span className="text-xs font-semibold text-graphite-500">Suggested: {result.recommendedDiscipline}</span>
+            <div style={{ borderRadius: 20, padding: 20, background: "linear-gradient(160deg,#FFFFFF,#F1F9F7)", border: "1px solid rgba(47,191,148,.28)", display: "grid", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, padding: "4px 12px", borderRadius: 999, color: urgencyStyle!.color, background: urgencyStyle!.bg }}>{urgencyStyle!.label}</span>
+                <span style={{ fontSize: 13.5, color: muted }}>Suggested: {result.recommendedDiscipline}</span>
               </div>
-              <p className="text-sm leading-relaxed text-graphite-800 mb-4">{result.summary}</p>
-              <p className="text-xs text-graphite-400 mb-4">This is general guidance, not a diagnosis.</p>
-              <Link href={config.linkHref} className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold-700">
-                {config.linkLabel} →
-              </Link>
+              <p style={{ margin: 0, fontSize: 15.5, lineHeight: 1.6, color: ink }}>{result.summary}</p>
+              <p style={{ margin: 0, fontSize: 12.5, color: "#8A96A3" }}>This is general guidance, not a diagnosis.</p>
+              <Link href={config.linkHref} style={{ fontSize: 14, fontWeight: 600, color: "#1D5FA8", textDecoration: "none" }}>{config.linkLabel} →</Link>
             </div>
           )}
         </div>
