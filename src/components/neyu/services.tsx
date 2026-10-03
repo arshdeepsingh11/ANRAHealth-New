@@ -13,6 +13,7 @@ import { LAB_TESTS, money } from "@/data/bioaroCatalog";
 import { PAPERS } from "@/data/longevityScience";
 import { OS, PHILOSOPHY, PACKAGES, pkgLabTotal, MEMBERSHIP, MEMBERSHIP_COMPARE, memberHas, AT_HOME_TESTS, SERVICES, PILLARS, type Pkg } from "@/data/neyu";
 import { N, Section, PillarHero, NodeNet, LiveChart, NeyuReads, CapCard, CtaBand, StepRail, AiBadge, RequestForm, AskNeyu, btn, cardN, gradText, IconTile, FlowLines, StatN, wrapN, type NetNode } from "./kit";
+import { Cylinder3D, PillNav } from "./fx";
 import { NIcon } from "./icons";
 
 // ═════════════════════ MEET NEYU ═════════════════════
@@ -287,13 +288,17 @@ export function Membership() {
 export function AtHome() {
   const [postal, setPostal] = useState("");
   const fsa = postal.trim().toUpperCase().replace(/\s/g, "").slice(0, 3);
-  const area = !fsa ? null : /^T[123]/.test(fsa) ? { ok: true, t: "Calgary area — at-home collection is available." } : /^T[0-9]/.test(fsa) ? { ok: true, t: "Alberta — the team will confirm availability for your area." } : { ok: false, t: "Outside our current area — the team will suggest the closest option." };
+  const area = !fsa ? null : /^T[123]/.test(fsa) ? { ok: true, t: "Calgary area — at-home collection is available." } : /^T[0-9]/.test(fsa) ? { ok: true, t: "Alberta — the team will confirm availability for your area." } : { ok: false, t: "At-home collection is Calgary-only for now. Outside Alberta, request a visit anyway: the team can send a lab requisition you can use at a collection site near you, and results still come into your NEYU record." };
   const tests = AT_HOME_TESTS.map((s) => LAB_TESTS.find((t) => t.id === "labs-" + s)).filter(Boolean);
+  const cats = ["home", ...Array.from(new Set(LAB_TESTS.map((t) => t.cat)))];
+  const [cat, setCat] = useState("home");
+  const shown = (cat === "home" ? tests : LAB_TESTS.filter((t) => t.cat === cat)) as typeof LAB_TESTS;
+  const catIcon = (c: string) => /genom|dna/i.test(c) ? "dna" : /aging/i.test(c) ? "hourglass" : /hormone/i.test(c) ? "hormone" : /nutri/i.test(c) ? "food" : /vascul|heart|cardio/i.test(c) ? "vessel" : /brain/i.test(c) ? "brain" : /gut/i.test(c) ? "microbiome" : /skin/i.test(c) ? "skin" : "flask";
   const steps = [
-    { t: "Choose tests", d: "Pick tests yourself, follow a package, or ask Neyu.", icon: "ph-list-checks" },
-    { t: "Book a time", d: "Home or office, at a time that suits you.", icon: "ph-calendar-check" },
-    { t: "Collection", d: "A trained collector visits; it takes minutes.", icon: "ph-house-line" },
-    { t: "Results in your record", d: "Results arrive in My Health Space; Neyu explains them.", icon: "ph-folder-simple-user" },
+    { t: "Choose tests", d: "Pick tests yourself, follow a package, or ask Neyu.", icon: "ph-list-checks", more: ["Single tests or a full package", "Prices shown up front (BioAro Labs list prices)", "Not sure? Describe your goal and get a short list"], neyu: "Tell me your goal — heart health, energy, aging — and I'll suggest the tests that fit, with what each one shows." },
+    { t: "Book a time", d: "Home or office, at a time that suits you.", icon: "ph-calendar-check", more: ["Send a request — nothing is charged online", "The NEYU team confirms the time and price with you", "Morning slots for fasting tests"], neyu: "I'll tell you which tests need fasting or a morning sample, so the visit is right the first time." },
+    { t: "Collection", d: "A trained collector visits; it takes minutes.", icon: "ph-house-line", more: ["A trained collector comes to you", "It only takes a few minutes", "Samples go to the lab the same day"], neyu: "Before the visit I send a short checklist: water, sleeves, ID and any medicines to mention." },
+    { t: "Results in your record", d: "Results arrive in My Health Space; Neyu explains them.", icon: "ph-folder-simple-user", more: ["Results land in My Health Space", "Shown next to your past results and trends", "A NEYU physician reviews anything that needs follow-up"], neyu: "I explain each value in plain language and show what changed since last time — then what to ask your doctor." },
   ];
   const [st, setSt] = useState(2);
   return (
@@ -314,9 +319,30 @@ export function AtHome() {
           <NeyuReads text="Some tests need fasting or a morning sample. When you book, the team confirms the exact preparation for the tests you chose." ask="How should I prepare for an at-home blood test?" />
         </div>
       </Section>
-      <Section tone="white" label="Tests" eyebrow="Popular at-home tests" title="Advanced testing, at home.">
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,250px),1fr))", gap: 12 }}>
-          {tests.map((t) => <div key={t!.id} style={{ ...cardN, padding: 18, display: "grid", gap: 6 }}><span style={{ fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{t!.cat}</span><b style={{ fontWeight: 500, fontSize: 17 }}>{t!.name}</b><span style={{ fontSize: 14, color: N.ink2 }}>{t!.why}</span><span style={{ fontSize: 16 }}>{money(t!.price)}</span></div>)}
+      <Section tone="white" label="Tests" eyebrow="BioAro Labs · 3D showcase" title={<>Advanced testing, <span style={gradText}>at home.</span></>} lead="Spin the showcase, hover to pause, tap a test to see what it measures. The team confirms which tests can be collected at home when you book.">
+        <div style={{ display: "grid", gap: 14 }}>
+          <PillNav label="Test categories" size="sm" tabs={cats.map((c) => ({ k: c, label: c === "home" ? "Popular at home" : c }))} value={cat} onChange={(k) => setCat(k)} />
+          <Cylinder3D label="BioAro Labs tests" items={shown} height={400}
+            render={(t, front) => <div style={{ ...cardN, width: "100%", height: "100%", boxSizing: "border-box", padding: 18, display: "flex", flexDirection: "column", gap: 8, background: front ? "linear-gradient(160deg,#FFFFFF,#EEF7FC)" : "#FFFFFF", borderColor: front ? "rgba(42,132,228,.45)" : N.line }}>
+              <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><IconTile icon={catIcon(t.cat)} size={40} active={front} /><span style={{ fontSize: 17, fontWeight: 500 }}>{money(t.price)}</span></span>
+              <span style={{ fontSize: 11.5, letterSpacing: ".12em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{t.cat}</span>
+              <b style={{ fontWeight: 500, fontSize: 16.5, lineHeight: 1.25 }}>{t.name}</b>
+              <span style={{ fontSize: 13.5, color: N.ink2, lineHeight: 1.45, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" }}>{t.why}</span>
+              <span style={{ marginTop: "auto", fontSize: 13, color: N.blue }}>Tap for details →</span>
+            </div>}
+            detail={(t) => <div style={{ ...cardN, padding: "clamp(16px,2.4vw,24px)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
+              <div style={{ display: "grid", gap: 8, alignContent: "start" }}>
+                <span style={{ fontSize: 12, letterSpacing: ".12em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{t.cat}</span>
+                <b style={{ fontWeight: 500, fontSize: 22 }}>{t.name}</b>
+                <span style={{ fontSize: 15, color: N.ink2, lineHeight: 1.55 }}>{t.why}</span>
+                <span style={{ display: "flex", gap: 14, flexWrap: "wrap", fontSize: 14, color: N.ink }}>{t.facts.map(([k, v]) => <span key={k}><span style={{ color: N.muted }}>{k}: </span>{v}</span>)}</span>
+                <span style={{ fontSize: 20, fontWeight: 500 }}>{money(t.price)} <span style={{ fontSize: 13, color: N.muted, fontWeight: 400 }}>BioAro Labs list price</span></span>
+              </div>
+              <div style={{ display: "grid", gap: 10, alignContent: "start" }}>
+                <NeyuReads text={`${t.name}: ${t.bestFor || t.why}`} ask={`What does the ${t.name} measure, and how do I prepare for it?`} />
+                <a href="#book" style={{ ...btn("grad"), justifySelf: "start" }}>Request this test<NIcon name="arrow" size={16} tone="light" /></a>
+              </div>
+            </div>} />
         </div>
       </Section>
       <Section id="book" label="Book" eyebrow="Book a collection" title="Request an at-home visit.">
