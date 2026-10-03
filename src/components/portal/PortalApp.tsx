@@ -22,6 +22,7 @@ import { More, Profile, Privacy, Notifications } from "./screens/Account";
 import Sheets from "./Sheets";
 import { Heart, Lifestyle, Family, CareView, Rewards, Story } from "./screens/Universe";
 import Baseline from "./screens/Baseline";
+import { NIcon } from "@/components/neyu/icons";
 
 export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; initialRoute: Route }) {
   const [route, setRoute] = useState<Route>(initialRoute);
@@ -148,7 +149,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <button onClick={() => setSheet({ t: "alba" })} className="h-albabtn" aria-label="Ask Neyu about your health data" style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 20, background: "#E6F3F8", color: C.lavDeep, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
-              <i className="ph ph-sparkle" style={{ fontSize: 17 }} /><span className="mhs-hide-sm">Ask Neyu</span>
+              <NIcon name="ph-sparkle" size={17} tone="currentColor" /><span className="mhs-hide-sm">Ask Neyu</span>
             </button>
           </div>
         </header>
@@ -160,7 +161,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
             return (
               <button key={id} onClick={() => tab(id)} aria-current={a ? "page" : undefined} className="h-nav"
                 style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 12, background: a ? "rgba(63,111,124,.10)" : "transparent", color: a ? C.tealDark : C.ink2, fontSize: 15, fontWeight: a ? 500 : 400, cursor: "pointer", transition: "background 160ms", whiteSpace: "nowrap" }}>
-                <i className={(a ? "ph-fill " : "ph ") + icon} style={{ fontSize: 18 }} />{label}
+                <NIcon name={icon} size={18} tone="currentColor" />{label}
               </button>
             );
           })}
@@ -168,7 +169,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
 
         <div ref={mainRef} style={{ scrollMarginTop: 90 }}>
           {showBack && (
-            <button onClick={back} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, marginBottom: 12, border: "none", background: "none", fontSize: 15, fontWeight: 500, color: C.teal, cursor: "pointer" }}><i className="ph ph-caret-left" style={{ fontSize: 18 }} />{backLabel}</button>
+            <button onClick={back} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, marginBottom: 12, border: "none", background: "none", fontSize: 15, fontWeight: 500, color: C.teal, cursor: "pointer" }}><NIcon name="ph-caret-left" size={18} tone="currentColor" />{backLabel}</button>
           )}
           <div key={scr + (route.k || "") + (route.id || "")}>{screen}</div>
         </div>
@@ -177,7 +178,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
 
         {toastText && (
           <div role="status" className="mhs-toast" style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", zIndex: 95, display: "flex", alignItems: "center", gap: 8, maxWidth: "calc(100% - 32px)", padding: "12px 16px", borderRadius: 14, background: C.ink, color: C.page, fontSize: 14, boxShadow: "0 12px 32px rgba(29,35,39,.25)", animation: "mhs-fadeUp 260ms ease" }}>
-            <i className="ph ph-check-circle" style={{ fontSize: 17, color: "#9FC9D3" }} />{toastText}
+            <NIcon name="ph-check-circle" size={17} tone={"#9FC9D3"} />{toastText}
           </div>
         )}
       </div>
