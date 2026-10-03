@@ -1,7 +1,7 @@
 // Config for the redesigned specialty pages (shared SpecialtyExperience).
 // Page text comes from specialtyContent / content.ts / respiratory.ts;
 // this file adds the look (accent, video), the interactive tools, the
-// related BioAro Labs tests and ALBA prompts for each specialty.
+// related BioAro Labs tests and Neyu prompts for each specialty.
 
 import { specialtyContent } from "./specialtyContent";
 import { services, cardiacSymptoms } from "./content";
@@ -28,7 +28,7 @@ export interface StudioConfig {
   disciplines: string[];         // physicians filter
   physicianNote?: string;
   partner?: { name: string; phone: string; tel: string; site: string; note: string };
-  ask: string[];                 // ALBA quick questions
+  ask: string[];                 // Neyu quick questions
 }
 
 const sc = specialtyContent;
@@ -107,7 +107,7 @@ export const STUDIO: Record<string, StudioConfig> = {
     ask: ["How much fibre should I eat?", "What does a balanced plate look like?", "What is a gut microbiome test?", "How can I lower cholesterol with food?"],
   },
   "precision-medicine": {
-    slug: "precision-medicine", label: sc["precision-medicine"].label, icon: "ph-dna", accent: ["#4A3AA7", "#8C6FB8"],
+    slug: "precision-medicine", label: sc["precision-medicine"].label, icon: "ph-dna", accent: ["#1D5FA8", "#2A84E4"],
     morph: ["your DNA.", "your biology.", "your risk.", "you."],
     tagline: sc["precision-medicine"].tagline, overview: sc["precision-medicine"].overview,
     care: conditionCare(sc["precision-medicine"].conditionsTreated, "ph-dna"), conditions: sc["precision-medicine"].conditionsTreated, whenToSee: sc["precision-medicine"].whenToSee,
