@@ -13,6 +13,7 @@ import { METRIC_DEFS } from "@/lib/portal/metrics";
 import { usePortal } from "./context";
 import { EP, api, prime, invalidate, load, useResource } from "./api";
 import { C, Switch, Loading, btnPrimary, btnOutline, btnLink } from "./ui";
+import { NIcon } from "@/components/neyu/icons";
 
 const input: React.CSSProperties = { width: "100%", height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${C.line12}`, background: C.card, fontSize: 16, color: C.ink, boxSizing: "border-box" };
 const lab: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 6, fontSize: 14, color: C.ink2 };
@@ -42,7 +43,7 @@ export function ConnectSheet({ id }: { id: string }) {
   return (
     <>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-        <span style={{ width: 48, height: 48, borderRadius: 14, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><i className={d.icon} style={{ fontSize: 24 }} /></span>
+        <span style={{ width: 48, height: 48, borderRadius: 14, background: C.tealWash, display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><NIcon name={d.icon.replace(/^ph(-fill|-bold)? /, "")} size={24} tone="currentColor" /></span>
         <div><h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>{d.name}{d.beta && <span style={{ marginLeft: 8, fontSize: 12, padding: "2px 8px", borderRadius: 10, background: C.lav, color: C.lavInk, verticalAlign: "middle" }}>Beta</span>}</h2>
           <span style={{ fontSize: 13, color: C.muted }}>{d.mode === "oauth" ? (d.available ? "One-time sign-in · syncs every day" : "Opening soon") : d.mode === "shortcut" ? "Daily sync through Apple Health" : "Coming soon"}</span></div>
       </div>
@@ -64,7 +65,7 @@ export function ConnectSheet({ id }: { id: string }) {
       <div style={{ fontSize: 13, color: C.muted, marginBottom: 6 }}>Shares</div>
       <p style={{ margin: "0 0 18px", fontSize: 14.5, color: C.ink3 }}>{d.signals.join(" · ")}</p>
       <button onClick={primary} disabled={busy || waiting} className="h-primary" style={{ ...btnPrimary, width: "100%", height: 48, opacity: waiting ? 0.55 : 1 }}>{busy ? "One moment…" : label}</button>
-      <p style={{ margin: "12px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 6 }}><i className="ph ph-lock-simple" style={{ marginTop: 2 }} />You choose what's shared and can disconnect any time. Wellness data, not a diagnosis.</p>
+      <p style={{ margin: "12px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 6 }}><NIcon name="ph-lock-simple" size="1em" tone="currentColor" style={{marginTop: 2}} />You choose what's shared and can disconnect any time. Wellness data, not a diagnosis.</p>
     </>
   );
 }
@@ -252,7 +253,7 @@ export function LocationSheet() {
     <>
       <H sub="Your daily brief uses local weather and air quality from Environment Canada. We only store your city, never your exact position.">Your city</H>
       <Err msg={err} />
-      <button onClick={locate} disabled={!!busy} style={{ ...btnOutline, width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 14 }}><i className="ph ph-navigation-arrow" />{busy === "geo" ? "Finding you…" : "Use my location"}</button>
+      <button onClick={locate} disabled={!!busy} style={{ ...btnOutline, width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 14 }}><NIcon name="ph-navigation-arrow" size="1em" tone="currentColor" />{busy === "geo" ? "Finding you…" : "Use my location"}</button>
       <label style={{ ...lab, marginBottom: 14 }}>Or choose a city
         <select value={city} onChange={(e) => setCity(e.target.value)} style={input}>
           <option value="">Choose…</option>
@@ -288,7 +289,7 @@ export function ShareSheet() {
   if (link?.url) return (
     <>
       <H sub={`Anyone with this link can view it until ${new Date(link.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}. Send it only to your clinician.`}>Your link is ready</H>
-      <div style={{ padding: 14, borderRadius: 14, background: C.card, border: `1px solid ${C.line}`, fontSize: 13.5, wordBreak: "break-all", marginBottom: 12, fontFamily: "var(--font-jetbrains-mono, monospace)" }}>{link.url}</div>
+      <div style={{ padding: 14, borderRadius: 14, background: C.card, border: `1px solid ${C.line}`, fontSize: 13.5, wordBreak: "break-all", marginBottom: 12, fontFamily: "var(--font-dm-sans), system-ui, sans-serif" }}>{link.url}</div>
       <div style={{ display: "flex", gap: 10 }}>
         <button onClick={() => navigator.clipboard?.writeText(link.url!).then(() => toast("Link copied"), () => {})} className="h-primary" style={{ ...btnPrimary, flex: 1 }}>Copy link</button>
         {typeof navigator !== "undefined" && "share" in navigator && <button onClick={() => (navigator as any).share({ title: "My health summary", url: link.url }).catch(() => {})} style={{ ...btnOutline, flex: 1 }}>Share…</button>}
