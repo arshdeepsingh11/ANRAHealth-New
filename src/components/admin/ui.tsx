@@ -9,7 +9,7 @@ export const T = {
   page: "#F6F4F1", side: "#F3F0EC", card: "#FFFDFB", stone: "#EEEAE5", hover: "#FBF9F6", fresh: "#F4F9FA",
   ink: "#1D2327", ink2: "#5B6369", faint: "#737A80",
   teal: "#3F6F7C", tealDk: "#2F5A66", tealLt: "#6EA8B6", wash: "#E8F2F4", chip: "#E1EDF0",
-  lav: "#8C6FB8", lavInk: "#5F4A8A", lavWash: "#F0ECF7",
+  lav: "#2A84E4", lavInk: "#5F4A8A", lavWash: "#F0ECF7",
   peach: "#FBEEE8", peachInk: "#8B4B37",
   line: "rgba(29,35,39,.06)", line2: "rgba(29,35,39,.08)", line3: "rgba(29,35,39,.14)",
   shadow: "0 30px 60px -30px rgba(20,24,27,.35)",
@@ -39,7 +39,7 @@ export function TestTag({ show = true }: { show?: boolean }) {
 }
 
 export const Orb = ({ size = 40, anim = false, style }: { size?: number; anim?: boolean; style?: React.CSSProperties }) => (
-  <span aria-hidden style={{ width: size, height: size, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%,#D9CCF0,#8C6FB8 60%,#5F4A8A)", flex: "none", display: "inline-block", animation: anim ? "anraOrb 4s ease-in-out infinite" : undefined, ...style }} />
+  <span aria-hidden style={{ width: size, height: size, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%,#D9CCF0,#2A84E4 60%,#5F4A8A)", flex: "none", display: "inline-block", animation: anim ? "anraOrb 4s ease-in-out infinite" : undefined, ...style }} />
 );
 
 // ── Style presets ─────────────────────────────────────────────────────────
