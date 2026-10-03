@@ -7,6 +7,7 @@ import { useAnraNav } from "@/lib/useAnraNav";
 import { typeOut } from "@/lib/albaClient";
 import { PLACEHOLDERS, QUICK_CHIPS, isEmergency, routeFor, routeForHref, type ConciergeRoute } from "@/data/homeContent";
 import NeyuLogo from "@/components/brand/NeyuLogo";
+import { NIcon } from "@/components/neyu/icons";
 
 interface Answer { concern: string; text: string; route: ConciergeRoute }
 
@@ -81,7 +82,7 @@ export default function HeroConcierge() {
         <div style={{ position: "relative", borderRadius: 999, boxShadow: "0 24px 50px -28px rgba(42,132,228,.6)" }}>
           <anra-electro radius="34" style={{ position: "absolute", inset: -6, pointerEvents: "none", zIndex: 1 }} />
           <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, background: "#FDFCFA", borderRadius: 999, padding: "6px 6px 6px 18px", border: "1px solid #D6EEF6" }}>
-            <i className="ph ph-sparkle" style={{ fontSize: 20, color: "#2A84E4" }} />
+            <NIcon name="ph-sparkle" size={20} tone={"#2A84E4"} />
             <div style={{ position: "relative", flex: 1, minWidth: 0 }}>
               <input
                 ref={inputRef}
@@ -145,21 +146,21 @@ export default function HeroConcierge() {
                 <div style={{ fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", color: "#1D5FA8", fontWeight: 600 }}>Neyu · this may relate to</div>
                 <div style={{ fontSize: 20, fontWeight: 500, letterSpacing: "-.01em" }}>{ans.concern}</div>
               </div>
-              <button onClick={clear} aria-label="Clear" style={{ width: 38, height: 38, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center" }}><i className="ph ph-x" /></button>
+              <button onClick={clear} aria-label="Clear" style={{ width: 38, height: 38, border: 0, background: "#EFECE6", borderRadius: 10, display: "grid", placeItems: "center" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
             </div>
             <p style={{ margin: "12px 0 0", fontSize: 16, color: "#2A2F33", minHeight: "1.5em" }}>
               {ans.text.slice(0, shown)}
               {shown < ans.text.length && <span style={{ display: "inline-block", width: 2, height: "1em", background: "#2A84E4", marginLeft: 2, verticalAlign: -2, animation: "caret 1s steps(1) infinite" }} />}
             </p>
             {ans.route.safety && (
-              <div style={{ marginTop: 12, display: "flex", gap: 10, padding: "12px 14px", borderRadius: 12, background: "#FDF1EE", border: "1px solid #F0C9C0", color: "#6E1A10", fontSize: 14 }}><i className="ph ph-warning-circle" style={{ fontSize: 18 }} />{ans.route.safety}</div>
+              <div style={{ marginTop: 12, display: "flex", gap: 10, padding: "12px 14px", borderRadius: 12, background: "#FDF1EE", border: "1px solid #F0C9C0", color: "#6E1A10", fontSize: 14 }}><NIcon name="ph-warning-circle" size={18} tone="currentColor" />{ans.route.safety}</div>
             )}
             <div style={{ marginTop: 12, display: "grid" }}>
               {ans.route.steps.map((st, i) => (
                 <button key={st.label} onClick={() => go(st)} className="hv-tealText" style={{ textAlign: "left", background: "none", border: 0, borderTop: "1px solid #EFECE6", padding: "12px 0", display: "grid", gridTemplateColumns: "34px 1fr auto", gap: 10, alignItems: "center", minHeight: 56 }}>
                   <span style={{ fontSize: 12, color: "#2A84E4" }}>{String(i + 1).padStart(2, "0")}</span>
                   <span><span style={{ display: "block", fontWeight: 500 }}>{st.label}</span><span style={{ display: "block", fontSize: 14, color: "#5A626A" }}>{st.desc}</span></span>
-                  <i className="ph ph-arrow-right" />
+                  <NIcon name="ph-arrow-right" size="1em" tone="currentColor" />
                 </button>
               ))}
             </div>
