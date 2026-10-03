@@ -25,7 +25,7 @@ export interface CatalogItem {
 }
 
 export const VENDOR_NAME: Record<Vendor, string> = { labs: "BioAro Labs", drugs: "BioAro Drugs", nea: "Nea Precision Skin" };
-export const VENDOR_COLOR: Record<Vendor, string> = { labs: "#6EA8B6", drugs: "#8C6FB8", nea: "#B9786A" };
+export const VENDOR_COLOR: Record<Vendor, string> = { labs: "#6EA8B6", drugs: "#2A84E4", nea: "#3CC79E" };
 
 /** Price label. 0 = price set at consultation (Nea treatments). */
 export const money = (p: number) => (p === 0 ? "Free consult" : "$" + (p % 1 ? p.toFixed(2) : p.toLocaleString("en-CA")));
