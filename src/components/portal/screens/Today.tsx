@@ -7,6 +7,7 @@ import { usePortal } from "../context";
 import { EP, load, useResource } from "../api";
 import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
 import { BaselineCard } from "./Baseline";
+import { NIcon } from "@/components/neyu/icons";
 
 const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
 
@@ -49,48 +50,48 @@ function BriefCard() {
   return (
     <section aria-label="NEYU Today" style={{ marginBottom: 28, padding: "24px 24px 20px", borderRadius: 24, background: "linear-gradient(160deg,#E4EFF1 0%,#F3EEF8 55%,#FFFDFB 100%)", border: "1px solid rgba(29,35,39,.05)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 14 }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, letterSpacing: ".08em", color: C.tealDark }}><i className="ph ph-sun-horizon" style={{ fontSize: 17 }} />NEYU TODAY</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, letterSpacing: ".08em", color: C.tealDark }}><NIcon name="ph-sun-horizon" size={17} tone="currentColor" />NEYU TODAY</span>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {b.streak > 0 && <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph-fill ph-fire" style={{ color: "#D9822B" }} />{b.streak}-day streak</button>}
-          <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><i className="ph ph-trophy" style={{ color: C.teal }} />{b.points.toLocaleString("en-US")} pts</button>
+          {b.streak > 0 && <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><NIcon name="ph-fire" size="1em" tone={"#D9822B"} />{b.streak}-day streak</button>}
+          <button onClick={() => go("rewards")} style={{ display: "flex", alignItems: "center", gap: 5, height: 30, padding: "0 11px", borderRadius: 15, border: "none", background: "rgba(255,253,251,.8)", fontSize: 13, color: C.ink2, cursor: "pointer" }}><NIcon name="ph-trophy" size="1em" tone={C.teal} />{b.points.toLocaleString("en-US")} pts</button>
         </div>
       </div>
       {w && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
-          <button onClick={() => openSheet({ t: "location" })} style={{ display: "flex", alignItems: "center", gap: 7, height: 34, padding: "0 12px", borderRadius: 17, border: "none", background: C.card, fontSize: 14, color: C.ink, cursor: "pointer" }}><i className={WX_ICON(w.condition)} style={{ fontSize: 18, color: "#D9822B" }} />{w.tempC != null ? `${Math.round(w.tempC)}°C` : ""} {w.condition || ""}<span style={{ color: C.muted }}>· {w.place.split(",")[0]}</span></button>
-          {w.aqhi != null && <span title="Air Quality Health Index (Environment Canada)" style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: aq.bg, color: aq.ink, fontSize: 14 }}><i className="ph ph-wind" />AQHI {w.aqhi} · {w.aqhiRisk}</span>}
+          <button onClick={() => openSheet({ t: "location" })} style={{ display: "flex", alignItems: "center", gap: 7, height: 34, padding: "0 12px", borderRadius: 17, border: "none", background: C.card, fontSize: 14, color: C.ink, cursor: "pointer" }}><NIcon name={String(WX_ICON(w.condition)).replace(/^ph(-fill|-bold)? /, "")} size={18} tone={"#D9822B"} />{w.tempC != null ? `${Math.round(w.tempC)}°C` : ""} {w.condition || ""}<span style={{ color: C.muted }}>· {w.place.split(",")[0]}</span></button>
+          {w.aqhi != null && <span title="Air Quality Health Index (Environment Canada)" style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: aq.bg, color: aq.ink, fontSize: 14 }}><NIcon name="ph-wind" size="1em" tone="currentColor" />AQHI {w.aqhi} · {w.aqhiRisk}</span>}
           {w.high != null && <span style={{ display: "flex", alignItems: "center", height: 34, padding: "0 12px", borderRadius: 17, background: C.card, fontSize: 14, color: C.ink2 }}>H {Math.round(w.high)}° · L {w.low != null ? Math.round(w.low) : "—"}°</span>}
-          {w.uv != null && w.uv >= 3 && <span style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: C.card, fontSize: 14, color: C.ink2 }}><i className="ph ph-sun" />UV {w.uv}</span>}
+          {w.uv != null && w.uv >= 3 && <span style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: "0 12px", borderRadius: 17, background: C.card, fontSize: 14, color: C.ink2 }}><NIcon name="ph-sun" size="1em" tone="currentColor" />UV {w.uv}</span>}
         </div>
       )}
-      {w?.alerts.map((a) => <div key={a} role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: C.peach, color: C.peachInk, fontSize: 14, marginBottom: 12 }}><i className="ph ph-warning" style={{ fontSize: 17, marginTop: 1 }} />{a}</div>)}
+      {w?.alerts.map((a) => <div key={a} role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "10px 12px", borderRadius: 12, background: C.peach, color: C.peachInk, fontSize: 14, marginBottom: 12 }}><NIcon name="ph-warning" size={17} tone="currentColor" style={{marginTop: 1}} />{a}</div>)}
       <h2 style={{ margin: "0 0 8px", fontSize: 24, lineHeight: 1.25, fontWeight: 500, letterSpacing: "-.015em" }}>{b.headline}</h2>
       <p style={{ margin: 0, fontSize: 16.5, lineHeight: 1.6, color: C.ink2, textWrap: "pretty" } as React.CSSProperties}>{b.message}</p>
-      {b.byAlba && <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, fontSize: 12, color: C.lavInk }}><i className="ph ph-sparkle" />Written by Neyu from your data</span>}
+      {b.byAlba && <span style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 8, fontSize: 12, color: C.lavInk }}><NIcon name="ph-sparkle" size="1em" tone="currentColor" />Written by Neyu from your data</span>}
       {move && move.verdict && (
         <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginTop: 14, padding: "12px 14px", borderRadius: 14, background: move.verdict === "outside" ? "rgba(110,168,182,.16)" : move.verdict === "easy" ? "#FFF4E0" : C.peach }}>
-          <i className={move.verdict === "outside" ? "ph ph-person-simple-run" : move.verdict === "easy" ? "ph ph-person-simple-walk" : "ph ph-house-line"} style={{ fontSize: 20, color: move.verdict === "outside" ? C.tealDark : move.verdict === "easy" ? "#8A5A12" : C.peachInk, marginTop: 1 }} />
+          <NIcon name={move.verdict === "outside" ? "ph-person-simple-run" : move.verdict === "easy" ? "ph-person-simple-walk" : "ph-house-line"} size={20} tone={move.verdict === "outside" ? C.tealDark : move.verdict === "easy" ? "#8A5A12" : C.peachInk} style={{marginTop: 1}} />
           <span style={{ fontSize: 14.5, lineHeight: 1.5 }}><b style={{ fontWeight: 500 }}>{move.verdict === "outside" ? "Good day to move outside" : move.verdict === "easy" ? "Move, but take it easy" : "Keep it indoors today"}</b><br />{move.text}</span>
         </div>
       )}
       {b.needsLocation && (
         <button onClick={() => openSheet({ t: "location" })} className="h-lift" style={{ marginTop: 14, width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 14, border: `1px dashed ${C.tealLight}`, background: "rgba(255,253,251,.7)", cursor: "pointer", textAlign: "left" }}>
-          <i className="ph ph-map-pin" style={{ fontSize: 22, color: C.teal }} /><span style={{ flex: 1, fontSize: 14.5 }}><b style={{ fontWeight: 500 }}>Add your city</b><br /><span style={{ color: C.muted }}>Get local weather, air quality and the best time to move.</span></span><i className="ph ph-caret-right" style={{ color: C.faint }} />
+          <NIcon name="ph-map-pin" size={22} tone={C.teal} /><span style={{ flex: 1, fontSize: 14.5 }}><b style={{ fontWeight: 500 }}>Add your city</b><br /><span style={{ color: C.muted }}>Get local weather, air quality and the best time to move.</span></span><NIcon name="ph-caret-right" size="1em" tone={C.faint} />
         </button>
       )}
       {b.items.length > 0 && (
         <ul style={{ listStyle: "none", margin: "16px 0 0", padding: 0, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 8 }}>
           {b.items.map((it, i) => (
             <li key={i}><button onClick={() => open(it.go)} disabled={!it.go} className="h-lift" style={{ width: "100%", height: "100%", display: "flex", gap: 10, alignItems: "flex-start", padding: "12px 14px", borderRadius: 14, border: "none", background: it.tone === "peach" ? "rgba(251,238,232,.9)" : it.tone === "lavender" ? "rgba(240,236,247,.9)" : "rgba(255,253,251,.85)", cursor: it.go ? "pointer" : "default", textAlign: "left" }}>
-              <i className={it.icon} style={{ fontSize: 19, color: it.tone === "peach" ? C.peachInk : it.tone === "lavender" ? C.lavMid : C.teal, marginTop: 1, flex: "none" }} />
+              <NIcon name={it.icon} size={19} tone={it.tone === "peach" ? C.peachInk : it.tone === "lavender" ? C.lavMid : C.teal} style={{marginTop: 1, flex: "none"}} />
               <span style={{ display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 13, color: C.muted }}>{it.title}</span><span style={{ fontSize: 14.5, lineHeight: 1.45, color: C.ink }}>{it.text}</span></span>
             </button></li>
           ))}
         </ul>
       )}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 14, alignItems: "center" }}>
-        <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-book-open-text" />Your monthly story</button>
-        <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask Neyu about my week</button>
+        <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><NIcon name="ph-book-open-text" size="1em" tone="currentColor" />Your monthly story</button>
+        <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><NIcon name="ph-sparkle" size="1em" tone="currentColor" />Ask Neyu about my week</button>
         {w && <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.faint }}>Weather: Environment and Climate Change Canada</span>}
         {!w && !b.needsLocation && <button onClick={reload} style={{ marginLeft: "auto", fontSize: 12.5, color: C.faint, border: "none", background: "none", cursor: "pointer" }}>Weather unavailable right now · retry</button>}
       </div>
@@ -147,7 +148,7 @@ export default function Today() {
         </div>
         {t.hasWearable && (
           <button onClick={refresh} aria-live="polite" className="h-tealborder" style={{ whiteSpace: "nowrap", flex: "none", display: "flex", alignItems: "center", gap: 8, height: 36, padding: "0 14px", border: "1px solid rgba(29,35,39,.08)", borderRadius: 18, background: C.card, fontSize: 13, color: C.muted, cursor: "pointer" }}>
-            <i className="ph ph-arrows-clockwise" style={{ fontSize: 15, color: C.teal }} />{reloading ? "Updating your health data…" : t.syncLabel}
+            <NIcon name="ph-arrows-clockwise" size={15} tone={C.teal} />{reloading ? "Updating your health data…" : t.syncLabel}
           </button>
         )}
       </div>
@@ -157,7 +158,7 @@ export default function Today() {
 
       {syncError && (
         <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", marginBottom: 20, borderRadius: 16, background: C.peach, animation: "mhs-fadeUp 300ms ease" }}>
-          <i className="ph ph-cloud-slash" style={{ fontSize: 22, color: C.peachInk, marginTop: 1 }} />
+          <NIcon name="ph-cloud-slash" size={22} tone={C.peachInk} style={{marginTop: 1}} />
           <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}><span style={{ fontSize: 15, fontWeight: 500 }}>We couldn't update your wearable data.</span><span style={{ fontSize: 14, color: C.muted }}>Your previous data is still available.</span></div>
           <button onClick={refresh} style={{ height: 36, padding: "0 14px", border: "1px solid rgba(139,75,55,.25)", borderRadius: 10, background: C.card, fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>Try again</button>
         </div>
@@ -219,12 +220,12 @@ export default function Today() {
                   ))}
                 </div>
               )}
-              <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.faint, display: "flex", gap: 6, alignItems: "flex-start" }}><i className="ph ph-info" style={{ fontSize: 14, marginTop: 1 }} />A simple reading of your wearable data, not a diagnosis.</p>
+              <p style={{ margin: "14px 0 0", fontSize: 12, lineHeight: 1.5, color: C.faint, display: "flex", gap: 6, alignItems: "flex-start" }}><NIcon name="ph-info" size={14} tone="currentColor" style={{marginTop: 1}} />A simple reading of your wearable data, not a diagnosis.</p>
             </section>
 
             {t.insights.map((ins, i) => ins.tone === "lavender" ? (
               <section key={i} style={{ padding: "20px 22px", borderRadius: 20, background: C.lav }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-sparkle" style={{ fontSize: 16 }} />{ins.eyebrow}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.lavInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-sparkle" size={16} tone="currentColor" />{ins.eyebrow}</div>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, textWrap: "pretty" } as React.CSSProperties}>{ins.text}</p>
                 {insightOpen && ins.detail && (
                   <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10, animation: "mhs-fadeUp 260ms ease" }}>
@@ -233,20 +234,20 @@ export default function Today() {
                   </div>
                 )}
                 <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
-                  <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}>{ins.cta}<i className="ph ph-arrow-right" /></button>
+                  <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}>{ins.cta}<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
                   {ins.detail && <button onClick={() => setInsightOpen((o) => !o)} aria-expanded={insightOpen} style={{ height: 36, padding: 0, border: "none", background: "none", fontSize: 14, color: C.lavInk, cursor: "pointer" }}>{insightOpen ? "Show less" : "Why this matters"}</button>}
                 </div>
               </section>
             ) : (
               <section key={i} style={{ padding: "20px 22px", borderRadius: 20, background: C.peach }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.peachInk, fontWeight: 500, marginBottom: 8 }}><i className="ph ph-moon" style={{ fontSize: 16 }} />{ins.eyebrow}</div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: C.peachInk, fontWeight: 500, marginBottom: 8 }}><NIcon name="ph-moon" size={16} tone="currentColor" />{ins.eyebrow}</div>
                 <p style={{ margin: "0 0 14px", fontSize: 16, lineHeight: 1.55, textWrap: "pretty" } as React.CSSProperties}>{ins.text}</p>
                 {ins.stats && (
                   <div style={{ display: "flex", gap: 28, marginBottom: 10 }}>
                     {ins.stats.map((s) => <div key={s.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 13, color: C.muted }}>{s.label}</span><span style={{ fontSize: 20 }}>{s.value}</span></div>)}
                   </div>
                 )}
-                <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>{ins.cta}<i className="ph ph-arrow-right" /></button>
+                <button onClick={() => go("trend", { k: ins.metric })} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.peachInk, cursor: "pointer" }}>{ins.cta}<NIcon name="ph-arrow-right" size="1em" tone="currentColor" /></button>
               </section>
             ))}
 
@@ -263,23 +264,23 @@ export default function Today() {
             </section>
 
             <button onClick={() => openSheet({ t: "alba", ask: "Help me understand my recent health trends." })} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: "1px solid rgba(42,132,228,.2)", borderRadius: 18, background: C.card, cursor: "pointer", textAlign: "left" }}>
-              <span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, display: "flex", alignItems: "center", justifyContent: "center", color: C.lavMid, flex: "none" }}><i className="ph ph-sparkle" style={{ fontSize: 18 }} /></span>
+              <span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, display: "flex", alignItems: "center", justifyContent: "center", color: C.lavMid, flex: "none" }}><NIcon name="ph-sparkle" size={18} tone="currentColor" /></span>
               <span style={{ display: "flex", flexDirection: "column", gap: 2, flex: 1 }}><span style={{ fontSize: 14, fontWeight: 500 }}>Ask Neyu</span><span style={{ fontSize: 14, color: C.muted }}>“Help me understand my recent health trends.”</span></span>
-              <i className="ph ph-caret-right" style={{ color: C.faint }} />
+              <NIcon name="ph-caret-right" size="1em" tone={C.faint} />
             </button>
 
             <section>
               <h3 style={{ margin: "0 0 4px", fontSize: 15, fontWeight: 500 }}>Data sources</h3>
               <p style={{ margin: "0 0 12px", fontSize: 14, color: C.muted }}>Your health picture is built from:</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {t.sources.map((s) => <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 16, background: "#EFECE8", fontSize: 13, color: C.ink3 }}><i className={s.icon} style={{ fontSize: 15, color: C.teal }} />{s.label}</span>)}
+                {t.sources.map((s) => <span key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, height: 32, padding: "0 12px", borderRadius: 16, background: "#EFECE8", fontSize: 13, color: C.ink3 }}><NIcon name={s.icon} size={15} tone={C.teal} />{s.label}</span>)}
               </div>
             </section>
           </div>
         </div>
       )}
 
-      <p style={{ margin: "36px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}><i className="ph ph-first-aid" style={{ fontSize: 16, color: C.peachInk, marginTop: 1 }} /><span>If you think you may be having a medical emergency, call 911 or go to the nearest emergency department.</span></p>
+      <p style={{ margin: "36px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}><NIcon name="ph-first-aid" size={16} tone={C.peachInk} style={{marginTop: 1}} /><span>If you think you may be having a medical emergency, call 911 or go to the nearest emergency department.</span></p>
     </div>
   );
 }
