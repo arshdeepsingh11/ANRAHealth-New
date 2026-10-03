@@ -15,6 +15,8 @@ import { LAB_STATS } from "@/data/longevityScience";
 import { PACKAGES, pkgLabTotal, SERVICES } from "@/data/neyu";
 import NutritionPlan from "./NutritionPlan";
 import { N, Section, PillarHero, NodeNet, LiveChart, NeyuReads, CapCard, CtaBand, StepRail, AiBadge, btn, cardN, gradText, IconTile, useNeyuStream, type NetNode } from "./kit";
+import { NIcon } from "./icons";
+import { ALL_LANGS } from "./people";
 
 const ring = (labels: { id: string; label: string; icon: string; sub?: string }[], cx = 500, cy = 300, rx = 380, ry = 230): NetNode[] =>
   labels.map((l, i) => { const a = -Math.PI / 2 + (i / labels.length) * Math.PI * 2; return { ...l, x: Math.round(cx + Math.cos(a) * rx), y: Math.round(cy + Math.sin(a) * ry) }; });
@@ -45,7 +47,7 @@ function CareNavigator() {
         <b style={{ fontWeight: 500, fontSize: 21 }}>Describe what’s going on</b>
         <textarea value={v} onChange={(e) => setV(e.target.value)} rows={4} placeholder="e.g. My home blood pressure has been around 150/95 and I get headaches in the morning." style={{ width: "100%", boxSizing: "border-box", padding: 14, borderRadius: 16, border: `1px solid ${N.line}`, fontSize: 16, resize: "vertical", fontFamily: "inherit" }} />
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{["Short of breath when climbing stairs", "I want a full health check", "My thyroid results are off", "Can I see someone virtually?"].map((x) => <button type="button" key={x} onClick={() => { setV(x); go(x); }} style={{ minHeight: 36, padding: "0 12px", borderRadius: 999, border: `1px solid ${N.line}`, background: "#fff", fontSize: 13.5, color: N.ink2, cursor: "pointer" }}>{x}</button>)}</div>
-        <button type="submit" style={{ ...btn("grad"), justifySelf: "start" }}>{busy ? "Finding your pathway…" : "Find my care pathway"}<i className="ph ph-arrow-right" /></button>
+        <button type="submit" style={{ ...btn("grad"), justifySelf: "start" }}>{busy ? "Finding your pathway…" : "Find my care pathway"}<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></button>
       </form>
       <div style={{ display: "grid", gap: 12 }} aria-live="polite">
         {!route && !busy && <NeyuReads text="Tell Neyu what's going on in your own words. It suggests where to start — a specialist, a test, a virtual visit or a program — and explains why." />}
@@ -55,7 +57,7 @@ function CareNavigator() {
             <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{route.concern}</div>
             <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55 }}>{s.answer || route.summary}</p>
             {route.safety && <p style={{ margin: 0, fontSize: 14, color: "#8B2F1C" }}>{route.safety}</p>}
-            <div style={{ display: "grid", gap: 8 }}>{route.steps.map((st, i) => <a key={st.label} href={st.href || "#"} style={{ display: "flex", gap: 12, alignItems: "center", padding: "12px 14px", borderRadius: 14, border: `1px solid ${N.line}`, textDecoration: "none", color: N.ink }}><span style={{ width: 28, height: 28, borderRadius: 9, background: N.grad, color: "#fff", display: "grid", placeItems: "center", fontSize: 13, fontWeight: 600 }}>{i + 1}</span><span style={{ flex: 1 }}><b style={{ fontWeight: 500 }}>{st.label}</b>{st.desc && <span style={{ display: "block", fontSize: 13.5, color: N.muted }}>{st.desc}</span>}</span><i className="ph ph-arrow-right" style={{ color: N.deep }} /></a>)}</div>
+            <div style={{ display: "grid", gap: 8 }}>{route.steps.map((st, i) => <a key={st.label} href={st.href || "#"} style={{ display: "flex", gap: 12, alignItems: "center", padding: "12px 14px", borderRadius: 14, border: `1px solid ${N.line}`, textDecoration: "none", color: N.ink }}><span style={{ width: 28, height: 28, borderRadius: 9, background: N.grad, color: "#fff", display: "grid", placeItems: "center", fontSize: 13, fontWeight: 600 }}>{i + 1}</span><span style={{ flex: 1 }}><b style={{ fontWeight: 500 }}>{st.label}</b>{st.desc && <span style={{ display: "block", fontSize: 13.5, color: N.muted }}>{st.desc}</span>}</span><NIcon name="ph-arrow-right" size={18} tone={N.deep} /></a>)}</div>
           </div>
         )}
       </div>
@@ -85,7 +87,7 @@ export function CareHub() {
           <CapCard icon="ph-buildings" title="In-clinic specialists" text="Nine specialties across two Calgary clinics, with onsite diagnostics including Alberta's first onsite exercise stress echo." href="/specialties" meta="2 clinics" chart={{ mode: "ecg" }} />
           {SERVICES.filter((s) => s.pillar === "care").map((s) => <CapCard key={s.k} icon={s.icon} title={s.title} text={s.text} href={s.href} meta="New" chart={{ mode: s.k === "hypertension-clinic" ? "bp" : "hr" }} />)}
           <CapCard icon="ph-paper-plane-tilt" title="Referral Centre" text="Scan or upload a referral and the fields fill themselves. Track it from intake to booking." href="/referral-centre" meta="AI scan" />
-          <CapCard icon="ph-identification-badge" title="Find a physician" text="Match by need, language and location — eight physicians, eleven languages." href="/physicians" meta="Matcher" />
+          <CapCard icon="ph-identification-badge" title="Find a physician" text={`Match by need, language and location — ${physicians.length} physicians, ${ALL_LANGS.length} languages between them.`} href="/physicians" meta="Matcher" />
         </div>
       </Section>
       <Section tone="white" label="Specialists" eyebrow="Doctors & specialists" title={<>Nine specialties. <span style={gradText}>One connected record.</span></>}>
@@ -142,7 +144,7 @@ export function DiagnosticsHub() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,250px),1fr))", gap: 12 }}>
           {featured.map((t) => <a key={t!.id} href="/genomics" className="sx-card" style={{ ...cardN, padding: 18, display: "grid", gap: 6, textDecoration: "none", color: N.ink }}><span style={{ fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>{t!.cat}</span><b style={{ fontWeight: 500, fontSize: 17 }}>{t!.name}</b><span style={{ fontSize: 14, color: N.ink2 }}>{t!.why}</span><span style={{ fontSize: 16, marginTop: 4 }}>{money(t!.price)}</span></a>)}
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/genomics" style={btn("ink")}>See all tests</a><a href="/at-home" style={btn("ghost")}><i className="ph ph-house-line" />At-home collection</a></div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/genomics" style={btn("ink")}>See all tests</a><a href="/at-home" style={btn("ghost")}><NIcon name="ph-house-line" size={18} tone={"currentColor"} />At-home collection</a></div>
       </Section>
       <Section label="Find my test" eyebrow="Neyu · AI" title={<>Which test fits <span style={gradText}>your question?</span></>} lead="Answer a few questions — age, family history, medicines, goals. Neyu ranks the tests that fit, with real prices.">
         <Assessment kind="genomics" accent={N.blue} />
@@ -152,7 +154,7 @@ export function DiagnosticsHub() {
           <div style={{ ...cardN, padding: 14 }}><LiveChart mode="ldl" param={39} height={260} label="LDL in context — illustrative" /></div>
           <div style={{ display: "grid", gap: 12 }}>
             <NeyuReads text="An LDL of 3.9 means something different with diabetes, a family history of early heart disease, or a high Lp(a). Neyu reads your results together, then explains them in plain language." ask="How do my lab results relate to each other?" />
-            <a href="/lab-results" style={{ ...btn("grad"), justifySelf: "start" }}>Explain my results<i className="ph ph-arrow-right" /></a>
+            <a href="/lab-results" style={{ ...btn("grad"), justifySelf: "start" }}>Explain my results<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a>
           </div>
         </div>
       </Section>
@@ -184,7 +186,7 @@ export function PreventionHub() {
           <BmiTool accent={N.teal} onAsk={(q) => openAlba(q)} />
           <A1cTool accent={N.green} onAsk={(q) => openAlba(q)} />
         </div>
-        <a href="/cardiac-symptoms" style={{ ...btn("ghost"), justifySelf: "start" }}><i className="ph ph-heartbeat" />Check a symptom</a>
+        <a href="/cardiac-symptoms" style={{ ...btn("ghost"), justifySelf: "start" }}><NIcon name="ph-heartbeat" size={18} tone={"currentColor"} />Check a symptom</a>
       </Section>
       <Section tone="dark" label="Biology" eyebrow="Precision prevention" title={<>Your biology is personal.<br /><span style={gradText}>Your health should be too.</span></>} lead="Genomics • Biomarkers • Microbiome • Lifestyle • Wearables — brought together for a more personal understanding of your risk.">
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,200px),1fr))", gap: 12 }}>
@@ -198,7 +200,7 @@ export function PreventionHub() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 14 }}>
           {PACKAGES.map((p) => <CapCard key={p.id} icon={p.icon} title={p.title} text={`${p.tag}. ${p.for}`} href={`/packages#${p.id}`} meta={pkgLabTotal(p) ? `Labs ${money(pkgLabTotal(p))}` : undefined} chart={{ mode: p.chart }} />)}
         </div>
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/packages" style={btn("ink")}>Compare packages</a><a href="/packages#executive" style={btn("ghost")}><i className="ph ph-briefcase" />Executive Health</a></div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/packages" style={btn("ink")}>Compare packages</a><a href="/packages#executive" style={btn("ghost")}><NIcon name="ph-briefcase" size={18} tone={"currentColor"} />Executive Health</a></div>
       </Section>
       <CtaBand title="Prevention, every year — not once." text="NEYU Membership brings annual assessments, at-home collection and Neyu together in one plan." primary={{ label: "See membership", href: "/membership" }} secondary={{ label: "Ask Neyu", alba: "What preventive checks should I do at my age?" }} />
     </>
@@ -268,7 +270,7 @@ export function LongevityHub() {
               <div style={{ ...cardN, padding: 14 }}><LiveChart mode="trend" height={260} label="Risk factors in range over time — illustrative" /></div>
               <div style={{ display: "grid", gap: 12 }}>
                 <NeyuReads text="Improvement is a trend, not a single result. Re-test the markers that matter on a schedule, and let Neyu show what changed and why." ask="Which markers should I re-test, and how often?" />
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/my-health" style={btn("grad")}>Track in My Health Space<i className="ph ph-arrow-right" /></a><a href="#score" style={btn("ghost")}>Try the longevity score</a></div>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><a href="/my-health" style={btn("grad")}>Track in My Health Space<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a><a href="#score" style={btn("ghost")}>Try the longevity score</a></div>
               </div>
             </div>
           )}
@@ -279,7 +281,7 @@ export function LongevityHub() {
       </Section>
       <Section tone="dark" label="Longevity Lab" eyebrow="NEYU Longevity Lab" title={<>The science of aging, <span style={gradText}>made visual.</span></>} lead="Five interactive explainers built from peer-reviewed studies (2022–2026), with 3D models, live charts and Neyu.">
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <a href="/longevity-lab" style={btn("grad")}>Open the Longevity Lab<i className="ph ph-arrow-right" /></a>
+          <a href="/longevity-lab" style={btn("grad")}>Open the Longevity Lab<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></a>
           <a href="/packages#longevity" style={{ ...btn("ghost"), color: "#fff", borderColor: "rgba(255,255,255,.5)" }}>Longevity Baseline package</a>
         </div>
       </Section>
