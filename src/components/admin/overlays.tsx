@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import type { SearchDTO, Go } from "@/lib/admin/types";
 import { getView, postAction, downloadFile, useAdmin, type ConfirmSpec } from "./context";
 import { T } from "./ui";
+import { NeyuMark } from "@/components/brand/NeyuLogo";
 
 const btn2 = { height: 42, padding: "0 16px", borderRadius: 12, border: `1px solid ${T.line3}`, background: T.card, fontSize: 14.5, fontWeight: 500, cursor: "pointer", whiteSpace: "nowrap", color: T.ink } as React.CSSProperties;
 const btnP = { height: 42, padding: "0 18px", borderRadius: 12, border: "none", background: T.teal, color: T.card, fontSize: 14.5, fontWeight: 500, cursor: "pointer", whiteSpace: "nowrap" } as React.CSSProperties;
@@ -38,7 +39,7 @@ export function SignIn({ onSignedIn }: { onSignedIn: (actor: string) => void }) 
     <main data-screen-label="01 Sign-in" style={{ minHeight: "100vh", display: "grid", gridTemplateColumns: "minmax(0,1fr)", placeItems: "center", padding: "32px 20px", background: T.page }}>
       <div style={{ width: "100%", maxWidth: 400, display: "flex", flexDirection: "column", gap: 28, animation: "anraPop 320ms cubic-bezier(.2,.8,.2,1)" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 14, background: T.teal, display: "grid", placeItems: "center", color: T.card, fontSize: 22 }}><i className="ph-fill ph-heartbeat" /></div>
+          <div style={{ width: 44, height: 44, display: "grid", placeItems: "center" }}><NeyuMark size={42} title="NEYU Health" /></div>
           <div><h1 style={{ margin: 0, fontSize: 30, fontWeight: 500, letterSpacing: "-0.025em" }}>NEYU Health</h1><div style={{ fontSize: 16, color: T.ink2, marginTop: 2 }}>Admin Console</div></div>
         </div>
         <form onSubmit={submit} style={{ background: T.card, border: `1px solid ${T.line}`, borderRadius: 22, padding: 28, display: "flex", flexDirection: "column", gap: 18, boxShadow: T.shadow }}>
@@ -254,7 +255,7 @@ export function ExportDialog({ pid, pname, onClose }: { pid: string; pname: stri
         <h2 id="ex-title" style={{ margin: 0, fontSize: 19, fontWeight: 500 }}>Export {pname}'s data</h2>
         {step === "c" && <>
           <p style={{ margin: 0, fontSize: 14.5, color: T.ink2 }}>The export is a JSON file containing:</p>
-          <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14.5, display: "flex", flexDirection: "column", gap: 4 }}><li>Profile, consent settings, goals and care team</li><li>Labs, protocol, appointments and clinic readings</li><li>Wearable data the patient has shared</li><li>ALBA conversations and assessments</li><li>Referrals linked to this record, and the access log</li></ul>
+          <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14.5, display: "flex", flexDirection: "column", gap: 4 }}><li>Profile, consent settings, goals and care team</li><li>Labs, protocol, appointments and clinic readings</li><li>Wearable data the patient has shared</li><li>Neyu conversations and assessments</li><li>Referrals linked to this record, and the access log</li></ul>
           <p style={{ margin: 0, fontSize: 13.5, color: T.faint }}>Handle the file as protected health information. The export is logged.</p>
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}><button onClick={onClose} className="h-sand" style={btn2}>Cancel</button><button onClick={go} className="h-primary" style={btnP}>Export data</button></div>
         </>}
