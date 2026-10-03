@@ -10,6 +10,7 @@ import { EP, api, prime, invalidate, useResource, announceSession } from "../api
 import { C, screenAnim, ToggleList, Avatar, longDateTz } from "../ui";
 import { setHistoryFilter } from "./History";
 import PasswordStrength from "../PasswordStrength";
+import { NIcon } from "@/components/neyu/icons";
 
 const ALL_DATA = [EP.today, EP.trends, EP.results, EP.protocol, EP.history, EP.appointments, EP.referrals];
 
@@ -50,7 +51,7 @@ export function More() {
       <button onClick={() => go("profile")} style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, padding: 16, marginBottom: 24, border: "none", borderRadius: 20, background: C.card, cursor: "pointer", textAlign: "left", boxShadow: "0 1px 2px rgba(29,35,39,.04)" }}>
         <Avatar size={52} photoUrl={profile.photoUrl} initials={initials[0] || "?"} fontSize={20} />
         <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 18, fontWeight: 500 }}>{profile.firstName} {profile.lastName}</span><span style={{ fontSize: 14, color: C.muted }}>Health profile</span></span>
-        <i className="ph ph-caret-right" style={{ color: C.faint }} />
+        <NIcon name="ph-caret-right" size="1em" tone={C.faint} />
       </button>
       {groups.map((g) => (
         <section key={g.title} style={{ marginBottom: 22 }}>
@@ -58,7 +59,7 @@ export function More() {
           <div style={{ borderRadius: 18, background: C.card, overflow: "hidden" }}>
             {g.items.map((m, i) => (
               <button key={m.label} onClick={m.go} className="h-row" style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, minHeight: 52, padding: "0 16px", border: "none", borderTop: i ? `1px solid ${C.line}` : "none", background: "none", cursor: "pointer", textAlign: "left", fontSize: 16 }}>
-                <i className={"ph " + m.icon} style={{ fontSize: 20, color: m.color || C.teal }} /><span style={{ flex: 1 }}>{m.label}</span><span style={{ fontSize: 13, color: C.muted }}>{m.meta}</span><i className="ph ph-caret-right" style={{ color: C.faint }} />
+                <NIcon name={m.icon} size={20} tone={m.color || C.teal} /><span style={{ flex: 1 }}>{m.label}</span><span style={{ fontSize: 13, color: C.muted }}>{m.meta}</span><NIcon name="ph-caret-right" size="1em" tone={C.faint} />
               </button>
             ))}
           </div>
@@ -143,7 +144,7 @@ export function Profile() {
       <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 28 }}>
         <button onClick={() => fileRef.current?.click()} aria-label="Change profile photo" disabled={photoBusy} style={{ position: "relative", padding: 0, border: "none", background: "none", cursor: "pointer", borderRadius: 36, opacity: photoBusy ? 0.6 : 1 }}>
           <Avatar size={72} photoUrl={profile.photoUrl} initials={initials[0] || "?"} fontSize={28} />
-          <span style={{ position: "absolute", right: -2, bottom: -2, width: 26, height: 26, borderRadius: 13, background: C.card, boxShadow: "0 1px 4px rgba(29,35,39,.18)", display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><i className="ph ph-camera" style={{ fontSize: 14 }} /></span>
+          <span style={{ position: "absolute", right: -2, bottom: -2, width: 26, height: 26, borderRadius: 13, background: C.card, boxShadow: "0 1px 4px rgba(29,35,39,.18)", display: "flex", alignItems: "center", justifyContent: "center", color: C.teal }}><NIcon name="ph-camera" size={14} tone="currentColor" /></span>
         </button>
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(e) => pickPhoto(e.target.files?.[0])} />
         <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0 }}>
@@ -161,7 +162,7 @@ export function Profile() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {(editGoals ? goals : profile.goals).map((g) => (
             <span key={g} style={{ height: 36, display: "flex", alignItems: "center", gap: 6, padding: editGoals ? "0 8px 0 14px" : "0 14px", borderRadius: 18, background: C.tealWash, color: C.tealDark, fontSize: 14 }}>
-              {g}{editGoals && <button onClick={() => setGoals(goals.filter((x) => x !== g))} aria-label={`Remove ${g}`} style={{ width: 24, height: 24, border: "none", background: "none", cursor: "pointer", color: C.tealDark, display: "flex", alignItems: "center", justifyContent: "center" }}><i className="ph ph-x" /></button>}
+              {g}{editGoals && <button onClick={() => setGoals(goals.filter((x) => x !== g))} aria-label={`Remove ${g}`} style={{ width: 24, height: 24, border: "none", background: "none", cursor: "pointer", color: C.tealDark, display: "flex", alignItems: "center", justifyContent: "center" }}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>}
             </span>
           ))}
           {!editGoals && !profile.goals.length && <span style={{ fontSize: 14, color: C.muted }}>Add what matters to you — your care team sees these too.</span>}
@@ -197,7 +198,7 @@ export function Profile() {
       <section style={{ borderRadius: 18, background: C.card, overflow: "hidden", marginBottom: 28 }}>
         {rows.map((m, i) => (
           <button key={m.label} onClick={m.go} className="h-row" style={{ width: "100%", display: "flex", alignItems: "center", gap: 14, minHeight: 56, padding: "0 16px", border: "none", borderTop: i ? `1px solid ${C.line}` : "none", background: "none", cursor: "pointer", textAlign: "left", fontSize: 15 }}>
-            <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}><span>{m.label}</span><span style={{ fontSize: 13, color: C.muted }}>{m.meta}</span></span><i className="ph ph-caret-right" style={{ color: C.faint }} />
+            <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 1 }}><span>{m.label}</span><span style={{ fontSize: 13, color: C.muted }}>{m.meta}</span></span><NIcon name="ph-caret-right" size="1em" tone={C.faint} />
           </button>
         ))}
       </section>
@@ -279,7 +280,7 @@ export function Privacy() {
       <div style={{ display: "flex", flexDirection: "column" }}>
         {FAQ.map(([q, a], i) => (
           <div key={q} style={{ borderBottom: "1px solid rgba(29,35,39,.07)" }}>
-            <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 54, border: "none", background: "none", cursor: "pointer", textAlign: "left", fontSize: 15, padding: 0 }}>{q}<i className={open === i ? "ph ph-minus" : "ph ph-plus"} style={{ color: C.muted }} /></button>
+            <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, minHeight: 54, border: "none", background: "none", cursor: "pointer", textAlign: "left", fontSize: 15, padding: 0 }}>{q}<NIcon name={open === i ? "ph-minus" : "ph-plus"} size="1em" tone={C.muted} /></button>
             {open === i && <p style={{ margin: "0 0 16px", fontSize: 15, lineHeight: 1.6, color: C.ink2, animation: "mhs-fadeUp 240ms ease" }}>{a}</p>}
           </div>
         ))}
@@ -287,11 +288,11 @@ export function Privacy() {
       <h2 style={{ margin: "32px 0 10px", fontSize: 17, fontWeight: 500 }}>Your data</h2>
       <section style={{ borderRadius: 18, background: C.card, overflow: "hidden" }}>
         <a href="/api/portal/export" className="h-row" style={{ display: "flex", alignItems: "center", gap: 14, minHeight: 60, padding: "10px 16px", color: C.ink, textDecoration: "none" }}>
-          <i className="ph ph-download-simple" style={{ fontSize: 20, color: C.teal }} />
+          <NIcon name="ph-download-simple" size={20} tone={C.teal} />
           <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 15 }}>Download a copy of your data</span><span style={{ fontSize: 13, color: C.muted }}>Everything in My Health Space, as a file</span></span>
         </a>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, minHeight: 60, padding: "10px 16px", borderTop: `1px solid ${C.line}` }}>
-          <i className="ph ph-trash" style={{ fontSize: 20, color: C.peachInk }} />
+          <NIcon name="ph-trash" size={20} tone={C.peachInk} />
           <span style={{ flex: 1, minWidth: 200, display: "flex", flexDirection: "column", gap: 2 }}><span style={{ fontSize: 15 }}>Delete imported wearable data</span><span style={{ fontSize: 13, color: C.muted }}>{confirmDel ? "This can't be undone. Clinic records stay." : "Removes readings from your devices"}</span></span>
           {confirmDel ? (
             <span style={{ display: "flex", gap: 8 }}>
