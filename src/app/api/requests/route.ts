@@ -9,7 +9,7 @@ import { clientMeta } from "@backend/patientAuth";
 import { getOrCreateSessionId } from "@backend/session";
 import { detectEmergencyKeywords, detectCrisisKeywords, EMERGENCY_MESSAGE, CRISIS_MESSAGE } from "@/lib/emergencyDetection";
 
-const SERVICES = ["virtual-care", "hypertension-clinic", "package", "membership", "at-home"] as const;
+const SERVICES = ["virtual-care", "hypertension-clinic", "package", "membership", "at-home", "contact", "careers"] as const;
 const clip = (v: unknown, n: number) => (typeof v === "string" ? v.trim().slice(0, n) : "");
 
 export async function POST(req: NextRequest) {
