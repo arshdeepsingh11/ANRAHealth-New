@@ -12,7 +12,7 @@
 @keyframes hubPulse { 0% { transform: translate(0,0); opacity: 0 } 15% { opacity: 1 } 85% { opacity: 1 } 100% { transform: translate(var(--tx),var(--ty)); opacity: 0 } }
 @keyframes spin { to { transform: rotate(360deg) } }
 @keyframes spinRev { to { transform: rotate(-360deg) } }
-@keyframes coreBreath { 0%,100% { box-shadow: 0 0 0 0 rgba(140,111,184,.25), 0 30px 60px -20px rgba(140,111,184,.45) } 50% { box-shadow: 0 0 0 18px rgba(140,111,184,0), 0 30px 70px -18px rgba(140,111,184,.6) } }
+@keyframes coreBreath { 0%,100% { box-shadow: 0 0 0 0 rgba(42,132,228,.25), 0 30px 60px -20px rgba(42,132,228,.45) } 50% { box-shadow: 0 0 0 18px rgba(42,132,228,0), 0 30px 70px -18px rgba(42,132,228,.6) } }
 @keyframes shimmerText { 0% { background-position: 0% 50% } 100% { background-position: 200% 50% } }
 @keyframes caret { 50% { opacity: 0 } }
 @keyframes albaBeat { 0% { transform: scale(1) } 12% { transform: scale(1.13) } 24% { transform: scale(.97) } 36% { transform: scale(1.08) } 52%,100% { transform: scale(1) } }
@@ -53,15 +53,15 @@
 .hv-sand:hover { background: #EFECE6 !important; }
 .hv-railLink:hover { background: #F1EEF7 !important; color: #3F6F7C !important; }
 .hv-purple:hover { background: #7A5EA8 !important; }
-.hv-chip:hover { border-color: #8C6FB8 !important; color: #6A5096 !important; }
+.hv-chip:hover { border-color: #2A84E4 !important; color: #1D5FA8 !important; }
 .hv-tealText:hover { color: #3F6F7C !important; }
 .hv-bdTeal:hover { border-color: #3F6F7C !important; }
 .hv-fillTeal:hover { background: #3F6F7C !important; color: #FDFCFA !important; }
 .hv-mist:hover { background: #E7F0F2 !important; }
 .hv-bdSky:hover { border-color: #A9C9D1 !important; }
-.hv-bdViolet:hover { border-color: #8C6FB8 !important; }
+.hv-bdViolet:hover { border-color: #2A84E4 !important; }
 .hv-deep:hover { background: #2F5561 !important; }
-.hv-lav:hover { background: #EFEAF6 !important; }
+.hv-lav:hover { background: #E6F3F8 !important; }
 .hv-ink:hover { background: #2A3035 !important; }
 .hv-bdGlacier:hover { border-color: #6EA8B6 !important; }
 .hv-footLink:hover { color: #3F6F7C !important; }
@@ -112,7 +112,7 @@
 .anra-motion-ai, .anra-motion-test { transition: transform .25s, box-shadow .25s, border-color .25s; }
 .anra-motion-ai:hover, .anra-motion-test:hover { transform: translateY(-6px); box-shadow: 0 40px 70px -34px rgba(78,58,115,.55) !important; }
 .anra-motion-test:hover { border-color: #6EA8B6 !important; }
-.anra-ai-text { background: linear-gradient(90deg, #8C6FB8, #6EA8B6, #3F6F7C, #8C6FB8); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: aiText 6s linear infinite; }
+.anra-ai-text { background: linear-gradient(90deg, #2A84E4, #6EA8B6, #3F6F7C, #2A84E4); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: aiText 6s linear infinite; }
 @keyframes aiText { to { background-position: 300% 0; } }
 @media (max-width: 859px) { .anra-motion-tilt { transform: rotateX(10deg) rotateZ(-2deg); gap: 16px; } }
 @media (prefers-reduced-motion: reduce) {
@@ -136,3 +136,12 @@
 /* Lift-on-hover cards (specialty pages, Longevity Lab, assessments) */
 .sx-card { transition: transform .25s ease, box-shadow .25s ease; }
 @media (hover: hover) { .sx-card:hover { transform: translateY(-3px); box-shadow: 0 26px 50px -30px rgba(20,24,27,.45) !important; } }
+
+/* ── Neyu version ───────────────────────────────────────────── */
+@keyframes neyuFlow { from { stroke-dashoffset: 1220; } to { stroke-dashoffset: 0; } }
+@keyframes neyuOrbit { to { transform: rotate(360deg); } }
+@keyframes neyuFloat { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.neyu-main { --neyu-pr: clamp(16px,4vw,40px); }
+@media (min-width: 860px) { .neyu-main { --neyu-pr: max(40px, calc(100px - max(0px, (100vw - 1200px) / 2))); } }
+@media (prefers-reduced-motion: reduce) { .neyu-page * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+@media (max-width: 420px) { .neyu-hide-xs { display: none; } }
