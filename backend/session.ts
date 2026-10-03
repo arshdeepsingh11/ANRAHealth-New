@@ -1,5 +1,5 @@
 // A lightweight, anonymous session identifier stored in a cookie. This lets
-// us group a visitor's activity (page visits, referral submissions, ALBA
+// us group a visitor's activity (page visits, referral submissions, Neyu
 // messages) together without requiring any login or account system.
 // It is NOT tied to a real identity — just a random ID per browser.
 
