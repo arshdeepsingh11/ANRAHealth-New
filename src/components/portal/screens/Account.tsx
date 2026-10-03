@@ -36,7 +36,7 @@ export function More() {
       { label: "Health Profile", icon: "ph-user-circle", go: () => go("profile") },
     ] },
     { title: "Intelligence", items: [
-      { label: "Ask ALBA", icon: "ph-sparkle", go: () => openSheet({ t: "alba" }), color: C.lavMid },
+      { label: "Ask Neyu", icon: "ph-sparkle", go: () => openSheet({ t: "alba" }), color: C.lavMid },
       { label: "Past AI Conversations", icon: "ph-chats-circle", go: () => { setHistoryFilter("ai"); go("history"); }, color: C.lavMid },
     ] },
     { title: "Account", items: [
@@ -247,7 +247,7 @@ function useSettingToggle() {
 const FAQ: [string, string][] = [
   ["Connected devices", "Devices share only the data types you allow. You can change or disconnect them at any time from Connected Devices."],
   ["Data sharing", "Your care team sees data you choose to share, for example when preparing for a visit. NEYU does not sell your health data."],
-  ["AI usage", "ALBA reads your data only when you ask it something and only from sources you allow. Conversations are saved to your history so you and your care team can review them."],
+  ["AI usage", "Neyu reads your data only when you ask it something and only from sources you allow. Conversations are saved to your history so you and your care team can review them."],
   ["Clinical record data", "Results and visit notes come from NEYU and BioAro Labs. They are part of your medical record and are kept according to health privacy law."],
   ["Disconnecting services", "Disconnecting stops new data. You can also delete previously imported wearable data from here."],
 ];
@@ -272,7 +272,7 @@ export function Privacy() {
           { label: "Apple Watch", sub: "Heart, sleep and activity signals", on: settings.shareWearables, toggle: toggle("shareWearables", true) },
           { label: "BioAro Labs", sub: "Laboratory results", on: settings.shareLabs, toggle: toggle("shareLabs", true) },
           { label: "NEYU clinical records", sub: "Visits, referrals and care plans", on: settings.shareRecords, toggle: toggle("shareRecords", true) },
-          { label: "ALBA access", sub: "Let ALBA reference your data when you ask", on: settings.albaAccess, toggle: toggle("albaAccess") },
+          { label: "Neyu access", sub: "Let Neyu reference your data when you ask", on: settings.albaAccess, toggle: toggle("albaAccess") },
         ]} />
       </div>
       <h2 style={{ margin: "0 0 8px", fontSize: 17, fontWeight: 500 }}>How your data is used</h2>
