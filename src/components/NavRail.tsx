@@ -10,7 +10,7 @@ import { useAlba } from "@/components/AlbaContext";
 
 // Four-point sparkle burst shown on the hovered / open item.
 function Sparkles({ violet }: { violet?: boolean }) {
-  const c = violet ? "#8C6FB8" : "#6EA8B6";
+  const c = violet ? "#2A84E4" : "#6EA8B6";
   const star = (x: number, y: number, sz: number, d: number) => (
     <svg key={x + "_" + y} viewBox="0 0 10 10" style={{ position: "absolute", left: x, top: y, width: sz, height: sz, animation: `sparkle 1.3s ${d}s ease-in-out infinite`, pointerEvents: "none" }}>
       <path d="M5 0 L6 4 L10 5 L6 6 L5 10 L4 6 L0 5 L4 4 Z" fill={c} />
@@ -20,15 +20,14 @@ function Sparkles({ violet }: { violet?: boolean }) {
 }
 
 // Short labels under each icon + the section each page belongs to.
-const SHORT: Record<string, string> = { care: "Care", diag: "Tests", prec: "Precision", long: "Longevity", ai: "ALBA", ref: "Referral", more: "More" };
+const SHORT: Record<string, string> = { care: "Care", diag: "Tests", prev: "Prevent", long: "Longevity", ai: "Neyu", more: "More" };
 const SECTION_OF = (path: string): string | null => {
-  if (path.startsWith("/specialties") || path.startsWith("/physicians")) return "care";
-  if (path.startsWith("/diagnostics")) return "diag";
-  if (path.startsWith("/genomics")) return "prec";
-  if (path.startsWith("/longevity")) return "long";
-  if (["/cardiac-symptoms", "/lab-results", "/explain-diagnosis"].some((p) => path.startsWith(p))) return "ai";
-  if (path.startsWith("/referral-centre")) return "ref";
-  if (path.startsWith("/resources") || path.startsWith("/contact")) return "more";
+  if (["/care", "/specialties", "/physicians", "/virtual-care", "/hypertension-clinic", "/referral-centre"].some((p) => path.startsWith(p))) return "care";
+  if (["/diagnostics", "/genomics", "/at-home", "/lab-results"].some((p) => path.startsWith(p))) return "diag";
+  if (["/prevention", "/packages", "/cardiac-symptoms"].some((p) => path.startsWith(p))) return "prev";
+  if (["/longevity", "/membership"].some((p) => path.startsWith(p))) return "long";
+  if (["/neyu", "/explain-diagnosis"].some((p) => path.startsWith(p))) return "ai";
+  if (["/explore", "/resources", "/contact", "/about"].some((p) => path.startsWith(p))) return "more";
   return null;
 };
 
@@ -74,7 +73,7 @@ export default function NavRail({ onSearch }: { onSearch: () => void }) {
             <React.Fragment key={r.k}>
               {i === 5 && <span aria-hidden="true" style={{ height: 1, margin: "3px 10px", background: "#E3DED5" }} />}
               <button
-                // The ALBA intro spotlight (AlbaIntroVeil) targets this orb — always on screen.
+                // The Neyu intro spotlight (AlbaIntroVeil) targets this orb — always on screen.
                 ref={(el) => { itemRefs.current[r.k] = el; if (r.ai && el && el.offsetParent !== null) registerAlbaNode(el); }}
                 onMouseEnter={() => { setOpen(r.k); setHover(r.k); }}
                 onFocus={() => setOpen(r.k)}
@@ -84,14 +83,14 @@ export default function NavRail({ onSearch }: { onSearch: () => void }) {
                 aria-current={isActive ? "page" : undefined}
                 style={{
                   position: "relative", width: 58, height: 54, borderRadius: 18, border: 0, cursor: "pointer",
-                  background: isActive ? "rgba(63,111,124,.11)" : lit ? (r.ai ? "#EFEAF6" : "#EFECE6") : "transparent",
+                  background: isActive ? "rgba(63,111,124,.11)" : lit ? (r.ai ? "#E6F3F8" : "#EFECE6") : "transparent",
                   display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3,
                   transition: "background .2s, transform .2s", transform: lit ? "translateX(-2px)" : "none",
                 }}
               >
                 {isActive && <span aria-hidden="true" style={{ position: "absolute", left: -3, top: 16, bottom: 16, width: 3, borderRadius: 2, background: "#3F6F7C" }} />}
                 {r.ai ? <AlbaOrb size={22} /> : <i className={(isActive || lit ? "ph-fill " : "ph ") + r.icon} style={{ fontSize: 20, color: isActive ? "#2F5A66" : lit ? "#3F6F7C" : "#3A4147", transition: "color .2s" }} />}
-                <span style={{ fontSize: 10, lineHeight: 1, fontWeight: isActive ? 600 : 500, letterSpacing: ".01em", color: r.ai ? "#4E3A73" : isActive ? "#2F5A66" : "#5A626A" }}>{SHORT[r.k] || r.label}</span>
+                <span style={{ fontSize: 10, lineHeight: 1, fontWeight: isActive ? 600 : 500, letterSpacing: ".01em", color: r.ai ? "#163F6E" : isActive ? "#2F5A66" : "#5A626A" }}>{SHORT[r.k] || r.label}</span>
                 {lit && <Sparkles violet={r.ai} />}
               </button>
             </React.Fragment>
