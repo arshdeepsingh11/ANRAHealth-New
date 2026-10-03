@@ -54,7 +54,7 @@ export default function SearchOverlay({ open, onClose }: { open: boolean; onClos
               <span style={{ fontSize: 16 }}>{r.label}</span><span style={{ fontSize: 13, color: "#5A626A" }}>{r.kind}</span>
             </button>
           ))}
-          {results.length === 0 && <div style={{ padding: "32px 10px", textAlign: "center", color: "#5A626A" }}>Nothing matches that yet. Try a specialty, a test, or ask ALBA.</div>}
+          {results.length === 0 && <div style={{ padding: "32px 10px", textAlign: "center", color: "#5A626A" }}>Nothing matches that yet. Try a specialty, a test, or ask Neyu.</div>}
         </div>
       </div>
     </div>
