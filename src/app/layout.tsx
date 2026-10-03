@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <ParticleField color="120, 96, 164" />
               {children}
               <Footer />
-              {/* Universal chrome: nav rail / mobile tab bar + search, ALBA, safety screen. */}
+              {/* Universal chrome: nav rail / mobile tab bar + search, Neyu, safety screen. */}
               <NavChrome />
               <AlbaWidget />
               <AlbaFactPopup />
