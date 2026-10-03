@@ -5,6 +5,9 @@ import { Volume2, VolumeX, X } from "lucide-react";
 
 const FREEZE_AT = 14;
 const SESSION_KEY = "anra_video_seen";
+// The current intro video has "ANRA Health" burned in, so it is off on the NEYU
+// version. Drop a NEYU-branded video at /videos/intro-neyu.mp4 and set this to it.
+const INTRO_VIDEO: string | null = null;
 
 export default function IntroExperience() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -15,6 +18,7 @@ export default function IntroExperience() {
 
   useEffect(() => {
     setMounted(true);
+    if (!INTRO_VIDEO) { sessionStorage.setItem(SESSION_KEY, "1"); return; } // skip straight to the Neyu intro
     if (!sessionStorage.getItem(SESSION_KEY)) setVisible(true);
   }, []);
 
@@ -67,7 +71,7 @@ export default function IntroExperience() {
     >
       <video
         ref={videoRef}
-        src="/videos/intro-alba.mp4"
+        src={INTRO_VIDEO || undefined}
         preload="auto"
         playsInline
         autoPlay
