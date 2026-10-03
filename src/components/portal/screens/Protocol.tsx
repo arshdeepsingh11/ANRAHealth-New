@@ -5,6 +5,7 @@ import type { ProtocolDTO } from "@/lib/portal/types";
 import { usePortal } from "../context";
 import { EP, api, prime, peek, invalidate, useResource } from "../api";
 import { C, screenAnim, EmptyCard, Loading } from "../ui";
+import { NIcon } from "@/components/neyu/icons";
 
 /** Check / uncheck a step for today — optimistic, rolled back on failure. */
 export async function toggleProtocol(itemId: string, done: boolean, onError: (m: string) => void) {
@@ -54,7 +55,7 @@ export default function Protocol() {
                 <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 0", borderBottom: `1px solid ${C.line}` }}>
                   <button role="checkbox" aria-checked={d} aria-label={`Mark ${p.title} complete`} onClick={() => toggleProtocol(p.id, !d, toast)} style={{ width: 48, height: 48, flex: "none", border: "none", background: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <span style={{ width: 26, height: 26, borderRadius: 13, border: `1.5px solid ${d ? C.teal : "#B9B4AC"}`, background: d ? C.teal : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 260ms cubic-bezier(.2,.7,.2,1)", transform: `scale(${d ? 1 : 0.94})` }}>
-                      <i className="ph ph-check" style={{ fontSize: 14, color: C.card, opacity: d ? 1 : 0, transition: "opacity 200ms" }} />
+                      <NIcon name="ph-check" size={14} tone={C.card} style={{opacity: d ? 1 : 0, transition: "opacity 200ms"}} />
                     </span>
                   </button>
                   <button onClick={() => openSheet({ t: "protocol", id: p.id })} className="h-proto" style={{ flex: 1, display: "flex", alignItems: "center", gap: 12, minHeight: 56, padding: "0 4px", border: "none", background: "none", cursor: "pointer", textAlign: "left", borderRadius: 12, minWidth: 0 }}>
@@ -64,7 +65,7 @@ export default function Protocol() {
                       <span style={{ fontSize: 14, color: C.muted }}>{p.dose}</span>
                     </span>
                     <span style={{ fontSize: 12, color: C.muted }}>{p.source}</span>
-                    <i className="ph ph-caret-right" style={{ color: C.faint }} />
+                    <NIcon name="ph-caret-right" size="1em" tone={C.faint} />
                   </button>
                 </div>
               );
