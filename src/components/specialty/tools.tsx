@@ -1,7 +1,7 @@
 "use client";
 
 // Interactive, educational screening tools for the specialty pages. Each one
-// gives an instant visual result and can hand it to ALBA to explain.
+// gives an instant visual result and can hand it to Neyu to explain.
 // Thresholds are published, widely used guideline values — labelled as
 // education, never a diagnosis.
 import React, { useMemo, useState } from "react";
@@ -30,7 +30,7 @@ function Result({ tone, title, text, onAsk, q }: { tone: keyof typeof BAND; titl
     <div aria-live="polite" style={{ padding: "14px 16px", borderRadius: 14, background: BAND[tone] + "14", border: `1px solid ${BAND[tone]}33`, display: "grid", gap: 6, animation: "fadeUp .3s" }}>
       <b style={{ fontWeight: 600, color: BAND[tone], fontSize: 15.5 }}>{title}</b>
       <span style={{ fontSize: 14.5, color: T.ink2, lineHeight: 1.5 }}>{text}</span>
-      {onAsk && q && <button onClick={() => onAsk(q)} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, padding: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain this with ALBA</button>}
+      {onAsk && q && <button onClick={() => onAsk(q)} style={{ ...btnGhost, height: 38, fontSize: 12, justifySelf: "start", border: 0, padding: 0, color: T.violet }}><i className="ph ph-sparkle" />Explain this with Neyu</button>}
     </div>
   );
 }
