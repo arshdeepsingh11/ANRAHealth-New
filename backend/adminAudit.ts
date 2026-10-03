@@ -12,7 +12,7 @@ export interface AdminEvent {
   kind: AdminEventKind;
   action: string; // "Added lab result"
   resource: string; // "Lab · LDL cholesterol"
-  subjectType?: "patient" | "visitor" | "referral";
+  subjectType?: "patient" | "visitor" | "referral" | "request";
   subjectId?: string | null;
   subject?: string | null; // display label
   reason?: string;
