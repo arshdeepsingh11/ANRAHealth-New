@@ -9,6 +9,9 @@ import { Helix3D } from "@/components/lab/three";
 import { LAB_TESTS, money } from "@/data/bioaroCatalog";
 import { PILLARS, OS, JOURNEY, LAYERS5, SERVICES, PHILOSOPHY, PILLARS3 } from "@/data/neyu";
 import { N, Section, AiBadge, LiveChart, NeyuReads, StepRail, btn, cardN, gradText, IconTile, CapCard, FlowLines } from "./kit";
+import { NIcon } from "./icons";
+import { NChart } from "./charts";
+import { PillNav } from "./fx";
 import { useInView } from "@/components/nea/ui";
 
 // ── 05 From reactive care to proactive health ────────────────
@@ -18,47 +21,69 @@ export function Proactive() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
         {PILLARS.map((p) => (
           <a key={p.k} href={p.href} className="sx-card" style={{ ...cardN, padding: 22, display: "flex", flexDirection: "column", gap: 12, textDecoration: "none", color: N.ink, minWidth: 0 }}>
-            <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><IconTile icon={p.icon} /><span style={{ fontSize: 12, color: N.faint, letterSpacing: ".1em", textTransform: "uppercase" }}>{p.tag.split(",")[0]}</span></span>
+            <span style={{ display: "flex", alignItems: "center", gap: 12 }}><IconTile icon={p.icon} /><span style={{ fontSize: 11.5, color: N.muted, letterSpacing: ".16em", textTransform: "uppercase" }}>0{PILLARS.indexOf(p) + 1}</span></span>
             <b style={{ fontWeight: 500, fontSize: 26, letterSpacing: "-.02em" }}>{p.title}</b>
-            <span style={{ fontSize: 13.5, color: N.teal, fontWeight: 600 }}>{p.tag}</span>
+            <span style={{ fontSize: 13.5, color: N.teal, fontWeight: 600, lineHeight: 1.4 }}>{p.tag}</span>
             <span style={{ fontSize: 15, lineHeight: 1.55, color: N.ink2 }}>{p.text}</span>
-            <LiveChart mode={p.chart} height={110} />
+            <LiveChart mode={p.chart} height={132} />
             <span style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 13.5, color: N.ink2, lineHeight: 1.45 }}><AlbaOrb size={18} motion={false} />{p.neyu}</span>
-            <span style={{ marginTop: "auto", fontSize: 14, fontWeight: 600, color: N.deep }}>Explore {p.title} →</span>
+            <span style={{ marginTop: "auto", fontSize: 14, fontWeight: 600, color: N.deep, display: "inline-flex", gap: 6, alignItems: "center" }}>Explore {p.title}<NIcon name="arrow" size={16} tone={N.deep} /></span>
           </a>
         ))}
       </div>
-      <a href="/services" style={{ ...btn("ghost"), justifySelf: "center" }}>Explore all services<i className="ph ph-arrow-right" /></a>
+      <a href="/explore" style={{ ...btn("ghost"), justifySelf: "center" }}>Explore all services<NIcon name="arrow" size={16} tone="currentColor" /></a>
     </Section>
   );
 }
 
 // ── 06 Personalized by your biology ──────────────────────────
+// Each layer has its own visual and real measurements — switching tabs changes everything.
 const BIO = [
-  { id: "genomics", name: "Genomics", color: "#2A84E4", text: "Your DNA, read once and used for life: inherited risks and how you respond to medicines.", tests: ["whole-genome-sequencing-30x", "pharmacogenomics-test"] },
-  { id: "biomarkers", name: "Biomarkers", color: "#28B8BE", text: "Inflammation, vascular and aging markers that add what a standard panel misses.", tests: ["core-inflammation-aging", "gdf-15", "high-sensitive-crp-hs-crp"] },
-  { id: "microbiome", name: "Microbiome", color: "#3CC79E", text: "The bacteria in your gut shape digestion, inflammation and metabolism.", tests: ["the-biogut-test"] },
-  { id: "lifestyle", name: "Lifestyle", color: "#86E0A0", text: "Sleep, nutrition, stress and activity — the levers you control every day.", tests: ["essential-vitamin-health", "cortisol"] },
-  { id: "wearables", name: "Wearables", color: "#1D5FA8", text: "Heart rate, HRV, steps and sleep from your phone or watch, flowing into your record.", tests: [] },
-];
+  { id: "genomics", name: "Genomics", icon: "dna", color: "#2273D6", text: "Your DNA, read once and used for life: inherited risks, and how you respond to medicines.", facts: [["~20,000", "genes read with whole-genome sequencing"], ["30×", "average read depth"], ["CPIC", "guidelines used for drug–gene results"]], tests: ["whole-genome-sequencing-30x", "pharmacogenomics-test"] },
+  { id: "biomarkers", name: "Biomarkers", icon: "flask", color: "#1FA7B4", text: "Inflammation, vascular and aging markers that add what a standard panel misses — each read against its reference range.", facts: [["hs-CRP", "< 1 mg/L lower cardiovascular risk"], ["Lp(a)", "≥ 100 nmol/L raises risk (CCS 2021)"], ["ApoB", "counts every atherogenic particle"]], tests: ["core-inflammation-aging", "gdf-15", "high-sensitive-crp-hs-crp"] },
+  { id: "microbiome", name: "Microbiome", icon: "microbiome", color: "#2FBF94", text: "Trillions of gut bacteria shape digestion, inflammation and metabolism. Diversity is one of the clearest signs of a healthy gut.", facts: [["~38 trillion", "bacteria in and on the body"], ["2 phyla", "Firmicutes & Bacteroidetes dominate"], ["Diversity", "higher is generally healthier"]], tests: ["the-biogut-test"] },
+  { id: "lifestyle", name: "Lifestyle", icon: "leaf", color: "#58C98C", text: "Sleep, activity, nutrition and stress — the levers you control every day, measured against Canadian guidelines.", facts: [["7–9 h", "sleep for adults (Canadian 24-h guidelines)"], ["150 min", "moderate-to-vigorous activity a week"], ["≤ 8 h", "sedentary time a day"]], tests: ["essential-vitamin-health", "cortisol"] },
+  { id: "wearables", name: "Wearables", icon: "watch", color: "#1D5FA8", text: "Heart rate, HRV, steps and sleep from your phone or watch flow into your record — so trends replace single readings.", facts: [["HRV", "rises with recovery and fitness"], ["Resting HR", "trend matters more than one day"], ["Apple Health", "and Android Health Connect"]], tests: [] },
+] as const;
+function LifestyleRings() {
+  const rings = [{ l: "Sleep", v: 7.1, g: 8, u: "h", c: "#2273D6" }, { l: "Activity", v: 165, g: 150, u: "min/wk", c: "#2FBF94" }, { l: "Sedentary", v: 6.5, g: 8, u: "h/day", c: "#1FA7B4", invert: true }];
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr) minmax(0,1fr)", gap: 16, alignItems: "center", padding: 18 }}>
+      <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: 240, justifySelf: "center" }} role="img" aria-label="Lifestyle rings: sleep, activity and sedentary time against Canadian guidelines">
+        {rings.map((r, i) => { const R = 84 - i * 22, C = 2 * Math.PI * R, p = Math.min(1, r.v / r.g); return (
+          <g key={r.l} transform="rotate(-90 100 100)"><circle cx="100" cy="100" r={R} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="14" />
+            <circle cx="100" cy="100" r={R} fill="none" stroke={r.c} strokeWidth="14" strokeLinecap="round" strokeDasharray={`${C * p} ${C}`} style={{ transition: "stroke-dasharray 1.2s cubic-bezier(.2,.8,.2,1)" }} /></g>); })}
+      </svg>
+      <div style={{ display: "grid", gap: 12 }}>
+        {rings.map((r) => <div key={r.l} style={{ display: "grid", gap: 2 }}><span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "rgba(234,242,246,.7)" }}><span style={{ width: 9, height: 9, borderRadius: 5, background: r.c }} />{r.l}</span><b style={{ fontWeight: 500, fontSize: 20, color: "#fff" }}>{r.v} <span style={{ fontSize: 13, color: "rgba(234,242,246,.6)", fontWeight: 400 }}>{r.u} · {r.invert ? "limit" : "goal"} {r.g}</span></b></div>)}
+      </div>
+    </div>
+  );
+}
 export function Biology() {
-  const [pick, setPick] = useState<string>("genomics");
+  const [pick, setPick] = useState<(typeof BIO)[number]["id"]>("genomics");
   const cur = BIO.find((b) => b.id === pick)!;
   const tests = cur.tests.map((s) => LAB_TESTS.find((t) => t.id === "labs-" + s)).filter(Boolean);
+  const panel: React.CSSProperties = { borderRadius: 26, overflow: "hidden", background: "radial-gradient(110% 90% at 50% 40%, rgba(255,255,255,.05), transparent 70%)", border: "1px solid rgba(255,255,255,.09)", minHeight: 380, display: "grid", alignContent: "center" };
   return (
     <Section id="biology" tone="dark" label="Neyu 06 Biology" eyebrow="Precision health" title={<>Personalized by your biology.</>} lead="Your health isn't generic. Your health experience shouldn't be either. NEYU brings together relevant biological and lifestyle information for a more personal understanding of you.">
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        {BIO.map((b) => <button key={b.id} aria-pressed={pick === b.id} onClick={() => setPick(b.id)} style={{ height: 42, padding: "0 16px", borderRadius: 999, border: `1px solid ${pick === b.id ? b.color : "rgba(255,255,255,.2)"}`, background: pick === b.id ? b.color : "rgba(255,255,255,.05)", color: "#fff", fontSize: 14.5, cursor: "pointer", display: "inline-flex", gap: 8, alignItems: "center" }}><span style={{ width: 8, height: 8, borderRadius: 4, background: b.color, border: "1px solid #fff" }} />{b.name}</button>)}
-      </div>
+      <PillNav dark label="Layers of your biology" tabs={BIO.map((b) => ({ k: b.id, label: b.name, icon: b.icon }))} value={pick} onChange={(k) => setPick(k)} />
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,420px),1fr))", gap: 24, alignItems: "center" }}>
-        <div style={{ borderRadius: 26, overflow: "hidden", background: "radial-gradient(110% 90% at 50% 40%, rgba(255,255,255,.04), transparent 70%)", border: "1px solid rgba(255,255,255,.08)" }}>
-          <Helix3D nodes={BIO.map(({ id, name, color }) => ({ id, name, color }))} active={pick} onPick={setPick} height={380} label="3D model: the five layers of your biology — drag to rotate, tap a node" />
+        <div key={pick + "v"} style={{ ...panel, animation: "fadeUp .35s ease" }}>
+          {pick === "genomics" && <div style={{ display: "grid" }}><Helix3D nodes={[{ id: "lpa", name: "LPA", color: "#C7563C" }, { id: "cyp", name: "CYP2C19", color: "#2273D6" }, { id: "slco", name: "SLCO1B1", color: "#1FA7B4" }, { id: "apoe", name: "APOE", color: "#2FBF94" }]} height={250} label="3D DNA helix with four clinically actionable genes — drag to rotate" /><div style={{ padding: "0 18px 16px" }}><NChart mode="dna" height={130} dark /></div></div>}
+          {pick === "biomarkers" && <div style={{ padding: 20 }}><NChart mode="bars" height={330} dark /></div>}
+          {pick === "microbiome" && <div style={{ padding: 20 }}><NChart mode="microbiome" height={300} dark /></div>}
+          {pick === "lifestyle" && <LifestyleRings />}
+          {pick === "wearables" && <div style={{ padding: 20, display: "grid", gap: 14 }}><NChart mode="hrv" height={180} dark /><NChart mode="ecg" height={150} dark /></div>}
         </div>
         <div key={pick} style={{ display: "grid", gap: 14, animation: "fadeUp .3s ease" }}>
-          <b style={{ fontWeight: 500, fontSize: 28, color: "#fff", letterSpacing: "-.02em" }}>{cur.name}</b>
+          <span style={{ display: "flex", alignItems: "center", gap: 12 }}><IconTile icon={cur.icon} dark /><b style={{ fontWeight: 500, fontSize: 28, color: "#fff", letterSpacing: "-.02em" }}>{cur.name}</b></span>
           <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6, color: "rgba(234,242,246,.8)" }}>{cur.text}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 8 }}>
+            {cur.facts.map(([v, l]) => <div key={v} style={{ padding: "12px 12px", borderRadius: 14, background: "rgba(255,255,255,.05)", border: "1px solid rgba(255,255,255,.1)" }}><b style={{ display: "block", fontWeight: 500, fontSize: 17, color: "#7EE0C0" }}>{v}</b><span style={{ fontSize: 12.5, lineHeight: 1.4, color: "rgba(234,242,246,.68)" }}>{l}</span></div>)}
+          </div>
           {tests.length > 0 && <div style={{ display: "grid", gap: 8 }}>{tests.map((t) => <a key={t!.id} href="/genomics" style={{ display: "flex", justifyContent: "space-between", gap: 10, padding: "12px 14px", borderRadius: 14, background: "rgba(255,255,255,.06)", border: "1px solid rgba(255,255,255,.12)", color: "#EAF2F6", textDecoration: "none", fontSize: 15 }}><span>{t!.name}</span><span style={{ color: "#7EE0C0" }}>{money(t!.price)}</span></a>)}</div>}
-          {pick === "wearables" && <a href="/my-health" style={{ ...btn("grad"), justifySelf: "start" }}>Connect your phone<i className="ph ph-arrow-right" /></a>}
+          {pick === "wearables" && <a href="/my-health" style={{ ...btn("grad"), justifySelf: "start" }}>Connect your phone<NIcon name="arrow" size={16} tone="light" /></a>}
           <NeyuReads dark text={`Neyu reads your ${cur.name.toLowerCase()} next to everything else — a result only means something in context.`} ask={`How would my ${cur.name.toLowerCase()} change my health plan?`} />
         </div>
       </div>
@@ -83,9 +108,9 @@ export function MeetNeyu() {
         <div style={{ display: "grid", gap: 12 }}>
           {CAN.map((c) => (
             <button key={c.t} onClick={() => openAlba(c.q)} style={{ textAlign: "left", display: "flex", gap: 14, alignItems: "center", padding: 16, borderRadius: 20, border: "1px solid rgba(255,255,255,.12)", background: "rgba(255,255,255,.04)", color: "#EAF2F6", cursor: "pointer" }} className="sx-card">
-              <IconTile icon={c.icon} size={44} />
+              <IconTile icon={c.icon} size={44} dark />
               <span style={{ flex: 1 }}><b style={{ fontWeight: 500, fontSize: 18, color: "#fff" }}>{c.t}</b><span style={{ display: "block", fontSize: 14.5, color: "rgba(234,242,246,.7)", marginTop: 2 }}>{c.d}</span></span>
-              <i className="ph ph-arrow-up-right" style={{ fontSize: 18, color: "#7EE0C0" }} />
+              <NIcon name="arrow" size={18} tone="#7EE0C0" style={{ transform: "rotate(-45deg)" }} />
             </button>
           ))}
           <button onClick={() => openAlba()} style={{ ...btn("grad"), justifySelf: "start", marginTop: 6 }}><AlbaOrb size={20} motion={false} />Ask Neyu</button>
@@ -96,7 +121,7 @@ export function MeetNeyu() {
             <div style={{ fontSize: 12, letterSpacing: ".2em", textTransform: "uppercase", color: "#7EE0C0", textAlign: "center" }}>How NEYU works</div>
             {OS.map((o, i) => (
               <button key={o.k} onClick={() => setOs(i)} aria-pressed={os === i} style={{ display: "flex", gap: 12, alignItems: "center", padding: "10px 14px", borderRadius: 14, border: `1px solid ${os === i ? "rgba(126,224,192,.6)" : "rgba(255,255,255,.08)"}`, background: os === i ? "rgba(60,199,158,.14)" : "rgba(255,255,255,.03)", color: "#EAF2F6", cursor: "pointer", textAlign: "left", transition: "all .3s" }}>
-                <i className={"ph " + o.icon} style={{ fontSize: 20, color: os === i ? "#7EE0C0" : "rgba(234,242,246,.6)" }} />
+                <NIcon name={o.icon} size={20} tone={os === i ? "#7EE0C0" : "rgba(234,242,246,.6)"} />
                 <span style={{ fontSize: 14, fontWeight: 600, minWidth: 104, color: "#fff" }}>NEYU {o.k}</span>
                 <span style={{ fontSize: 13.5, color: "rgba(234,242,246,.72)" }}>{o.text}</span>
               </button>
@@ -184,7 +209,7 @@ export function NewServices() {
   return (
     <Section id="services" label="Neyu 10 Services" eyebrow="New at NEYU" title={<>Care that comes to you.</>} lead="Virtual visits, a remote hypertension program, private health packages, executive health, membership and at-home blood collection — all connected to your record and to Neyu.">
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 16 }}>
-        {SERVICES.map((s) => <CapCard key={s.k} icon={s.icon} title={s.title} text={s.text} href={s.href} meta={s.pillar} />)}
+        {SERVICES.map((s) => <CapCard key={s.k} icon={s.icon} title={s.title} text={s.text} href={s.href} meta={s.meta} />)}
       </div>
     </Section>
   );
@@ -197,8 +222,8 @@ export function Philosophy() {
     <Section tone="soft" label="Neyu 11 Philosophy" center eyebrow="The NEYU philosophy" title={<>Listen. Connect. <span style={gradText}>Flourish.</span></>}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 16 }}>
         {PHILOSOPHY.map((p, i) => (
-          <button key={p.k} onClick={() => setO(o === i ? null : i)} aria-expanded={o === i} style={{ ...cardN, textAlign: "left", padding: "clamp(22px,3vw,34px)", display: "grid", gap: 12, cursor: "pointer", background: "rgba(255,255,255,.8)" }}>
-            <i className={"ph " + p.icon} style={{ fontSize: 54, color: N.teal }} />
+          <button key={p.k} onClick={() => setO(o === i ? null : i)} aria-expanded={o === i} style={{ ...cardN, textAlign: "left", padding: "clamp(22px,3vw,34px)", display: "grid", gap: 12, alignContent: "start", cursor: "pointer", background: "rgba(255,255,255,.8)" }}>
+            <NIcon name={p.icon} size={46} tone="grad" stroke={1.2} />
             <b style={{ fontWeight: 300, fontSize: "clamp(32px,3.4vw,44px)", letterSpacing: "-.03em", color: N.ink }}>{p.k}</b>
             <span style={{ fontSize: 17, lineHeight: 1.5, color: N.ink2 }}>{p.text}</span>
             {o === i && <span style={{ fontSize: 15, lineHeight: 1.6, color: N.muted, animation: "fadeUp .3s ease" }}>{p.more}</span>}
@@ -206,7 +231,7 @@ export function Philosophy() {
         ))}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,240px),1fr))", gap: 12 }}>
-        {PILLARS3.map((p) => <div key={p.k} style={{ display: "flex", gap: 12, alignItems: "center", padding: "14px 16px", borderRadius: 18, border: `1px solid ${N.line}`, background: "#fff" }}><IconTile icon={p.icon} size={40} /><span><b style={{ fontWeight: 600 }}>{p.k}</b><span style={{ display: "block", fontSize: 14, color: N.muted }}>{p.text}</span></span></div>)}
+        {PILLARS3.map((p) => <div key={p.k} style={{ display: "flex", gap: 14, alignItems: "center", padding: "16px 18px", borderRadius: 20, border: `1px solid ${N.line}`, background: "#fff", minHeight: 76 }}><IconTile icon={p.icon} size={42} /><span style={{ minWidth: 0 }}><b style={{ fontWeight: 600, fontSize: 16 }}>{p.k}</b><span style={{ display: "block", fontSize: 14, lineHeight: 1.45, color: N.muted }}>{p.text}</span></span></div>)}
       </div>
     </Section>
   );
@@ -223,7 +248,7 @@ export function FinalCta() {
         <h2 style={{ margin: 0, fontSize: "clamp(40px,6vw,80px)", lineHeight: 1, letterSpacing: "-.045em", fontWeight: 500, color: N.ink }}>Know more about<br /><span style={gradText}>your health.</span></h2>
         <p style={{ margin: 0, fontSize: 19, color: N.ink2 }}>Connect the pieces. Understand the whole.</p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "center" }}>
-          <a href="/my-health/sign-up" style={btn("grad")}>Get started<i className="ph ph-arrow-right" /></a>
+          <a href="/my-health/sign-up" style={btn("grad")}>Get started<NIcon name="arrow" size={16} tone="light" /></a>
           <button onClick={() => openAlba()} style={btn("ghost")}><AlbaOrb size={20} motion={false} />Ask Neyu</button>
         </div>
         <AiBadge label="Listen · Connect · Flourish" />
