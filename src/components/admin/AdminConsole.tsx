@@ -17,15 +17,17 @@ import Patients from "./screens/Patients";
 import Patient360 from "./screens/Patient360";
 import Visitors, { VisitorRecord } from "./screens/Visitors";
 import Referrals from "./screens/Referrals";
+import Requests from "./screens/Requests";
 import AiActivity from "./screens/AiActivity";
 import Analytics from "./screens/Analytics";
 import AuditLog from "./screens/AuditLog";
 import Settings from "./screens/Settings";
+import { NeyuMark } from "@/components/brand/NeyuLogo";
 
 const LOCK_MIN = 15;
 type Route = { s: string; id: string | null; tab: string };
-const SLUG: Record<string, string> = { overview: "overview", inbox: "inbox", patients: "patients", patient: "patients", visitors: "visitors", visitor: "visitors", referrals: "referrals", ai: "ai-activity", analytics: "analytics", audit: "audit-log", settings: "settings" };
-const FROM_SLUG: Record<string, string> = { overview: "overview", inbox: "inbox", patients: "patients", visitors: "visitors", referrals: "referrals", "ai-activity": "ai", analytics: "analytics", "audit-log": "audit", settings: "settings" };
+const SLUG: Record<string, string> = { overview: "overview", inbox: "inbox", patients: "patients", patient: "patients", visitors: "visitors", visitor: "visitors", referrals: "referrals", requests: "service-requests", ai: "ai-activity", analytics: "analytics", audit: "audit-log", settings: "settings" };
+const FROM_SLUG: Record<string, string> = { overview: "overview", inbox: "inbox", patients: "patients", visitors: "visitors", referrals: "referrals", "service-requests": "requests", "ai-activity": "ai", analytics: "analytics", "audit-log": "audit", settings: "settings" };
 
 function parseHash(): Route {
   const [slug, id, tab] = (typeof window === "undefined" ? "" : window.location.hash.replace(/^#\/?/, "")).split("/").map(decodeURIComponent);
@@ -174,7 +176,7 @@ export default function AdminConsole({ signedIn, actor: initialActor }: { signed
   const nav: ([string, string, string, number?, boolean?] | ["G", string])[] = [
     ["overview", "Overview", "ph-squares-four"], ["inbox", "Inbox", "ph-tray", queueN], ["G", "People"],
     ["patients", "Patients", "ph-user", 0, true], ["visitors", "Visitors", "ph-user-circle-dashed", 0, true],
-    ["referrals", "Referrals", "ph-arrow-square-in"], ["ai", "AI Activity", "ph-sparkle"], ["analytics", "Analytics", "ph-chart-line"], ["audit", "Audit Log", "ph-shield-check"], ["settings", "Settings", "ph-gear-six"],
+    ["referrals", "Referrals", "ph-arrow-square-in"], ["requests", "Service requests", "ph-calendar-plus"], ["ai", "AI Activity", "ph-sparkle"], ["analytics", "Analytics", "ph-chart-line"], ["audit", "Audit Log", "ph-shield-check"], ["settings", "Settings", "ph-gear-six"],
   ];
   const actorInit = actor.split("@")[0].replace(/[^a-z]/gi, " ").trim().split(/\s+/).map((x) => x[0] || "").join("").slice(0, 2).toUpperCase() || "AD";
   const notifs = boot ? [
@@ -195,7 +197,7 @@ export default function AdminConsole({ signedIn, actor: initialActor }: { signed
           {/* Sidebar */}
           <nav aria-label="Primary" style={{ position: "sticky", top: 0, height: "100vh", flex: "none", width: isCollapsed ? 72 : 256, background: T.side, borderRight: `1px solid ${T.line}`, display: "flex", flexDirection: "column", transition: "width 280ms cubic-bezier(.2,.8,.2,1)", overflow: "hidden", zIndex: 30 }}>
             <div style={{ height: 64, display: "flex", alignItems: "center", gap: 10, padding: "0 16px", flex: "none" }}>
-              <div style={{ width: 34, height: 34, flex: "none", borderRadius: 11, background: T.teal, display: "grid", placeItems: "center", color: T.card, fontSize: 18 }}><i className="ph-fill ph-heartbeat" /></div>
+              <div style={{ width: 34, height: 34, flex: "none", display: "grid", placeItems: "center" }}><NeyuMark size={30} title="NEYU Health" /></div>
               {!isCollapsed && <div style={{ lineHeight: 1.15, whiteSpace: "nowrap" }}><div style={{ fontWeight: 600, fontSize: 15 }}>NEYU Health</div><div style={{ fontSize: 12.5, color: T.faint }}>Admin</div></div>}
             </div>
             <div style={{ flex: 1, overflowY: "auto", padding: "8px 12px", display: "flex", flexDirection: "column", gap: 2 }}>
@@ -279,6 +281,7 @@ export default function AdminConsole({ signedIn, actor: initialActor }: { signed
                 {R.s === "visitors" && <Visitors />}
                 {R.s === "visitor" && R.id && <VisitorRecord key={R.id} id={R.id} tab={R.tab} />}
                 {R.s === "referrals" && <Referrals />}
+                {R.s === "requests" && <Requests />}
                 {R.s === "ai" && <AiActivity />}
                 {R.s === "analytics" && <Analytics />}
                 {R.s === "audit" && <AuditLog />}
