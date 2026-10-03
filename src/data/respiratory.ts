@@ -1,5 +1,5 @@
 // Respiratory Medicine — delivered with our partner, Advanced Respiratory Care
-// Network (ARC Network, Alberta). Shared by the page and by ALBA.
+// Network (ARC Network, Alberta). Shared by the page and by Neyu.
 
 export const ARC = {
   name: "Advanced Respiratory Care Network",
