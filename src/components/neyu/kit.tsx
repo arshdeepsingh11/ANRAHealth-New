@@ -183,24 +183,49 @@ export function NodeNet({ nodes, edges, active, onPick, height = 460, center, da
 }
 
 /** Steps joined by a live line — e.g. Assess → Understand → Personalize → Improve. */
-export function StepRail({ steps, active, onPick, dark }: { steps: { t: string; d: string; icon: string }[]; active: number; onPick?: (i: number) => void; dark?: boolean }) {
+export function StepRail({ steps, active, onPick, dark }: { steps: { t: string; d: string; icon: string; more?: string[]; neyu?: string }[]; active: number; onPick?: (i: number) => void; dark?: boolean }) {
+  // Hover (or focus) previews a step; steps with `more`/`neyu` open into a detail card with Neyu's role.
+  const [hov, setHov] = useState<number | null>(null);
+  const rich = steps.some((s) => s.more || s.neyu);
+  const show = hov ?? active;
+  const cur = steps[show];
   return (
-    <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit,minmax(min(100%,${steps.length > 4 ? 170 : 210}px),1fr))`, gap: 12, position: "relative" }}>
-      {steps.map((s, i) => {
-        const on = i === active, done = i < active;
-        return (
-          <button key={s.t} onClick={() => onPick?.(i)} aria-pressed={on} style={{ textAlign: "left", cursor: onPick ? "pointer" : "default", padding: 18, borderRadius: 20, border: `1px solid ${on ? "rgba(42,132,228,.5)" : dark ? "rgba(255,255,255,.12)" : N.line}`, background: on ? (dark ? "rgba(42,132,228,.18)" : "linear-gradient(160deg,#FFFFFF,#EEF7FC)") : dark ? "rgba(255,255,255,.04)" : "#FFFFFF", color: dark ? "#EAF2F6" : N.ink, display: "grid", gap: 8, alignContent: "start", transition: "all .25s", boxShadow: on ? "0 24px 40px -30px rgba(42,132,228,.8)" : "none" }}>
-            <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <IconTile icon={s.icon} size={38} active={on || done} dark={dark} />
-              <span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: dark ? "rgba(234,242,246,.6)" : N.faint }}>0{i + 1}</span>
-            </span>
-            <b style={{ fontWeight: 500, fontSize: 19, letterSpacing: "-.01em" }}>{s.t}</b>
-            <span style={{ fontSize: 14.5, lineHeight: 1.5, color: dark ? "rgba(234,242,246,.72)" : N.ink2 }}>{s.d}</span>
-          </button>
-        );
-      })}
+    <div style={{ display: "grid", gap: 14 }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(auto-fit,minmax(min(100%,${steps.length > 4 ? 170 : 210}px),1fr))`, gap: 12, position: "relative" }}>
+        {rich && <div aria-hidden style={{ position: "absolute", left: 24, right: 24, top: -8, height: 3, borderRadius: 3, background: dark ? "rgba(255,255,255,.1)" : N.line2, overflow: "hidden" }}><span style={{ display: "block", height: "100%", width: `${((show + 1) / steps.length) * 100}%`, background: "linear-gradient(90deg,#2FBF94,#2273D6)", transition: "width .45s cubic-bezier(.2,.8,.2,1)" }} /></div>}
+        {steps.map((s, i) => {
+          const on = i === show, done = i < show;
+          return (
+            <button key={s.t} onClick={() => onPick?.(i)} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)} onFocus={() => setHov(i)} onBlur={() => setHov(null)} aria-pressed={i === active} style={{ textAlign: "left", cursor: onPick ? "pointer" : "default", padding: 18, borderRadius: 20, border: `1px solid ${on ? "rgba(42,132,228,.5)" : dark ? "rgba(255,255,255,.12)" : N.line}`, background: on ? (dark ? "rgba(42,132,228,.18)" : "linear-gradient(160deg,#FFFFFF,#EEF7FC)") : dark ? "rgba(255,255,255,.04)" : "#FFFFFF", color: dark ? "#EAF2F6" : N.ink, display: "grid", gap: 8, alignContent: "start", transition: "all .25s", transform: on && rich ? "translateY(-4px)" : "none", boxShadow: on ? "0 24px 40px -30px rgba(42,132,228,.8)" : "none" }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <IconTile icon={s.icon} size={38} active={on || done} dark={dark} />
+                <span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: dark ? "rgba(234,242,246,.6)" : N.faint }}>0{i + 1}</span>
+                {done && rich && <NIcon name="check" size={16} tone="grad" style={{ marginLeft: "auto" }} />}
+              </span>
+              <b style={{ fontWeight: 500, fontSize: 19, letterSpacing: "-.01em" }}>{s.t}</b>
+              <span style={{ fontSize: 14.5, lineHeight: 1.5, color: dark ? "rgba(234,242,246,.72)" : N.ink2 }}>{s.d}</span>
+            </button>
+          );
+        })}
+      </div>
+      {rich && cur && (
+        <div key={show} style={{ ...cardN, padding: "clamp(16px,2.4vw,24px)", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,280px),1fr))", gap: 16, animation: "fadeUp .3s ease", background: dark ? "rgba(255,255,255,.05)" : "linear-gradient(160deg,#FFFFFF,#F2F9F7)" }}>
+          <div style={{ display: "grid", gap: 8, alignContent: "start" }}>
+            <span style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>Step {show + 1} · {cur.t}</span>
+            {cur.more && <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 8 }}>{cur.more.map((m) => <li key={m} style={{ display: "flex", gap: 8, fontSize: 15, lineHeight: 1.5, color: dark ? "#EAF2F6" : N.ink }}><NIcon name="check" size={16} tone="grad" style={{ marginTop: 3 }} />{m}</li>)}</ul>}
+          </div>
+          {cur.neyu && <div style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px", borderRadius: 16, background: dark ? "rgba(126,224,192,.08)" : "rgba(47,191,148,.07)", border: "1px solid rgba(47,191,148,.25)" }}><AlbaOrb size={26} /><div style={{ display: "grid", gap: 4 }}><span style={{ fontSize: 11.5, letterSpacing: ".16em", textTransform: "uppercase", color: N.teal, fontWeight: 600 }}>Neyu in this step</span><TypeLine text={cur.neyu} dark={dark} /></div></div>}
+        </div>
+      )}
     </div>
   );
+}
+
+/** A line that types itself in (re-types when the text changes). */
+function TypeLine({ text, dark }: { text: string; dark?: boolean }) {
+  const [n, setN] = useState(0);
+  useEffect(() => { setN(0); const t = setInterval(() => setN((x) => (x >= text.length ? (clearInterval(t), x) : x + 2)), 18); return () => clearInterval(t); }, [text]);
+  return <span style={{ fontSize: 15, lineHeight: 1.5, color: dark ? "#EAF2F6" : N.ink }}>{text.slice(0, n)}{n < text.length && <span style={{ opacity: 0.5 }}>▍</span>}</span>;
 }
 
 /** Streams an answer from /api/chat (same engine as the Neyu panel). */
