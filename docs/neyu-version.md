@@ -60,3 +60,20 @@ NEYU connects the pieces of your health so you can understand what matters and w
 - **Membership:** no prices are published. Pages say "pricing shared on request".
 - **Packages:** clinic-service prices are quoted by the team. Lab prices are real BioAro list prices.
 - **Nothing is booked or charged online.** Every request goes to admin for staff follow-up.
+
+## Round 2 — Japanese-style refinement (branch `japanese-style`)
+From the CEO/team review (13 points + "every page Japanese AI").
+
+**Brand & system**
+- New NEYU logo: vector wordmark with the leaf "Y" (green→blue), HEALTH line, tagline "Your Health. Reimagined." — `src/components/brand/NeyuLogo.tsx`.
+- DM Sans on every page (no other fonts).
+- One icon family (`src/components/neyu/icons.tsx`): same 1.5 stroke, same tile. Every old Phosphor/Lucide name maps to it, so no page shows a random or fallback icon. Specialty icons: heart, heart-pulse, stethoscope, thyroid, elder, child, apple, DNA, lungs.
+- New chart engine (`neyu/charts.tsx`) and 3D library (`neyu/fx.tsx`): Focused 3D Marquee, Scroll-rotate Sphere/Orbit gallery, Planet system, Signal Convergence, 3D Coverflow, Beam Flow, Evervault card, Apple-style Dock, Dynamic pill navigation.
+
+**Homepage** — clean flow network (You · Biology · Data → Neyu → Insight · Care · Life), anatomical body map, record network fills its card, pillar cards with no text/icon overlap, Biology tabs each change the visual and data, step/service/philosophy icons replaced, distinct service labels.
+
+**Pages rebuilt in the same style** — Specialties + every specialty page, Services, Physicians (AI matcher, "who speaks what" table, orbit gallery), Cardiac symptoms, Contact (digital Calgary map + nearest clinic), Referral Centre (AI auto-fill, steps, urgency, live preview, what happens next), Lab Result Explainer, Explain My Diagnosis, Resources, About, Careers, Genomics, Diagnostics sub-pages, Longevity Lab (light hero, NEYU tiles, fixed-size Research book), Nea (NEYU tokens), patient portal icons.
+
+**Data** — physicians and languages come from the clinic's Doctors.docx (`src/data/physicians.ts`); counts on every page are computed from it (8 physicians, 8 languages; the wider clinic team speaks more).
+
+**Fixes** — tab bars no longer scroll the page on load; networks scale labels for any card width; long labels wrap on phones.
