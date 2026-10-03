@@ -53,11 +53,12 @@ export async function GET(req: Request) {
         out = r;
         break;
       }
+      case "requests": out = { rows: await data.requestsList() }; break;
       case "ai": out = { rows: await data.aiList() }; break;
       case "ai-item": {
         const a = await data.aiDetail(id);
         if (!a) throw new HttpError(404, "Item not found.");
-        const what = { symptom: "symptom check", alba: "ALBA conversation", assessment: "assessment", lab: "lab explainer" }[a.kind];
+        const what = { symptom: "symptom check", alba: "Neyu conversation", assessment: "assessment", lab: "lab explainer" }[a.kind];
         await adminLog({ actor, ip, kind: "View", action: "Viewed " + what, resource: "AI · " + a.id, subjectType: a.isVisitor ? "visitor" : "patient", subjectId: a.whoId, subject: a.who });
         out = a;
         break;
