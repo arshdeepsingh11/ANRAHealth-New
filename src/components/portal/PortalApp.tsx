@@ -1,7 +1,7 @@
 "use client";
 
 // My Health Space — a page inside the website (the site's nav rail, mobile
-// nav, footer and ALBA stay). Header + section tabs, in-page navigation
+// nav, footer and Neyu stay). Header + section tabs, in-page navigation
 // stack with browser back support (?s=… in the URL), sheets and toast.
 // Screens load their own data through the shared cache.
 
@@ -147,8 +147,8 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
             <span style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em" }}>My Health Space</span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button onClick={() => setSheet({ t: "alba" })} className="h-albabtn" aria-label="Ask ALBA about your health data" style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 20, background: "#EFEAF6", color: C.lavDeep, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
-              <i className="ph ph-sparkle" style={{ fontSize: 17 }} /><span className="mhs-hide-sm">Ask ALBA</span>
+            <button onClick={() => setSheet({ t: "alba" })} className="h-albabtn" aria-label="Ask Neyu about your health data" style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 20, background: "#E6F3F8", color: C.lavDeep, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              <i className="ph ph-sparkle" style={{ fontSize: 17 }} /><span className="mhs-hide-sm">Ask Neyu</span>
             </button>
           </div>
         </header>
