@@ -8,6 +8,7 @@ import { api, announceSession } from "./api";
 import { C } from "./ui";
 import PasswordStrength from "./PasswordStrength";
 import { passwordProblem } from "@/lib/portal/password";
+import { NIcon } from "@/components/neyu/icons";
 
 const field: React.CSSProperties = { display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: C.muted };
 
@@ -77,7 +78,7 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
                 Password
                 <span style={{ position: "relative", display: "block" }}>
                   <input className="mhs-in" type={showPw ? "text" : "password"} value={f.password} onChange={set("password")} required minLength={up ? 10 : 1} maxLength={200} autoComplete={up ? "new-password" : "current-password"} style={{ paddingRight: 48 }} />
-                  <button type="button" onClick={() => setShowPw(!showPw)} aria-label={showPw ? "Hide password" : "Show password"} style={{ position: "absolute", right: 4, top: 4, width: 38, height: 38, border: "none", background: "none", cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center" }}><i className={showPw ? "ph ph-eye-slash" : "ph ph-eye"} style={{ fontSize: 18 }} /></button>
+                  <button type="button" onClick={() => setShowPw(!showPw)} aria-label={showPw ? "Hide password" : "Show password"} style={{ position: "absolute", right: 4, top: 4, width: 38, height: 38, border: "none", background: "none", cursor: "pointer", color: C.muted, display: "flex", alignItems: "center", justifyContent: "center" }}><NIcon name={showPw ? "ph-eye-slash" : "ph-eye"} size={18} tone="currentColor" /></button>
                 </span>
                 {up && <PasswordStrength password={f.password} email={f.email} />}
               </label>
@@ -99,10 +100,10 @@ export default function AuthForm({ mode, signupOpen = true }: { mode: "sign-in" 
             {up ? <>Already have an account? <a href="/my-health/sign-in">Sign in</a></> : <>New to My Health Space? <a href="/my-health/sign-up">Create an account</a></>}
           </p>
           <p style={{ margin: "32px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}>
-            <i className="ph ph-lock-simple" style={{ fontSize: 16, marginTop: 1 }} /><span>Your health data belongs to you. It is encrypted in transit, never sold, and you control every source.</span>
+            <NIcon name="ph-lock-simple" size={16} tone="currentColor" style={{marginTop: 1}} /><span>Your health data belongs to you. It is encrypted in transit, never sold, and you control every source.</span>
           </p>
           <p style={{ margin: "12px 0 0", fontSize: 13, lineHeight: 1.5, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}>
-            <i className="ph ph-first-aid" style={{ fontSize: 16, color: C.peachInk, marginTop: 1 }} /><span>If you think you may be having a medical emergency, call 911 or go to the nearest emergency department.</span>
+            <NIcon name="ph-first-aid" size={16} tone={C.peachInk} style={{marginTop: 1}} /><span>If you think you may be having a medical emergency, call 911 or go to the nearest emergency department.</span>
           </p>
         </main>
       </div>
