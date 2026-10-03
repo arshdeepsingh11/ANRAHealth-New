@@ -6,6 +6,7 @@ import AnraEl from "@/components/AnraEl";
 import { useAnraNav, HUB_EVENT } from "@/lib/useAnraNav";
 import { askAlbaOnce, typeOut } from "@/lib/albaClient";
 import { HUB, HUB_INFO, hubSubs, type HubKey, type NavLink } from "@/data/homeContent";
+import { NIcon } from "@/components/neyu/icons";
 
 interface Panel { kicker: string; title: string; desc: string; chart: string; param: number; items: string[]; actions: (NavLink & { layer?: HubKey })[] }
 
@@ -88,7 +89,7 @@ export default function HealthHub({ mobile }: { mobile: boolean }) {
         {layer && (
           <>
             <span style={{ fontSize: 13, fontWeight: 500 }}>{HUB_INFO[layer].title}</span>
-            <button onClick={() => openLayer(null)} className="hv-bdTeal" style={{ marginLeft: 6, height: 36, padding: "0 14px", borderRadius: 999, border: "1px solid #D6D0C5", background: "#FDFCFA", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><i className="ph ph-arrow-left" />Back to full map</button>
+            <button onClick={() => openLayer(null)} className="hv-bdTeal" style={{ marginLeft: 6, height: 36, padding: "0 14px", borderRadius: 999, border: "1px solid #D6D0C5", background: "#FDFCFA", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}><NIcon name="ph-arrow-left" size="1em" tone="currentColor" />Back to full map</button>
           </>
         )}
       </div>
