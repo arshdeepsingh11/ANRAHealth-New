@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     });
     await createSession(patient.id);
     audit(patient.id, "patient", "create", "account", ip);
-    // Anything this browser did anonymously (ALBA, symptom checks…) joins the new record.
+    // Anything this browser did anonymously (Neyu, symptom checks…) joins the new record.
     await linkVisitorToPatient(await currentSessionId(), patient.id);
     // Email ownership must be confirmed before any health data is shown.
     let emailSent = true;
