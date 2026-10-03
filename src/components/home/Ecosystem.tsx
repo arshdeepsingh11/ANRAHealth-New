@@ -51,17 +51,17 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
             {tag("NEYU Health", { background: "#14181B", color: "#F7F5F1" })}
             {tag("BioAro Labs", { border: "1px solid #6EA8B6", color: "#2F5561" })}
-            {tag("BioAro Drugs", { border: "1px solid #8C6FB8", color: "#6A5096" })}
-            {tag("Nea", { border: "1px solid #B9786A", color: "#8A4F43" })}
+            {tag("BioAro Drugs", { border: "1px solid #2A84E4", color: "#1D5FA8" })}
+            {tag("Nea", { border: "1px solid #3CC79E", color: "#8A4F43" })}
           </div>
           <div style={{ position: "relative", width: S, height: S, maxWidth: "100%", margin: "0 auto" }}>
-            <div style={{ position: "absolute", inset: "18%", borderRadius: "50%", background: "radial-gradient(circle, rgba(140,111,184,.14), transparent 70%)" }} />
-            {ring(r1, 46, false, [ic("ph-stethoscope", "#3F6F7C"), ic("ph-dna", "#8C6FB8"), ic("ph-heartbeat", "#3F6F7C"), ic("ph-flask", "#6EA8B6"), ic("ph-flower-lotus", "#B9786A"), ic("ph-brain", "#8C6FB8"), ic("ph-map-pin", "#3F6F7C")])}
+            <div style={{ position: "absolute", inset: "18%", borderRadius: "50%", background: "radial-gradient(circle, rgba(42,132,228,.14), transparent 70%)" }} />
+            {ring(r1, 46, false, [ic("ph-stethoscope", "#3F6F7C"), ic("ph-dna", "#2A84E4"), ic("ph-heartbeat", "#3F6F7C"), ic("ph-flask", "#6EA8B6"), ic("ph-flower-lotus", "#3CC79E"), ic("ph-brain", "#2A84E4"), ic("ph-map-pin", "#3F6F7C")])}
             {ring(r2, 70, true, [
               pill("BioAro Labs", "#6EA8B6", "Testing", () => showGallery("labs")),
-              pill("BioAro Drugs", "#8C6FB8", "Wellness", () => showGallery("drugs")),
+              pill("BioAro Drugs", "#2A84E4", "Wellness", () => showGallery("drugs")),
               pill("NEYU Clinics", "#F3A993", "Calgary", () => go({ label: "Locations", href: PAGE_HREF.locations })),
-              pill("Nea", "#B9786A", "Skin", () => showGallery("nea")),
+              pill("Nea", "#3CC79E", "Skin", () => showGallery("nea")),
             ])}
             <div style={{ position: "absolute", left: "50%", top: "50%", width: mobile ? 96 : 124, height: mobile ? 96 : 124, transform: "translate(-50%,-50%)", borderRadius: "50%", background: "#FFFFFF", border: "1px solid #E3DED5", display: "grid", placeItems: "center", animation: "coreBreath 5s ease-in-out infinite" }}>
               <NeyuLogo height={mobile ? 54 : 72} layout="stacked" />
@@ -78,11 +78,11 @@ export default function Ecosystem({ mobile }: { mobile: boolean }) {
               <div><div style={{ fontWeight: 500, fontSize: 18 }}>BioAro Labs</div><div style={{ color: "#5A626A", fontSize: 15 }}>Genomics, microbiome and biomarker testing. Canada and US.</div></div>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "14px 1fr", gap: 14, padding: "16px 0", borderBottom: "1px solid #E3DED5" }}>
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#8C6FB8", marginTop: 7 }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#2A84E4", marginTop: 7 }} />
               <div><div style={{ fontWeight: 500, fontSize: 18 }}>BioAro Drugs</div><div style={{ color: "#5A626A", fontSize: 15 }}>Supportive wellness options. US, Canada and UK.</div></div>
             </div>
             <a href="/specialties/skin-health" style={{ display: "grid", gridTemplateColumns: "14px 1fr auto", gap: 14, padding: "16px 0", borderBottom: "1px solid #E3DED5", color: "inherit", textDecoration: "none", alignItems: "start" }}>
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#B9786A", marginTop: 7 }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#3CC79E", marginTop: 7 }} />
               <div><div style={{ fontWeight: 500, fontSize: 18 }}>Nea Precision Skin</div><div style={{ color: "#5A626A", fontSize: 15 }}>Medical aesthetics, Fotona laser and skin health. Calgary.</div></div>
               <i className="ph ph-arrow-up-right" style={{ color: "#8A4F43", marginTop: 6 }} />
             </a>
