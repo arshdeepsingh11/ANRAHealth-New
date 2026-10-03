@@ -42,7 +42,7 @@ export function relTime(d: Date | null): string {
 
 // ── Consent (Privacy & Data) ─────────────────────────────────────────────
 // A source that is switched off contributes nothing to any screen or to
-// ALBA. Data is kept (not deleted) so switching back on restores it.
+// Neyu. Data is kept (not deleted) so switching back on restores it.
 type Consent = { wearables: boolean; labs: boolean; records: boolean };
 export async function getConsent(patientId: string): Promise<Consent> {
   const s = await prisma.patientSettings.findUnique({ where: { patientId }, select: { shareWearables: true, shareLabs: true, shareRecords: true } });
@@ -350,7 +350,7 @@ export async function getHistory(patientId: string): Promise<HistoryItemDTO[]> {
   const out: HistoryItemDTO[] = [];
   sym.forEach((s) => out.push({ id: "s" + s.id, ref: { type: "symptom", id: s.id }, kind: "ai symptom", type: "AI Symptom Check", ai: true, icon: "ph ph-sparkle", go: null, at: s.createdAt.toISOString(),
     title: "Topic: " + clip(s.description, 60), sub: s.emergency ? "Guidance: urgent care advised" : `Guidance: ${s.urgency}${s.recommendedDiscipline ? " · " + s.recommendedDiscipline : ""}` }));
-  convs.forEach((c) => out.push({ id: "c" + c.id, ref: { type: "alba", id: c.id }, kind: "ai", type: "ALBA conversation", ai: true, icon: "ph ph-sparkle", go: null, at: c.createdAt.toISOString(),
+  convs.forEach((c) => out.push({ id: "c" + c.id, ref: { type: "alba", id: c.id }, kind: "ai", type: "Neyu conversation", ai: true, icon: "ph ph-sparkle", go: null, at: c.createdAt.toISOString(),
     title: "Topic: " + clip(c.messages[0]?.text || "Conversation", 60), sub: `${c._count.messages} messages` }));
   assess.forEach((a) => out.push({ id: "a" + a.id, ref: { type: "assessment", id: a.id }, kind: "assessments", type: "Assessment", ai: false, icon: "ph ph-clipboard-text", go: null, at: a.createdAt.toISOString(),
     title: "Risk Assessment completed", sub: "Health Risk Assessment" }));
@@ -382,7 +382,7 @@ export async function getHistoryDetail(patient: { id: string; timezone: string }
   if (type === "alba") {
     const c = await prisma.albaConversation.findFirst({ where: { id, patientId: patient.id }, include: { messages: { orderBy: { createdAt: "asc" }, select: { role: true, text: true } } } });
     if (!c) return null;
-    return { eyebrow: "History", title: "ALBA conversation", dateLabel: `${longDate(c.createdAt, tz)} · Completed`, sections: [],
+    return { eyebrow: "History", title: "Neyu conversation", dateLabel: `${longDate(c.createdAt, tz)} · Completed`, sections: [],
       messages: c.messages.map((m) => ({ role: m.role === "user" ? "user" : "assistant", text: m.text })), note: "AI-generated. Not a diagnosis." };
   }
   if (type === "assessment") {
