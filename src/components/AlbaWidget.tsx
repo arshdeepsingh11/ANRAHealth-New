@@ -7,6 +7,7 @@ import AlbaOrb from "@/components/AlbaOrb";
 import AlbaIntroVeil from "@/components/AlbaIntroVeil";
 import { albaSuggestionsFor } from "@/data/homeContent";
 import { useIsMobile } from "@/lib/useViewport";
+import { NIcon } from "@/components/neyu/icons";
 
 const VIDEO_SEEN_KEY = "anra_video_seen";
 
@@ -91,10 +92,10 @@ function AlbaPanel({ mobile }: { mobile: boolean }) {
             <div style={{ fontSize: 14, color: "#5A626A" }}>Your health companion.</div>
           </div>
           <button onClick={toggleVoice} aria-label={speakReplies ? "Mute Neyu voice replies" : "Unmute Neyu voice replies"} title={speakReplies ? "Voice replies on — tap to mute" : "Voice replies off — tap to unmute"} className="hv-lav" style={iconBtn}>
-            <i className={speakReplies ? "ph ph-speaker-high" : "ph ph-speaker-slash"} />
+            <NIcon name={speakReplies ? "ph-speaker-high" : "ph-speaker-slash"} size="1em" tone="currentColor" />
           </button>
-          <button onClick={clear} aria-label="New conversation" className="hv-lav" style={iconBtn}><i className="ph ph-note-pencil" /></button>
-          <button onClick={closeAlba} aria-label="Close Neyu" className="hv-lav" style={iconBtn}><i className="ph ph-x" /></button>
+          <button onClick={clear} aria-label="New conversation" className="hv-lav" style={iconBtn}><NIcon name="ph-note-pencil" size="1em" tone="currentColor" /></button>
+          <button onClick={closeAlba} aria-label="Close Neyu" className="hv-lav" style={iconBtn}><NIcon name="ph-x" size="1em" tone="currentColor" /></button>
         </div>
 
         <div aria-live="polite" style={{ flex: 1, overflow: "auto", padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
@@ -109,13 +110,13 @@ function AlbaPanel({ mobile }: { mobile: boolean }) {
           {messages.map((m, i) => {
             if (m.kind === "safety") return (
               <div key={i} role="alert" style={{ padding: 16, borderRadius: 14, background: "#9B2317", color: "#FFF7F5", display: "grid", gap: 10 }}>
-                <div style={{ fontWeight: 600, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-warning" style={{ fontSize: 20 }} />Please seek urgent medical care.</div>
+                <div style={{ fontWeight: 600, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}><NIcon name="ph-warning" size={20} tone="currentColor" />Please seek urgent medical care.</div>
                 <div style={{ fontSize: 15 }}>What you’ve described may need immediate attention. Call 911 or go to the nearest emergency department. Please don’t wait for an online answer.</div>
                 <a href="tel:911" style={{ justifySelf: "start", background: "#FFF7F5", color: "#9B2317", textDecoration: "none", fontWeight: 700, padding: "10px 16px", borderRadius: 10, letterSpacing: ".06em" }}>CALL 911</a>
               </div>
             );
             if (m.kind === "error") return (
-              <div key={i} style={{ maxWidth: "92%", fontSize: 15, color: "#3A4147", padding: "12px 14px", borderRadius: 12, background: "#EEF7FA", display: "flex", gap: 10 }}><i className="ph ph-cloud-slash" style={{ color: "#1D5FA8", marginTop: 3 }} />{m.text}</div>
+              <div key={i} style={{ maxWidth: "92%", fontSize: 15, color: "#3A4147", padding: "12px 14px", borderRadius: 12, background: "#EEF7FA", display: "flex", gap: 10 }}><NIcon name="ph-cloud-slash" size="1em" tone={"#1D5FA8"} style={{marginTop: 3}} />{m.text}</div>
             );
             if (m.role === "user") return (
               <div key={i} style={{ alignSelf: "flex-end", maxWidth: "84%", background: "#14181B", color: "#F7F5F1", padding: "11px 15px", borderRadius: "16px 16px 4px 16px", fontSize: 15, whiteSpace: "pre-wrap" }}>{m.text}</div>
@@ -142,12 +143,12 @@ function AlbaPanel({ mobile }: { mobile: boolean }) {
             />
             {speechSupported && (
               <button onClick={toggleListening} aria-label={listening ? "Stop listening" : "Speak to Neyu"} title="Speak to Neyu" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: listening ? "#9B2317" : "#E6F3F8", color: listening ? "#FFF7F5" : "#1D5FA8", display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}>
-                <i className={listening ? "ph ph-microphone-slash" : "ph ph-microphone"} />
+                <NIcon name={listening ? "ph-microphone-slash" : "ph-microphone"} size="1em" tone="currentColor" />
               </button>
             )}
-            <button onClick={() => submit()} aria-label="Send" className="hv-purple" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: "#2A84E4", color: "#FDFCFA", display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}><i className="ph ph-arrow-up" /></button>
+            <button onClick={() => submit()} aria-label="Send" className="hv-purple" style={{ width: 44, height: 44, border: 0, borderRadius: 10, background: "#2A84E4", color: "#FDFCFA", display: "grid", placeItems: "center", fontSize: 18, flex: "none" }}><NIcon name="ph-arrow-up" size="1em" tone="currentColor" /></button>
           </div>
-          <div style={{ marginTop: 8, fontSize: 12, color: "#5A626A", display: "flex", gap: 6, alignItems: "center" }}><i className="ph ph-info" />Neyu explains; it doesn’t diagnose. In an emergency call 911.</div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#5A626A", display: "flex", gap: 6, alignItems: "center" }}><NIcon name="ph-info" size="1em" tone="currentColor" />Neyu explains; it doesn’t diagnose. In an emergency call 911.</div>
         </div>
       </aside>
     </>
