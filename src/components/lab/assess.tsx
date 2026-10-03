@@ -318,7 +318,7 @@ export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof t
             <span style={{ width: 44, height: 44, borderRadius: 14, display: "grid", placeItems: "center", background: accent + "18", color: accent }}><NIcon name={cur.icon} size={22} tone={"currentColor"} /></span>
             <div><b style={{ fontWeight: 500, fontSize: 19 }}>{cur.title}</b><div style={{ fontSize: 13.5, color: T.muted }}>{cur.sub}</div></div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 16 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,300px),1fr))", gap: 16, alignItems: "end" }}>
             {cur.qs.map((q) => (
               <div key={q.k} style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 8, alignContent: "start", gridColumn: q.t === "many" || q.t === "text" ? "1 / -1" : undefined }}>
                 <label htmlFor={"q-" + q.k} style={{ fontSize: 14.5, color: T.ink }}>{q.label}{q.optional && <span style={{ color: T.faint }}> · optional</span>}</label>
