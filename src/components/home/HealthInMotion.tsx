@@ -4,7 +4,7 @@
 // Two tilted rows glide in opposite directions; scrolling the page speeds
 // them up (and flips direction when you scroll back up), and cards lean
 // with the motion. Hover a row to pause it. Content is what NEYU actually
-// has: words from medicine, BioAro Labs tests, ALBA prompts, clinic facts.
+// has: words from medicine, BioAro Labs tests, Neyu prompts, clinic facts.
 // Respects prefers-reduced-motion (rows become swipeable, no autoplay).
 
 import React, { useEffect, useRef } from "react";
@@ -34,10 +34,10 @@ const FACTS: Card[] = [
 ];
 
 const AI: Card[] = [
-  { kind: "ai", ask: "What does a high LDL mean for my heart?", note: "ALBA explains results in plain language" },
-  { kind: "ai", ask: "Is an exercise stress echo right for me?", note: "ALBA prepares you for your visit" },
-  { kind: "ai", ask: "Which genetic test fits a family history of heart disease?", note: "ALBA guides — it never diagnoses" },
-  { kind: "ai", ask: "How do I get a cardiology referral?", note: "ALBA finds your next step" },
+  { kind: "ai", ask: "What does a high LDL mean for my heart?", note: "Neyu explains results in plain language" },
+  { kind: "ai", ask: "Is an exercise stress echo right for me?", note: "Neyu prepares you for your visit" },
+  { kind: "ai", ask: "Which genetic test fits a family history of heart disease?", note: "Neyu guides — it never diagnoses" },
+  { kind: "ai", ask: "How do I get a cardiology referral?", note: "Neyu finds your next step" },
 ];
 
 const TEST_IDS = ["high-sensitive-crp-hs-crp", "core-inflammation-aging", "gdf-15", "pharmacogenomics-test", "whole-genome-sequencing-30x"];
@@ -64,10 +64,10 @@ function CardView({ c, onAsk }: { c: Card; onAsk: (q: string) => void }) {
     );
   if (c.kind === "ai")
     return (
-      <button onClick={() => onAsk(c.ask)} className="anra-motion-ai" style={{ ...base, cursor: "pointer", border: "1px solid rgba(140,111,184,.35)", background: "linear-gradient(160deg,#F4F0FA 0%,#FDFCFA 60%)" }}>
+      <button onClick={() => onAsk(c.ask)} className="anra-motion-ai" style={{ ...base, cursor: "pointer", border: "1px solid rgba(42,132,228,.35)", background: "linear-gradient(160deg,#F4F0FA 0%,#FDFCFA 60%)" }}>
         <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <AlbaOrb size={30} />
-          <span style={{ fontSize: 12, letterSpacing: ".14em", fontWeight: 700, color: "#4E3A73" }}>ASK ALBA · AI</span>
+          <span style={{ fontSize: 12, letterSpacing: ".14em", fontWeight: 700, color: "#163F6E" }}>ASK Neyu · AI</span>
         </span>
         <span style={{ fontSize: 18, lineHeight: 1.4, color: "#1D2327", flex: 1 }}>“{c.ask}”</span>
         <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, color: "#5F4A8A" }}>{c.note}<i className="ph ph-arrow-up-right" style={{ fontSize: 16 }} /></span>
@@ -153,16 +153,16 @@ export default function HealthInMotion() {
   }, []);
 
   return (
-    <section data-screen-label="Home 08 Health in motion" aria-labelledby="motion-title" style={{ position: "relative", overflow: "hidden", padding: "clamp(64px,9vw,120px) 0 clamp(72px,10vw,130px)", background: "radial-gradient(900px 420px at 50% 0%, rgba(140,111,184,.14), transparent 70%), radial-gradient(800px 400px at 50% 100%, rgba(110,168,182,.14), transparent 70%)" }}>
+    <section data-screen-label="Home 08 Health in motion" aria-labelledby="motion-title" style={{ position: "relative", overflow: "hidden", padding: "clamp(64px,9vw,120px) 0 clamp(72px,10vw,130px)", background: "radial-gradient(900px 420px at 50% 0%, rgba(42,132,228,.14), transparent 70%), radial-gradient(800px 400px at 50% 100%, rgba(110,168,182,.14), transparent 70%)" }}>
       <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 clamp(20px,4vw,40px)", textAlign: "center" }}>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px 0 6px", borderRadius: 999, background: "rgba(253,252,250,.9)", border: "1px solid #E4DCF1", fontSize: 12, letterSpacing: ".14em", fontWeight: 700, color: "#4E3A73" }}>
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 8, height: 34, padding: "0 14px 0 6px", borderRadius: 999, background: "rgba(253,252,250,.9)", border: "1px solid #D6EEF6", fontSize: 12, letterSpacing: ".14em", fontWeight: 700, color: "#163F6E" }}>
           <AlbaOrb size={22} />AI · MEDICINE · SCIENCE
         </span>
         <h2 id="motion-title" style={{ margin: "18px 0 0", fontSize: "clamp(34px,5.4vw,64px)", lineHeight: 1.04, letterSpacing: "-.04em", fontWeight: 500 }}>
           Health, <span className="anra-ai-text">in motion.</span>
         </h2>
         <p style={{ margin: "14px auto 0", maxWidth: 620, fontSize: 18, lineHeight: 1.55, color: "#3A4147" }}>
-          Timeless medicine, precise BioAro testing and ALBA’s AI — moving together. Scroll to speed it up; tap an ALBA card to ask.
+          Timeless medicine, precise BioAro testing and Neyu’s AI — moving together. Scroll to speed it up; tap an Neyu card to ask.
         </p>
       </div>
 
@@ -175,7 +175,7 @@ export default function HealthInMotion() {
 
       <div style={{ marginTop: "clamp(28px,4vw,48px)", display: "flex", justifyContent: "center", padding: "0 20px" }}>
         <button onClick={() => openAlba()} className="anra-action" style={{ minHeight: 52, padding: "0 20px 0 10px" }}>
-          <span className="ic" style={{ background: "#F0ECF7" }}><AlbaOrb size={22} /></span>Ask ALBA anything<i className="ph ph-arrow-right ar" />
+          <span className="ic" style={{ background: "#F0ECF7" }}><AlbaOrb size={22} /></span>Ask Neyu anything<i className="ph ph-arrow-right ar" />
         </button>
       </div>
     </section>
