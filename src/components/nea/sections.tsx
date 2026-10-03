@@ -7,6 +7,7 @@ import { LAB_TESTS, money } from "@/data/bioaroCatalog";
 import { T, card, glass, btnInk, btnGhost, chip, eyebrow, h2, aiText, Book, Icon, CountUp, Stat, Segmented, ChartCard } from "./ui";
 import { RangeBars, Rings, NeuroSlider, CategoryDonut, ConcernMap, PackageMix, Spectrum, HoursWeek } from "./charts";
 import type { Tool } from "./studio";
+import { NIcon } from "@/components/neyu/icons";
 
 export type Tab = "overview" | "studio" | "treatments" | "results" | "packages" | "visit";
 
@@ -59,12 +60,12 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
               <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, padding: "6px 6px 6px 16px", borderRadius: 999, background: "rgba(255,255,255,.96)" }}>
                 <AlbaOrb size={24} />
                 <input value={q} onChange={(e) => setQ(e.target.value)} aria-label="Ask Neyu about Nea" placeholder="Ask Neyu — “what helps with melasma?”" style={{ flex: 1, minWidth: 0, height: 44, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
-                <button type="submit" aria-label="Ask Neyu" style={{ ...btnInk, height: 44, borderRadius: 999, padding: "0 16px" }}>Ask<i className="ph ph-arrow-right" /></button>
+                <button type="submit" aria-label="Ask Neyu" style={{ ...btnInk, height: 44, borderRadius: 999, padding: "0 16px" }}>Ask<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></button>
               </div>
             </form>
             <div style={{ marginTop: 18, display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <a href={NEA.book} target="_blank" rel="noopener" style={{ ...btnInk, background: "#F7F5F1", color: T.ink }}>Book at Nea<i className="ph ph-arrow-up-right" /></a>
-              <a href={NEA.consult} target="_blank" rel="noopener" style={{ ...btnGhost, color: "#F7F5F1", borderColor: "rgba(247,245,241,.5)" }}>Free 15-min consult<i className="ph ph-arrow-up-right" /></a>
+              <a href={NEA.book} target="_blank" rel="noopener" style={{ ...btnInk, background: "#F7F5F1", color: T.ink }}>Book at Nea<NIcon name="ph-arrow-up-right" size={18} tone={"currentColor"} /></a>
+              <a href={NEA.consult} target="_blank" rel="noopener" style={{ ...btnGhost, color: "#F7F5F1", borderColor: "rgba(247,245,241,.5)" }}>Free 15-min consult<NIcon name="ph-arrow-up-right" size={18} tone={"currentColor"} /></a>
             </div>
           </div>
           <div style={{ display: "grid", gap: 12 }}>
@@ -74,12 +75,12 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
               { icon: "ph-calendar-dots", t: "Timeline Planner", d: "Book-by dates for your big day", tool: "planner" as Tool },
             ].map((x, i) => (
               <button key={x.t} onClick={() => openTool(x.tool)} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 14, alignItems: "center", textAlign: "left", padding: "16px 18px", borderRadius: 20, cursor: "pointer", color: "#F7F5F1", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.14)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", animation: `fadeUp .5s ${0.15 + i * 0.1}s both`, transition: "background .2s" }} className="nea-glassbtn">
-                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "linear-gradient(140deg,#2A84E4,#3CC79E)", boxShadow: "0 8px 24px -8px rgba(185,120,106,.8)" }}><i className={"ph " + x.icon} style={{ fontSize: 20 }} /></span>
+                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "linear-gradient(140deg,#2A84E4,#3CC79E)", boxShadow: "0 8px 24px -8px rgba(185,120,106,.8)" }}><NIcon name={x.icon} size={20} tone={"currentColor"} /></span>
                 <span><b style={{ display: "block", fontWeight: 500, fontSize: 16 }}>{x.t}</b><span style={{ fontSize: 13.5, color: "rgba(247,245,241,.7)" }}>{x.d}</span></span>
-                <i className="ph ph-arrow-right" style={{ opacity: 0.7 }} />
+                <NIcon name="ph-arrow-right" size={18} tone={"currentColor"} style={{ opacity: 0.7 }} />
               </button>
             ))}
-            <p style={{ margin: "4px 0 0", fontSize: 12, color: "rgba(247,245,241,.55)", display: "flex", gap: 8, alignItems: "center" }}><i className="ph ph-shield-check" />Uses only Nea’s published information · not medical advice</p>
+            <p style={{ margin: "4px 0 0", fontSize: 12, color: "rgba(247,245,241,.55)", display: "flex", gap: 8, alignItems: "center" }}><NIcon name="ph-shield-check" size={18} tone={"currentColor"} />Uses only Nea’s published information · not medical advice</p>
           </div>
         </div>
       </section>
@@ -106,7 +107,7 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
               return (
                 <li key={s.t} onMouseEnter={() => setStep(i)} style={{ position: "relative", display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "center", padding: "12px 14px", borderRadius: 16, background: on ? "linear-gradient(150deg,#fff,#FBF1ED)" : T.paper, border: `1px solid ${on ? "#EBCFC6" : T.line2}`, transition: "all .3s" }}>
                   {on && <anra-electro radius="16" style={{ position: "absolute", inset: -5, pointerEvents: "none" }} />}
-                  <span style={{ width: 38, height: 38, borderRadius: 12, display: "grid", placeItems: "center", background: on ? T.ink : T.soft, color: on ? "#fff" : T.deep, transition: "all .3s" }}><i className={"ph " + s.icon} style={{ fontSize: 19 }} /></span>
+                  <span style={{ width: 38, height: 38, borderRadius: 12, display: "grid", placeItems: "center", background: on ? T.ink : T.soft, color: on ? "#fff" : T.deep, transition: "all .3s" }}><NIcon name={s.icon} size={19} tone={"currentColor"} /></span>
                   <span><b style={{ fontWeight: 500, fontSize: 15 }}>{i + 1}. {s.t}</b><span style={{ display: "block", fontSize: 13.5, color: T.muted }}>{s.d}</span></span>
                 </li>
               );
@@ -122,9 +123,9 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
           <h2 style={{ ...h2, fontSize: "clamp(26px,3vw,38px)" }}>Two wavelengths.<br /><span style={{ color: T.muted }}>Every Fotona application.</span></h2>
           <p style={{ margin: "12px 0 0", color: T.ink2, fontSize: 15.5, lineHeight: 1.55 }}>Nea was one of the first centres to offer Fotona and all of its applications. Er:YAG works at the surface; Nd:YAG reaches deeper. Fotona 4D combines four modes in one visit — including intra-oral tightening with no downtime.</p>
           <div style={{ marginTop: 16, display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {["Intra-oral tightening", "Resurfacing", "Skin tightening", "Microlaser peel"].map((m) => <span key={m} style={{ ...chip(false), minHeight: 32, fontSize: 13, cursor: "default" }}><i className="ph ph-lightning" style={{ color: T.nea }} />{m}</span>)}
+            {["Intra-oral tightening", "Resurfacing", "Skin tightening", "Microlaser peel"].map((m) => <span key={m} style={{ ...chip(false), minHeight: 32, fontSize: 13, cursor: "default" }}><NIcon name="ph-lightning" size={18} tone={T.nea} />{m}</span>)}
           </div>
-          <button onClick={() => go("treatments")} style={{ ...btnGhost, marginTop: 18, height: 44 }}>See laser treatments<i className="ph ph-arrow-right" /></button>
+          <button onClick={() => go("treatments")} style={{ ...btnGhost, marginTop: 18, height: 44 }}>See laser treatments<NIcon name="ph-arrow-right" size={18} tone={"currentColor"} /></button>
         </div>
         <div style={{ ...glass, borderRadius: 20, padding: "18px 18px 14px" }}>
           <div style={{ fontSize: 13, color: T.muted, marginBottom: 6 }}>Hover a wavelength</div>
@@ -134,7 +135,7 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
 
       <section aria-label="All Nea treatments" style={{ overflow: "hidden", borderRadius: 18, background: T.ink, padding: "14px 0", maskImage: "linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)", WebkitMaskImage: "linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)" }}>
         <div className="nea-marquee" style={{ display: "flex", width: "max-content", gap: 28 }}>
-          {[0, 1].map((k) => <span key={k} aria-hidden={k === 1} style={{ display: "flex", gap: 28, whiteSpace: "nowrap", color: "#F3E6E1", fontSize: 15 }}>{NEA_TREATMENTS.map((t) => <span key={t.id} style={{ display: "inline-flex", gap: 10, alignItems: "center" }}><i className={"ph " + t.icon} style={{ color: "#E8A08C" }} />{t.name}</span>)}</span>)}
+          {[0, 1].map((k) => <span key={k} aria-hidden={k === 1} style={{ display: "flex", gap: 28, whiteSpace: "nowrap", color: "#F3E6E1", fontSize: 15 }}>{NEA_TREATMENTS.map((t) => <span key={t.id} style={{ display: "inline-flex", gap: 10, alignItems: "center" }}><NIcon name={t.icon} size={18} tone={"#E8A08C"} />{t.name}</span>)}</span>)}
         </div>
       </section>
     </div>
@@ -155,7 +156,7 @@ export function Results({ open }: { open: (t: NeaTreatment) => void }) {
         <Stat icon="ph-hourglass" tone={T.deep} value={<><CountUp to={3} />–6 mo</>} label="neuromodulators last" />
       </section>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,460px),1fr))", gap: 16 }}>
-        <ChartCard title="Downtime" sub="Days before you’re back to normal" right={<button onClick={() => setSortDown((s) => !s)} aria-pressed={sortDown} title="Sort by longest" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${T.line}`, background: sortDown ? T.ink : "#fff", color: sortDown ? "#fff" : T.muted, cursor: "pointer", display: "grid", placeItems: "center" }}><i className="ph ph-sort-descending" /></button>}
+        <ChartCard title="Downtime" sub="Days before you’re back to normal" right={<button onClick={() => setSortDown((s) => !s)} aria-pressed={sortDown} title="Sort by longest" style={{ width: 34, height: 34, borderRadius: 10, border: `1px solid ${T.line}`, background: sortDown ? T.ink : "#fff", color: sortDown ? "#fff" : T.muted, cursor: "pointer", display: "grid", placeItems: "center" }}><NIcon name="ph-sort-descending" size={18} tone={"currentColor"} /></button>}
           table={{ head: ["Treatment", "Downtime"], rows: NEA_DOWNTIME.map((d) => [d.name, d.max === 0 ? "None" : `${d.min}–${d.max} days`]) }}>
           <RangeBars rows={down} unit="days" max={6} color="linear-gradient(90deg,#B4583F,#E08A73)" />
         </ChartCard>
@@ -176,7 +177,7 @@ export function Results({ open }: { open: (t: NeaTreatment) => void }) {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,220px),1fr))", gap: 10 }}>
           {NEA_TREATMENTS.filter((t) => NEA_META[t.id]).map((t) => { const m = NEA_META[t.id]; return (
             <button key={t.id} onClick={() => open(t)} style={{ textAlign: "left", padding: "12px 14px", borderRadius: 14, border: `1px solid ${T.line2}`, background: T.paper, cursor: "pointer", display: "grid", gap: 6, alignContent: "start" }}>
-              <span style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14.5 }}><i className={"ph " + t.icon} style={{ color: T.deep }} />{t.name}</span>
+              <span style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14.5 }}><NIcon name={t.icon} size={18} tone={T.deep} />{t.name}</span>
               <span style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "flex-start" }}>
                 {m.downtime && <Tag>{m.downtime[1] ? `${m.downtime[0]}–${m.downtime[1]} days down` : "No downtime"}</Tag>}
                 {m.sessionMin && <Tag>{m.sessionMin[0] === m.sessionMin[1] ? m.sessionMin[0] : `${m.sessionMin[0]}–${m.sessionMin[1]}`} min</Tag>}
@@ -230,14 +231,14 @@ export function Packages() {
                 <button onClick={() => setOpenId(isOpen ? null : p.id)} aria-expanded={isOpen} style={{ width: "100%", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", padding: "16px 18px", border: 0, background: "none", cursor: "pointer", textAlign: "left" }}>
                   <Icon name={p.icon} bg={beauty ? T.soft : "#E8F2F4"} color={beauty ? T.deep : T.teal} />
                   <span><b style={{ fontWeight: 500, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}>{p.name}{rec && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: "#F1EAFA", color: T.violet, fontWeight: 500 }}>Neyu pick</span>}</b><span style={{ fontSize: 13, color: T.muted }}>{p.group} · {p.tiers.length > 1 ? `${p.tiers.length} options` : `${count} components`}</span></span>
-                  <i className="ph ph-caret-down" style={{ transition: "transform .25s", transform: isOpen ? "rotate(180deg)" : "none", color: T.muted }} />
+                  <NIcon name="ph-caret-down" size={18} tone={T.muted} style={{ transition: "transform .25s", transform: isOpen ? "rotate(180deg)" : "none", }} />
                 </button>
                 {isOpen && (
                   <div style={{ padding: "0 18px 18px", display: "grid", gap: 10, animation: "fadeUp .25s" }}>
                     {p.tiers.map((tier, i) => (
                       <div key={i} style={{ padding: tier.name ? "12px 14px" : 0, borderRadius: 14, background: tier.name ? T.paper : "transparent", border: tier.name ? `1px solid ${T.line2}` : "none" }}>
                         {tier.name && <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 6 }}>{tier.name}</div>}
-                        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 6 }}>{tier.items.map((it) => <li key={it} style={{ display: "flex", gap: 8, fontSize: 14, color: T.ink2, lineHeight: 1.4 }}><i className="ph ph-check-circle" style={{ color: beauty ? T.nea : T.teal, marginTop: 2 }} />{it}</li>)}</ul>
+                        <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "grid", gap: 6 }}>{tier.items.map((it) => <li key={it} style={{ display: "flex", gap: 8, fontSize: 14, color: T.ink2, lineHeight: 1.4 }}><NIcon name="ph-check-circle" size={18} tone={beauty ? T.nea : T.teal} style={{ marginTop: 2 }} />{it}</li>)}</ul>
                       </div>
                     ))}
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 4 }}><Book small label="Book consult" href={NEA.consult} /><Book small ghost label="Book online" /></div>
@@ -259,7 +260,7 @@ export function Packages() {
           {microTests.map((t) => (
             <a key={t.id} href={t.url("CA")} target="_blank" rel="noopener" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, padding: "14px 16px", borderRadius: 16, background: "#fff", border: `1px solid ${T.line}`, color: T.ink, textDecoration: "none" }}>
               <span><b style={{ fontWeight: 500 }}>{t.name}</b><br /><span style={{ fontSize: 13, color: T.muted }}>{t.why}</span></span>
-              <span style={{ whiteSpace: "nowrap", fontWeight: 500 }}>{money(t.price)} <i className="ph ph-arrow-up-right" /></span>
+              <span style={{ whiteSpace: "nowrap", fontWeight: 500 }}>{money(t.price)} <NIcon name="ph-arrow-up-right" size={18} tone={"currentColor"} /></span>
             </a>
           ))}
         </div>
@@ -287,7 +288,7 @@ export function Visit({ askSeed }: { askSeed: (q: string) => void }) {
           {row("ph-phone", NEA.phone, NEA.tel)}
           {row("ph-envelope-simple", NEA.email, "mailto:" + NEA.email)}
           {row("ph-user-circle", NEA.founder)}
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><Book /><a href={NEA.site} target="_blank" rel="noopener" style={btnGhost}>neaprecisionskin.com<i className="ph ph-arrow-up-right" /></a></div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}><Book /><a href={NEA.site} target="_blank" rel="noopener" style={btnGhost}>neaprecisionskin.com<NIcon name="ph-arrow-up-right" size={18} tone={"currentColor"} /></a></div>
         </div>
         <div style={{ ...card, padding: "clamp(20px,3vw,28px)" }}>
           <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 500 }}>Opening hours</h3>
@@ -301,15 +302,15 @@ export function Visit({ askSeed }: { askSeed: (q: string) => void }) {
           <h3 style={{ margin: "0 0 10px", fontSize: 18, fontWeight: 500 }}>Common questions</h3>
           {NEA_FAQ.map((f, i) => (
             <div key={f.q} style={{ borderTop: i ? `1px solid ${T.line2}` : 0 }}>
-              <button onClick={() => setFaq(faq === i ? null : i)} aria-expanded={faq === i} style={{ width: "100%", display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", padding: "14px 0", border: 0, background: "none", cursor: "pointer", textAlign: "left", fontSize: 15.5, color: T.ink }}>{f.q}<i className="ph ph-plus" style={{ transition: "transform .25s", transform: faq === i ? "rotate(45deg)" : "none", color: T.deep }} /></button>
+              <button onClick={() => setFaq(faq === i ? null : i)} aria-expanded={faq === i} style={{ width: "100%", display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center", padding: "14px 0", border: 0, background: "none", cursor: "pointer", textAlign: "left", fontSize: 15.5, color: T.ink }}>{f.q}<NIcon name="ph-plus" size={18} tone={T.deep} style={{ transition: "transform .25s", transform: faq === i ? "rotate(45deg)" : "none", }} /></button>
               {faq === i && <p style={{ margin: "0 0 14px", fontSize: 14.5, color: T.ink2, lineHeight: 1.55, animation: "fadeUp .2s" }}>{f.a}</p>}
             </div>
           ))}
-          <button onClick={() => askSeed("")} style={{ ...btnGhost, border: 0, color: T.violet, padding: 0, height: 40 }}><i className="ph ph-sparkle" />Ask Neyu something else</button>
+          <button onClick={() => askSeed("")} style={{ ...btnGhost, border: 0, color: T.violet, padding: 0, height: 40 }}><NIcon name="ph-sparkle" size={18} tone={"currentColor"} />Ask Neyu something else</button>
         </div>
         <iframe title="Nea Precision Skin map" loading="lazy" src="https://www.google.com/maps?q=3151%2027%20St%20NE%2C%20Calgary%2C%20AB&output=embed" style={{ width: "100%", minHeight: 380, border: 0, borderRadius: 22 }} />
       </div>
-      <p style={{ margin: "6px 0 0", fontSize: 13, color: T.muted, display: "flex", gap: 8 }}><i className="ph ph-info" />Treatments are provided and booked by Nea Precision Skin, a separate clinic partnered with NEYU Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
+      <p style={{ margin: "6px 0 0", fontSize: 13, color: T.muted, display: "flex", gap: 8 }}><NIcon name="ph-info" size={18} tone={"currentColor"} />Treatments are provided and booked by Nea Precision Skin, a separate clinic partnered with NEYU Health. Information from neaprecisionskin.com; not medical advice. In an emergency call 911.</p>
     </div>
   );
 }
