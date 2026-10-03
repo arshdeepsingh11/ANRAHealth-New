@@ -51,15 +51,15 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
               <OpenPill dark />
             </div>
             <h1 style={{ margin: "20px 0 0", fontSize: "clamp(38px,5.6vw,72px)", lineHeight: 1.02, letterSpacing: "-.045em", fontWeight: 500 }}>
-              Precision care for<br /><anra-morph words="your skin.|your glow.|your confidence.|your microbiome.|you." gradient="linear-gradient(90deg,#F3C3B2,#E8A08C 45%,#C9B8E6)" />
+              Precision care for<br /><anra-morph words="your skin.|your glow.|your confidence.|your microbiome.|you." gradient="linear-gradient(90deg,#F3C3B2,#E8A08C 45%,#A9D8F0)" />
             </h1>
-            <p style={{ margin: "18px 0 0", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.55, color: "rgba(247,245,241,.78)", maxWidth: 520 }}>Medical aesthetics, Fotona laser and whole-body wellness, physician-managed — with ALBA to help you find the right treatment.</p>
+            <p style={{ margin: "18px 0 0", fontSize: "clamp(16px,1.5vw,19px)", lineHeight: 1.55, color: "rgba(247,245,241,.78)", maxWidth: 520 }}>Medical aesthetics, Fotona laser and whole-body wellness, physician-managed — with Neyu to help you find the right treatment.</p>
             <form onSubmit={(e) => { e.preventDefault(); if (q.trim().length > 1) askSeed(q.trim()); }} style={{ position: "relative", marginTop: 26, maxWidth: 560, borderRadius: 999 }}>
               <anra-electro radius="30" style={{ position: "absolute", inset: -6, pointerEvents: "none" }} />
               <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 10, padding: "6px 6px 6px 16px", borderRadius: 999, background: "rgba(255,255,255,.96)" }}>
                 <AlbaOrb size={24} />
-                <input value={q} onChange={(e) => setQ(e.target.value)} aria-label="Ask ALBA about Nea" placeholder="Ask ALBA — “what helps with melasma?”" style={{ flex: 1, minWidth: 0, height: 44, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
-                <button type="submit" aria-label="Ask ALBA" style={{ ...btnInk, height: 44, borderRadius: 999, padding: "0 16px" }}>Ask<i className="ph ph-arrow-right" /></button>
+                <input value={q} onChange={(e) => setQ(e.target.value)} aria-label="Ask Neyu about Nea" placeholder="Ask Neyu — “what helps with melasma?”" style={{ flex: 1, minWidth: 0, height: 44, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
+                <button type="submit" aria-label="Ask Neyu" style={{ ...btnInk, height: 44, borderRadius: 999, padding: "0 16px" }}>Ask<i className="ph ph-arrow-right" /></button>
               </div>
             </form>
             <div style={{ marginTop: 18, display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -69,12 +69,12 @@ export function Overview({ go, openTool, askSeed, pickCat }: { go: (t: Tab) => v
           </div>
           <div style={{ display: "grid", gap: 12 }}>
             {[
-              { icon: "ph-magic-wand", t: "Skin Match", d: "Describe your concern — ALBA picks from 24 treatments", tool: "match" as Tool },
+              { icon: "ph-magic-wand", t: "Skin Match", d: "Describe your concern — Neyu picks from 24 treatments", tool: "match" as Tool },
               { icon: "ph-chart-polar", t: "Skin Profile", d: "Live fit scores across 8 concerns", tool: "profile" as Tool },
               { icon: "ph-calendar-dots", t: "Timeline Planner", d: "Book-by dates for your big day", tool: "planner" as Tool },
             ].map((x, i) => (
               <button key={x.t} onClick={() => openTool(x.tool)} style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 14, alignItems: "center", textAlign: "left", padding: "16px 18px", borderRadius: 20, cursor: "pointer", color: "#F7F5F1", background: "rgba(255,255,255,.07)", border: "1px solid rgba(255,255,255,.14)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", animation: `fadeUp .5s ${0.15 + i * 0.1}s both`, transition: "background .2s" }} className="nea-glassbtn">
-                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "linear-gradient(140deg,#8C6FB8,#B9786A)", boxShadow: "0 8px 24px -8px rgba(185,120,106,.8)" }}><i className={"ph " + x.icon} style={{ fontSize: 20 }} /></span>
+                <span style={{ width: 42, height: 42, borderRadius: 14, display: "grid", placeItems: "center", background: "linear-gradient(140deg,#2A84E4,#3CC79E)", boxShadow: "0 8px 24px -8px rgba(185,120,106,.8)" }}><i className={"ph " + x.icon} style={{ fontSize: 20 }} /></span>
                 <span><b style={{ display: "block", fontWeight: 500, fontSize: 16 }}>{x.t}</b><span style={{ fontSize: 13.5, color: "rgba(247,245,241,.7)" }}>{x.d}</span></span>
                 <i className="ph ph-arrow-right" style={{ opacity: 0.7 }} />
               </button>
@@ -212,7 +212,7 @@ export function Packages() {
     <div style={{ display: "grid", gap: 16 }}>
       <div style={{ ...card, padding: "clamp(18px,2.6vw,26px)", background: "linear-gradient(150deg,#fff,#F7F2FB 60%,#FBEFEA)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}><AlbaOrb size={26} /><b style={{ fontWeight: 500, fontSize: 17 }}>Package finder</b></div>
-        <p style={{ margin: "6px 0 12px", fontSize: 14, color: T.muted }}>What’s your goal? ALBA brings the best-fitting packages to the top.</p>
+        <p style={{ margin: "6px 0 12px", fontSize: 14, color: T.muted }}>What’s your goal? Neyu brings the best-fitting packages to the top.</p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{GOALS.map((g) => <button key={g.l} onClick={() => { setGoal(goal === g.l ? null : g.l); setGroup("all"); }} aria-pressed={goal === g.l} style={{ ...chip(goal === g.l), minHeight: 36, fontSize: 13.5 }}>{g.l}</button>)}</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,460px),1fr))", gap: 16, alignItems: "start" }}>
@@ -229,7 +229,7 @@ export function Packages() {
                 {rec && <anra-electro radius="22" style={{ position: "absolute", inset: -5, pointerEvents: "none" }} />}
                 <button onClick={() => setOpenId(isOpen ? null : p.id)} aria-expanded={isOpen} style={{ width: "100%", display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 12, alignItems: "center", padding: "16px 18px", border: 0, background: "none", cursor: "pointer", textAlign: "left" }}>
                   <Icon name={p.icon} bg={beauty ? T.soft : "#E8F2F4"} color={beauty ? T.deep : T.teal} />
-                  <span><b style={{ fontWeight: 500, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}>{p.name}{rec && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: "#F1EAFA", color: T.violet, fontWeight: 500 }}>ALBA pick</span>}</b><span style={{ fontSize: 13, color: T.muted }}>{p.group} · {p.tiers.length > 1 ? `${p.tiers.length} options` : `${count} components`}</span></span>
+                  <span><b style={{ fontWeight: 500, fontSize: 17, display: "flex", gap: 8, alignItems: "center" }}>{p.name}{rec && <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 999, background: "#F1EAFA", color: T.violet, fontWeight: 500 }}>Neyu pick</span>}</b><span style={{ fontSize: 13, color: T.muted }}>{p.group} · {p.tiers.length > 1 ? `${p.tiers.length} options` : `${count} components`}</span></span>
                   <i className="ph ph-caret-down" style={{ transition: "transform .25s", transform: isOpen ? "rotate(180deg)" : "none", color: T.muted }} />
                 </button>
                 {isOpen && (
@@ -305,7 +305,7 @@ export function Visit({ askSeed }: { askSeed: (q: string) => void }) {
               {faq === i && <p style={{ margin: "0 0 14px", fontSize: 14.5, color: T.ink2, lineHeight: 1.55, animation: "fadeUp .2s" }}>{f.a}</p>}
             </div>
           ))}
-          <button onClick={() => askSeed("")} style={{ ...btnGhost, border: 0, color: T.violet, padding: 0, height: 40 }}><i className="ph ph-sparkle" />Ask ALBA something else</button>
+          <button onClick={() => askSeed("")} style={{ ...btnGhost, border: 0, color: T.violet, padding: 0, height: 40 }}><i className="ph ph-sparkle" />Ask Neyu something else</button>
         </div>
         <iframe title="Nea Precision Skin map" loading="lazy" src="https://www.google.com/maps?q=3151%2027%20St%20NE%2C%20Calgary%2C%20AB&output=embed" style={{ width: "100%", minHeight: 380, border: 0, borderRadius: 22 }} />
       </div>
