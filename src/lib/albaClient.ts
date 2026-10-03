@@ -2,7 +2,7 @@
 
 import { cleanAlbaText } from "@/components/AlbaContext";
 
-// One-off ALBA answer (used by the health map's "Ask ALBA about …").
+// One-off Neyu answer (used by the health map's "Ask Neyu about …").
 // Goes through the same /api/chat route (so it is logged and protected by
 // the server-side emergency net) but is kept out of the main conversation.
 export async function askAlbaOnce(message: string, pageContext = "/"): Promise<string> {
@@ -11,7 +11,7 @@ export async function askAlbaOnce(message: string, pageContext = "/"): Promise<s
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, history: [{ role: "user", text: message }], pageContext }),
   });
-  if (!res.ok) throw new Error("ALBA request failed");
+  if (!res.ok) throw new Error("Neyu request failed");
   const type = res.headers.get("Content-Type") || "";
   if (type.includes("application/json")) {
     const data = await res.json();
