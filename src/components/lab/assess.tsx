@@ -1,7 +1,7 @@
 "use client";
 
 // Futuristic multi-step assessments with instant, guideline-based scoring and
-// an ALBA write-up. Used by /longevity, /genomics and /longevity-lab.
+// an Neyu write-up. Used by /longevity, /genomics and /longevity-lab.
 // Scores describe habits against published guidelines — not a risk score.
 import React, { useMemo, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
@@ -57,7 +57,7 @@ const LONGEVITY_STEPS: Step[] = [
     { k: "drinks", t: "num", label: "Alcoholic drinks per week", unit: "drinks", min: 0, max: 100, ph: "2" },
     { k: "smoke", t: "one", label: "Smoking or vaping", opts: ["Never", "Quit over 10 years ago", "Quit in the last 10 years", "Vape only", "Smoke now"] },
   ] },
-  { title: "Health background", sub: "Helps ALBA point to the right tests and conversations.", icon: "ph-heartbeat", qs: [
+  { title: "Health background", sub: "Helps Neyu point to the right tests and conversations.", icon: "ph-heartbeat", qs: [
     FAMILY,
     { k: "conditions", t: "many", label: "Conditions you’ve been told you have", opts: ["High blood pressure", "High cholesterol", "Prediabetes or diabetes", "Heart disease", "Arthritis / autoimmune / IBD", "Thyroid condition", "Depression or anxiety", "Sleep apnea"], none: "None" },
     MEDS,
@@ -133,9 +133,9 @@ const GENOMICS_STEPS: Step[] = [
     { k: "reaction", t: "one", label: "Ever had a strong side effect or a medicine that ‘didn’t work’?", opts: ["No", "Yes", "Not sure"] },
     { k: "prior", t: "one", label: "Genetic testing before?", opts: ["Never", "Ancestry kit (23andMe, Ancestry)", "Clinical genetic test", "Not sure"] },
   ] },
-  { title: "Symptoms & notes", sub: "Optional, but helps ALBA explain the ‘why’.", icon: "ph-note-pencil", qs: [
+  { title: "Symptoms & notes", sub: "Optional, but helps Neyu explain the ‘why’.", icon: "ph-note-pencil", qs: [
     { k: "symptoms", t: "many", label: "Anything ongoing", opts: ["Digestive issues", "Skin concerns", "Low energy", "Memory changes", "Menstrual or menopause symptoms", "Gum problems"], none: "None" },
-    { k: "notes", t: "text", label: "Anything else ALBA should know?", ph: "e.g. my father had colon cancer at 48", optional: true },
+    { k: "notes", t: "text", label: "Anything else Neyu should know?", ph: "e.g. my father had colon cancer at 48", optional: true },
   ] },
 ];
 
@@ -173,7 +173,7 @@ function computeGenomics(a: Answers): Computed {
     { k: "brain", l: "Brain", v: axis((g("Brain health") ? 5 : 0) + (has(a, "family", "Dementia / Alzheimer's") ? 3 : 0)), note: "Amyloid- and tau-related blood markers." },
   ];
   return {
-    summary: ranked.length ? `Your answers point most strongly to ${LAB_TESTS.find((t) => t.id === "labs-" + ranked[0][0])!.name}${ranked[1] ? `, then ${LAB_TESTS.find((t) => t.id === "labs-" + ranked[1][0])!.name}` : ""}.` : "Pick a goal and ALBA will suggest where to start.",
+    summary: ranked.length ? `Your answers point most strongly to ${LAB_TESTS.find((t) => t.id === "labs-" + ranked[0][0])!.name}${ranked[1] ? `, then ${LAB_TESTS.find((t) => t.id === "labs-" + ranked[1][0])!.name}` : ""}.` : "Pick a goal and Neyu will suggest where to start.",
     domains, focus: domains.filter((d) => d.v > 0).sort((x, y) => y.v - x.v).slice(0, 3).map((d) => ({ title: d.l, note: d.note })),
     tests: ranked.map(([id]) => id).slice(0, 4),
     extra: ranked.slice(0, 5).map(([id, n]) => ({ l: LAB_TESTS.find((t) => t.id === "labs-" + id)!.name, v: Math.round((n / top) * 100) })),
@@ -254,7 +254,7 @@ function Bars({ rows }: { rows: { l: string; v: number; note?: string; href?: st
   );
 }
 
-export function TestCard({ id, why, accent = "#4A3AA7" }: { id: string; why?: string; accent?: string }) {
+export function TestCard({ id, why, accent = "#1D5FA8" }: { id: string; why?: string; accent?: string }) {
   const t = LAB_TESTS.find((x) => x.id === "labs-" + id);
   if (!t) return null;
   return (
@@ -269,7 +269,7 @@ export function TestCard({ id, why, accent = "#4A3AA7" }: { id: string; why?: st
 }
 
 // ── The wizard ───────────────────────────────────────────────────────────
-export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof typeof KINDS; accent?: string }) {
+export default function Assessment({ kind, accent = "#1D5FA8" }: { kind: keyof typeof KINDS; accent?: string }) {
   const K = KINDS[kind];
   const [step, setStep] = useState(0);
   const [a, setA] = useState<Answers>({});
@@ -301,7 +301,7 @@ export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof t
       <header style={{ position: "relative", display: "flex", gap: 14, alignItems: "center", flexWrap: "wrap" }}>
         <AlbaOrb size={42} glow />
         <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.violet }}>ALBA assessment</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.violet }}>Neyu assessment</div>
           <h2 style={{ margin: "4px 0 0", fontSize: "clamp(24px,3vw,34px)", fontWeight: 500, letterSpacing: "-.03em" }}>{K.title} <span style={aiText}>· AI-guided</span></h2>
           <p style={{ margin: "4px 0 0", fontSize: 14.5, color: T.muted }}>{K.sub}</p>
         </div>
@@ -333,9 +333,9 @@ export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof t
           {err && <p role="alert" style={{ margin: 0, color: "#8B2F1C", fontSize: 14 }}>{err}</p>}
           <div style={{ display: "flex", gap: 10, justifyContent: "space-between", flexWrap: "wrap" }}>
             <button onClick={() => step > 0 && setStep(step - 1)} disabled={step === 0} style={{ ...btnGhost, opacity: step === 0 ? 0.35 : 1 }}><i className="ph ph-arrow-left" />Back</button>
-            <button onClick={next} style={{ ...btnInk, background: `linear-gradient(120deg, ${accent}, #6A5096)` }}>{step < K.steps.length - 1 ? <>Continue<i className="ph ph-arrow-right" /></> : <>Analyse with ALBA<i className="ph ph-sparkle" /></>}</button>
+            <button onClick={next} style={{ ...btnInk, background: `linear-gradient(120deg, ${accent}, #1D5FA8)` }}>{step < K.steps.length - 1 ? <>Continue<i className="ph ph-arrow-right" /></> : <>Analyse with Neyu<i className="ph ph-sparkle" /></>}</button>
           </div>
-          <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Your answers stay in this browser and are only sent to ALBA to write your summary. Education, not a diagnosis.</p>
+          <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Your answers stay in this browser and are only sent to Neyu to write your summary. Education, not a diagnosis.</p>
         </div>
       ) : (
         <div style={{ position: "relative", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 18, animation: "fadeUp .4s ease" }}>
@@ -350,8 +350,8 @@ export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof t
           {kind === "genomics" && res.c.extra?.length ? <div style={{ ...card, padding: 16 }}><div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.muted, marginBottom: 10 }}>Test fit</div><Bars rows={res.c.extra} /></div> : null}
           {!!res.c.flags?.length && res.c.flags.map((f) => <p key={f} role="alert" style={{ margin: 0, padding: "12px 14px", borderRadius: 14, background: "#FBF1E4", color: "#7A4B12", fontSize: 14.5, display: "flex", gap: 8 }}><i className="ph ph-warning" style={{ marginTop: 3 }} />{f}</p>)}
           <div style={{ ...card, padding: "18px 18px", display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 12, background: "linear-gradient(180deg,#fff,#FBF9FD)" }}>
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}><AlbaOrb size={28} motion={res.loading} /><b style={{ fontWeight: 500 }}>ALBA’s read</b>{res.ai?.byAlba && <span style={{ fontSize: 12, color: T.violet }}>· written by AI</span>}</div>
-            {res.loading ? <Thinking label="ALBA is reading your answers" /> : (
+            <div style={{ display: "flex", gap: 10, alignItems: "center" }}><AlbaOrb size={28} motion={res.loading} /><b style={{ fontWeight: 500 }}>Neyu’s read</b>{res.ai?.byAlba && <span style={{ fontSize: 12, color: T.violet }}>· written by AI</span>}</div>
+            {res.loading ? <Thinking label="Neyu is reading your answers" /> : (
               <>
                 <p style={{ margin: 0, fontSize: 16, lineHeight: 1.6, color: T.ink2 }}><TypeOut text={res.ai?.summary || res.c.summary} /></p>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 10 }}>
@@ -366,11 +366,11 @@ export default function Assessment({ kind, accent = "#4A3AA7" }: { kind: keyof t
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,250px),1fr))", gap: 12 }}>
                 {((res.ai?.tests?.length ? res.ai.tests : res.c.tests.map((id) => ({ id })))).slice(0, 4).map((t: { id: string; why?: string }) => <TestCard key={t.id} id={t.id} why={t.why} accent={accent} />)}
               </div>
-              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderRadius: 18, background: `linear-gradient(120deg, ${accent}14, #6A509614)` }}>
+              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", padding: "16px 18px", borderRadius: 18, background: `linear-gradient(120deg, ${accent}14, #1D5FA814)` }}>
                 <span style={{ fontSize: 15.5, maxWidth: 560 }}>{res.ai?.next || "Book an NEYU consultation — a physician reviews your answers and any results with you."}</span>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><a href={CONSULT_HREF} style={btnInk}>Book a consultation<i className="ph ph-arrow-right" /></a><button onClick={restart} style={btnGhost}><i className="ph ph-arrow-counter-clockwise" />Retake</button></div>
               </div>
-              <p style={{ margin: 0, fontSize: 12, color: T.faint }}>ALBA educates; it does not diagnose. Testing is fulfilled by BioAro Labs; results are interpreted clinically at NEYU.</p>
+              <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Neyu educates; it does not diagnose. Testing is fulfilled by BioAro Labs; results are interpreted clinically at NEYU.</p>
             </>
           )}
         </div>
