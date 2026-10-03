@@ -4,8 +4,8 @@ import React, { createContext, useContext, useState, useCallback, useRef } from 
 import { usePathname } from "next/navigation";
 import { isEmergency } from "@/data/homeContent";
 
-// ALBA's shared state. One conversation is shared by every ALBA surface —
-// the floating panel (AlbaWidget) and the homepage ALBA console — so a chat
+// Neyu's shared state. One conversation is shared by every Neyu surface —
+// the floating panel (AlbaWidget) and the homepage Neyu console — so a chat
 // started on one continues on the other.
 //
 // Keeps everything the original widget did: streaming replies from
@@ -22,7 +22,7 @@ const ROUTES: { match: RegExp; href: string; label: string }[] = [
   { match: /contact|book an appointment/i, href: "/contact", label: "Open Contact" },
 ];
 
-export const ALBA_UNAVAILABLE = "ALBA is unavailable right now. Nothing you wrote has been lost. The tools on this page still work without ALBA.";
+export const ALBA_UNAVAILABLE = "Neyu is unavailable right now. Nothing you wrote has been lost. The tools on this page still work without Neyu.";
 
 // Design: strip markdown so replies read as calm plain text.
 export const cleanAlbaText = (t: string) => (t || "").replace(/\*\*|__|#+\s/g, "").replace(/^\s*[-*]\s/gm, "• ");
@@ -181,7 +181,7 @@ export function AlbaProvider({ children }: { children: React.ReactNode }) {
       const match = ROUTES.find((r) => r.match.test(`${text} ${fullText}`));
       if (match) setSuggestedRoute(match);
     } catch (err: any) {
-      console.error("ALBA error:", err?.message);
+      console.error("Neyu error:", err?.message);
       if (!clientEmergency) setMessages((m) => [...m, { role: "assistant", text: ALBA_UNAVAILABLE, kind: "error" }]);
     } finally {
       setLoading(false);
