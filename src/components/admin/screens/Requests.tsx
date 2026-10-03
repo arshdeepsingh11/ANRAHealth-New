@@ -8,7 +8,7 @@ import { useAdmin, useView } from "../context";
 import { T, S, Empty, Failed, BlockSkeleton } from "../ui";
 
 type Req = { id: string; when: string; service: string; choice: string; name: string; email: string; phone: string; postal: string; message: string; page: string; status: string };
-const LABEL: Record<string, string> = { "virtual-care": "Virtual care", "hypertension-clinic": "Hypertension clinic", package: "Package", membership: "Membership", "at-home": "At-home collection" };
+const LABEL: Record<string, string> = { "virtual-care": "Virtual care", "hypertension-clinic": "Hypertension clinic", package: "Package", membership: "Membership", "at-home": "At-home collection", contact: "Contact message", careers: "Careers interest" };
 const STATUSES = ["new", "contacted", "booked", "closed"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -37,7 +37,7 @@ export default function Requests() {
       </div>
       {loading && <BlockSkeleton />}
       {error && !data && <Failed what="service requests" onRetry={reload} />}
-      {data && list.length === 0 && <Empty icon="ph-calendar-plus" title={all.length ? "No requests match" : "No service requests yet"} sub={all.length ? "Try different filters." : "Requests from Virtual Care, the Hypertension Clinic, Packages, Membership and At-home collection appear here."} />}
+      {data && list.length === 0 && <Empty icon="ph-calendar-plus" title={all.length ? "No requests match" : "No service requests yet"} sub={all.length ? "Try different filters." : "Requests from Virtual Care, the Hypertension Clinic, Packages, Membership, At-home collection, Contact and Careers appear here."} />}
       {list.length > 0 && (
         <div style={{ ...S.card, overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14, minWidth: 760 }}>
