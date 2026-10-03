@@ -165,7 +165,7 @@ export function TrendDetail({ k }: { k: MetricKey }) {
         <div><h3 style={{ margin: "0 0 6px", fontSize: 16, fontWeight: 500 }}>Why might I care?</h3><p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: C.ink2 }}>{m.why}</p></div>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: "28px 0 16px" }}>
-        <button onClick={() => openSheet({ t: "alba", ask: `Help me understand my ${m.short} trend.` })} className="h-albabtn" style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 18px", border: "none", borderRadius: 12, background: C.lav, color: C.lavDeep, fontSize: 15, fontWeight: 500, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask ALBA about this</button>
+        <button onClick={() => openSheet({ t: "alba", ask: `Help me understand my ${m.short} trend.` })} className="h-albabtn" style={{ display: "flex", alignItems: "center", gap: 8, height: 44, padding: "0 18px", border: "none", borderRadius: 12, background: C.lav, color: C.lavDeep, fontSize: 15, fontWeight: 500, cursor: "pointer" }}><i className="ph ph-sparkle" />Ask Neyu about this</button>
         <button onClick={addToVisit} className="h-outline" style={{ height: 44, padding: "0 18px", border: "1px solid rgba(63,111,124,.3)", borderRadius: 12, background: "none", color: C.teal, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>Add to visit questions</button>
       </div>
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: C.muted }}>Wearable readings can be affected by fit, movement and device accuracy. They help show patterns but can't diagnose a condition.</p>
