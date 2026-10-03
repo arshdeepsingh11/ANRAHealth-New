@@ -1,8 +1,8 @@
 "use client";
 
-// ALBA Studio — four AI tools for Nea: Skin Match (free text → AI picks),
+// Neyu Studio — four AI tools for Nea: Skin Match (free text → AI picks),
 // Skin Profile (live concern scoring + radar), Timeline Planner (book-by
-// dates from Nea's published timings), and Ask ALBA (chat grounded in Nea's
+// dates from Nea's published timings), and Ask Neyu (chat grounded in Nea's
 // published information).
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import AlbaOrb from "@/components/AlbaOrb";
@@ -19,7 +19,7 @@ async function post<J>(url: string, body: unknown): Promise<J & { error?: string
     const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const j = await r.json().catch(() => ({}));
     return r.ok ? j : { ...j, error: j.error || "Something went wrong — please try again." };
-  } catch { return { error: "We couldn’t reach ALBA. Check your connection and try again." } as J & { error: string }; }
+  } catch { return { error: "We couldn’t reach Neyu. Check your connection and try again." } as J & { error: string }; }
 }
 
 function Alert({ children }: { children: React.ReactNode }) {
@@ -43,7 +43,7 @@ function SkinMatch({ open, toAsk }: { open: (t: NeaTreatment) => void; toAsk: (q
     <div style={{ display: "grid", gap: 18 }}>
       <form onSubmit={(e) => { e.preventDefault(); ask(q); }} style={{ position: "relative", borderRadius: 20 }}>
         <anra-electro radius="20" style={{ position: "absolute", inset: -6, pointerEvents: "none", zIndex: 0 }} />
-        <div style={{ position: "relative", zIndex: 1, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", background: "#fff", border: "1px solid #E4DCF1", borderRadius: 20, padding: 8 }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", background: "#fff", border: "1px solid #D6EEF6", borderRadius: 20, padding: 8 }}>
           <i className="ph ph-sparkle" style={{ fontSize: 20, color: T.ai, marginLeft: 10 }} />
           <label htmlFor="nea-q" style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>Describe your skin concern</label>
           <input id="nea-q" value={q} onChange={(e) => setQ(e.target.value)} maxLength={400} placeholder="Describe it in your own words — e.g. my cheeks look hollow and I have fine lines" style={{ flex: "1 1 260px", minWidth: 0, height: 48, border: 0, outline: "none", background: "transparent", fontSize: 16, color: T.ink }} />
@@ -54,17 +54,17 @@ function SkinMatch({ open, toAsk }: { open: (t: NeaTreatment) => void; toAsk: (q
       {busy && (
         <div style={{ display: "grid", gridTemplateColumns: "88px 1fr", gap: 18, alignItems: "center" }}>
           <div style={{ position: "relative", width: 88, height: 104, borderRadius: 44, border: `1.5px solid ${T.ai}`, overflow: "hidden", background: "radial-gradient(circle at 50% 40%, #F4EEF8, #fff)" }}>
-            <i className="ph ph-smiley-blank" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontSize: 54, color: "#C9B8E6" }} />
+            <i className="ph ph-smiley-blank" style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontSize: 54, color: "#A9D8F0" }} />
             <span style={{ position: "absolute", left: 0, right: 0, height: 2, background: `linear-gradient(90deg,transparent,${T.ai},transparent)`, boxShadow: `0 0 12px ${T.ai}`, animation: "scanLine 1.6s ease-in-out infinite" }} />
           </div>
-          <Thinking label="ALBA is reading your concern and checking 24 Nea treatments" />
+          <Thinking label="Neyu is reading your concern and checking 24 Nea treatments" />
         </div>
       )}
       {res && (
         <div aria-live="polite" style={{ display: "grid", gap: 14, animation: "fadeUp .3s ease" }}>
           {res.emergency && <Alert>{res.emergency}</Alert>}
           {res.error && <Alert>{res.error}</Alert>}
-          {res.intro && <p style={{ margin: 0, fontSize: 16, color: T.ink2 }}><TypeOut text={res.intro} />{res.byAlba && <span style={{ marginLeft: 8, fontSize: 12, color: T.violet }}>· Written by ALBA</span>}</p>}
+          {res.intro && <p style={{ margin: 0, fontSize: 16, color: T.ink2 }}><TypeOut text={res.intro} />{res.byAlba && <span style={{ marginLeft: 8, fontSize: 12, color: T.violet }}>· Written by Neyu</span>}</p>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,250px),1fr))", gap: 12 }}>
             {res.picks.map((p, i) => { const t = byId(p.id); return (
               <div key={p.id} style={{ ...card, padding: 18, display: "grid", gap: 10, animation: `fadeUp .4s ${i * 0.1}s both`, borderColor: i === 0 ? "#D9C8EE" : T.line, background: i === 0 ? "linear-gradient(160deg,#fff,#F7F2FB)" : "#fff" }}>
@@ -135,7 +135,7 @@ function SkinProfile({ profile, setProfile, maxDown, setMaxDown, open, toAsk, to
                 <Book small />
                 <button onClick={() => open(focus)} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}>Details</button>
                 <button onClick={() => toPlan(top.slice(0, 3).map((x) => x.t.id))} style={{ ...btnGhost, height: 40, padding: "0 14px", fontSize: 12 }}><i className="ph ph-calendar-plus" />Plan these</button>
-                <button onClick={() => toAsk(`My priorities are ${NEA_AXES.filter((a) => (profile[a.id] ?? 0) > 0).map((a) => `${a.label} (${LEVELS[profile[a.id] ?? 0]})`).join(", ")}. Why might ${focus.name} fit, and what else should I ask Nea?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask ALBA why</button>
+                <button onClick={() => toAsk(`My priorities are ${NEA_AXES.filter((a) => (profile[a.id] ?? 0) > 0).map((a) => `${a.label} (${LEVELS[profile[a.id] ?? 0]})`).join(", ")}. Why might ${focus.name} fit, and what else should I ask Nea?`)} style={{ ...btnGhost, height: 40, padding: "0 12px", fontSize: 12, border: 0, color: T.violet }}><i className="ph ph-sparkle" />Ask Neyu why</button>
               </div>
             )}
             <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Fit is how closely each treatment’s published focus matches your priorities — a guide for your consultation, not a diagnosis.</p>
@@ -174,7 +174,7 @@ function Planner({ picked, setPicked, open }: { picked: string[]; setPicked: (id
         <label style={{ display: "grid", gap: 6, fontSize: 14 }}>Your event date
           <input type="date" value={date} min={today.toISOString().slice(0, 10)} onChange={(e) => setDate(e.target.value)} style={{ height: 46, padding: "0 12px", borderRadius: 12, border: `1px solid ${T.line}`, fontSize: 15, background: "#fff" }} />
         </label>
-        <p style={{ margin: 0, fontSize: 13.5, color: T.muted, maxWidth: 440 }}>A wedding, a trip, a photo shoot — ALBA works backwards from Nea’s published timings to tell you when to book.</p>
+        <p style={{ margin: 0, fontSize: 13.5, color: T.muted, maxWidth: 440 }}>A wedding, a trip, a photo shoot — Neyu works backwards from Nea’s published timings to tell you when to book.</p>
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {NEA_TREATMENTS.filter((t) => NEA_META[t.id]).map((t) => <button key={t.id} onClick={() => toggle(t.id)} aria-pressed={picked.includes(t.id)} style={{ ...chip(picked.includes(t.id)), minHeight: 34, fontSize: 13 }}>{picked.includes(t.id) ? <i className="ph ph-check" /> : <i className="ph ph-plus" />}{t.name}</button>)}
@@ -230,7 +230,7 @@ function Planner({ picked, setPicked, open }: { picked: string[]; setPicked: (id
   );
 }
 
-// ── 4. Ask ALBA ──────────────────────────────────────────────────────────
+// ── 4. Ask Neyu ──────────────────────────────────────────────────────────
 type Msg = { role: "user" | "alba"; text: string; cites?: string[]; emergency?: boolean; byAlba?: boolean };
 const SUGGEST = ["Is there downtime with Fotona 4D?", "What helps with acne scars?", "How long do neuromodulators last?", "What’s in the Get Your Glow package?", "Do you treat snoring?", "How much does it cost?"];
 function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => void; open: (t: NeaTreatment) => void }) {
@@ -266,16 +266,16 @@ function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => voi
             <div style={{ display: "grid", gap: 8 }}>
               <div style={{ padding: "10px 14px", borderRadius: "4px 16px 16px 16px", background: "#fff", border: "1px solid #E9E1F3", fontSize: 15, lineHeight: 1.55, whiteSpace: "pre-wrap", color: T.ink2 }}>{i === msgs.length - 1 ? <TypeOut text={m.text} speed={14} /> : m.text}</div>
               {!!m.cites?.length && <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>{m.cites.map((id) => { const t = byId(id); return <button key={id} onClick={() => open(t)} style={{ ...chip(false), minHeight: 30, fontSize: 12.5, borderColor: "#E0D3EF", color: T.violet }}><i className={"ph " + t.icon} />{t.name}</button>; })}<Book small label="Book" /></div>}
-              <span style={{ fontSize: 11.5, color: T.faint }}>{m.byAlba ? "ALBA · from Nea’s published info" : "From Nea’s published info"}</span>
+              <span style={{ fontSize: 11.5, color: T.faint }}>{m.byAlba ? "Neyu · from Nea’s published info" : "From Nea’s published info"}</span>
             </div>
           </div>
         ))}
-        {busy && <div style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 10 }}><AlbaOrb size={26} /><Thinking label="ALBA is checking Nea’s information" /></div>}
+        {busy && <div style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 10 }}><AlbaOrb size={26} /><Thinking label="Neyu is checking Nea’s information" /></div>}
         <div ref={end} />
       </div>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>{SUGGEST.map((s) => <button key={s} onClick={() => send(s)} style={{ ...chip(false), minHeight: 34, fontSize: 13 }}>{s}</button>)}</div>
       <form onSubmit={(e) => { e.preventDefault(); send(q); }} style={{ display: "flex", gap: 8 }}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={500} aria-label="Ask ALBA about Nea" placeholder="Ask ALBA…" style={{ flex: 1, minWidth: 0, height: 50, padding: "0 16px", borderRadius: 16, border: "1px solid #E4DCF1", fontSize: 16, background: "#fff" }} />
+        <input value={q} onChange={(e) => setQ(e.target.value)} maxLength={500} aria-label="Ask Neyu about Nea" placeholder="Ask Neyu…" style={{ flex: 1, minWidth: 0, height: 50, padding: "0 16px", borderRadius: 16, border: "1px solid #D6EEF6", fontSize: 16, background: "#fff" }} />
         <button type="submit" disabled={busy || q.trim().length < 2} aria-label="Send" style={{ ...btnInk, width: 50, padding: 0, height: 50, opacity: busy || q.trim().length < 2 ? 0.5 : 1 }}><i className="ph ph-paper-plane-tilt" style={{ fontSize: 18 }} /></button>
       </form>
       <p style={{ margin: 0, fontSize: 12, color: T.faint }}>Not medical advice. In an emergency call 911.</p>
@@ -285,10 +285,10 @@ function AskAlba({ seed, clearSeed, open }: { seed: string; clearSeed: () => voi
 
 // ── Studio shell ─────────────────────────────────────────────────────────
 const TOOLS: { v: Tool; label: string; icon: string; sub: string }[] = [
-  { v: "match", label: "Skin Match", icon: "ph-magic-wand", sub: "Describe it — ALBA picks" },
+  { v: "match", label: "Skin Match", icon: "ph-magic-wand", sub: "Describe it — Neyu picks" },
   { v: "profile", label: "Skin Profile", icon: "ph-chart-polar", sub: "Live fit scores + radar" },
   { v: "planner", label: "Timeline Planner", icon: "ph-calendar-dots", sub: "Book-by dates for an event" },
-  { v: "ask", label: "Ask ALBA", icon: "ph-chat-circle-dots", sub: "Questions, answered" },
+  { v: "ask", label: "Ask Neyu", icon: "ph-chat-circle-dots", sub: "Questions, answered" },
 ];
 export default function Studio({ tool, setTool, seed, setSeed, open, profile, setProfile, picked, setPicked }: { tool: Tool; setTool: (t: Tool) => void; seed: string; setSeed: (s: string) => void; open: (t: NeaTreatment) => void; profile: Profile; setProfile: (p: Profile) => void; picked: string[]; setPicked: (ids: string[]) => void }) {
   const [maxDown, setMaxDown] = useState("any");
@@ -299,7 +299,7 @@ export default function Studio({ tool, setTool, seed, setSeed, open, profile, se
       <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
         <AlbaOrb size={52} glow />
         <div>
-          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.violet }}>ALBA Studio · for Nea</div>
+          <div style={{ fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", color: T.violet }}>Neyu Studio · for Nea</div>
           <h2 style={{ margin: "4px 0 0", fontSize: "clamp(28px,3.6vw,44px)", lineHeight: 1.05, letterSpacing: "-.035em", fontWeight: 500 }}>Your skin, <span style={aiText}>understood by AI.</span></h2>
         </div>
       </div>
@@ -307,7 +307,7 @@ export default function Studio({ tool, setTool, seed, setSeed, open, profile, se
         {TOOLS.map((o) => {
           const on = tool === o.v;
           return (
-            <button key={o.v} onClick={() => setTool(o.v)} aria-pressed={on} style={{ position: "relative", textAlign: "left", cursor: "pointer", padding: "14px 16px", borderRadius: 18, border: `1px solid ${on ? "#CDB9EA" : T.line}`, background: on ? "linear-gradient(150deg,#FFFFFF,#F4EEFB 70%,#FBEFEA)" : "#fff", boxShadow: on ? "0 18px 40px -26px rgba(140,111,184,.8)" : "none", display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "center", transition: "all .25s" }}>
+            <button key={o.v} onClick={() => setTool(o.v)} aria-pressed={on} style={{ position: "relative", textAlign: "left", cursor: "pointer", padding: "14px 16px", borderRadius: 18, border: `1px solid ${on ? "#CDB9EA" : T.line}`, background: on ? "linear-gradient(150deg,#FFFFFF,#F4EEFB 70%,#FBEFEA)" : "#fff", boxShadow: on ? "0 18px 40px -26px rgba(42,132,228,.8)" : "none", display: "grid", gridTemplateColumns: "auto 1fr", gap: 12, alignItems: "center", transition: "all .25s" }}>
               {on && <anra-electro radius="18" style={{ position: "absolute", inset: -5, pointerEvents: "none" }} />}
               <Icon name={o.icon} bg={on ? T.ink : "#F4EEFB"} color={on ? "#fff" : T.violet} box={40} size={20} />
               <span><b style={{ display: "block", fontWeight: 500, fontSize: 15 }}>{o.label}</b><span style={{ fontSize: 12.5, color: T.muted }}>{o.sub}</span></span>
