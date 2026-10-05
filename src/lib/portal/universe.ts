@@ -47,6 +47,8 @@ export const REWARD_RULES: { kind: string; label: string; points: number }[] = [
   { kind: "protocol", label: "Every protocol step done for the day", points: 15 },
   { kind: "steps", label: "Moved more than your usual day", points: 10 },
   { kind: "bp", label: "Home blood pressure, morning and evening", points: 15 },
+  { kind: "food", label: "Logged a meal in Food", points: 5 },
+  { kind: "record", label: "Added a health report to your record", points: 20 },
   { kind: "streak7", label: "7-day check-in streak (bonus)", points: 50 },
 ];
 export const REWARD_POINTS: Record<string, number> = Object.fromEntries(REWARD_RULES.map((r) => [r.kind, r.points]));

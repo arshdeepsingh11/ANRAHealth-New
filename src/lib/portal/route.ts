@@ -4,10 +4,11 @@
 import { isMetricKey, type MetricKey } from "./metrics";
 
 export type Screen = "today" | "trends" | "trend" | "results" | "result" | "protocol" | "devices" | "history" | "appointments" | "referrals" | "more" | "profile" | "privacy" | "settings"
-  | "heart" | "lifestyle" | "family" | "careview" | "rewards" | "story" | "baseline";
+  | "heart" | "lifestyle" | "family" | "careview" | "rewards" | "story" | "baseline"
+  | "myhealth" | "records" | "doc" | "add" | "food" | "plan" | "assessment";
 export type Route = { s: Screen; k?: MetricKey; id?: string };
 
-export const SCREENS: Screen[] = ["today", "trends", "trend", "results", "result", "protocol", "devices", "history", "appointments", "referrals", "more", "profile", "privacy", "settings", "heart", "lifestyle", "family", "careview", "rewards", "story", "baseline"];
+export const SCREENS: Screen[] = ["today", "trends", "trend", "results", "result", "protocol", "devices", "history", "appointments", "referrals", "more", "profile", "privacy", "settings", "heart", "lifestyle", "family", "careview", "rewards", "story", "baseline", "myhealth", "records", "doc", "add", "food", "plan", "assessment"];
 
 export function parseRoute(sp: Record<string, string | string[] | undefined>): Route {
   const s = typeof sp.s === "string" && (SCREENS as string[]).includes(sp.s) ? (sp.s as Screen) : "today";
@@ -16,6 +17,7 @@ export function parseRoute(sp: Record<string, string | string[] | undefined>): R
   if (s === "trend" && !k) return { s: "trends" };
   if (s === "result" && !id) return { s: "results" };
   if (s === "careview" && !id) return { s: "family" };
+  if (s === "doc" && !id) return { s: "records" };
   return { s, k, id };
 }
 

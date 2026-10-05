@@ -8,9 +8,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BootstrapDTO, ProfileDTO, SettingsDTO } from "@/lib/portal/types";
 import { routeUrl as toUrl } from "@/lib/portal/route";
-import { Ctx, PARENT, LABELS, type PortalCtx, type Route, type Screen, type Sheet } from "./context";
+import { Ctx, PARENT, LABELS, TABS, GROUPS, tabOf, type PortalCtx, type Route, type Screen, type Sheet } from "./context";
 import { EP, api, invalidate, load, prime } from "./api";
-import { C } from "./ui";
+import { C, Avatar } from "./ui";
+import { PillNav } from "@/components/neyu/fx";
+import { MyHealth, Records, DocDetail, AddRecord, Food, Plan, Assessment } from "./screens/Space";
+import { useUsageTracker } from "./usage";
 import Today from "./screens/Today";
 import { Trends, TrendDetail } from "./screens/Trends";
 import { Results, ResultDetail } from "./screens/Results";
@@ -41,7 +44,7 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
 
   // Warm the other tabs in the background so switching is instant.
   useEffect(() => {
-    const warm = () => [EP.brief, EP.profile, EP.trends, EP.results, EP.protocol, EP.appointments, EP.heart, EP.lifestyle].forEach((u) => load(u).catch(() => {}));
+    const warm = () => [EP.brief, EP.space, EP.profile, EP.trends, EP.results, EP.docs, EP.protocol, EP.appointments, EP.heart, EP.lifestyle].forEach((u) => load(u).catch(() => {}));
     const w = window as any;
     const id = w.requestIdleCallback ? w.requestIdleCallback(warm, { timeout: 2000 }) : setTimeout(warm, 600);
     return () => (w.cancelIdleCallback ? w.cancelIdleCallback(id) : clearTimeout(id));
@@ -107,11 +110,13 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
   }), [route, go, tab, back, toast, sheet, profile, settings, initials, addQuestion]);
 
   const scr = route.s;
-  const activeTab = scr === "result" || scr === "trend" || scr === "careview" ? PARENT[scr]! : scr === "privacy" || scr === "settings" ? "profile" : scr === "story" || scr === "baseline" ? "today" : scr;
-  const showBack = hist.length > 0 || !!PARENT[scr];
+  const activeTab = tabOf(scr);
+  const group = GROUPS.find((g) => g.tab === activeTab);
+  const isDetail = !!PARENT[scr];
+  const showBack = isDetail || (hist.length > 0 && !group?.items.some((i) => i.s === scr) && !TABS.some((t) => t.s === scr));
   const backTo = hist.length ? hist[hist.length - 1].s : PARENT[scr] || "today";
   const backLabel = LABELS[backTo] || "Back";
-  const TABS: [Screen, string, string][] = [["today", "Today", "ph-sun"], ["heart", "Heart", "ph-heartbeat"], ["lifestyle", "Lifestyle", "ph-leaf"], ["trends", "Trends", "ph-chart-line"], ["results", "Results", "ph-flask"], ["protocol", "Protocol", "ph-check-circle"], ["devices", "Devices", "ph-watch"], ["appointments", "Appointments", "ph-calendar-blank"], ["family", "Family", "ph-users-three"], ["rewards", "Rewards", "ph-trophy"], ["history", "History", "ph-clock-counter-clockwise"], ["referrals", "Referrals", "ph-arrows-split"], ["profile", "Profile", "ph-user-circle"]];
+  useUsageTracker(scr, LABELS[scr] || scr, settings.learnUsage !== false);
 
   const screen = (() => {
     switch (scr) {
@@ -136,36 +141,50 @@ export default function PortalApp({ boot, initialRoute }: { boot: BootstrapDTO; 
       case "rewards": return <Rewards />;
       case "story": return <Story />;
       case "baseline": return <Baseline id={route.id} />;
+      case "myhealth": return <MyHealth />;
+      case "records": return <Records />;
+      case "doc": return <DocDetail id={route.id!} />;
+      case "add": return <AddRecord />;
+      case "food": return <Food />;
+      case "plan": return <Plan />;
+      case "assessment": return <Assessment />;
     }
   })();
 
   return (
     <Ctx.Provider value={ctx}>
       <div className="mhs mhs-page">
-        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 18 }}>
-          <button onClick={() => tab("today")} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2, background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left" }}>
+        <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
+          <button onClick={() => tab("today")} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 2, background: "none", border: "none", padding: 0, cursor: "pointer", textAlign: "left", minWidth: 0 }}>
             <span style={{ fontSize: 12, letterSpacing: ".14em", color: C.muted, fontWeight: 500 }}>NEYU HEALTH</span>
-            <span style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em" }}>My Health Space</span>
+            <span style={{ fontSize: 19, fontWeight: 500, letterSpacing: "-.01em", whiteSpace: "nowrap" }}>My Health Space</span>
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button onClick={() => go("add")} aria-label="Add a report to your Health Space" className="h-primary" style={{ display: "flex", alignItems: "center", gap: 7, height: 40, padding: "0 14px", border: "none", borderRadius: 20, background: C.ink, color: "#fff", fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              <NIcon name="plus" size={16} tone="#fff" stroke={2} /><span className="mhs-hide-sm">Add report</span>
+            </button>
             <button onClick={() => setSheet({ t: "alba" })} className="h-albabtn" aria-label="Ask Neyu about your health data" style={{ display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 20, background: "#E6F3F8", color: C.lavDeep, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
-              <NIcon name="ph-sparkle" size={17} tone="currentColor" /><span className="mhs-hide-sm">Ask Neyu</span>
+              <NIcon name="sparkle" size={17} tone="currentColor" /><span className="mhs-hide-sm">Ask Neyu</span>
+            </button>
+            <button onClick={() => tab("profile")} aria-label="Account, privacy and notifications" aria-current={activeTab === "profile" ? "page" : undefined} style={{ padding: 0, border: activeTab === "profile" ? `2px solid ${C.teal}` : "2px solid transparent", borderRadius: 22, background: "none", cursor: "pointer", lineHeight: 0 }}>
+              <Avatar size={36} photoUrl={profile.photoUrl} initials={initials} fontSize={13} />
             </button>
           </div>
         </header>
 
-        {/* Section tabs (scroll sideways on small screens) */}
-        <nav aria-label="My Health Space" className="mhs-tabs" style={{ display: "flex", gap: 4, overflowX: "auto", margin: "0 -4px 28px", padding: "4px", scrollbarWidth: "none" }}>
-          {TABS.map(([id, label, icon]) => {
-            const a = activeTab === id;
-            return (
-              <button key={id} onClick={() => tab(id)} aria-current={a ? "page" : undefined} className="h-nav"
-                style={{ flex: "none", display: "flex", alignItems: "center", gap: 8, height: 40, padding: "0 14px", border: "none", borderRadius: 12, background: a ? "rgba(63,111,124,.10)" : "transparent", color: a ? C.tealDark : C.ink2, fontSize: 15, fontWeight: a ? 500 : 400, cursor: "pointer", transition: "background 160ms", whiteSpace: "nowrap" }}>
-                <NIcon name={icon} size={18} tone="currentColor" />{label}
-              </button>
-            );
-          })}
+        {/* Primary tabs — Dynamic Navigation (the pill glides to the active tab) */}
+        <nav aria-label="My Health Space" style={{ margin: "0 0 14px" }}>
+          <PillNav label="My Health Space sections" tabs={TABS.map((t) => ({ k: t.s, label: t.label, icon: t.icon }))} value={TABS.some((t) => t.s === activeTab) ? activeTab : ("" as Screen)} onChange={(k) => tab(k)} size="sm" />
         </nav>
+        {group && group.items.length > 1 && !isDetail && (
+          <div role="tablist" aria-label={`${LABELS[group.tab]} sections`} className="neyu-noscroll" style={{ display: "flex", gap: 6, overflowX: "auto", margin: "0 0 26px", scrollbarWidth: "none" }}>
+            {group.items.map((it) => {
+              const a = it.s === scr;
+              return <button key={it.s} role="tab" aria-selected={a} onClick={() => tab(it.s)} style={{ flex: "none", height: 34, padding: "0 14px", borderRadius: 17, border: `1px solid ${a ? "transparent" : C.line12}`, background: a ? C.tealChip : "transparent", color: a ? C.tealDark : C.ink2, fontSize: 14, fontWeight: a ? 500 : 400, cursor: "pointer", whiteSpace: "nowrap", transition: "all 160ms" }}>{it.label}</button>;
+            })}
+          </div>
+        )}
+        {!(group && group.items.length > 1 && !isDetail) && <div style={{ height: 12 }} />}
 
         <div ref={mainRef} style={{ scrollMarginTop: 90 }}>
           {showBack && (

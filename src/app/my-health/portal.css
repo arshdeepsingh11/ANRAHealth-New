@@ -61,3 +61,16 @@
 /* Numbered guides (global reset removes list markers) */
 .mhs ol { list-style: decimal; }
 .mhs ul { list-style: disc; }
+
+/* Personal Health Space */
+@property --mhs-a { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+@keyframes mhs-shine { to { --mhs-a: 360deg; } }
+.mhs-shine { background: conic-gradient(from var(--mhs-a), rgba(27,143,208,.12), #1B8FD0 12%, #6DD88C 22%, rgba(31,169,176,.12) 34%, rgba(27,143,208,.12)); animation: mhs-shine 5s linear infinite; }
+.mhs-flip > span { transition: transform .5s cubic-bezier(.2,.7,.2,1); transform-style: preserve-3d; }
+.mhs-flip:hover > span { transform: rotateX(360deg); }
+@keyframes mhs-scan { 0% { top: 0; } 50% { top: calc(100% - 2px); } 100% { top: 0; } }
+.mhs-lift { transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s; }
+.mhs-lift:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -24px rgba(29,35,39,.35); }
+.mhs-dock-item { transition: transform .18s ease-out; }
+@media (prefers-reduced-motion: reduce) { .mhs-shine { animation: none; } .mhs-flip:hover > span { transform: none; } }
+@media (max-width: 640px) { .mhs-stack-sm { grid-template-columns: 1fr !important; } }
