@@ -57,8 +57,8 @@ export const readingSourceFilter = (c: Consent) => {
 // ── Settings & profile ──────────────────────────────────────────────────
 export async function getSettings(patientId: string): Promise<SettingsDTO> {
   const s = await prisma.patientSettings.upsert({ where: { patientId }, update: {}, create: { patientId } });
-  const { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName } = s;
-  return { shareWearables, shareLabs, shareRecords, albaAccess, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName };
+  const { shareWearables, shareLabs, shareRecords, albaAccess, learnUsage, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName } = s;
+  return { shareWearables, shareLabs, shareRecords, albaAccess, learnUsage, notifDaily, notifWorth, notifProtocol, notifAppt, city, province, briefEmail, leaderboardName };
 }
 
 export async function getProfile(patientId: string): Promise<ProfileDTO> {

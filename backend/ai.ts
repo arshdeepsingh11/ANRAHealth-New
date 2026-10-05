@@ -27,3 +27,29 @@ export async function gemini(system: string, message: string, opts: { history?: 
 
 /** Plain-language safety check on AI text before showing it: no diagnosis or medication advice. */
 export const unsafeAiText = (t: string) => /\b(diagnos|you have (a|an) |prescri|increase your dose|stop taking|start taking|mg\b)/i.test(t);
+
+export type AiPart = { text: string } | { inline_data: { mime_type: string; data: string } };
+
+/** Gemini with files (PDF / images) and a JSON answer. Null on any failure — callers fall back. */
+export async function geminiJSON<T = any>(system: string, parts: AiPart[], opts: { maxTokens?: number; timeoutMs?: number; temperature?: number } = {}): Promise<T | null> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${process.env.GEMINI_MODEL || "gemini-3.5-flash-lite"}:generateContent?key=${key}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts }],
+        generationConfig: { temperature: opts.temperature ?? 0.2, maxOutputTokens: opts.maxTokens ?? 1500, responseMimeType: "application/json" },
+      }),
+      signal: AbortSignal.timeout(opts.timeoutMs ?? 45_000),
+    });
+    if (!res.ok) throw new Error("Gemini " + res.status);
+    const data = await res.json();
+    const text = (data?.candidates?.[0]?.content?.parts || []).map((p: any) => p.text || "").join("").trim().replace(/^```(json)?|```$/g, "");
+    return text ? (JSON.parse(text) as T) : null;
+  } catch (e: any) {
+    console.error("Gemini JSON error:", e?.message);
+    return null;
+  }
+}
