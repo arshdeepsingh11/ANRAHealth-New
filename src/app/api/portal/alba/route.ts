@@ -17,6 +17,7 @@ import { placeFor } from "@backend/brief";
 import { getWeather } from "@backend/weather";
 import { getRetests } from "@backend/labs";
 import { profileSummary } from "@backend/healthProfile";
+import { getSpace, usageSummary } from "@backend/space";
 
 const EMERGENCY_TEXT = "This could need urgent care. If you have chest pain, severe shortness of breath, fainting or other emergency symptoms, call 911 or go to the nearest emergency department now.";
 const EXTRA_EMERGENCY = /chest pain|can'?t breathe|cannot breathe|trouble breathing|faint|stroke|suicid|severe/i;
@@ -93,6 +94,25 @@ async function buildContext(patient: { id: string; firstName: string; timezone: 
   if (c.records) { const prof = await profileSummary(patient.id); if (prof) lines.push("Health profile (patient-entered):\n" + prof); }
   if (retests.length) lines.push(`Lab retests due: ${retests.map((r) => `${r.name} (last ${r.last}, due ${r.due})`).join("; ")}`);
   if (protocol.items.length) lines.push(`Daily protocol: ${protocol.items.map((i) => `${i.title} (${i.dose})${i.doneToday ? " — done today" : ""}`).join("; ")}`);
+  // Personal Health Space: reports from any provider, food, plan, gaps, and how the patient uses the app.
+  if (c.records) {
+    const docs = await prisma.healthDocument.findMany({ where: { patientId: patient.id, status: "saved" }, orderBy: [{ docDate: "desc" }, { createdAt: "desc" }], take: 12, select: { title: true, kind: true, provider: true, docDate: true, createdAt: true, extracted: true, summary: true } });
+    if (docs.length) {
+      lines.push("Reports in the patient's record (original documents; facts below were read from them):");
+      docs.forEach((d) => { let ex: any = {}; try { ex = JSON.parse(d.extracted || "{}"); } catch {} lines.push(`- ${(d.docDate || d.createdAt).toISOString().slice(0, 10)} ${d.title} (${d.kind}${d.provider ? `, ${d.provider}` : ""})${ex.keyPoints?.length ? ": " + ex.keyPoints.slice(0, 4).join("; ") : ""}${ex.values?.length ? ` | values: ${ex.values.slice(0, 12).map((v: any) => `${v.name} ${v.value} ${v.unit || ""}${v.flag ? ` (${v.flag})` : ""}`).join(", ")}` : ""}`); sources.add(d.provider || "Uploaded reports"); });
+    }
+  }
+  const meals = await prisma.foodLog.findMany({ where: { patientId: patient.id, day: { gte: addDays(today, -7) } }, orderBy: { at: "desc" }, take: 30, select: { day: true, meal: true, text: true, tags: true } });
+  if (meals.length) { lines.push(`Food log last 7 days (${meals.length} entries): ${meals.slice(0, 18).map((m) => `${m.day} ${m.meal}: ${m.text} [${JSON.parse(m.tags || "[]").join(", ")}]`).join("; ")}`); sources.add("Food log"); }
+  const plan = await prisma.generatedNote.findUnique({ where: { patientId_kind_period: { patientId: patient.id, kind: "plan", period: "current" } }, select: { body: true } });
+  if (plan) { try { const pl = JSON.parse(plan.body); lines.push(`Patient's AI health plan: ${pl.sections.map((s: any) => `${s.title}: ${s.items.map((i: any) => i.title).join(", ")}`).join(" | ")}`); } catch {} }
+  const space = await getSpace(patient).catch(() => null);
+  if (space) {
+    if (space.changes.length) lines.push(`What changed (rules-based): ${space.changes.slice(0, 8).map((x) => `[${x.status}] ${x.text}`).join(" ")}`);
+    if (space.gaps.length) lines.push(`Information missing from the record: ${space.gaps.map((g) => g.text).join(" ")}`);
+  }
+  const usage = await usageSummary(patient.id).catch(() => "");
+  if (usage) lines.push(usage);
   return { text: lines.join("\n"), sources: [...sources], hasSleep: byMetric.has("sleep"), hasTrends: byMetric.size > 0, hasAppt: !!appt };
 }
 
@@ -104,7 +124,7 @@ async function gemini(system: string, message: string, history: { role: string; 
     body: JSON.stringify({
       system_instruction: { parts: [{ text: system }] },
       contents: [...history.slice(-6).map((h) => ({ role: h.role === "user" ? "user" : "model", parts: [{ text: h.text }] })), { role: "user", parts: [{ text: message }] }],
-      generationConfig: { temperature: 0.3, maxOutputTokens: 400 },
+      generationConfig: { temperature: 0.3, maxOutputTokens: 600 },
     }),
     signal: AbortSignal.timeout(20_000),
   });
@@ -146,7 +166,7 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
 
   const system = `You are Neyu, a calm health data companion inside NEYU Health's My Health Space (a Calgary cardiology and internal medicine clinic). The clinic is called NEYU Health (never ANRA; if asked, ANRA Health is now NEYU Health).
 Rules: Never diagnose. Never recommend starting, stopping or changing medications or supplements. Suggest the care team when appropriate.
-Keep to 2–4 short sentences, plain language, no markdown. Only use the data below; if something isn't in it, say you don't have that data yet.
+Keep to 2–5 short sentences, plain language, no markdown. Only use the data below; if something isn't in it, say clearly that it isn't in their Health Space yet (never invent values). When you use a report, mention its source and date. When asked for a plan (exercise, food, sleep), give general guidance labelled as AI-generated and suggest checking with their healthcare professional. When asked what to ask a doctor, list 2–4 questions based on their data. You may use how they use the app (screens they spend time on) to understand what matters to them, but don't mention tracking.
 When asked "why" (for example why sleep was worse), compare the nights and point to the most likely factors in the data (alcohol, late caffeine, stress, late or irregular bedtimes, exercise), say it's a pattern not a certainty, and suggest one small thing to try.
 The patient's first name is ${patient.firstName}.
 ${ctx ? (ctx.text ? `PATIENT DATA (from sources the patient allowed):\n${ctx.text}` : "PATIENT DATA: none yet (no wearable, results or appointments).") : "The patient has turned OFF Neyu access to their data. Do not reference personal data; answer generally and mention they can turn it on in Privacy & Data."}`;
