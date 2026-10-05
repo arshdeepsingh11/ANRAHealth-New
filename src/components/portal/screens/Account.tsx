@@ -274,6 +274,7 @@ export function Privacy() {
           { label: "BioAro Labs", sub: "Laboratory results", on: settings.shareLabs, toggle: toggle("shareLabs", true) },
           { label: "NEYU clinical records", sub: "Visits, referrals and care plans", on: settings.shareRecords, toggle: toggle("shareRecords", true) },
           { label: "Neyu access", sub: "Let Neyu reference your data when you ask", on: settings.albaAccess, toggle: toggle("albaAccess") },
+          { label: "Neyu learns from my use", sub: "Screens you open and how long you stay (never what you type) help Neyu understand what matters to you", on: settings.learnUsage !== false, toggle: toggle("learnUsage") },
         ]} />
       </div>
       <h2 style={{ margin: "0 0 8px", fontSize: 17, fontWeight: 500 }}>How your data is used</h2>

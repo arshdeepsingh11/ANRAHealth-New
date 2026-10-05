@@ -6,7 +6,9 @@ import type { MetricKey } from "@/lib/portal/metrics";
 import { usePortal } from "../context";
 import { EP, load, useResource } from "../api";
 import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
-import { BaselineCard } from "./Baseline";
+import { WhatChanged, type SpaceDTO } from "./Space";
+import { useDock } from "@/components/neyu/fx";
+import { StatusChip, Ring } from "../space-ui";
 import { NIcon } from "@/components/neyu/icons";
 
 const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
@@ -99,6 +101,64 @@ function BriefCard() {
   );
 }
 
+/** Apple-Dock style quick actions — icons magnify as the pointer approaches. */
+function QuickDock() {
+  const { go, tab, openSheet } = usePortal();
+  const dock = useDock("x", 1.22, 110);
+  const items: [string, string, () => void][] = [
+    ["plus", "Add report", () => go("add")], ["apple", "Log a meal", () => tab("food")], ["doc", "Doctor report", () => tab("assessment")],
+    ["sparkle", "Ask Neyu", () => openSheet({ t: "alba" })], ["heartPulse", "My Health", () => tab("myhealth")],
+  ];
+  return (
+    <nav aria-label="Quick actions" ref={dock.ref} onPointerMove={dock.onPointerMove} onPointerLeave={dock.onPointerLeave}
+      style={{ display: "flex", gap: 6, justifyContent: "space-between", padding: "10px 10px 8px", marginBottom: 28, borderRadius: 22, background: "rgba(255,253,251,.75)", border: `1px solid ${C.line}`, backdropFilter: "blur(12px)", overflowX: "auto", scrollbarWidth: "none" }}>
+      {items.map(([ic, l, f]) => (
+        <button key={l} onClick={f} data-dock className="mhs-dock-item" style={{ flex: "1 0 56px", display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "6px 2px", border: "none", background: "none", cursor: "pointer" }}>
+          <span style={{ width: 46, height: 46, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", background: ic === "plus" ? C.ink : ic === "sparkle" ? C.lav : C.tealWash, boxShadow: "0 8px 18px -12px rgba(29,35,39,.4)" }}><NIcon name={ic} size={21} tone={ic === "plus" ? "#fff" : ic === "sparkle" ? C.lavMid : C.teal} stroke={ic === "plus" ? 2 : 1.6} /></span>
+          <span style={{ fontSize: 12, color: C.ink2, whiteSpace: "nowrap" }}>{l}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
+
+/** Compact Health Map summary — the full map lives in My Health. */
+function TodayMap() {
+  const { tab } = usePortal();
+  const { data: s } = useResource<SpaceDTO>(EP.space);
+  if (!s) return null;
+  return (
+    <button onClick={() => tab("myhealth")} className="mhs-lift" style={{ display: "flex", gap: 18, alignItems: "center", padding: 20, borderRadius: 20, background: C.card, border: `1px solid ${C.line}`, cursor: "pointer", textAlign: "left" }}>
+      <Ring value={s.known} max={s.areas.length} size={92} stroke={8} label={<>{s.known}/{s.areas.length}</>} />
+      <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ fontSize: 18, fontWeight: 500 }}>Your Health Map</span>
+        <span style={{ fontSize: 14, color: C.muted, lineHeight: 1.5 }}>{s.known} of {s.areas.length} areas have information.{s.areas.find((a) => a.state === "missing") ? ` Missing: ${s.areas.filter((a) => a.state === "missing").map((a) => a.label.toLowerCase()).slice(0, 2).join(", ")}.` : ""}</span>
+        <span style={{ fontSize: 14, fontWeight: 500, color: C.teal }}>Open My Health →</span>
+      </span>
+    </button>
+  );
+}
+
+/** "What changed?" + the one next thing — the three questions Today answers. */
+function TodayChanged() {
+  const { tab } = usePortal();
+  const { data: s } = useResource<SpaceDTO>(EP.space);
+  if (!s) return null;
+  const real = s.changes.filter((c) => c.status !== "insufficient");
+  return (
+    <section aria-label="What changed" style={{ marginBottom: 28 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 12 }}>
+        <h2 style={{ margin: 0, fontSize: 20, fontWeight: 500 }}>What changed</h2>
+        <button onClick={() => tab("myhealth")} style={{ display: "flex", alignItems: "center", gap: 6, height: 32, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.teal, cursor: "pointer" }}>
+          <StatusChip s="known" small /><span>{s.known} of {s.areas.length} areas</span><NIcon name="chevron" size={14} tone="currentColor" />
+        </button>
+      </div>
+      {real.length ? <WhatChanged s={{ ...s, changes: real }} max={3} compact /> : <WhatChanged s={s} max={2} compact />}
+      {s.gaps[0] && <p style={{ margin: "12px 0 0", fontSize: 14, color: C.muted, display: "flex", gap: 8, alignItems: "flex-start" }}><NIcon name="info" size={15} tone={C.faint} style={{ marginTop: 2 }} />{s.gaps[0].text}</p>}
+    </section>
+  );
+}
+
 export default function Today() {
   const { go, openSheet, toast, profile } = usePortal();
   const { data: t, error, reload, reloading } = useResource<TodayDTO>(EP.today);
@@ -154,7 +214,8 @@ export default function Today() {
       </div>
 
       <BriefCard />
-      <BaselineCard />
+      <QuickDock />
+      <TodayChanged />
 
       {syncError && (
         <div role="alert" style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "16px 18px", marginBottom: 20, borderRadius: 16, background: C.peach, animation: "mhs-fadeUp 300ms ease" }}>
@@ -257,11 +318,7 @@ export default function Today() {
           <div style={{ display: "flex", flexDirection: "column", gap: 28, minWidth: 0 }}>
             {dayList}
 
-            <section style={{ padding: 22, borderRadius: 20, background: C.card, border: `1px solid ${C.line}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12, marginBottom: 6 }}><h3 style={{ margin: 0, fontSize: 18, fontWeight: 500 }}>Your health picture</h3><span style={{ fontSize: 13, color: C.muted }}>{onCount} of 8 areas</span></div>
-              <p style={{ margin: "0 0 8px", fontSize: 14, color: C.muted, lineHeight: 1.5 }}>Health is a picture, not a score. Each area fills in as data arrives.</p>
-              <HealthMap areas={t.areas} center={profile.firstName.slice(0, 7)} big />
-            </section>
+            <TodayMap />
 
             <button onClick={() => openSheet({ t: "alba", ask: "Help me understand my recent health trends." })} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", border: "1px solid rgba(42,132,228,.2)", borderRadius: 18, background: C.card, cursor: "pointer", textAlign: "left" }}>
               <span style={{ width: 36, height: 36, borderRadius: 18, background: C.lav, display: "flex", alignItems: "center", justifyContent: "center", color: C.lavMid, flex: "none" }}><NIcon name="ph-sparkle" size={18} tone="currentColor" /></span>
