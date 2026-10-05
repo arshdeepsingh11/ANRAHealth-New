@@ -186,6 +186,9 @@ model Patient {
   rewardEvents    RewardEvent[]
   notes           GeneratedNote[]
   healthProfile   HealthProfile?
+  documents       HealthDocument[]
+  foodLogs        FoodLog[]
+  activity        ActivityEvent[]
 }
 
 // Only a SHA-256 hash of the session token is stored — a leaked database
@@ -248,6 +251,7 @@ model PatientSettings {
   lat            Float?
   lon            Float?
   briefEmail     Boolean  @default(false) // email the ANRA Today brief each morning
+  learnUsage     Boolean  @default(true) // Neyu learns from which screens / actions the patient uses
   leaderboardName String? // shown in challenges ("Arsh S."); null = first name + initial
   updatedAt      DateTime @updatedAt
 }
@@ -347,6 +351,7 @@ model LabResult {
   about       String? // "What is this?"
   guidance    String? // "What should I know?"
   staffNote   String? // clinic-only note, never shown to the patient
+  documentId  String? // set when the value came from a patient-added report (HealthDocument)
   createdAt   DateTime  @default(now())
 
   @@index([patientId, code, collectedAt])
@@ -686,3 +691,59 @@ model ServiceRequest {
   @@index([service])
 }
 
+
+// Personal Health Space: any report from any provider (upload, scan, photo or
+// a connected BioAro service). The original file is never altered; Neyu's
+// reading is stored separately (extracted + summary) and labelled as AI.
+model HealthDocument {
+  id        String    @id @default(cuid())
+  patientId String
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  title     String
+  kind      String    @default("other") // lab | imaging | ecg | cardiology | specialist | discharge | prescription | visit | other
+  provider  String?
+  docDate   DateTime?
+  source    String    @default("upload") // upload | scan | photo | bioaro
+  mime      String
+  fileName  String
+  size      Int
+  data      Bytes
+  extracted String    @default("{}") // JSON { values:[{name,value,unit,ref,flag}], keyPoints:[] } — Neyu's reading
+  summary   String? // Neyu's plain-language explanation (AI)
+  status    String    @default("review") // review | saved | failed
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([patientId, docDate])
+}
+
+model FoodLog {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  day       String // YYYY-MM-DD in the patient's timezone
+  at        DateTime @default(now())
+  meal      String // breakfast | lunch | dinner | snack | drink
+  text      String
+  portion   String? // small | regular | large
+  photo     Bytes?
+  photoMime String?
+  tags      String   @default("[]") // Neyu tags: vegetables, fruit, protein, fibre, whole-grain, processed, sugary, water…
+  createdAt DateTime @default(now())
+
+  @@index([patientId, day])
+}
+
+// What the patient looks at and does in My Health Space (screen views with
+// time spent, button clicks). Only kept while "Neyu learns from my use" is on.
+model ActivityEvent {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  kind      String // view | click
+  target    String
+  ms        Int      @default(0)
+  at        DateTime @default(now())
+
+  @@index([patientId, at])
+}
