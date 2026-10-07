@@ -23,7 +23,7 @@ export const POST = () => withPatientMutation(async ({ patient }) => {
   const r = await geminiJSON<{ intro?: string; sections?: { id: string; items?: Item[] }[] }>(
     `You are Neyu. Create a short, practical personal health plan from the patient's data (JSON). General lifestyle guidance only: never diagnose, never mention medications, supplements or doses, nothing extreme. Respect any conditions by keeping advice gentle and suggesting they check with their healthcare professional before big changes.
 Return JSON only: {"intro": 1-2 sentences starting with "Based on the information currently available", "sections": [{"id":"move","items":[3 items]},{"id":"food","items":[3]},{"id":"sleep","items":[2-3]},{"id":"habits","items":[2-3]}]} where each item is {"title": short action (max 8 words), "detail": one sentence why/how, tied to their data when possible}.`,
-    [{ text: JSON.stringify(data) }], { maxTokens: 1200, timeoutMs: 25_000, temperature: 0.4 });
+    [{ text: JSON.stringify(data) }], { maxTokens: 4096, timeoutMs: 40_000, temperature: 0.4, label: "plan" });
   const TITLES = { move: "Movement", food: "Food", sleep: "Sleep", habits: "Habits" } as const;
   const clean = (it: any): Item | null => { const t = String(it?.title || "").slice(0, 80), d = String(it?.detail || "").slice(0, 260); return t && !unsafeAiText(t + " " + d) ? { title: t, detail: d } : null; };
   let plan: Plan;

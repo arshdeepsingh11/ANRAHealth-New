@@ -11,8 +11,9 @@ const W = 612, H = 792, M = 54; // US Letter, 0.75in margins
 const INK = rgb(0.11, 0.14, 0.16), INK2 = rgb(0.29, 0.32, 0.35), MUTED = rgb(0.45, 0.48, 0.51), LINE = rgb(0.88, 0.89, 0.9);
 const TEAL = rgb(0.11, 0.56, 0.82), WASH = rgb(0.93, 0.97, 0.99), AMBER = rgb(0.6, 0.38, 0.05), AMBERW = rgb(1, 0.96, 0.88);
 
-export interface PdfOptions { sections: string[]; docIds: string[]; observations: string[]; questions: string[] }
+export interface PdfOptions { sections: string[]; docIds: string[]; observations: string[]; questions: string[]; summary?: string; countOnly?: boolean }
 
+/** Builds the PDF. With countOnly, returns just the number of summary pages (no originals embedded). */
 export async function buildAssessmentPdf(patientId: string, a: Assessment, o: PdfOptions): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   pdf.setTitle(`Doctor Assessment — ${a.patient.name}`); pdf.setAuthor("NEYU Health · My Health Space"); pdf.setSubject("AI-generated patient health summary. Not a medical diagnosis.");
@@ -85,6 +86,11 @@ export async function buildAssessmentPdf(patientId: string, a: Assessment, o: Pd
   bl.forEach((l, i) => page.drawText(l, { x: M + 12, y: y - 17 - i * 12.5, size: 8.8, font: reg, color: AMBER }));
   y -= bl.length * 12.5 + 26;
 
+  if (o.summary) {
+    heading("30-second summary", "The most important recent information, prepared with Neyu (AI). Please verify against the data below.");
+    text(o.summary, { size: 10.5, color: INK, gap: 4 });
+  }
+  if (on("newinfo") && a.newInfo.length) { heading("New information in this period"); bullets(a.newInfo); }
   if (on("overview")) {
     heading("Patient overview");
     rows([
@@ -129,6 +135,25 @@ export async function buildAssessmentPdf(patientId: string, a: Assessment, o: Pd
       });
     }
   }
+  if (on("reports")) {
+    heading("Reports — short summaries", "From each report in this period, read by Neyu. The original report is the medical record; attached originals follow.");
+    if (!a.reports.length) text("No reports in this period.", { color: MUTED });
+    a.reports.forEach((r) => {
+      need(46);
+      page.drawText(T(`${r.date}  ·  ${r.title}`).slice(0, 80), { x: M, y: y - 10, size: 10, font: med, color: INK }); y -= 15;
+      if (r.provider) { page.drawText(T(r.provider).slice(0, 80), { x: M, y: y - 9, size: 8.5, font: reg, color: MUTED }); y -= 13; }
+      text(r.summary, { size: 9.5, gap: 1 });
+      if (r.flagged.length) text(`Flagged on the report: ${r.flagged.join("; ")}`, { size: 9, color: AMBER, gap: 1 });
+      y -= 6;
+    });
+  }
+  if (on("lifestyle")) {
+    heading("Daily life", "Eating habits, physical activity and how the patient has been feeling — from logs, devices and check-ins.");
+    text("Eating habits", { f: med, size: 10, color: INK }); bullets(a.eating, "No food information in this period.");
+    y -= 4; text("Physical activity", { f: med, size: 10, color: INK }); bullets(a.physical, "No activity information in this period.");
+    if (a.checkins) { y -= 4; text("Weekly check-ins", { f: med, size: 10, color: INK }); bullets([a.checkins]); }
+  }
+  if (on("profile")) { heading("Recent changes to the patient profile", "What the patient updated in their health profile, with dates."); bullets(a.profileChanges.map((c) => `${c.date} — ${c.text}`), "No profile changes in this period."); }
   if (on("trends")) {
     heading("What changed", "Compared with the previous period, using the patient's own data.");
     bullets(a.changes.map((c) => `${c.status === "insufficient" || c.status === "new" ? "" : c.status[0].toUpperCase() + c.status.slice(1) + ": "}${c.text}`), "Not enough history to compare yet.");
@@ -149,6 +174,7 @@ export async function buildAssessmentPdf(patientId: string, a: Assessment, o: Pd
     if (chosen.length) { y -= 6; text("Original reports attached (unchanged):", { f: med, size: 10, color: INK }); bullets(chosen.map((d) => `${d.title}${d.provider ? ` — ${d.provider}` : ""} · ${d.date}`)); }
   }
 
+  if (o.countOnly) return new Uint8Array([pages.length]);
   // ── Original reports, attached unchanged ──────────────────────────────
   const docs = o.docIds.length ? await prisma.healthDocument.findMany({ where: { patientId, id: { in: o.docIds.slice(0, 20) } }, select: { id: true, title: true, provider: true, docDate: true, createdAt: true, mime: true, data: true } }) : [];
   for (const d of docs) {
