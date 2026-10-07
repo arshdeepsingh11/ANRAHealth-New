@@ -124,7 +124,7 @@ export interface DeviceDTO {
 }
 
 export interface SettingsDTO {
-  shareWearables: boolean; shareLabs: boolean; shareRecords: boolean; albaAccess: boolean; learnUsage: boolean;
+  shareWearables: boolean; shareLabs: boolean; shareRecords: boolean; albaAccess: boolean; learnUsage: boolean; aiInsights: boolean;
   notifDaily: boolean; notifWorth: boolean; notifProtocol: boolean; notifAppt: boolean;
   city: string | null; province: string | null; briefEmail: boolean; leaderboardName: string | null;
 }

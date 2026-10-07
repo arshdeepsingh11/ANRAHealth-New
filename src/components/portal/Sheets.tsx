@@ -53,7 +53,7 @@ export default function Sheets() {
 }
 
 // ── Neyu ────────────────────────────────────────────────────────────────
-type Msg = { role: "user" | "alba"; text: string; src?: string; action?: string };
+type Msg = { role: "user" | "alba"; text: string; src?: string; action?: string; evidence?: string[] };
 // Kept across open/close within the session so the conversation continues.
 const albaMem: { msgs: Msg[]; conversationId: string } = { msgs: [], conversationId: "" };
 
@@ -66,7 +66,10 @@ function AlbaSheet({ ask }: { ask?: string }) {
   const busyRef = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
   const clinician = appts?.upcoming[0]?.clinician || profile.careTeam[0]?.name;
-  const prompts = ["Help me understand my recent health trends.", "What changed in my sleep this week?", clinician ? `What should I ask ${clinician}?` : "What should I ask my care team?"];
+  // "Ask Neyu about me": questions that fit this patient's actual data.
+  const sug = useResource<{ suggestions: string[] }>("/api/portal/neyu/suggest").data?.suggestions;
+  const prompts = sug?.length ? sug : ["What has changed recently?", "What don't we know about my health?", clinician ? `What should I ask ${clinician}?` : "What should I discuss with my doctor?"];
+  const [whyOpen, setWhyOpen] = useState<number | null>(null);
 
   const push = (m: Msg) => setMsgs((cur) => { const n = [...cur, m]; albaMem.msgs = n; return n; });
   const send = async (q: string) => {
@@ -75,9 +78,9 @@ function AlbaSheet({ ask }: { ask?: string }) {
     busyRef.current = true; setBusy(true); setInput("");
     push({ role: "user", text: q });
     try {
-      const r = await api<{ conversationId: string; text: string; src?: string; action?: string }>("/api/portal/alba", { body: { message: q, conversationId: albaMem.conversationId || undefined } });
+      const r = await api<{ conversationId: string; text: string; src?: string; action?: string; evidence?: string[] }>("/api/portal/alba", { body: { message: q, conversationId: albaMem.conversationId || undefined } });
       albaMem.conversationId = r.conversationId;
-      push({ role: "alba", text: r.text, src: r.src, action: r.action });
+      push({ role: "alba", text: r.text, src: r.src, action: r.action, evidence: r.evidence });
       invalidate(EP.history);
     } catch (e: any) {
       push({ role: "alba", text: e.status === 429 ? e.message : "I can help with your trends, sleep, results or preparing for your visit. For anything about symptoms or treatment, your care team is the right place to start." });
@@ -99,6 +102,7 @@ function AlbaSheet({ ask }: { ask?: string }) {
       <p style={{ margin: "0 0 18px", fontSize: 14, lineHeight: 1.5, color: C.muted }}>Neyu explains your data using the sources you've allowed. It doesn't diagnose or replace your care team.</p>
       {msgs.length === 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <span style={{ fontSize: 13, color: C.muted }}>Ask Neyu about you</span>
           {prompts.map((p) => <button key={p} onClick={() => send(p)} className="h-albacard" style={{ display: "flex", alignItems: "center", gap: 10, padding: "14px 16px", border: "1px solid rgba(42,132,228,.22)", borderRadius: 14, background: C.card, cursor: "pointer", textAlign: "left", fontSize: 15 }}>“{p}”</button>)}
         </div>
       )}
@@ -108,7 +112,13 @@ function AlbaSheet({ ask }: { ask?: string }) {
           return (
             <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: u ? "flex-end" : "flex-start", gap: 8, animation: "mhs-fadeUp 300ms ease" }}>
               <div style={{ maxWidth: "92%", padding: u ? "10px 14px" : "2px 0 2px 14px", borderRadius: 16, background: u ? "#F0EEEA" : "transparent", fontSize: 15, lineHeight: 1.6, whiteSpace: "pre-wrap", borderLeft: u ? "none" : `2px solid ${m.action === "emergency" ? "#C8826A" : "#C9BBE0"}` }}>{m.text}</div>
-              {m.src && <span style={{ fontSize: 12, color: C.lavInk, paddingLeft: 14 }}>{m.src}</span>}
+              {(m.src || m.evidence?.length) && (
+                <div style={{ paddingLeft: 14 }}>
+                  {m.src && <span style={{ display: "block", fontSize: 12, color: C.lavInk }}>{m.src}</span>}
+                  {!!m.evidence?.length && <button onClick={() => setWhyOpen(whyOpen === i ? null : i)} aria-expanded={whyOpen === i} style={{ padding: 0, marginTop: 2, border: "none", background: "none", fontSize: 12.5, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}>{whyOpen === i ? "Hide evidence" : "Why this answer?"}</button>}
+                  {whyOpen === i && <ul style={{ margin: "6px 0 0", padding: "10px 12px 10px 26px", borderRadius: 10, background: "#F6F4F1", fontSize: 13, color: C.ink2, lineHeight: 1.6 }}>{m.evidence!.map((e) => <li key={e}>{e}</li>)}</ul>}
+                </div>
+              )}
               {a && <button onClick={a[2]} style={{ marginLeft: 14, height: 40, padding: "0 16px", border: "none", borderRadius: 10, background: a[1], color: C.card, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>{a[0]}</button>}
             </div>
           );

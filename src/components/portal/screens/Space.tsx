@@ -15,10 +15,12 @@ import { Ticker, Ring, AnimatedList, Shine, Morph, StatusChip, SourceTag, AiTag,
 import type { MetricKey } from "@/lib/portal/metrics";
 
 // ── Types (mirror backend/space.ts, backend/documents.ts) ──────────────────
-type Change = { status: string; area: string; title: string; text: string; go?: string; source?: string };
-type Gap = { area: string; text: string; action?: { label: string; go: string } };
+export type Evidence = { label: string; source?: string; date?: string; go?: string };
+type Change = { key?: string; status: string; area: string; title: string; text: string; go?: string; source?: string; confidence?: string; basis?: string; evidence?: Evidence[] };
+type Coverage = { id: string; label: string; icon: string; level: "strong" | "good" | "partial" | "limited" | "missing"; detail: string; go: string };
+type Gap = { area: string; kind?: string; text: string; why?: string; action?: { label: string; go: string } };
 type Area = { id: string; label: string; icon: string; state: "known" | "partial" | "missing"; fact: string; change?: string; go: string };
-export type SpaceDTO = { changes: Change[]; gaps: Gap[]; areas: Area[]; known: number; counts: { docs: number; labs: number; meals: number; sources: number }; sources: string[] };
+export type SpaceDTO = { changes: Change[]; gaps: Gap[]; areas: Area[]; coverage: Coverage[]; known: number; counts: { docs: number; labs: number; meals: number; sources: number }; sources: string[] };
 type DocValue = { name: string; value: string; unit?: string; ref?: string; flag?: string };
 type Doc = { id: string; title: string; kind: string; provider: string | null; date: string | null; source: string; mime: string; fileName: string; size: number; values: DocValue[]; keyPoints: string[]; aiFailed: boolean; summary: string | null; status: string; addedAt: string };
 
@@ -47,16 +49,70 @@ export function useOpen() {
 // ════════════════════════════════════════════════════════════════════════
 // MY HEALTH — the Health Map
 // ════════════════════════════════════════════════════════════════════════
+const CONF: Record<string, string> = { strong: "Strong evidence", limited: "Limited evidence", insufficient: "Not enough data yet" };
+
+/** "Why am I seeing this?" — the evidence trail behind any Neyu insight. */
+export function Why({ basis, confidence, evidence, tone = C.teal }: { basis?: string; confidence?: string; evidence?: Evidence[]; tone?: string }) {
+  const open = useOpen();
+  const [on, setOn] = useState(false);
+  if (!basis && !evidence?.length) return null;
+  return (
+    <div>
+      <button onClick={(e) => { e.stopPropagation(); setOn(!on); }} aria-expanded={on} style={{ display: "inline-flex", alignItems: "center", gap: 5, height: 28, padding: 0, border: "none", background: "none", fontSize: 13, fontWeight: 500, color: tone, cursor: "pointer" }}>
+        <NIcon name={on ? "chevronUp" : "info"} size={13} tone="currentColor" />{on ? "Hide evidence" : "Why am I seeing this?"}
+      </button>
+      {on && (
+        <div style={{ marginTop: 6, padding: "12px 14px", borderRadius: 12, background: "#F6F4F1", animation: "mhs-fadeUp 240ms ease" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", marginBottom: 6 }}><span style={{ fontSize: 12.5, fontWeight: 500, color: C.ink2 }}>Based on</span>{confidence && <span style={{ fontSize: 12, color: confidence === "strong" ? C.tealDark : C.muted }}>{CONF[confidence] || confidence}</span>}</div>
+          <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 5 }}>
+            {basis && <li style={{ fontSize: 13.5, color: C.ink2 }}>• {basis.replace(/^Based on /, "")}</li>}
+            {(evidence || []).filter((e) => e.label && e.label !== basis).map((e, i) => (
+              <li key={i} style={{ fontSize: 13.5, color: C.ink2 }}>
+                {e.go ? <button onClick={(ev) => { ev.stopPropagation(); open(e.go); }} style={{ padding: 0, border: "none", background: "none", fontSize: 13.5, color: C.teal, cursor: "pointer", textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2 }}>• {e.label}</button> : <>• {e.label}</>}
+                {e.source && <span style={{ color: C.faint }}> · {e.source}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ChangeRow({ c, onOpen }: { c: Change; onOpen: (g?: string) => void }) {
   return (
-    <button onClick={() => onOpen(c.go)} disabled={!c.go} className="mhs-lift" style={{ width: "100%", display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px", borderRadius: 16, border: `1px solid ${C.line}`, background: C.card, cursor: c.go ? "pointer" : "default", textAlign: "left" }}>
+    <div className="mhs-lift" style={{ width: "100%", display: "flex", gap: 12, alignItems: "flex-start", padding: "14px 16px", borderRadius: 16, border: `1px solid ${C.line}`, background: C.card }}>
       <StatusChip s={c.status} small />
       <span style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 4 }}>
-        <span style={{ fontSize: 15, lineHeight: 1.45, color: C.ink }}>{c.text}</span>
+        <button onClick={() => onOpen(c.go)} disabled={!c.go} style={{ padding: 0, border: "none", background: "none", textAlign: "left", fontSize: 15, lineHeight: 1.45, color: C.ink, cursor: c.go ? "pointer" : "default" }}>{c.text}</button>
         {c.source && <SourceTag>{c.source}</SourceTag>}
+        <Why basis={c.basis} confidence={c.confidence} evidence={c.evidence} />
       </span>
-      {c.go && <NIcon name="chevron" size={16} tone={C.faint} style={{ marginTop: 3 }} />}
-    </button>
+      {c.go && <button aria-label="Open" onClick={() => onOpen(c.go)} style={{ border: "none", background: "none", cursor: "pointer", padding: 4 }}><NIcon name="chevron" size={16} tone={C.faint} /></button>}
+    </div>
+  );
+}
+
+/** Health Data Coverage — how much information Neyu has, never how healthy you are. */
+const LEVELS: Coverage["level"][] = ["missing", "limited", "partial", "good", "strong"];
+export function CoverageList({ items }: { items: Coverage[] }) {
+  const open = useOpen();
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(min(100%,300px),1fr))", gap: "4px 24px" }}>
+      {items.map((c) => {
+        const n = LEVELS.indexOf(c.level);
+        return (
+          <button key={c.id} onClick={() => open(c.go)} aria-label={`${c.label}: ${c.level} data. ${c.detail}`} style={{ display: "grid", gridTemplateColumns: "28px minmax(0,1fr) auto", gap: 10, alignItems: "center", padding: "10px 0", border: "none", borderBottom: `1px solid ${C.line}`, background: "none", cursor: "pointer", textAlign: "left" }}>
+            <NIcon name={c.icon} size={18} tone={n <= 1 ? C.faint : C.teal} />
+            <span style={{ minWidth: 0 }}><span style={{ display: "block", fontSize: 14.5 }}>{c.label}</span><span style={{ display: "block", fontSize: 12.5, color: C.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</span></span>
+            <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+              <span style={{ display: "flex", gap: 3 }}>{[1, 2, 3, 4].map((k) => <span key={k} style={{ width: 14, height: 6, borderRadius: 3, background: k <= n ? (n >= 3 ? C.teal : C.tealLight) : "#E6E2DC" }} />)}</span>
+              <span style={{ fontSize: 11.5, color: n <= 1 ? C.muted : C.tealDark, textTransform: "capitalize" }}>{c.level}</span>
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -75,7 +131,8 @@ function GapList({ gaps }: { gaps: Gap[] }) {
       {gaps.map((g, i) => (
         <div key={i} style={{ display: "flex", gap: 12, alignItems: "center", padding: "12px 14px", borderRadius: 14, background: "#F3F1EE" }}>
           <NIcon name="circle" size={16} tone={C.faint} />
-          <span style={{ flex: 1, fontSize: 14.5, lineHeight: 1.45, color: C.ink2 }}><b style={{ fontWeight: 500, color: C.ink }}>{g.area}.</b> {g.text}</span>
+          <span style={{ flex: 1, fontSize: 14.5, lineHeight: 1.45, color: C.ink2 }}><b style={{ fontWeight: 500, color: C.ink }}>{g.area}.</b> {g.text}{g.why && <span style={{ display: "block", fontSize: 13, color: C.muted, marginTop: 2 }}>{g.why}</span>}</span>
+          {g.kind && <span className="mhs-hide-sm" style={{ fontSize: 11.5, color: C.faint, whiteSpace: "nowrap" }}>{({ no_data: "No data", limited_data: "Limited", outdated_data: "Outdated", incomplete_data: "Incomplete" } as Record<string, string>)[g.kind]}</span>}
           {g.action && <button onClick={() => open(g.action!.go)} style={{ ...btnLink, height: 32, flex: "none" }}>{g.action.label}</button>}
         </div>
       ))}
@@ -136,6 +193,13 @@ export function MyHealth() {
           <GapList gaps={s.gaps} />
         </section>
       </div>
+
+      {s.coverage?.length > 0 && (
+        <section aria-label="Health data coverage" style={{ marginBottom: 34 }}>
+          <SecHead title="Health data coverage" sub="How much information Neyu has in each area — not how healthy you are." />
+          <CoverageList items={s.coverage} />
+        </section>
+      )}
 
       <BaselineCard />
 
@@ -250,6 +314,14 @@ function Review({ doc, onDone, onDiscard }: { doc: Doc; onDone: (d: Doc) => void
   const [f, setF] = useState({ title: doc.title, kind: doc.kind, provider: doc.provider || "", date: doc.date || "" });
   const [values, setValues] = useState<DocValue[]>(doc.values);
   const [busy, setBusy] = useState(false);
+  const [rereading, setRereading] = useState(false);
+  const retry = async () => {
+    setRereading(true);
+    try {
+      const r = await api<{ document: Doc }>(`/api/portal/documents/${doc.id}/read`, { method: "POST" });
+      const d = r.document; setF({ title: d.title, kind: d.kind, provider: d.provider || "", date: d.date || "" }); setValues(d.values); Object.assign(doc, d, { aiFailed: false }); toast("Neyu read your report");
+    } catch (e: any) { toast(e.message); } finally { setRereading(false); }
+  };
   const save = async () => {
     setBusy(true);
     try {
@@ -264,7 +336,12 @@ function Review({ doc, onDone, onDiscard }: { doc: Doc; onDone: (d: Doc) => void
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <h2 style={{ margin: 0, fontSize: 22, fontWeight: 500 }}>We found:</h2><AiTag label="Read by Neyu — please check" />
       </div>
-      {doc.aiFailed && <div role="status" style={{ padding: "12px 14px", borderRadius: 12, background: "#FFF4E0", color: "#8A5A12", fontSize: 14 }}>Neyu couldn't read this file right now. Your original is saved — add the details below, or try again later.</div>}
+      {doc.aiFailed && (
+        <div role="status" style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", padding: "12px 14px", borderRadius: 12, background: "#FFF4E0", color: "#8A5A12", fontSize: 14 }}>
+          <span style={{ flex: "1 1 260px" }}>Neyu couldn't read this file right now. Your original is saved — try again, or add the details yourself.</span>
+          <button onClick={retry} disabled={rereading} style={{ ...btnOutline, height: 38, background: C.card, color: "#8A5A12", borderColor: "rgba(138,90,18,.3)" }}>{rereading ? "Reading again…" : "Try reading again"}</button>
+        </div>
+      )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))", gap: 12 }}>
         <Field label="Report"><input style={inp} value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} /></Field>
         <Field label="Type"><select style={inp} value={f.kind} onChange={(e) => setF({ ...f, kind: e.target.value })}>{KINDS.map((k) => <option key={k} value={k}>{kindLabel[k]}</option>)}</select></Field>
@@ -709,14 +786,16 @@ type AssessDTO = {
   assessment: {
     generatedAt: string; days: number; patient: { name: string; age: number | null; sex: string | null; dob: string | null };
     activity: { label: string; value: string; n: number }[]; labs: { name: string; value: string; unit: string; ref: string; flag: string; date: string; source: string }[];
+    reports: { id: string; date: string; title: string; kind: string; provider: string | null; summary: string; flagged: string[] }[]; newInfo: string[]; eating: string[]; physical: string[]; checkins: string | null; profileChanges: { date: string; text: string }[];
     history: { date: string; text: string }[]; conditions: string[]; medications: string[]; allergies: string[]; familyHistory: string[];
     nutrition: null | { meals: number; veg: number; protein: number; fibre: number; processed: number; diet: string | null };
-    changes: Change[]; goals: string[]; documents: { id: string; title: string; kind: string; provider: string | null; date: string; inRange: boolean }[]; sources: string[];
+    changes: Change[]; goals: string[]; documents: { id: string; title: string; kind: string; provider: string | null; date: string; inRange: boolean; pages: number }[]; sources: string[];
   };
-  observations: string[]; questions: string[]; byAi: boolean; gaps: Gap[];
+  summary: string; observations: string[]; questions: string[]; byAi: boolean; gaps: Gap[];
 };
 const RANGES = [[30, "30 days"], [90, "3 months"], [180, "6 months"], [365, "1 year"], [3650, "All history"]] as const;
-const SECTIONS = [["overview", "Patient overview"], ["medications", "Medications"], ["observations", "Neyu observations"], ["activity", "Recent activity"], ["labs", "Lab results"], ["trends", "What changed"], ["nutrition", "Nutrition overview"], ["history", "Medical history"], ["goals", "Goals"], ["questions", "Questions for doctor"], ["sources", "Data sources"]] as const;
+const SECTIONS = [["overview", "Patient overview"], ["medications", "Medications"], ["observations", "Neyu observations"], ["newinfo", "New information"], ["reports", "Report summaries"], ["activity", "Recent activity"], ["labs", "Lab results"], ["lifestyle", "Eating & activity"], ["profile", "Profile changes"], ["trends", "What changed"], ["nutrition", "Nutrition overview"], ["history", "Medical history"], ["goals", "Goals"], ["questions", "Questions for doctor"], ["sources", "Data sources"]] as const;
+type PageInfo = { summaryPages: number; reports: { id: string; pages: number }[] };
 
 export function Assessment() {
   const { toast, go } = usePortal();
@@ -726,8 +805,9 @@ export function Assessment() {
   const [step, setStep] = useState(0);
   const [d, setD] = useState<AssessDTO | null>(null);
   const [docIds, setDocIds] = useState<string[]>([]);
-  const [obs, setObs] = useState<string[]>([]), [qs, setQs] = useState<string[]>([]), [newQ, setNewQ] = useState("");
+  const [obs, setObs] = useState<string[]>([]), [qs, setQs] = useState<string[]>([]), [newQ, setNewQ] = useState(""), [summary, setSummary] = useState("");
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [dl, setDl] = useState<null | { print: boolean; info: PageInfo | null }>(null);
   const docs = useResource<{ documents: Doc[] }>(EP.docs).data?.documents.filter((x) => x.status === "saved") || [];
 
   const prepare = async () => {
@@ -735,16 +815,26 @@ export function Assessment() {
     const t = setInterval(() => setStep((s) => Math.min(3, s + 1)), 1200);
     try {
       const r = await api<AssessDTO>(`/api/portal/assessment?days=${days}`);
-      setD(r); setObs(r.observations); setQs(r.questions);
+      setD(r); setObs(r.observations); setQs(r.questions); setSummary(r.summary || "");
       setDocIds(r.assessment.documents.filter((x) => x.inRange).map((x) => x.id).slice(0, 10));
       setStep(4); setTimeout(() => setStage("preview"), 300);
     } catch (e: any) { toast(e.message); setStage("setup"); } finally { clearInterval(t); }
   };
-  const pdf = async (print?: boolean) => {
-    if (!d) return;
-    setPdfBusy(true);
+  const body = (extra: Record<string, unknown> = {}) => JSON.stringify({ days, sections, docIds, observations: sections.includes("observations") ? obs : [], questions: qs, summary, ...extra });
+  // Step 1 of download: ask about attaching originals, showing page counts.
+  const askDownload = async (print: boolean) => {
+    setDl({ print, info: null });
     try {
-      const res = await fetch("/api/portal/assessment/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: JSON.stringify({ days, sections, docIds, observations: sections.includes("observations") ? obs : [], questions: qs }) });
+      const res = await fetch("/api/portal/assessment/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: body({ dryRun: true }) });
+      const j = await res.json(); if (!res.ok) throw new Error(j.error || "Couldn't count pages.");
+      setDl({ print, info: j });
+    } catch (e: any) { setDl(null); toast(e.message); }
+  };
+  const pdf = async (withReports: boolean) => {
+    if (!d || !dl) return;
+    const print = dl.print; setPdfBusy(true);
+    try {
+      const res = await fetch("/api/portal/assessment/pdf", { method: "POST", headers: { "Content-Type": "application/json" }, credentials: "same-origin", body: body({ docIds: withReports ? docIds : [] }) });
       if (!res.ok) throw new ApiError((await res.json().catch(() => ({})))?.error || "We couldn't create the PDF.", res.status);
       const blob = await res.blob(), url = URL.createObjectURL(blob);
       if (print) {
@@ -754,21 +844,22 @@ export function Assessment() {
         const a = document.createElement("a"); a.href = url; a.download = `Doctor-Assessment-${new Date().toISOString().slice(0, 10)}.pdf`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 30_000);
         toast("PDF saved to your device");
       }
+      setDl(null);
     } catch (e: any) { toast(e.message); } finally { setPdfBusy(false); }
   };
   const tog = (arr: string[], set: (x: string[]) => void, k: string) => set(arr.includes(k) ? arr.filter((x) => x !== k) : [...arr, k]);
 
-  if (stage === "prep") return <div style={page}><h1 style={{ ...h1, fontSize: 28 }}>Preparing your health summary…</h1><p style={lead}>Neyu is organising the information in your Health Space for your doctor.</p><ProcessSteps steps={["Gathering activity, results and reports", "Comparing with earlier data", "Writing neutral observations", "Preparing questions for your doctor"]} at={step} /></div>;
+  if (stage === "prep") return <div style={page}><h1 style={{ ...h1, fontSize: 28 }}>Preparing your Doctor Visit summary…</h1><p style={lead}>Neyu is organising everything in your Health Space for your doctor.</p><ProcessSteps steps={["Gathering results, reports and activity", "Summarising each report with its date", "Looking at eating, activity and profile changes", "Writing a 30-second summary and questions"]} at={step} /></div>;
 
   if (stage === "setup" || !d) return (
     <div style={page}>
-      <span style={{ fontSize: 13, letterSpacing: ".12em", color: C.teal, fontWeight: 500 }}>DOCTOR ASSESSMENT</span>
+      <span style={{ fontSize: 13, letterSpacing: ".12em", color: C.teal, fontWeight: 500 }}>DOCTOR VISIT MODE</span>
       <h1 style={{ ...h1, marginTop: 8 }}>Walk into any appointment prepared.</h1>
-      <p style={lead}>One clear summary of your health for any doctor — your family doctor, a specialist or a walk-in clinic. Download it, print it, or bring it on your phone. Your original reports can be attached.</p>
+      <p style={lead}>One clear summary of your health for any doctor — with a 30-second overview, what changed, short summaries of every report with dates, how you eat and move, and your questions. You review everything first.</p>
       <Shine radius={26} style={{ maxWidth: 860 }}>
         <div style={{ padding: "24px 24px 22px", display: "flex", flexDirection: "column", gap: 22 }}>
           <div>
-            <h2 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 500 }}>Time period</h2>
+            <h2 style={{ margin: "0 0 10px", fontSize: 16, fontWeight: 500 }}>Since when?</h2>
             <div role="radiogroup" aria-label="Time period" style={{ display: "inline-flex", flexWrap: "wrap", padding: 3, borderRadius: 12, background: "#ECE9E4", gap: 2 }}>
               {RANGES.map(([v, l]) => <button key={v} role="radio" aria-checked={days === v} onClick={() => setDays(v)} style={{ height: 36, padding: "0 14px", border: "none", borderRadius: 9, background: days === v ? C.card : "transparent", boxShadow: days === v ? "0 1px 3px rgba(29,35,39,.1)" : "none", fontSize: 14, fontWeight: 500, color: days === v ? C.ink : C.muted, cursor: "pointer" }}>{l}</button>)}
             </div>
@@ -781,7 +872,7 @@ export function Assessment() {
           </div>
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
             <button onClick={prepare} disabled={!sections.length} className="h-primary" style={{ ...btnPrimary, height: 50, padding: "0 24px", fontSize: 16 }}>Create Doctor Assessment</button>
-            <span style={{ fontSize: 13, color: C.muted }}>{docs.length} report{docs.length === 1 ? "" : "s"} available to attach</span>
+            <span style={{ fontSize: 13, color: C.muted }}>{docs.length} report{docs.length === 1 ? "" : "s"} in your Health Space</span>
           </div>
         </div>
       </Shine>
@@ -792,30 +883,36 @@ export function Assessment() {
   const a = d.assessment, on = (k: string) => sections.includes(k);
   const H = ({ children, sub }: { children: React.ReactNode; sub?: string }) => <div style={{ margin: "26px 0 10px", paddingLeft: 10, borderLeft: `3px solid #1B8FD0` }}><h3 style={{ margin: 0, fontSize: 16, fontWeight: 500 }}>{children}</h3>{sub && <p style={{ margin: "2px 0 0", fontSize: 12, color: C.faint }}>{sub}</p>}</div>;
   const Row = ({ k, v }: { k: string; v: React.ReactNode }) => <div style={{ display: "grid", gridTemplateColumns: "minmax(120px,38%) 1fr", gap: 12, padding: "8px 0", borderBottom: "1px solid #EEF0F1", fontSize: 14 }}><span style={{ color: C.muted }}>{k}</span><span>{v}</span></div>;
+  const Bul = ({ xs, empty }: { xs: string[]; empty: string }) => xs.length ? <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>{xs.map((x, i) => <li key={i}>{x}</li>)}</ul> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>{empty}</p>;
   const none = <span style={{ color: C.faint }}>None recorded</span>;
+  const info = dl?.info, pagesOf = (id: string) => info?.reports.find((r) => r.id === id)?.pages || 0;
+  const withPages = info ? info.summaryPages + docIds.reduce((n, id) => n + pagesOf(id), 0) : 0;
   return (
     <div style={page}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 14, flexWrap: "wrap", alignItems: "flex-end", marginBottom: 18 }}>
-        <div><h1 style={{ ...h1, fontSize: 28 }}>Your Doctor Assessment</h1><p style={{ margin: 0, fontSize: 15, color: C.muted }}>Review it, edit Neyu's notes, choose reports to attach — then download or print.</p></div>
+        <div><h1 style={{ ...h1, fontSize: 28 }}>Your Doctor Assessment</h1><p style={{ margin: 0, fontSize: 15, color: C.muted }}>Review and edit Neyu's notes — then download or print.</p></div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <button onClick={() => setStage("setup")} style={btnOutline}>Change options</button>
-          <button onClick={() => pdf(true)} disabled={pdfBusy} style={{ ...btnSecondary, height: 44 }}>Print</button>
-          <button onClick={() => pdf()} disabled={pdfBusy} className="h-primary" style={{ ...btnPrimary, display: "flex", alignItems: "center", gap: 8 }}><NIcon name="download" size={16} tone="#fff" />{pdfBusy ? "Creating PDF…" : "Download PDF"}</button>
+          <button onClick={() => askDownload(true)} disabled={pdfBusy} style={{ ...btnSecondary, height: 44 }}>Print</button>
+          <button onClick={() => askDownload(false)} disabled={pdfBusy} className="h-primary" style={{ ...btnPrimary, display: "flex", alignItems: "center", gap: 8 }}><NIcon name="download" size={16} tone="#fff" />Download PDF</button>
         </div>
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" }}>
-        {/* Paper preview */}
         <article aria-label="Doctor Assessment preview" style={{ flex: "999 1 560px", minWidth: 0, background: "#fff", borderRadius: 18, boxShadow: "0 1px 2px rgba(29,35,39,.06), 0 40px 80px -50px rgba(29,35,39,.45)", padding: "clamp(20px,4vw,40px)", border: `1px solid ${C.line}` }}>
           <div style={{ margin: "-4px -4px 18px", padding: "18px 18px 16px", borderRadius: 12, background: "#EEF7FB" }}>
             <span style={{ fontSize: 11, letterSpacing: ".14em", color: "#1B8FD0", fontWeight: 500 }}>DOCTOR ASSESSMENT</span>
             <h2 style={{ margin: "6px 0 4px", fontSize: 24, fontWeight: 500 }}>{a.patient.name}</h2>
             <p style={{ margin: 0, fontSize: 13, color: C.ink2 }}>{[a.patient.age != null ? `Age ${a.patient.age}` : "", a.patient.sex, a.patient.dob ? `DOB ${a.patient.dob}` : "", RANGES.find((r) => r[0] === days)?.[1], `Prepared ${new Date(a.generatedAt).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}`].filter(Boolean).join(" · ")}</p>
           </div>
-          <p style={{ margin: "0 0 4px", padding: "10px 12px", borderRadius: 10, background: "#FFF6E3", color: "#8A5A12", fontSize: 12.5, lineHeight: 1.5 }}>AI-generated patient health summary — not a medical diagnosis. Values are reproduced from their sources; original reports are attached unchanged.</p>
+          <p style={{ margin: "0 0 4px", padding: "10px 12px", borderRadius: 10, background: "#FFF6E3", color: "#8A5A12", fontSize: 12.5, lineHeight: 1.5 }}>AI-generated patient health summary — not a medical diagnosis. Values are reproduced from their sources; original reports can be attached unchanged.</p>
 
+          <H sub="Written by Neyu from the data below — edit anything before downloading">30-second summary</H>
+          <textarea value={summary} onChange={(e) => setSummary(e.target.value)} rows={4} aria-label="30-second summary" style={{ width: "100%", padding: 12, borderRadius: 10, border: `1px solid ${C.line12}`, fontFamily: "inherit", fontSize: 14.5, lineHeight: 1.6, color: C.ink, resize: "vertical", boxSizing: "border-box" }} />
+
+          {on("newinfo") && a.newInfo.length > 0 && <><H>New information in this period</H><Bul xs={a.newInfo} empty="" /></>}
           {on("overview") && <><H>Patient overview</H><Row k="Conditions (patient-reported)" v={a.conditions.join("; ") || none} /><Row k="Allergies" v={a.allergies.join("; ") || none} /><Row k="Family history" v={a.familyHistory.join("; ") || none} /></>}
-          {on("medications") && <><H sub="As listed by the patient">Medications</H>{a.medications.length ? <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>{a.medications.map((m) => <li key={m}>{m}</li>)}</ul> : <p style={{ margin: 0, fontSize: 14 }}>{none}</p>}</>}
+          {on("medications") && <><H sub="As listed by the patient">Medications</H><Bul xs={a.medications} empty="None recorded" /></>}
           {on("observations") && (
             <><H sub="AI-generated from the data in this report — edit or remove anything">Summary observations</H>
               <ul style={{ margin: 0, padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 6 }}>
@@ -823,15 +920,29 @@ export function Assessment() {
                 {!obs.length && <li style={{ fontSize: 14, color: C.faint }}>No observations.</li>}
               </ul></>
           )}
+          {on("reports") && (
+            <><H sub="Short summary of each report with its date — the original is the medical record">Reports</H>
+              {a.reports.length ? <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{a.reports.map((r) => (
+                <div key={r.id} style={{ paddingBottom: 10, borderBottom: "1px solid #EEF0F1" }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}><span style={{ fontSize: 13, color: C.muted, fontVariantNumeric: "tabular-nums" }}>{r.date}</span><span style={{ fontSize: 14.5, fontWeight: 500 }}>{r.title}</span>{r.provider && <span style={{ fontSize: 12.5, color: C.faint }}>{r.provider}</span>}</div>
+                  <p style={{ margin: "4px 0 0", fontSize: 14, lineHeight: 1.55, color: C.ink2 }}>{r.summary}</p>
+                  {r.flagged.length > 0 && <p style={{ margin: "4px 0 0", fontSize: 13, color: "#8A5A12" }}>Flagged on the report: {r.flagged.join("; ")}</p>}
+                </div>))}</div> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No reports in this period.</p>}</>
+          )}
           {on("activity") && <><H sub="Daily averages from connected devices and home readings">Recent health activity</H>{a.activity.length ? a.activity.map((r) => <Row key={r.label} k={r.label} v={<>{r.value}{r.n ? <span style={{ color: C.faint }}> · {r.n} {r.label.includes("pressure") ? "readings" : "days"}</span> : null}</>} />) : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No device or home readings in this period.</p>}</>}
           {on("labs") && <><H sub="Most recent value per test · flags as printed or against the stated range">Laboratory results</H>{a.labs.length ? (
             <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}><thead><tr style={{ color: C.muted, textAlign: "left" }}><th style={{ fontWeight: 500, padding: "6px 6px 6px 0" }}>Test</th><th style={{ fontWeight: 500, padding: 6 }}>Result</th><th style={{ fontWeight: 500, padding: 6 }}>Reference</th><th style={{ fontWeight: 500, padding: 6 }}>Date · source</th></tr></thead>
               <tbody>{a.labs.map((l) => { const f = l.flag && l.flag !== "in range"; return <tr key={l.name + l.date} style={{ borderTop: "1px solid #EEF0F1" }}><td style={{ padding: "7px 6px 7px 0" }}>{l.name}</td><td style={{ padding: 7, fontWeight: f ? 500 : 400, color: f ? "#8A5A12" : C.ink }}>{l.value} {l.unit}{f ? ` (${l.flag})` : ""}</td><td style={{ padding: 7, color: C.ink2 }}>{l.ref || "—"}</td><td style={{ padding: 7, color: C.muted, fontSize: 12.5 }}>{l.date} · {l.source}</td></tr>; })}</tbody></table></div>
           ) : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No laboratory results in this period.</p>}</>}
+          {on("lifestyle") && <><H sub="From the food log, devices and weekly check-ins">Daily life</H>
+            <p style={{ margin: "0 0 4px", fontSize: 13.5, fontWeight: 500 }}>Eating habits</p><Bul xs={a.eating} empty="No food information in this period." />
+            <p style={{ margin: "12px 0 4px", fontSize: 13.5, fontWeight: 500 }}>Physical activity</p><Bul xs={a.physical} empty="No activity information in this period." />
+            {a.checkins && <><p style={{ margin: "12px 0 4px", fontSize: 13.5, fontWeight: 500 }}>Weekly check-ins</p><Bul xs={[a.checkins]} empty="" /></>}</>}
+          {on("profile") && <><H sub="What the patient updated, with dates">Recent profile changes</H><Bul xs={a.profileChanges.map((c) => `${c.date} — ${c.text}`)} empty="No profile changes in this period." /></>}
           {on("trends") && <><H>What changed</H>{a.changes.length ? <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>{a.changes.map((c, i) => <li key={i}>{c.status !== "new" && <b style={{ fontWeight: 500 }}>{STATUS[c.status]?.label}: </b>}{c.text}</li>)}</ul> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>Not enough history to compare yet.</p>}</>}
           {on("nutrition") && <><H sub="High-level pattern from the food log">Nutrition overview</H>{a.nutrition ? <>{a.nutrition.diet && <Row k="Eating pattern" v={a.nutrition.diet} />}{a.nutrition.meals > 0 && <><Row k="Meals logged" v={a.nutrition.meals} /><Row k="With fruit or vegetables" v={`${Math.round((a.nutrition.veg / a.nutrition.meals) * 100)}%`} /><Row k="With protein" v={`${Math.round((a.nutrition.protein / a.nutrition.meals) * 100)}%`} /><Row k="Processed, fried or sugary" v={`${Math.round((a.nutrition.processed / a.nutrition.meals) * 100)}%`} /></>}</> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No food log in this period.</p>}</>}
-          {on("history") && <><H>Medical history in this period</H>{a.history.length ? <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>{a.history.map((h, i) => <li key={i}>{h.date} — {h.text}</li>)}</ul> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No visits or reports in this period.</p>}</>}
-          {on("goals") && <><H>Patient goals</H>{a.goals.length ? <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.7 }}>{a.goals.map((g) => <li key={g}>{g}</li>)}</ul> : <p style={{ margin: 0, fontSize: 14, color: C.faint }}>No goals set.</p>}</>}
+          {on("history") && <><H>Medical history in this period</H><Bul xs={a.history.map((h) => `${h.date} — ${h.text}`)} empty="No visits or reports in this period." /></>}
+          {on("goals") && <><H>Patient goals</H><Bul xs={a.goals} empty="No goals set." /></>}
           {on("questions") && (
             <><H sub="Yours, plus suggestions from Neyu">Questions for the doctor</H>
               <ol style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.6, display: "flex", flexDirection: "column", gap: 4 }}>
@@ -843,17 +954,11 @@ export function Assessment() {
           <p style={{ margin: "26px 0 0", paddingTop: 12, borderTop: "1px solid #EEF0F1", fontSize: 11.5, color: C.faint }}>AI-generated patient health summary · not a diagnosis · NEYU Health My Health Space</p>
         </article>
 
-        {/* Attachments */}
         <aside style={{ flex: "1 1 280px", display: "flex", flexDirection: "column", gap: 14, minWidth: 0 }}>
           <section style={{ ...cardBox, padding: 18 }}>
-            <h2 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 500 }}>Attach original reports</h2>
-            <p style={{ margin: "0 0 12px", fontSize: 13, color: C.muted }}>Added after the summary, unchanged.</p>
-            {a.documents.length ? a.documents.map((x) => (
-              <label key={x.id} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "8px 0", borderTop: `1px solid ${C.line}`, cursor: "pointer" }}>
-                <input type="checkbox" checked={docIds.includes(x.id)} onChange={() => tog(docIds, setDocIds, x.id)} style={{ width: 18, height: 18, marginTop: 2 }} />
-                <span style={{ display: "flex", flexDirection: "column", gap: 2, fontSize: 14 }}><span>{x.title}</span><span style={{ fontSize: 12.5, color: C.muted }}>{kindLabel[x.kind]} · {x.provider || "Added by you"} · {x.date}</span></span>
-              </label>
-            )) : <p style={{ margin: 0, fontSize: 14, color: C.muted }}>No reports yet. <button onClick={() => go("add")} style={{ ...btnLink, display: "inline", height: "auto" }}>Add one</button></p>}
+            <h2 style={{ margin: "0 0 4px", fontSize: 16, fontWeight: 500 }}>In this summary</h2>
+            <p style={{ margin: 0, fontSize: 13.5, color: C.muted, lineHeight: 1.6 }}>{a.reports.length} report summaries · {a.labs.length} lab values · {a.activity.length} activity measures{a.eating.length ? " · eating habits" : ""}{a.profileChanges.length ? ` · ${a.profileChanges.length} profile changes` : ""}</p>
+            {!a.documents.length && <p style={{ margin: "10px 0 0", fontSize: 14, color: C.muted }}>No reports yet. <button onClick={() => go("add")} style={{ ...btnLink, display: "inline", height: "auto" }}>Add one</button></p>}
           </section>
           {d.gaps.length > 0 && (
             <section style={{ padding: 18, borderRadius: 20, background: "#F3F1EE" }}>
@@ -863,6 +968,33 @@ export function Assessment() {
           )}
         </aside>
       </div>
+
+      {/* Download: Neyu asks about attaching the original reports and shows page counts */}
+      {dl && (
+        <div role="dialog" aria-modal="true" aria-label="Attach original reports" onClick={() => !pdfBusy && setDl(null)} style={{ position: "fixed", inset: 0, zIndex: 120, background: "rgba(29,35,39,.32)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, animation: "mhs-fadeIn 200ms ease" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: "min(560px,100%)", maxHeight: "86vh", overflow: "auto", background: C.card, borderRadius: 22, padding: 24, boxShadow: "0 40px 80px -30px rgba(29,35,39,.5)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}><AiTag label="Neyu" /><h2 style={{ margin: 0, fontSize: 20, fontWeight: 500 }}>Attach your original reports?</h2></div>
+            <p style={{ margin: "0 0 16px", fontSize: 14.5, color: C.muted, lineHeight: 1.55 }}>Your summary already includes a short summary of each report with its date. Attaching the originals gives your doctor the full documents — but makes the PDF longer.</p>
+            {!info ? <div aria-busy="true" style={{ padding: "18px 0", color: C.muted, fontSize: 14 }}>Counting pages…</div> : (
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: `1px solid ${C.line}`, fontSize: 14.5 }}><span>Doctor Assessment summary</span><span style={{ color: C.muted }}>{info.summaryPages} page{info.summaryPages === 1 ? "" : "s"}</span></div>
+                {a.documents.map((x) => (
+                  <label key={x.id} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: `1px solid ${C.line}`, cursor: "pointer" }}>
+                    <input type="checkbox" checked={docIds.includes(x.id)} onChange={() => tog(docIds, setDocIds, x.id)} style={{ width: 18, height: 18, marginTop: 2 }} />
+                    <span style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2, fontSize: 14 }}><span>{x.title}</span><span style={{ fontSize: 12.5, color: C.muted }}>{x.date} · {x.provider || "Added by you"}{x.inRange ? "" : " · outside this period"}</span></span>
+                    <span style={{ fontSize: 13, color: C.muted, whiteSpace: "nowrap" }}>{pagesOf(x.id)} pages</span>
+                  </label>
+                ))}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 18 }}>
+                  <button onClick={() => pdf(true)} disabled={pdfBusy || !docIds.length} className="h-primary" style={{ ...btnPrimary, height: 48, opacity: docIds.length ? 1 : 0.5 }}>{pdfBusy ? "Creating PDF…" : `${dl.print ? "Print" : "Download"} with ${docIds.length} report${docIds.length === 1 ? "" : "s"} — ${withPages} pages`}</button>
+                  <button onClick={() => pdf(false)} disabled={pdfBusy} style={{ ...btnSecondary, height: 48 }}>{dl.print ? "Print" : "Download"} summary only — {info.summaryPages} page{info.summaryPages === 1 ? "" : "s"}</button>
+                  <button onClick={() => setDl(null)} disabled={pdfBusy} style={{ ...btnLink, justifyContent: "center" }}>Cancel</button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

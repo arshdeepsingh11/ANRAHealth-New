@@ -274,6 +274,7 @@ export function Privacy() {
           { label: "BioAro Labs", sub: "Laboratory results", on: settings.shareLabs, toggle: toggle("shareLabs", true) },
           { label: "NEYU clinical records", sub: "Visits, referrals and care plans", on: settings.shareRecords, toggle: toggle("shareRecords", true) },
           { label: "Neyu access", sub: "Let Neyu reference your data when you ask", on: settings.albaAccess, toggle: toggle("albaAccess") },
+          { label: "Neyu insights", sub: "Neyu notices meaningful changes in your data and shows them to you, always with the evidence", on: settings.aiInsights !== false, toggle: toggle("aiInsights") },
           { label: "Neyu learns from my use", sub: "Screens you open and how long you stay (never what you type) help Neyu understand what matters to you", on: settings.learnUsage !== false, toggle: toggle("learnUsage") },
         ]} />
       </div>

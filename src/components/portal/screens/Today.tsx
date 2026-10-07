@@ -9,6 +9,7 @@ import { C, screenAnim, Shimmer, Loading, btnPrimary } from "../ui";
 import { WhatChanged, type SpaceDTO } from "./Space";
 import { useDock } from "@/components/neyu/fx";
 import { StatusChip, Ring } from "../space-ui";
+import { NeyuNoticed, WeeklyCheckIn } from "./Intel";
 import { NIcon } from "@/components/neyu/icons";
 
 const AREA_ORDER = ["Heart", "Sleep", "Recovery", "Activity", "Labs", "Nutrition", "Protocol", "Risk"];
@@ -92,7 +93,7 @@ function BriefCard() {
         </ul>
       )}
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 14, alignItems: "center" }}>
-        <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><NIcon name="ph-book-open-text" size="1em" tone="currentColor" />Your monthly story</button>
+        <button onClick={() => go("story")} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><NIcon name="ph-book-open-text" size="1em" tone="currentColor" />Your health story</button>
         <button onClick={() => openSheet({ t: "alba", ask: "Why was my sleep different this week?" })} style={{ display: "flex", alignItems: "center", gap: 6, height: 34, padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.lavInk, cursor: "pointer" }}><NIcon name="ph-sparkle" size="1em" tone="currentColor" />Ask Neyu about my week</button>
         {w && <span style={{ marginLeft: "auto", fontSize: 11.5, color: C.faint }}>Weather: Environment and Climate Change Canada</span>}
         {!w && !b.needsLocation && <button onClick={reload} style={{ marginLeft: "auto", fontSize: 12.5, color: C.faint, border: "none", background: "none", cursor: "pointer" }}>Weather unavailable right now · retry</button>}
@@ -143,7 +144,12 @@ function TodayMap() {
 function TodayChanged() {
   const { tab } = usePortal();
   const { data: s } = useResource<SpaceDTO>(EP.space);
+  const ins = useResource<{ insights: unknown[] }>("/api/portal/insights").data;
   if (!s) return null;
+  // When "Neyu noticed" already shows the changes, keep Today calm: just a link.
+  if (ins?.insights?.length) return (
+    <button onClick={() => tab("myhealth")} style={{ display: "flex", alignItems: "center", gap: 6, height: 36, margin: "-14px 0 22px", padding: 0, border: "none", background: "none", fontSize: 14, fontWeight: 500, color: C.teal, cursor: "pointer" }}>See everything that changed · {s.known} of {s.areas.length} areas known<NIcon name="arrow" size={14} tone="currentColor" /></button>
+  );
   const real = s.changes.filter((c) => c.status !== "insufficient");
   return (
     <section aria-label="What changed" style={{ marginBottom: 28 }}>
@@ -215,6 +221,8 @@ export default function Today() {
 
       <BriefCard />
       <QuickDock />
+      <NeyuNoticed />
+      <WeeklyCheckIn />
       <TodayChanged />
 
       {syncError && (
