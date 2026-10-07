@@ -23,8 +23,21 @@ Return JSON only:
  "summary": 2-4 calm plain-language sentences for the patient explaining what this report is and what it shows. No diagnosis. If something is flagged, say it is worth discussing with their healthcare professional.}
 If the file is not a medical document, use kind "other" and say so in the summary.`;
 
+// Gemini accepts up to ~20 MB per request; base64 adds a third, so files above
+// this size are stored but read manually.
+export const MAX_AI_BYTES = 14 * 1024 * 1024;
+
+/** Page count of the original (PDF pages; an image is 1 page). */
+export async function countPages(buf: Buffer, mime: string): Promise<number> {
+  if (mime !== "application/pdf") return 1;
+  try { const { PDFDocument } = await import("pdf-lib"); return (await PDFDocument.load(buf, { ignoreEncryption: true, updateMetadata: false })).getPageCount(); }
+  catch { const m = buf.toString("latin1").match(/\/Type\s*\/Page[^s]/g); return m ? m.length : 1; }
+}
+
+/** Neyu Reader: original file → structured facts + plain-language summary. */
 export async function readDocument(buf: Buffer, mime: string): Promise<DocReading> {
-  const r = await geminiJSON<DocReading>(SYSTEM, [{ text: "Read this health document." }, { inline_data: { mime_type: mime, data: buf.toString("base64") } }], { maxTokens: 3000, timeoutMs: 60_000 });
+  if (buf.length > MAX_AI_BYTES) return { values: [], keyPoints: [], aiFailed: true };
+  const r = await geminiJSON<DocReading>(SYSTEM, [{ text: "Read this health document." }, { inline_data: { mime_type: mime, data: buf.toString("base64") } }], { label: "reader", timeoutMs: 90_000 });
   if (!r) return { values: [], keyPoints: [], aiFailed: true };
   const clean = (s: unknown, n = 200) => (typeof s === "string" ? s.trim().slice(0, n) : "");
   const summary = clean(r.summary, 900);
@@ -62,9 +75,9 @@ export async function saveLabValues(patientId: string, docId: string, provider: 
   return rows.length;
 }
 
-export const docDTO = (d: { id: string; title: string; kind: string; provider: string | null; docDate: Date | null; source: string; mime: string; fileName: string; size: number; extracted: string; summary: string | null; status: string; createdAt: Date }) => {
+export const docDTO = (d: { id: string; title: string; kind: string; provider: string | null; docDate: Date | null; source: string; mime: string; fileName: string; size: number; pages: number; extracted: string; summary: string | null; status: string; createdAt: Date }) => {
   let ex: DocReading = { values: [], keyPoints: [] };
   try { ex = { ...ex, ...JSON.parse(d.extracted || "{}") }; } catch {}
-  return { id: d.id, title: d.title, kind: d.kind, provider: d.provider, date: d.docDate ? d.docDate.toISOString().slice(0, 10) : null, source: d.source, mime: d.mime, fileName: d.fileName, size: d.size, values: ex.values || [], keyPoints: ex.keyPoints || [], aiFailed: !!ex.aiFailed, summary: d.summary, status: d.status, addedAt: d.createdAt.toISOString() };
+  return { id: d.id, title: d.title, kind: d.kind, provider: d.provider, date: d.docDate ? d.docDate.toISOString().slice(0, 10) : null, source: d.source, mime: d.mime, fileName: d.fileName, size: d.size, pages: d.pages, values: ex.values || [], keyPoints: ex.keyPoints || [], aiFailed: !!ex.aiFailed, summary: d.summary, status: d.status, addedAt: d.createdAt.toISOString() };
 };
-export const DOC_SELECT = { id: true, title: true, kind: true, provider: true, docDate: true, source: true, mime: true, fileName: true, size: true, extracted: true, summary: true, status: true, createdAt: true } as const;
+export const DOC_SELECT = { id: true, title: true, kind: true, provider: true, docDate: true, source: true, mime: true, fileName: true, size: true, pages: true, extracted: true, summary: true, status: true, createdAt: true } as const;

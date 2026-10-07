@@ -27,7 +27,7 @@ export async function tagMeal(text: string, photo?: { mime: string; b64: string 
   const sys = `You tag meals for a personal health journal. Return JSON only: {"description": a short plain description of the food (max 80 chars), "tags": array chosen ONLY from ${JSON.stringify(FOOD_TAGS)}}. No calories, no judgement.`;
   const parts: any[] = [{ text: text ? `Meal: ${text}` : "Describe and tag the food in this photo." }];
   if (photo) parts.push({ inline_data: { mime_type: photo.mime, data: photo.b64 } });
-  const r = await geminiJSON<{ description?: string; tags?: string[] }>(sys, parts, { maxTokens: 200, timeoutMs: 15_000 });
+  const r = await geminiJSON<{ description?: string; tags?: string[] }>(sys, parts, { maxTokens: 1024, timeoutMs: 20_000, label: "food" });
   const tags = r?.tags?.filter((t) => (FOOD_TAGS as readonly string[]).includes(t)) || keywordTags(text);
   return { description: (r?.description || "").slice(0, 120), tags: [...new Set(tags)] };
 }
