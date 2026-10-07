@@ -5,7 +5,7 @@ import { getSettings } from "@backend/patientData";
 import { audit } from "@backend/audit";
 import { withPatient, withPatientMutation, readJson, HttpError } from "@backend/apiHelpers";
 
-const KEYS = ["shareWearables", "shareLabs", "shareRecords", "albaAccess", "learnUsage", "notifDaily", "notifWorth", "notifProtocol", "notifAppt"] as const;
+const KEYS = ["shareWearables", "shareLabs", "shareRecords", "albaAccess", "learnUsage", "aiInsights", "notifDaily", "notifWorth", "notifProtocol", "notifAppt"] as const;
 
 export const GET = () => withPatient(async ({ patient }) => getSettings(patient.id));
 

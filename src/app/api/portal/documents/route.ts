@@ -6,7 +6,7 @@ import { prisma } from "@backend/db";
 import { rateLimit } from "@backend/rateLimit";
 import { audit } from "@backend/audit";
 import { withPatient, withPatientMutation, HttpError } from "@backend/apiHelpers";
-import { readDocument, docDTO, DOC_SELECT, DOC_MIME, MAX_DOC_BYTES } from "@backend/documents";
+import { readDocument, countPages, docDTO, DOC_SELECT, DOC_MIME, MAX_DOC_BYTES } from "@backend/documents";
 
 export const maxDuration = 90;
 
@@ -26,15 +26,19 @@ export const POST = (req: Request) => withPatientMutation(async ({ patient, ip }
   const buf = Buffer.from(await file.arrayBuffer());
   if (!buf.length) throw new HttpError(400, "This file is empty.");
   if (buf.length > MAX_DOC_BYTES) throw new HttpError(413, "This file is larger than 15 MB. Try a smaller PDF or a photo.");
+  // Duplicate check: the exact same file is already in the Health Space.
+  const same = await prisma.healthDocument.findMany({ where: { patientId: patient.id, size: buf.length }, select: { id: true, data: true, title: true } });
+  const dup = same.find((d) => Buffer.from(d.data).equals(buf));
+  if (dup) throw new HttpError(409, `This report is already in your Health Space ("${dup.title}").`);
   const src = String(form?.get("source") || "upload");
   const source = ["upload", "scan", "photo"].includes(src) ? src : "upload";
 
-  const reading = await readDocument(buf, mime === "image/heif" ? "image/heic" : mime);
+  const [reading, pages] = await Promise.all([readDocument(buf, mime === "image/heif" ? "image/heic" : mime), countPages(buf, mime)]);
   const name = (file.name || "report").slice(0, 120);
   const doc = await prisma.healthDocument.create({
     data: {
       patientId: patient.id, title: reading.title || name.replace(/\.[a-z0-9]+$/i, "") || "Health report", kind: reading.kind || "other",
-      provider: reading.provider || null, docDate: reading.date ? new Date(reading.date + "T12:00:00Z") : null, source, mime, fileName: name, size: buf.length, data: buf,
+      provider: reading.provider || null, docDate: reading.date ? new Date(reading.date + "T12:00:00Z") : null, source, mime, fileName: name, size: buf.length, pages, data: buf,
       extracted: JSON.stringify({ values: reading.values, keyPoints: reading.keyPoints, aiFailed: reading.aiFailed || undefined }), summary: reading.summary || null, status: "review",
     },
     select: DOC_SELECT,

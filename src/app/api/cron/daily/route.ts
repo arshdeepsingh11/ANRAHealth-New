@@ -11,6 +11,7 @@ import { getBrief } from "@backend/brief";
 import { getRetests } from "@backend/labs";
 import { sendMail, simpleEmail, emailConfigured } from "@backend/email";
 import { dayKey, daysBetween } from "@/lib/portal/metrics";
+import { refreshInsights } from "@backend/insights";
 
 // Send an email at most once per (patient, kind, period). If sending fails,
 // the marker is removed so the next run tries again.
@@ -25,6 +26,12 @@ export async function GET(req: Request) {
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const base = baseUrl(req), out = { synced: 0, briefs: 0, nudges: 0, retests: 0, errors: 0 };
   out.synced = (await syncAll(6)).connections;
+  // Neyu intelligence: detect new information + meaningful changes, store de-duplicated insights.
+  let insights = 0;
+  for (const p of await prisma.patient.findMany({ where: { accountStatus: "active" }, select: { id: true, firstName: true, timezone: true } })) {
+    try { insights += await refreshInsights(p, true); } catch (e: any) { console.error("insights failed:", e?.message); }
+  }
+  Object.assign(out, { insights });
   if (!emailConfigured() && process.env.NODE_ENV === "production") return NextResponse.json({ ...out, email: "not configured — emails skipped" });
 
   const patients = await prisma.patient.findMany({ where: { accountStatus: "active", emailVerifiedAt: { not: null } }, select: { id: true, email: true, firstName: true, timezone: true, settings: { select: { briefEmail: true, notifDaily: true, notifAppt: true, notifWorth: true } } } });
