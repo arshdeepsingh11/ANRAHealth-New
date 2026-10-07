@@ -189,6 +189,9 @@ model Patient {
   documents       HealthDocument[]
   foodLogs        FoodLog[]
   activity        ActivityEvent[]
+  checkIns        HealthCheckIn[]
+  insights        HealthInsight[]
+  profileChanges  ProfileChange[]
 }
 
 // Only a SHA-256 hash of the session token is stored — a leaked database
@@ -251,7 +254,8 @@ model PatientSettings {
   lat            Float?
   lon            Float?
   briefEmail     Boolean  @default(false) // email the ANRA Today brief each morning
-  learnUsage     Boolean  @default(true) // Neyu learns from which screens / actions the patient uses
+  learnUsage     Boolean  @default(true)
+  aiInsights     Boolean  @default(true) // Neyu notices changes and shows insights proactively // Neyu learns from which screens / actions the patient uses
   leaderboardName String? // shown in challenges ("Arsh S."); null = first name + initial
   updatedAt      DateTime @updatedAt
 }
@@ -707,6 +711,7 @@ model HealthDocument {
   mime      String
   fileName  String
   size      Int
+  pages     Int       @default(0) // page count of the original (0 = not counted yet)
   data      Bytes
   extracted String    @default("{}") // JSON { values:[{name,value,unit,ref,flag}], keyPoints:[] } — Neyu's reading
   summary   String? // Neyu's plain-language explanation (AI)
@@ -743,6 +748,61 @@ model ActivityEvent {
   kind      String // view | click
   target    String
   ms        Int      @default(0)
+  at        DateTime @default(now())
+
+  @@index([patientId, at])
+}
+
+// Weekly Neyu check-in (optional, skippable). 1–5 scales; null = not asked/skipped.
+model HealthCheckIn {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  day       String // YYYY-MM-DD (patient timezone)
+  feeling   Int // 1 poor … 5 great
+  energy    Int?
+  sleep     Int?
+  stress    Int?
+  activity  Int?
+  pain      Int?
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@index([patientId, day])
+}
+
+// Proactive "Neyu noticed" insights. Rules-based and evidence-backed; one per
+// (patient, key) so the same change is never shown twice.
+model HealthInsight {
+  id          String    @id @default(cuid())
+  patientId   String
+  patient     Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  key         String // dedupe key, e.g. "steps:improved:2026-W40"
+  status      String // new | improved | worsened | stable | changed | unknown | insufficient
+  area        String
+  title       String
+  text        String
+  evidence    String    @default("[]") // JSON Evidence[]
+  confidence  String    @default("limited") // strong | limited | insufficient
+  go          String?
+  createdAt   DateTime  @default(now())
+  seenAt      DateTime?
+  dismissedAt DateTime?
+
+  @@unique([patientId, key])
+  @@index([patientId, createdAt])
+}
+
+// What the patient changed in their health profile, and when (for the
+// doctor summary: "recent changes in patient profile").
+model ProfileChange {
+  id        String   @id @default(cuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  field     String
+  label     String
+  oldValue  String?
+  newValue  String?
   at        DateTime @default(now())
 
   @@index([patientId, at])
